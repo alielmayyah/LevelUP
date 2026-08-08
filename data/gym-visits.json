@@ -1,0 +1,3287 @@
+[
+  {
+    "id": "visit_0001",
+    "date": "2025-07-08",
+    "checkInTime": "2025-07-08T08:15:00",
+    "checkOutTime": "2025-07-08T09:14:00",
+    "workoutDuration": 59,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0002",
+    "date": "2025-07-09",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Wednesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0003",
+    "date": "2025-07-10",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0004",
+    "date": "2025-07-11",
+    "checkInTime": "2025-07-11T18:40:00",
+    "checkOutTime": "2025-07-11T19:59:00",
+    "workoutDuration": 79,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0005",
+    "date": "2025-07-12",
+    "checkInTime": "2025-07-12T20:20:00",
+    "checkOutTime": "2025-07-12T21:03:00",
+    "workoutDuration": 43,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0006",
+    "date": "2025-07-13",
+    "checkInTime": "2025-07-13T19:15:00",
+    "checkOutTime": "2025-07-13T20:13:00",
+    "workoutDuration": 58,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0007",
+    "date": "2025-07-14",
+    "checkInTime": "2025-07-14T12:15:00",
+    "checkOutTime": "2025-07-14T13:22:00",
+    "workoutDuration": 67,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0008",
+    "date": "2025-07-15",
+    "checkInTime": "2025-07-15T20:00:00",
+    "checkOutTime": "2025-07-15T21:06:00",
+    "workoutDuration": 66,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0009",
+    "date": "2025-07-16",
+    "checkInTime": "2025-07-16T17:00:00",
+    "checkOutTime": "2025-07-16T18:08:00",
+    "workoutDuration": 68,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0010",
+    "date": "2025-07-17",
+    "checkInTime": "2025-07-17T20:30:00",
+    "checkOutTime": "2025-07-17T21:52:00",
+    "workoutDuration": 82,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0011",
+    "date": "2025-07-18",
+    "checkInTime": "2025-07-18T19:15:00",
+    "checkOutTime": "2025-07-18T20:01:00",
+    "workoutDuration": 46,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0012",
+    "date": "2025-07-19",
+    "checkInTime": "2025-07-19T20:30:00",
+    "checkOutTime": "2025-07-19T21:46:00",
+    "workoutDuration": 76,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0013",
+    "date": "2025-07-20",
+    "checkInTime": "2025-07-20T20:15:00",
+    "checkOutTime": "2025-07-20T21:34:00",
+    "workoutDuration": 79,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0014",
+    "date": "2025-07-21",
+    "checkInTime": "2025-07-21T08:40:00",
+    "checkOutTime": "2025-07-21T10:00:00",
+    "workoutDuration": 80,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0015",
+    "date": "2025-07-22",
+    "checkInTime": "2025-07-22T07:00:00",
+    "checkOutTime": "2025-07-22T08:15:00",
+    "workoutDuration": 75,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0016",
+    "date": "2025-07-23",
+    "checkInTime": "2025-07-23T17:45:00",
+    "checkOutTime": "2025-07-23T19:13:00",
+    "workoutDuration": 88,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0017",
+    "date": "2025-07-24",
+    "checkInTime": "2025-07-24T17:40:00",
+    "checkOutTime": "2025-07-24T18:39:00",
+    "workoutDuration": 59,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0018",
+    "date": "2025-07-25",
+    "checkInTime": "2025-07-25T18:40:00",
+    "checkOutTime": "2025-07-25T19:53:00",
+    "workoutDuration": 73,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0019",
+    "date": "2025-07-26",
+    "checkInTime": "2025-07-26T17:10:00",
+    "checkOutTime": "2025-07-26T18:13:00",
+    "workoutDuration": 63,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0020",
+    "date": "2025-07-27",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0021",
+    "date": "2025-07-28",
+    "checkInTime": "2025-07-28T19:40:00",
+    "checkOutTime": "2025-07-28T20:56:00",
+    "workoutDuration": 76,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0022",
+    "date": "2025-07-29",
+    "checkInTime": "2025-07-29T06:00:00",
+    "checkOutTime": "2025-07-29T07:34:00",
+    "workoutDuration": 94,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0023",
+    "date": "2025-07-30",
+    "checkInTime": "2025-07-30T17:45:00",
+    "checkOutTime": "2025-07-30T18:52:00",
+    "workoutDuration": 67,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0024",
+    "date": "2025-07-31",
+    "checkInTime": "2025-07-31T12:45:00",
+    "checkOutTime": "2025-07-31T13:49:00",
+    "workoutDuration": 64,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0025",
+    "date": "2025-08-01",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0026",
+    "date": "2025-08-02",
+    "checkInTime": "2025-08-02T07:40:00",
+    "checkOutTime": "2025-08-02T08:38:00",
+    "workoutDuration": 58,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0027",
+    "date": "2025-08-03",
+    "checkInTime": "2025-08-03T18:20:00",
+    "checkOutTime": "2025-08-03T19:51:00",
+    "workoutDuration": 91,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0028",
+    "date": "2025-08-04",
+    "checkInTime": "2025-08-04T20:30:00",
+    "checkOutTime": "2025-08-04T21:34:00",
+    "workoutDuration": 64,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0029",
+    "date": "2025-08-05",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0030",
+    "date": "2025-08-06",
+    "checkInTime": "2025-08-06T07:00:00",
+    "checkOutTime": "2025-08-06T07:42:00",
+    "workoutDuration": 42,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0031",
+    "date": "2025-08-07",
+    "checkInTime": "2025-08-07T08:10:00",
+    "checkOutTime": "2025-08-07T09:21:00",
+    "workoutDuration": 71,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0032",
+    "date": "2025-08-08",
+    "checkInTime": "2025-08-08T17:30:00",
+    "checkOutTime": "2025-08-08T18:29:00",
+    "workoutDuration": 59,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0033",
+    "date": "2025-08-09",
+    "checkInTime": "2025-08-09T12:10:00",
+    "checkOutTime": "2025-08-09T13:30:00",
+    "workoutDuration": 80,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0034",
+    "date": "2025-08-10",
+    "checkInTime": "2025-08-10T12:30:00",
+    "checkOutTime": "2025-08-10T13:16:00",
+    "workoutDuration": 46,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0035",
+    "date": "2025-08-11",
+    "checkInTime": "2025-08-11T06:45:00",
+    "checkOutTime": "2025-08-11T07:43:00",
+    "workoutDuration": 58,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0036",
+    "date": "2025-08-12",
+    "checkInTime": "2025-08-12T20:45:00",
+    "checkOutTime": "2025-08-12T21:26:00",
+    "workoutDuration": 41,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0037",
+    "date": "2025-08-13",
+    "checkInTime": "2025-08-13T07:40:00",
+    "checkOutTime": "2025-08-13T08:45:00",
+    "workoutDuration": 65,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0038",
+    "date": "2025-08-14",
+    "checkInTime": "2025-08-14T08:10:00",
+    "checkOutTime": "2025-08-14T09:23:00",
+    "workoutDuration": 73,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0039",
+    "date": "2025-08-15",
+    "checkInTime": "2025-08-15T20:15:00",
+    "checkOutTime": "2025-08-15T21:20:00",
+    "workoutDuration": 65,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0040",
+    "date": "2025-08-16",
+    "checkInTime": "2025-08-16T17:15:00",
+    "checkOutTime": "2025-08-16T18:17:00",
+    "workoutDuration": 62,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0041",
+    "date": "2025-08-17",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0042",
+    "date": "2025-08-18",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0043",
+    "date": "2025-08-19",
+    "checkInTime": "2025-08-19T06:15:00",
+    "checkOutTime": "2025-08-19T07:43:00",
+    "workoutDuration": 88,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0044",
+    "date": "2025-08-20",
+    "checkInTime": "2025-08-20T18:30:00",
+    "checkOutTime": "2025-08-20T19:14:00",
+    "workoutDuration": 44,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0045",
+    "date": "2025-08-21",
+    "checkInTime": "2025-08-21T19:15:00",
+    "checkOutTime": "2025-08-21T20:21:00",
+    "workoutDuration": 66,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0046",
+    "date": "2025-08-22",
+    "checkInTime": "2025-08-22T07:10:00",
+    "checkOutTime": "2025-08-22T08:06:00",
+    "workoutDuration": 56,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0047",
+    "date": "2025-08-23",
+    "checkInTime": "2025-08-23T18:40:00",
+    "checkOutTime": "2025-08-23T19:37:00",
+    "workoutDuration": 57,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0048",
+    "date": "2025-08-24",
+    "checkInTime": "2025-08-24T07:15:00",
+    "checkOutTime": "2025-08-24T08:22:00",
+    "workoutDuration": 67,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0049",
+    "date": "2025-08-25",
+    "checkInTime": "2025-08-25T20:00:00",
+    "checkOutTime": "2025-08-25T21:26:00",
+    "workoutDuration": 86,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0050",
+    "date": "2025-08-26",
+    "checkInTime": "2025-08-26T19:45:00",
+    "checkOutTime": "2025-08-26T20:41:00",
+    "workoutDuration": 56,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0051",
+    "date": "2025-08-27",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Wednesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0052",
+    "date": "2025-08-28",
+    "checkInTime": "2025-08-28T08:20:00",
+    "checkOutTime": "2025-08-28T09:48:00",
+    "workoutDuration": 88,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0053",
+    "date": "2025-08-29",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0054",
+    "date": "2025-08-30",
+    "checkInTime": "2025-08-30T18:20:00",
+    "checkOutTime": "2025-08-30T19:15:00",
+    "workoutDuration": 55,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0055",
+    "date": "2025-08-31",
+    "checkInTime": "2025-08-31T06:40:00",
+    "checkOutTime": "2025-08-31T07:32:00",
+    "workoutDuration": 52,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0056",
+    "date": "2025-09-01",
+    "checkInTime": "2025-09-01T19:15:00",
+    "checkOutTime": "2025-09-01T20:24:00",
+    "workoutDuration": 69,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0057",
+    "date": "2025-09-02",
+    "checkInTime": "2025-09-02T17:00:00",
+    "checkOutTime": "2025-09-02T18:10:00",
+    "workoutDuration": 70,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0058",
+    "date": "2025-09-03",
+    "checkInTime": "2025-09-03T12:40:00",
+    "checkOutTime": "2025-09-03T13:23:00",
+    "workoutDuration": 43,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0059",
+    "date": "2025-09-04",
+    "checkInTime": "2025-09-04T17:45:00",
+    "checkOutTime": "2025-09-04T18:38:00",
+    "workoutDuration": 53,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0060",
+    "date": "2025-09-05",
+    "checkInTime": "2025-09-05T18:45:00",
+    "checkOutTime": "2025-09-05T19:50:00",
+    "workoutDuration": 65,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0061",
+    "date": "2025-09-06",
+    "checkInTime": "2025-09-06T06:00:00",
+    "checkOutTime": "2025-09-06T07:25:00",
+    "workoutDuration": 85,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0062",
+    "date": "2025-09-07",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0063",
+    "date": "2025-09-08",
+    "checkInTime": "2025-09-08T06:30:00",
+    "checkOutTime": "2025-09-08T07:54:00",
+    "workoutDuration": 84,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0064",
+    "date": "2025-09-09",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0065",
+    "date": "2025-09-10",
+    "checkInTime": "2025-09-10T08:10:00",
+    "checkOutTime": "2025-09-10T08:52:00",
+    "workoutDuration": 42,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0066",
+    "date": "2025-09-11",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0067",
+    "date": "2025-09-12",
+    "checkInTime": "2025-09-12T18:15:00",
+    "checkOutTime": "2025-09-12T19:30:00",
+    "workoutDuration": 75,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0068",
+    "date": "2025-09-13",
+    "checkInTime": "2025-09-13T18:10:00",
+    "checkOutTime": "2025-09-13T18:52:00",
+    "workoutDuration": 42,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0069",
+    "date": "2025-09-14",
+    "checkInTime": "2025-09-14T12:45:00",
+    "checkOutTime": "2025-09-14T14:15:00",
+    "workoutDuration": 90,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0070",
+    "date": "2025-09-15",
+    "checkInTime": "2025-09-15T17:45:00",
+    "checkOutTime": "2025-09-15T18:50:00",
+    "workoutDuration": 65,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0071",
+    "date": "2025-09-16",
+    "checkInTime": "2025-09-16T06:40:00",
+    "checkOutTime": "2025-09-16T08:13:00",
+    "workoutDuration": 93,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0072",
+    "date": "2025-09-17",
+    "checkInTime": "2025-09-17T20:00:00",
+    "checkOutTime": "2025-09-17T21:27:00",
+    "workoutDuration": 87,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0073",
+    "date": "2025-09-18",
+    "checkInTime": "2025-09-18T07:45:00",
+    "checkOutTime": "2025-09-18T08:33:00",
+    "workoutDuration": 48,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0074",
+    "date": "2025-09-19",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0075",
+    "date": "2025-09-20",
+    "checkInTime": "2025-09-20T06:00:00",
+    "checkOutTime": "2025-09-20T07:32:00",
+    "workoutDuration": 92,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0076",
+    "date": "2025-09-21",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0077",
+    "date": "2025-09-22",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0078",
+    "date": "2025-09-23",
+    "checkInTime": "2025-09-23T17:45:00",
+    "checkOutTime": "2025-09-23T19:06:00",
+    "workoutDuration": 81,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0079",
+    "date": "2025-09-24",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Wednesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0080",
+    "date": "2025-09-25",
+    "checkInTime": "2025-09-25T20:45:00",
+    "checkOutTime": "2025-09-25T22:04:00",
+    "workoutDuration": 79,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0081",
+    "date": "2025-09-26",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0082",
+    "date": "2025-09-27",
+    "checkInTime": "2025-09-27T08:30:00",
+    "checkOutTime": "2025-09-27T09:37:00",
+    "workoutDuration": 67,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0083",
+    "date": "2025-09-28",
+    "checkInTime": "2025-09-28T12:30:00",
+    "checkOutTime": "2025-09-28T13:45:00",
+    "workoutDuration": 75,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0084",
+    "date": "2025-09-29",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0085",
+    "date": "2025-09-30",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0086",
+    "date": "2025-10-01",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Wednesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0087",
+    "date": "2025-10-02",
+    "checkInTime": "2025-10-02T18:10:00",
+    "checkOutTime": "2025-10-02T19:16:00",
+    "workoutDuration": 66,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0088",
+    "date": "2025-10-03",
+    "checkInTime": "2025-10-03T08:10:00",
+    "checkOutTime": "2025-10-03T09:15:00",
+    "workoutDuration": 65,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0089",
+    "date": "2025-10-04",
+    "checkInTime": "2025-10-04T20:15:00",
+    "checkOutTime": "2025-10-04T21:28:00",
+    "workoutDuration": 73,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0090",
+    "date": "2025-10-05",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0091",
+    "date": "2025-10-06",
+    "checkInTime": "2025-10-06T08:10:00",
+    "checkOutTime": "2025-10-06T09:05:00",
+    "workoutDuration": 55,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0092",
+    "date": "2025-10-07",
+    "checkInTime": "2025-10-07T19:15:00",
+    "checkOutTime": "2025-10-07T20:11:00",
+    "workoutDuration": 56,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0093",
+    "date": "2025-10-08",
+    "checkInTime": "2025-10-08T08:20:00",
+    "checkOutTime": "2025-10-08T09:24:00",
+    "workoutDuration": 64,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0094",
+    "date": "2025-10-09",
+    "checkInTime": "2025-10-09T12:30:00",
+    "checkOutTime": "2025-10-09T13:12:00",
+    "workoutDuration": 42,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0095",
+    "date": "2025-10-10",
+    "checkInTime": "2025-10-10T20:15:00",
+    "checkOutTime": "2025-10-10T20:55:00",
+    "workoutDuration": 40,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0096",
+    "date": "2025-10-11",
+    "checkInTime": "2025-10-11T20:00:00",
+    "checkOutTime": "2025-10-11T20:43:00",
+    "workoutDuration": 43,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0097",
+    "date": "2025-10-12",
+    "checkInTime": "2025-10-12T19:45:00",
+    "checkOutTime": "2025-10-12T20:44:00",
+    "workoutDuration": 59,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0098",
+    "date": "2025-10-13",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0099",
+    "date": "2025-10-14",
+    "checkInTime": "2025-10-14T06:15:00",
+    "checkOutTime": "2025-10-14T07:07:00",
+    "workoutDuration": 52,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0100",
+    "date": "2025-10-15",
+    "checkInTime": "2025-10-15T12:20:00",
+    "checkOutTime": "2025-10-15T13:14:00",
+    "workoutDuration": 54,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0101",
+    "date": "2025-10-16",
+    "checkInTime": "2025-10-16T20:00:00",
+    "checkOutTime": "2025-10-16T20:50:00",
+    "workoutDuration": 50,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0102",
+    "date": "2025-10-17",
+    "checkInTime": "2025-10-17T06:30:00",
+    "checkOutTime": "2025-10-17T07:22:00",
+    "workoutDuration": 52,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0103",
+    "date": "2025-10-18",
+    "checkInTime": "2025-10-18T08:40:00",
+    "checkOutTime": "2025-10-18T09:23:00",
+    "workoutDuration": 43,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0104",
+    "date": "2025-10-19",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0105",
+    "date": "2025-10-20",
+    "checkInTime": "2025-10-20T18:10:00",
+    "checkOutTime": "2025-10-20T19:43:00",
+    "workoutDuration": 93,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0106",
+    "date": "2025-10-21",
+    "checkInTime": "2025-10-21T20:10:00",
+    "checkOutTime": "2025-10-21T21:38:00",
+    "workoutDuration": 88,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0107",
+    "date": "2025-10-22",
+    "checkInTime": "2025-10-22T17:45:00",
+    "checkOutTime": "2025-10-22T19:15:00",
+    "workoutDuration": 90,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0108",
+    "date": "2025-10-23",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0109",
+    "date": "2025-10-24",
+    "checkInTime": "2025-10-24T18:20:00",
+    "checkOutTime": "2025-10-24T19:05:00",
+    "workoutDuration": 45,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0110",
+    "date": "2025-10-25",
+    "checkInTime": "2025-10-25T18:40:00",
+    "checkOutTime": "2025-10-25T19:47:00",
+    "workoutDuration": 67,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0111",
+    "date": "2025-10-26",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0112",
+    "date": "2025-10-27",
+    "checkInTime": "2025-10-27T08:10:00",
+    "checkOutTime": "2025-10-27T09:14:00",
+    "workoutDuration": 64,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0113",
+    "date": "2025-10-28",
+    "checkInTime": "2025-10-28T18:10:00",
+    "checkOutTime": "2025-10-28T19:10:00",
+    "workoutDuration": 60,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0114",
+    "date": "2025-10-29",
+    "checkInTime": "2025-10-29T17:30:00",
+    "checkOutTime": "2025-10-29T18:26:00",
+    "workoutDuration": 56,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0115",
+    "date": "2025-10-30",
+    "checkInTime": "2025-10-30T18:30:00",
+    "checkOutTime": "2025-10-30T19:37:00",
+    "workoutDuration": 67,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0116",
+    "date": "2025-10-31",
+    "checkInTime": "2025-10-31T12:15:00",
+    "checkOutTime": "2025-10-31T13:19:00",
+    "workoutDuration": 64,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0117",
+    "date": "2025-11-01",
+    "checkInTime": "2025-11-01T06:45:00",
+    "checkOutTime": "2025-11-01T08:19:00",
+    "workoutDuration": 94,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0118",
+    "date": "2025-11-02",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0119",
+    "date": "2025-11-03",
+    "checkInTime": "2025-11-03T17:10:00",
+    "checkOutTime": "2025-11-03T18:27:00",
+    "workoutDuration": 77,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0120",
+    "date": "2025-11-04",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0121",
+    "date": "2025-11-05",
+    "checkInTime": "2025-11-05T12:20:00",
+    "checkOutTime": "2025-11-05T13:05:00",
+    "workoutDuration": 45,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0122",
+    "date": "2025-11-06",
+    "checkInTime": "2025-11-06T07:15:00",
+    "checkOutTime": "2025-11-06T08:11:00",
+    "workoutDuration": 56,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0123",
+    "date": "2025-11-07",
+    "checkInTime": "2025-11-07T06:40:00",
+    "checkOutTime": "2025-11-07T07:20:00",
+    "workoutDuration": 40,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0124",
+    "date": "2025-11-08",
+    "checkInTime": "2025-11-08T08:10:00",
+    "checkOutTime": "2025-11-08T09:10:00",
+    "workoutDuration": 60,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0125",
+    "date": "2025-11-09",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0126",
+    "date": "2025-11-10",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0127",
+    "date": "2025-11-11",
+    "checkInTime": "2025-11-11T12:30:00",
+    "checkOutTime": "2025-11-11T13:22:00",
+    "workoutDuration": 52,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0128",
+    "date": "2025-11-12",
+    "checkInTime": "2025-11-12T17:15:00",
+    "checkOutTime": "2025-11-12T17:57:00",
+    "workoutDuration": 42,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0129",
+    "date": "2025-11-13",
+    "checkInTime": "2025-11-13T20:20:00",
+    "checkOutTime": "2025-11-13T21:46:00",
+    "workoutDuration": 86,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0130",
+    "date": "2025-11-14",
+    "checkInTime": "2025-11-14T08:30:00",
+    "checkOutTime": "2025-11-14T10:04:00",
+    "workoutDuration": 94,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0131",
+    "date": "2025-11-15",
+    "checkInTime": "2025-11-15T19:20:00",
+    "checkOutTime": "2025-11-15T20:53:00",
+    "workoutDuration": 93,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0132",
+    "date": "2025-11-16",
+    "checkInTime": "2025-11-16T18:10:00",
+    "checkOutTime": "2025-11-16T19:45:00",
+    "workoutDuration": 95,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0133",
+    "date": "2025-11-17",
+    "checkInTime": "2025-11-17T17:10:00",
+    "checkOutTime": "2025-11-17T18:34:00",
+    "workoutDuration": 84,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0134",
+    "date": "2025-11-18",
+    "checkInTime": "2025-11-18T20:15:00",
+    "checkOutTime": "2025-11-18T21:35:00",
+    "workoutDuration": 80,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0135",
+    "date": "2025-11-19",
+    "checkInTime": "2025-11-19T07:30:00",
+    "checkOutTime": "2025-11-19T08:27:00",
+    "workoutDuration": 57,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0136",
+    "date": "2025-11-20",
+    "checkInTime": "2025-11-20T17:30:00",
+    "checkOutTime": "2025-11-20T18:34:00",
+    "workoutDuration": 64,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0137",
+    "date": "2025-11-21",
+    "checkInTime": "2025-11-21T20:45:00",
+    "checkOutTime": "2025-11-21T21:35:00",
+    "workoutDuration": 50,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0138",
+    "date": "2025-11-22",
+    "checkInTime": "2025-11-22T08:15:00",
+    "checkOutTime": "2025-11-22T09:34:00",
+    "workoutDuration": 79,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0139",
+    "date": "2025-11-23",
+    "checkInTime": "2025-11-23T18:30:00",
+    "checkOutTime": "2025-11-23T19:11:00",
+    "workoutDuration": 41,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0140",
+    "date": "2025-11-24",
+    "checkInTime": "2025-11-24T19:45:00",
+    "checkOutTime": "2025-11-24T20:37:00",
+    "workoutDuration": 52,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0141",
+    "date": "2025-11-25",
+    "checkInTime": "2025-11-25T19:45:00",
+    "checkOutTime": "2025-11-25T20:53:00",
+    "workoutDuration": 68,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0142",
+    "date": "2025-11-26",
+    "checkInTime": "2025-11-26T17:30:00",
+    "checkOutTime": "2025-11-26T18:53:00",
+    "workoutDuration": 83,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0143",
+    "date": "2025-11-27",
+    "checkInTime": "2025-11-27T18:10:00",
+    "checkOutTime": "2025-11-27T18:51:00",
+    "workoutDuration": 41,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0144",
+    "date": "2025-11-28",
+    "checkInTime": "2025-11-28T07:10:00",
+    "checkOutTime": "2025-11-28T08:16:00",
+    "workoutDuration": 66,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0145",
+    "date": "2025-11-29",
+    "checkInTime": "2025-11-29T08:40:00",
+    "checkOutTime": "2025-11-29T09:39:00",
+    "workoutDuration": 59,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0146",
+    "date": "2025-11-30",
+    "checkInTime": "2025-11-30T18:00:00",
+    "checkOutTime": "2025-11-30T19:13:00",
+    "workoutDuration": 73,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0147",
+    "date": "2025-12-01",
+    "checkInTime": "2025-12-01T08:45:00",
+    "checkOutTime": "2025-12-01T09:40:00",
+    "workoutDuration": 55,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0148",
+    "date": "2025-12-02",
+    "checkInTime": "2025-12-02T12:30:00",
+    "checkOutTime": "2025-12-02T13:45:00",
+    "workoutDuration": 75,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0149",
+    "date": "2025-12-03",
+    "checkInTime": "2025-12-03T08:00:00",
+    "checkOutTime": "2025-12-03T09:11:00",
+    "workoutDuration": 71,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0150",
+    "date": "2025-12-04",
+    "checkInTime": "2025-12-04T20:10:00",
+    "checkOutTime": "2025-12-04T21:20:00",
+    "workoutDuration": 70,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0151",
+    "date": "2025-12-05",
+    "checkInTime": "2025-12-05T20:00:00",
+    "checkOutTime": "2025-12-05T21:11:00",
+    "workoutDuration": 71,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0152",
+    "date": "2025-12-06",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Saturday",
+    "attended": false
+  },
+  {
+    "id": "visit_0153",
+    "date": "2025-12-07",
+    "checkInTime": "2025-12-07T12:20:00",
+    "checkOutTime": "2025-12-07T13:54:00",
+    "workoutDuration": 94,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0154",
+    "date": "2025-12-08",
+    "checkInTime": "2025-12-08T18:40:00",
+    "checkOutTime": "2025-12-08T20:05:00",
+    "workoutDuration": 85,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0155",
+    "date": "2025-12-09",
+    "checkInTime": "2025-12-09T18:15:00",
+    "checkOutTime": "2025-12-09T19:16:00",
+    "workoutDuration": 61,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0156",
+    "date": "2025-12-10",
+    "checkInTime": "2025-12-10T19:10:00",
+    "checkOutTime": "2025-12-10T20:44:00",
+    "workoutDuration": 94,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0157",
+    "date": "2025-12-11",
+    "checkInTime": "2025-12-11T20:10:00",
+    "checkOutTime": "2025-12-11T21:45:00",
+    "workoutDuration": 95,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0158",
+    "date": "2025-12-12",
+    "checkInTime": "2025-12-12T20:15:00",
+    "checkOutTime": "2025-12-12T21:30:00",
+    "workoutDuration": 75,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0159",
+    "date": "2025-12-13",
+    "checkInTime": "2025-12-13T06:10:00",
+    "checkOutTime": "2025-12-13T06:59:00",
+    "workoutDuration": 49,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0160",
+    "date": "2025-12-14",
+    "checkInTime": "2025-12-14T17:40:00",
+    "checkOutTime": "2025-12-14T19:08:00",
+    "workoutDuration": 88,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0161",
+    "date": "2025-12-15",
+    "checkInTime": "2025-12-15T19:45:00",
+    "checkOutTime": "2025-12-15T21:10:00",
+    "workoutDuration": 85,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0162",
+    "date": "2025-12-16",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0163",
+    "date": "2025-12-17",
+    "checkInTime": "2025-12-17T08:00:00",
+    "checkOutTime": "2025-12-17T09:01:00",
+    "workoutDuration": 61,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0164",
+    "date": "2025-12-18",
+    "checkInTime": "2025-12-18T06:40:00",
+    "checkOutTime": "2025-12-18T07:45:00",
+    "workoutDuration": 65,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0165",
+    "date": "2025-12-19",
+    "checkInTime": "2025-12-19T20:30:00",
+    "checkOutTime": "2025-12-19T21:18:00",
+    "workoutDuration": 48,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0166",
+    "date": "2025-12-20",
+    "checkInTime": "2025-12-20T06:40:00",
+    "checkOutTime": "2025-12-20T07:45:00",
+    "workoutDuration": 65,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0167",
+    "date": "2025-12-21",
+    "checkInTime": "2025-12-21T17:00:00",
+    "checkOutTime": "2025-12-21T18:33:00",
+    "workoutDuration": 93,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0168",
+    "date": "2025-12-22",
+    "checkInTime": "2025-12-22T18:30:00",
+    "checkOutTime": "2025-12-22T19:27:00",
+    "workoutDuration": 57,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0169",
+    "date": "2025-12-23",
+    "checkInTime": "2025-12-23T12:10:00",
+    "checkOutTime": "2025-12-23T13:43:00",
+    "workoutDuration": 93,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0170",
+    "date": "2025-12-24",
+    "checkInTime": "2025-12-24T19:30:00",
+    "checkOutTime": "2025-12-24T20:20:00",
+    "workoutDuration": 50,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0171",
+    "date": "2025-12-25",
+    "checkInTime": "2025-12-25T20:45:00",
+    "checkOutTime": "2025-12-25T21:30:00",
+    "workoutDuration": 45,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0172",
+    "date": "2025-12-26",
+    "checkInTime": "2025-12-26T08:15:00",
+    "checkOutTime": "2025-12-26T08:55:00",
+    "workoutDuration": 40,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0173",
+    "date": "2025-12-27",
+    "checkInTime": "2025-12-27T18:45:00",
+    "checkOutTime": "2025-12-27T20:04:00",
+    "workoutDuration": 79,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0174",
+    "date": "2025-12-28",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0175",
+    "date": "2025-12-29",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0176",
+    "date": "2025-12-30",
+    "checkInTime": "2025-12-30T08:20:00",
+    "checkOutTime": "2025-12-30T09:45:00",
+    "workoutDuration": 85,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0177",
+    "date": "2025-12-31",
+    "checkInTime": "2025-12-31T19:45:00",
+    "checkOutTime": "2025-12-31T20:30:00",
+    "workoutDuration": 45,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0178",
+    "date": "2026-01-01",
+    "checkInTime": "2026-01-01T19:00:00",
+    "checkOutTime": "2026-01-01T20:07:00",
+    "workoutDuration": 67,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0179",
+    "date": "2026-01-02",
+    "checkInTime": "2026-01-02T19:20:00",
+    "checkOutTime": "2026-01-02T20:25:00",
+    "workoutDuration": 65,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0180",
+    "date": "2026-01-03",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Saturday",
+    "attended": false
+  },
+  {
+    "id": "visit_0181",
+    "date": "2026-01-04",
+    "checkInTime": "2026-01-04T12:20:00",
+    "checkOutTime": "2026-01-04T13:42:00",
+    "workoutDuration": 82,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0182",
+    "date": "2026-01-05",
+    "checkInTime": "2026-01-05T08:40:00",
+    "checkOutTime": "2026-01-05T09:28:00",
+    "workoutDuration": 48,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0183",
+    "date": "2026-01-06",
+    "checkInTime": "2026-01-06T18:30:00",
+    "checkOutTime": "2026-01-06T19:31:00",
+    "workoutDuration": 61,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0184",
+    "date": "2026-01-07",
+    "checkInTime": "2026-01-07T06:40:00",
+    "checkOutTime": "2026-01-07T07:34:00",
+    "workoutDuration": 54,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0185",
+    "date": "2026-01-08",
+    "checkInTime": "2026-01-08T08:40:00",
+    "checkOutTime": "2026-01-08T09:23:00",
+    "workoutDuration": 43,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0186",
+    "date": "2026-01-09",
+    "checkInTime": "2026-01-09T18:45:00",
+    "checkOutTime": "2026-01-09T19:38:00",
+    "workoutDuration": 53,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0187",
+    "date": "2026-01-10",
+    "checkInTime": "2026-01-10T18:45:00",
+    "checkOutTime": "2026-01-10T19:48:00",
+    "workoutDuration": 63,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0188",
+    "date": "2026-01-11",
+    "checkInTime": "2026-01-11T19:20:00",
+    "checkOutTime": "2026-01-11T20:40:00",
+    "workoutDuration": 80,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0189",
+    "date": "2026-01-12",
+    "checkInTime": "2026-01-12T12:10:00",
+    "checkOutTime": "2026-01-12T13:01:00",
+    "workoutDuration": 51,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0190",
+    "date": "2026-01-13",
+    "checkInTime": "2026-01-13T18:20:00",
+    "checkOutTime": "2026-01-13T19:23:00",
+    "workoutDuration": 63,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0191",
+    "date": "2026-01-14",
+    "checkInTime": "2026-01-14T20:00:00",
+    "checkOutTime": "2026-01-14T20:58:00",
+    "workoutDuration": 58,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0192",
+    "date": "2026-01-15",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0193",
+    "date": "2026-01-16",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0194",
+    "date": "2026-01-17",
+    "checkInTime": "2026-01-17T19:45:00",
+    "checkOutTime": "2026-01-17T20:52:00",
+    "workoutDuration": 67,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0195",
+    "date": "2026-01-18",
+    "checkInTime": "2026-01-18T07:30:00",
+    "checkOutTime": "2026-01-18T08:28:00",
+    "workoutDuration": 58,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0196",
+    "date": "2026-01-19",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0197",
+    "date": "2026-01-20",
+    "checkInTime": "2026-01-20T19:15:00",
+    "checkOutTime": "2026-01-20T20:02:00",
+    "workoutDuration": 47,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0198",
+    "date": "2026-01-21",
+    "checkInTime": "2026-01-21T17:45:00",
+    "checkOutTime": "2026-01-21T18:55:00",
+    "workoutDuration": 70,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0199",
+    "date": "2026-01-22",
+    "checkInTime": "2026-01-22T17:45:00",
+    "checkOutTime": "2026-01-22T19:18:00",
+    "workoutDuration": 93,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0200",
+    "date": "2026-01-23",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0201",
+    "date": "2026-01-24",
+    "checkInTime": "2026-01-24T06:30:00",
+    "checkOutTime": "2026-01-24T07:26:00",
+    "workoutDuration": 56,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0202",
+    "date": "2026-01-25",
+    "checkInTime": "2026-01-25T12:15:00",
+    "checkOutTime": "2026-01-25T13:29:00",
+    "workoutDuration": 74,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0203",
+    "date": "2026-01-26",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0204",
+    "date": "2026-01-27",
+    "checkInTime": "2026-01-27T19:00:00",
+    "checkOutTime": "2026-01-27T20:04:00",
+    "workoutDuration": 64,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0205",
+    "date": "2026-01-28",
+    "checkInTime": "2026-01-28T08:15:00",
+    "checkOutTime": "2026-01-28T09:44:00",
+    "workoutDuration": 89,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0206",
+    "date": "2026-01-29",
+    "checkInTime": "2026-01-29T19:10:00",
+    "checkOutTime": "2026-01-29T20:45:00",
+    "workoutDuration": 95,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0207",
+    "date": "2026-01-30",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0208",
+    "date": "2026-01-31",
+    "checkInTime": "2026-01-31T19:40:00",
+    "checkOutTime": "2026-01-31T20:27:00",
+    "workoutDuration": 47,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0209",
+    "date": "2026-02-01",
+    "checkInTime": "2026-02-01T17:45:00",
+    "checkOutTime": "2026-02-01T19:16:00",
+    "workoutDuration": 91,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0210",
+    "date": "2026-02-02",
+    "checkInTime": "2026-02-02T20:10:00",
+    "checkOutTime": "2026-02-02T21:29:00",
+    "workoutDuration": 79,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0211",
+    "date": "2026-02-03",
+    "checkInTime": "2026-02-03T17:00:00",
+    "checkOutTime": "2026-02-03T18:19:00",
+    "workoutDuration": 79,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0212",
+    "date": "2026-02-04",
+    "checkInTime": "2026-02-04T19:40:00",
+    "checkOutTime": "2026-02-04T21:01:00",
+    "workoutDuration": 81,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0213",
+    "date": "2026-02-05",
+    "checkInTime": "2026-02-05T20:00:00",
+    "checkOutTime": "2026-02-05T21:16:00",
+    "workoutDuration": 76,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0214",
+    "date": "2026-02-06",
+    "checkInTime": "2026-02-06T18:15:00",
+    "checkOutTime": "2026-02-06T19:08:00",
+    "workoutDuration": 53,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0215",
+    "date": "2026-02-07",
+    "checkInTime": "2026-02-07T07:30:00",
+    "checkOutTime": "2026-02-07T08:17:00",
+    "workoutDuration": 47,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0216",
+    "date": "2026-02-08",
+    "checkInTime": "2026-02-08T12:40:00",
+    "checkOutTime": "2026-02-08T13:45:00",
+    "workoutDuration": 65,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0217",
+    "date": "2026-02-09",
+    "checkInTime": "2026-02-09T18:15:00",
+    "checkOutTime": "2026-02-09T19:24:00",
+    "workoutDuration": 69,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0218",
+    "date": "2026-02-10",
+    "checkInTime": "2026-02-10T08:40:00",
+    "checkOutTime": "2026-02-10T09:32:00",
+    "workoutDuration": 52,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0219",
+    "date": "2026-02-11",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Wednesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0220",
+    "date": "2026-02-12",
+    "checkInTime": "2026-02-12T06:15:00",
+    "checkOutTime": "2026-02-12T07:35:00",
+    "workoutDuration": 80,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0221",
+    "date": "2026-02-13",
+    "checkInTime": "2026-02-13T08:40:00",
+    "checkOutTime": "2026-02-13T09:31:00",
+    "workoutDuration": 51,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0222",
+    "date": "2026-02-14",
+    "checkInTime": "2026-02-14T06:10:00",
+    "checkOutTime": "2026-02-14T06:57:00",
+    "workoutDuration": 47,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0223",
+    "date": "2026-02-15",
+    "checkInTime": "2026-02-15T12:15:00",
+    "checkOutTime": "2026-02-15T12:55:00",
+    "workoutDuration": 40,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0224",
+    "date": "2026-02-16",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0225",
+    "date": "2026-02-17",
+    "checkInTime": "2026-02-17T19:45:00",
+    "checkOutTime": "2026-02-17T20:48:00",
+    "workoutDuration": 63,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0226",
+    "date": "2026-02-18",
+    "checkInTime": "2026-02-18T12:10:00",
+    "checkOutTime": "2026-02-18T13:10:00",
+    "workoutDuration": 60,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0227",
+    "date": "2026-02-19",
+    "checkInTime": "2026-02-19T12:45:00",
+    "checkOutTime": "2026-02-19T13:45:00",
+    "workoutDuration": 60,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0228",
+    "date": "2026-02-20",
+    "checkInTime": "2026-02-20T19:40:00",
+    "checkOutTime": "2026-02-20T21:05:00",
+    "workoutDuration": 85,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0229",
+    "date": "2026-02-21",
+    "checkInTime": "2026-02-21T07:10:00",
+    "checkOutTime": "2026-02-21T08:22:00",
+    "workoutDuration": 72,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0230",
+    "date": "2026-02-22",
+    "checkInTime": "2026-02-22T12:00:00",
+    "checkOutTime": "2026-02-22T13:22:00",
+    "workoutDuration": 82,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0231",
+    "date": "2026-02-23",
+    "checkInTime": "2026-02-23T18:30:00",
+    "checkOutTime": "2026-02-23T19:10:00",
+    "workoutDuration": 40,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0232",
+    "date": "2026-02-24",
+    "checkInTime": "2026-02-24T20:45:00",
+    "checkOutTime": "2026-02-24T22:06:00",
+    "workoutDuration": 81,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0233",
+    "date": "2026-02-25",
+    "checkInTime": "2026-02-25T08:15:00",
+    "checkOutTime": "2026-02-25T09:46:00",
+    "workoutDuration": 91,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0234",
+    "date": "2026-02-26",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0235",
+    "date": "2026-02-27",
+    "checkInTime": "2026-02-27T07:20:00",
+    "checkOutTime": "2026-02-27T08:43:00",
+    "workoutDuration": 83,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0236",
+    "date": "2026-02-28",
+    "checkInTime": "2026-02-28T20:15:00",
+    "checkOutTime": "2026-02-28T21:00:00",
+    "workoutDuration": 45,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0237",
+    "date": "2026-03-01",
+    "checkInTime": "2026-03-01T20:10:00",
+    "checkOutTime": "2026-03-01T21:04:00",
+    "workoutDuration": 54,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0238",
+    "date": "2026-03-02",
+    "checkInTime": "2026-03-02T12:30:00",
+    "checkOutTime": "2026-03-02T13:18:00",
+    "workoutDuration": 48,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0239",
+    "date": "2026-03-03",
+    "checkInTime": "2026-03-03T19:45:00",
+    "checkOutTime": "2026-03-03T21:04:00",
+    "workoutDuration": 79,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0240",
+    "date": "2026-03-04",
+    "checkInTime": "2026-03-04T20:00:00",
+    "checkOutTime": "2026-03-04T21:07:00",
+    "workoutDuration": 67,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0241",
+    "date": "2026-03-05",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0242",
+    "date": "2026-03-06",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0243",
+    "date": "2026-03-07",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Saturday",
+    "attended": false
+  },
+  {
+    "id": "visit_0244",
+    "date": "2026-03-08",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0245",
+    "date": "2026-03-09",
+    "checkInTime": "2026-03-09T06:10:00",
+    "checkOutTime": "2026-03-09T07:37:00",
+    "workoutDuration": 87,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0246",
+    "date": "2026-03-10",
+    "checkInTime": "2026-03-10T07:00:00",
+    "checkOutTime": "2026-03-10T08:34:00",
+    "workoutDuration": 94,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0247",
+    "date": "2026-03-11",
+    "checkInTime": "2026-03-11T20:20:00",
+    "checkOutTime": "2026-03-11T21:23:00",
+    "workoutDuration": 63,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0248",
+    "date": "2026-03-12",
+    "checkInTime": "2026-03-12T12:15:00",
+    "checkOutTime": "2026-03-12T13:21:00",
+    "workoutDuration": 66,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0249",
+    "date": "2026-03-13",
+    "checkInTime": "2026-03-13T06:10:00",
+    "checkOutTime": "2026-03-13T07:42:00",
+    "workoutDuration": 92,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0250",
+    "date": "2026-03-14",
+    "checkInTime": "2026-03-14T08:45:00",
+    "checkOutTime": "2026-03-14T09:42:00",
+    "workoutDuration": 57,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0251",
+    "date": "2026-03-15",
+    "checkInTime": "2026-03-15T08:30:00",
+    "checkOutTime": "2026-03-15T09:28:00",
+    "workoutDuration": 58,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0252",
+    "date": "2026-03-16",
+    "checkInTime": "2026-03-16T18:10:00",
+    "checkOutTime": "2026-03-16T19:43:00",
+    "workoutDuration": 93,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0253",
+    "date": "2026-03-17",
+    "checkInTime": "2026-03-17T06:30:00",
+    "checkOutTime": "2026-03-17T07:23:00",
+    "workoutDuration": 53,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0254",
+    "date": "2026-03-18",
+    "checkInTime": "2026-03-18T08:00:00",
+    "checkOutTime": "2026-03-18T09:21:00",
+    "workoutDuration": 81,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0255",
+    "date": "2026-03-19",
+    "checkInTime": "2026-03-19T12:00:00",
+    "checkOutTime": "2026-03-19T13:21:00",
+    "workoutDuration": 81,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0256",
+    "date": "2026-03-20",
+    "checkInTime": "2026-03-20T06:00:00",
+    "checkOutTime": "2026-03-20T07:31:00",
+    "workoutDuration": 91,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0257",
+    "date": "2026-03-21",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Saturday",
+    "attended": false
+  },
+  {
+    "id": "visit_0258",
+    "date": "2026-03-22",
+    "checkInTime": "2026-03-22T20:40:00",
+    "checkOutTime": "2026-03-22T22:15:00",
+    "workoutDuration": 95,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0259",
+    "date": "2026-03-23",
+    "checkInTime": "2026-03-23T19:00:00",
+    "checkOutTime": "2026-03-23T19:44:00",
+    "workoutDuration": 44,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0260",
+    "date": "2026-03-24",
+    "checkInTime": "2026-03-24T07:20:00",
+    "checkOutTime": "2026-03-24T08:44:00",
+    "workoutDuration": 84,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0261",
+    "date": "2026-03-25",
+    "checkInTime": "2026-03-25T20:10:00",
+    "checkOutTime": "2026-03-25T20:52:00",
+    "workoutDuration": 42,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0262",
+    "date": "2026-03-26",
+    "checkInTime": "2026-03-26T17:10:00",
+    "checkOutTime": "2026-03-26T18:31:00",
+    "workoutDuration": 81,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0263",
+    "date": "2026-03-27",
+    "checkInTime": "2026-03-27T08:20:00",
+    "checkOutTime": "2026-03-27T09:09:00",
+    "workoutDuration": 49,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0264",
+    "date": "2026-03-28",
+    "checkInTime": "2026-03-28T07:45:00",
+    "checkOutTime": "2026-03-28T09:04:00",
+    "workoutDuration": 79,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0265",
+    "date": "2026-03-29",
+    "checkInTime": "2026-03-29T19:00:00",
+    "checkOutTime": "2026-03-29T20:34:00",
+    "workoutDuration": 94,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0266",
+    "date": "2026-03-30",
+    "checkInTime": "2026-03-30T12:30:00",
+    "checkOutTime": "2026-03-30T13:39:00",
+    "workoutDuration": 69,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0267",
+    "date": "2026-03-31",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0268",
+    "date": "2026-04-01",
+    "checkInTime": "2026-04-01T18:45:00",
+    "checkOutTime": "2026-04-01T20:06:00",
+    "workoutDuration": 81,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0269",
+    "date": "2026-04-02",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0270",
+    "date": "2026-04-03",
+    "checkInTime": "2026-04-03T17:45:00",
+    "checkOutTime": "2026-04-03T18:28:00",
+    "workoutDuration": 43,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0271",
+    "date": "2026-04-04",
+    "checkInTime": "2026-04-04T07:30:00",
+    "checkOutTime": "2026-04-04T09:05:00",
+    "workoutDuration": 95,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0272",
+    "date": "2026-04-05",
+    "checkInTime": "2026-04-05T18:40:00",
+    "checkOutTime": "2026-04-05T19:34:00",
+    "workoutDuration": 54,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0273",
+    "date": "2026-04-06",
+    "checkInTime": "2026-04-06T08:40:00",
+    "checkOutTime": "2026-04-06T09:39:00",
+    "workoutDuration": 59,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0274",
+    "date": "2026-04-07",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0275",
+    "date": "2026-04-08",
+    "checkInTime": "2026-04-08T18:10:00",
+    "checkOutTime": "2026-04-08T19:07:00",
+    "workoutDuration": 57,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0276",
+    "date": "2026-04-09",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0277",
+    "date": "2026-04-10",
+    "checkInTime": "2026-04-10T07:15:00",
+    "checkOutTime": "2026-04-10T08:40:00",
+    "workoutDuration": 85,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0278",
+    "date": "2026-04-11",
+    "checkInTime": "2026-04-11T17:40:00",
+    "checkOutTime": "2026-04-11T18:25:00",
+    "workoutDuration": 45,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0279",
+    "date": "2026-04-12",
+    "checkInTime": "2026-04-12T08:30:00",
+    "checkOutTime": "2026-04-12T09:33:00",
+    "workoutDuration": 63,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0280",
+    "date": "2026-04-13",
+    "checkInTime": "2026-04-13T18:15:00",
+    "checkOutTime": "2026-04-13T19:24:00",
+    "workoutDuration": 69,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0281",
+    "date": "2026-04-14",
+    "checkInTime": "2026-04-14T18:30:00",
+    "checkOutTime": "2026-04-14T20:00:00",
+    "workoutDuration": 90,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0282",
+    "date": "2026-04-15",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Wednesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0283",
+    "date": "2026-04-16",
+    "checkInTime": "2026-04-16T06:15:00",
+    "checkOutTime": "2026-04-16T07:27:00",
+    "workoutDuration": 72,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0284",
+    "date": "2026-04-17",
+    "checkInTime": "2026-04-17T12:30:00",
+    "checkOutTime": "2026-04-17T13:14:00",
+    "workoutDuration": 44,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0285",
+    "date": "2026-04-18",
+    "checkInTime": "2026-04-18T20:40:00",
+    "checkOutTime": "2026-04-18T21:23:00",
+    "workoutDuration": 43,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0286",
+    "date": "2026-04-19",
+    "checkInTime": "2026-04-19T06:10:00",
+    "checkOutTime": "2026-04-19T07:01:00",
+    "workoutDuration": 51,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0287",
+    "date": "2026-04-20",
+    "checkInTime": "2026-04-20T17:45:00",
+    "checkOutTime": "2026-04-20T18:31:00",
+    "workoutDuration": 46,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0288",
+    "date": "2026-04-21",
+    "checkInTime": "2026-04-21T17:15:00",
+    "checkOutTime": "2026-04-21T18:05:00",
+    "workoutDuration": 50,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0289",
+    "date": "2026-04-22",
+    "checkInTime": "2026-04-22T19:30:00",
+    "checkOutTime": "2026-04-22T20:25:00",
+    "workoutDuration": 55,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0290",
+    "date": "2026-04-23",
+    "checkInTime": "2026-04-23T12:45:00",
+    "checkOutTime": "2026-04-23T14:03:00",
+    "workoutDuration": 78,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0291",
+    "date": "2026-04-24",
+    "checkInTime": "2026-04-24T07:15:00",
+    "checkOutTime": "2026-04-24T08:05:00",
+    "workoutDuration": 50,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0292",
+    "date": "2026-04-25",
+    "checkInTime": "2026-04-25T20:00:00",
+    "checkOutTime": "2026-04-25T20:50:00",
+    "workoutDuration": 50,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0293",
+    "date": "2026-04-26",
+    "checkInTime": "2026-04-26T19:20:00",
+    "checkOutTime": "2026-04-26T20:04:00",
+    "workoutDuration": 44,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0294",
+    "date": "2026-04-27",
+    "checkInTime": "2026-04-27T17:15:00",
+    "checkOutTime": "2026-04-27T17:55:00",
+    "workoutDuration": 40,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0295",
+    "date": "2026-04-28",
+    "checkInTime": "2026-04-28T06:45:00",
+    "checkOutTime": "2026-04-28T08:11:00",
+    "workoutDuration": 86,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0296",
+    "date": "2026-04-29",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Wednesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0297",
+    "date": "2026-04-30",
+    "checkInTime": "2026-04-30T18:10:00",
+    "checkOutTime": "2026-04-30T19:25:00",
+    "workoutDuration": 75,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0298",
+    "date": "2026-05-01",
+    "checkInTime": "2026-05-01T20:45:00",
+    "checkOutTime": "2026-05-01T21:32:00",
+    "workoutDuration": 47,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0299",
+    "date": "2026-05-02",
+    "checkInTime": "2026-05-02T06:30:00",
+    "checkOutTime": "2026-05-02T07:27:00",
+    "workoutDuration": 57,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0300",
+    "date": "2026-05-03",
+    "checkInTime": "2026-05-03T12:20:00",
+    "checkOutTime": "2026-05-03T13:03:00",
+    "workoutDuration": 43,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0301",
+    "date": "2026-05-04",
+    "checkInTime": "2026-05-04T20:20:00",
+    "checkOutTime": "2026-05-04T21:08:00",
+    "workoutDuration": 48,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0302",
+    "date": "2026-05-05",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0303",
+    "date": "2026-05-06",
+    "checkInTime": "2026-05-06T20:10:00",
+    "checkOutTime": "2026-05-06T21:29:00",
+    "workoutDuration": 79,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0304",
+    "date": "2026-05-07",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0305",
+    "date": "2026-05-08",
+    "checkInTime": "2026-05-08T18:15:00",
+    "checkOutTime": "2026-05-08T19:11:00",
+    "workoutDuration": 56,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0306",
+    "date": "2026-05-09",
+    "checkInTime": "2026-05-09T19:15:00",
+    "checkOutTime": "2026-05-09T20:10:00",
+    "workoutDuration": 55,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0307",
+    "date": "2026-05-10",
+    "checkInTime": "2026-05-10T18:20:00",
+    "checkOutTime": "2026-05-10T19:00:00",
+    "workoutDuration": 40,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0308",
+    "date": "2026-05-11",
+    "checkInTime": "2026-05-11T17:00:00",
+    "checkOutTime": "2026-05-11T18:07:00",
+    "workoutDuration": 67,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0309",
+    "date": "2026-05-12",
+    "checkInTime": "2026-05-12T18:45:00",
+    "checkOutTime": "2026-05-12T20:18:00",
+    "workoutDuration": 93,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0310",
+    "date": "2026-05-13",
+    "checkInTime": "2026-05-13T20:30:00",
+    "checkOutTime": "2026-05-13T21:23:00",
+    "workoutDuration": 53,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0311",
+    "date": "2026-05-14",
+    "checkInTime": "2026-05-14T06:45:00",
+    "checkOutTime": "2026-05-14T07:49:00",
+    "workoutDuration": 64,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0312",
+    "date": "2026-05-15",
+    "checkInTime": "2026-05-15T08:15:00",
+    "checkOutTime": "2026-05-15T08:58:00",
+    "workoutDuration": 43,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0313",
+    "date": "2026-05-16",
+    "checkInTime": "2026-05-16T17:40:00",
+    "checkOutTime": "2026-05-16T18:34:00",
+    "workoutDuration": 54,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0314",
+    "date": "2026-05-17",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0315",
+    "date": "2026-05-18",
+    "checkInTime": "2026-05-18T17:00:00",
+    "checkOutTime": "2026-05-18T18:21:00",
+    "workoutDuration": 81,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0316",
+    "date": "2026-05-19",
+    "checkInTime": "2026-05-19T06:20:00",
+    "checkOutTime": "2026-05-19T07:42:00",
+    "workoutDuration": 82,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0317",
+    "date": "2026-05-20",
+    "checkInTime": "2026-05-20T12:15:00",
+    "checkOutTime": "2026-05-20T13:25:00",
+    "workoutDuration": 70,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0318",
+    "date": "2026-05-21",
+    "checkInTime": "2026-05-21T20:45:00",
+    "checkOutTime": "2026-05-21T21:38:00",
+    "workoutDuration": 53,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0319",
+    "date": "2026-05-22",
+    "checkInTime": "2026-05-22T17:15:00",
+    "checkOutTime": "2026-05-22T18:44:00",
+    "workoutDuration": 89,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0320",
+    "date": "2026-05-23",
+    "checkInTime": "2026-05-23T17:40:00",
+    "checkOutTime": "2026-05-23T18:57:00",
+    "workoutDuration": 77,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0321",
+    "date": "2026-05-24",
+    "checkInTime": "2026-05-24T20:00:00",
+    "checkOutTime": "2026-05-24T21:30:00",
+    "workoutDuration": 90,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0322",
+    "date": "2026-05-25",
+    "checkInTime": "2026-05-25T12:30:00",
+    "checkOutTime": "2026-05-25T13:29:00",
+    "workoutDuration": 59,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0323",
+    "date": "2026-05-26",
+    "checkInTime": "2026-05-26T20:30:00",
+    "checkOutTime": "2026-05-26T21:45:00",
+    "workoutDuration": 75,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0324",
+    "date": "2026-05-27",
+    "checkInTime": "2026-05-27T20:45:00",
+    "checkOutTime": "2026-05-27T22:14:00",
+    "workoutDuration": 89,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0325",
+    "date": "2026-05-28",
+    "checkInTime": "2026-05-28T19:00:00",
+    "checkOutTime": "2026-05-28T20:08:00",
+    "workoutDuration": 68,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0326",
+    "date": "2026-05-29",
+    "checkInTime": "2026-05-29T17:45:00",
+    "checkOutTime": "2026-05-29T18:37:00",
+    "workoutDuration": 52,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0327",
+    "date": "2026-05-30",
+    "checkInTime": "2026-05-30T17:00:00",
+    "checkOutTime": "2026-05-30T18:03:00",
+    "workoutDuration": 63,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0328",
+    "date": "2026-05-31",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Sunday",
+    "attended": false
+  },
+  {
+    "id": "visit_0329",
+    "date": "2026-06-01",
+    "checkInTime": "2026-06-01T20:20:00",
+    "checkOutTime": "2026-06-01T21:35:00",
+    "workoutDuration": 75,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0330",
+    "date": "2026-06-02",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0331",
+    "date": "2026-06-03",
+    "checkInTime": "2026-06-03T19:30:00",
+    "checkOutTime": "2026-06-03T20:56:00",
+    "workoutDuration": 86,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0332",
+    "date": "2026-06-04",
+    "checkInTime": "2026-06-04T12:10:00",
+    "checkOutTime": "2026-06-04T13:21:00",
+    "workoutDuration": 71,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0333",
+    "date": "2026-06-05",
+    "checkInTime": "2026-06-05T08:20:00",
+    "checkOutTime": "2026-06-05T09:13:00",
+    "workoutDuration": 53,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0334",
+    "date": "2026-06-06",
+    "checkInTime": "2026-06-06T12:45:00",
+    "checkOutTime": "2026-06-06T13:40:00",
+    "workoutDuration": 55,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0335",
+    "date": "2026-06-07",
+    "checkInTime": "2026-06-07T17:40:00",
+    "checkOutTime": "2026-06-07T18:44:00",
+    "workoutDuration": 64,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0336",
+    "date": "2026-06-08",
+    "checkInTime": "2026-06-08T12:40:00",
+    "checkOutTime": "2026-06-08T13:40:00",
+    "workoutDuration": 60,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0337",
+    "date": "2026-06-09",
+    "checkInTime": "2026-06-09T19:45:00",
+    "checkOutTime": "2026-06-09T20:31:00",
+    "workoutDuration": 46,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0338",
+    "date": "2026-06-10",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Wednesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0339",
+    "date": "2026-06-11",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0340",
+    "date": "2026-06-12",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Friday",
+    "attended": false
+  },
+  {
+    "id": "visit_0341",
+    "date": "2026-06-13",
+    "checkInTime": "2026-06-13T17:20:00",
+    "checkOutTime": "2026-06-13T18:27:00",
+    "workoutDuration": 67,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0342",
+    "date": "2026-06-14",
+    "checkInTime": "2026-06-14T18:15:00",
+    "checkOutTime": "2026-06-14T18:57:00",
+    "workoutDuration": 42,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0343",
+    "date": "2026-06-15",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Monday",
+    "attended": false
+  },
+  {
+    "id": "visit_0344",
+    "date": "2026-06-16",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Tuesday",
+    "attended": false
+  },
+  {
+    "id": "visit_0345",
+    "date": "2026-06-17",
+    "checkInTime": "2026-06-17T07:45:00",
+    "checkOutTime": "2026-06-17T09:10:00",
+    "workoutDuration": 85,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0346",
+    "date": "2026-06-18",
+    "checkInTime": "2026-06-18T07:15:00",
+    "checkOutTime": "2026-06-18T08:47:00",
+    "workoutDuration": 92,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0347",
+    "date": "2026-06-19",
+    "checkInTime": "2026-06-19T08:10:00",
+    "checkOutTime": "2026-06-19T09:23:00",
+    "workoutDuration": 73,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0348",
+    "date": "2026-06-20",
+    "checkInTime": "2026-06-20T06:10:00",
+    "checkOutTime": "2026-06-20T07:30:00",
+    "workoutDuration": 80,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0349",
+    "date": "2026-06-21",
+    "checkInTime": "2026-06-21T06:30:00",
+    "checkOutTime": "2026-06-21T07:23:00",
+    "workoutDuration": 53,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0350",
+    "date": "2026-06-22",
+    "checkInTime": "2026-06-22T12:45:00",
+    "checkOutTime": "2026-06-22T13:45:00",
+    "workoutDuration": 60,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0351",
+    "date": "2026-06-23",
+    "checkInTime": "2026-06-23T07:10:00",
+    "checkOutTime": "2026-06-23T08:26:00",
+    "workoutDuration": 76,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0352",
+    "date": "2026-06-24",
+    "checkInTime": "2026-06-24T19:15:00",
+    "checkOutTime": "2026-06-24T20:33:00",
+    "workoutDuration": 78,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0353",
+    "date": "2026-06-25",
+    "checkInTime": null,
+    "checkOutTime": null,
+    "workoutDuration": 0,
+    "weekday": "Thursday",
+    "attended": false
+  },
+  {
+    "id": "visit_0354",
+    "date": "2026-06-26",
+    "checkInTime": "2026-06-26T08:00:00",
+    "checkOutTime": "2026-06-26T09:35:00",
+    "workoutDuration": 95,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0355",
+    "date": "2026-06-27",
+    "checkInTime": "2026-06-27T18:00:00",
+    "checkOutTime": "2026-06-27T19:22:00",
+    "workoutDuration": 82,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0356",
+    "date": "2026-06-28",
+    "checkInTime": "2026-06-28T07:15:00",
+    "checkOutTime": "2026-06-28T08:45:00",
+    "workoutDuration": 90,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0357",
+    "date": "2026-06-29",
+    "checkInTime": "2026-06-29T19:00:00",
+    "checkOutTime": "2026-06-29T20:14:00",
+    "workoutDuration": 74,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0358",
+    "date": "2026-06-30",
+    "checkInTime": "2026-06-30T20:00:00",
+    "checkOutTime": "2026-06-30T20:48:00",
+    "workoutDuration": 48,
+    "weekday": "Tuesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0359",
+    "date": "2026-07-01",
+    "checkInTime": "2026-07-01T17:30:00",
+    "checkOutTime": "2026-07-01T18:54:00",
+    "workoutDuration": 84,
+    "weekday": "Wednesday",
+    "attended": true
+  },
+  {
+    "id": "visit_0360",
+    "date": "2026-07-02",
+    "checkInTime": "2026-07-02T06:20:00",
+    "checkOutTime": "2026-07-02T07:10:00",
+    "workoutDuration": 50,
+    "weekday": "Thursday",
+    "attended": true
+  },
+  {
+    "id": "visit_0361",
+    "date": "2026-07-03",
+    "checkInTime": "2026-07-03T12:30:00",
+    "checkOutTime": "2026-07-03T13:27:00",
+    "workoutDuration": 57,
+    "weekday": "Friday",
+    "attended": true
+  },
+  {
+    "id": "visit_0362",
+    "date": "2026-07-04",
+    "checkInTime": "2026-07-04T12:10:00",
+    "checkOutTime": "2026-07-04T13:14:00",
+    "workoutDuration": 64,
+    "weekday": "Saturday",
+    "attended": true
+  },
+  {
+    "id": "visit_0363",
+    "date": "2026-07-05",
+    "checkInTime": "2026-07-05T19:40:00",
+    "checkOutTime": "2026-07-05T21:00:00",
+    "workoutDuration": 80,
+    "weekday": "Sunday",
+    "attended": true
+  },
+  {
+    "id": "visit_0364",
+    "date": "2026-07-06",
+    "checkInTime": "2026-07-06T12:20:00",
+    "checkOutTime": "2026-07-06T13:08:00",
+    "workoutDuration": 48,
+    "weekday": "Monday",
+    "attended": true
+  },
+  {
+    "id": "visit_0365",
+    "date": "2026-07-07",
+    "checkInTime": "2026-07-07T08:20:00",
+    "checkOutTime": "2026-07-07T09:25:00",
+    "workoutDuration": 65,
+    "weekday": "Tuesday",
+    "attended": true
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "chal_01",
+    "title": "Lose 2kg Body Fat",
+    "description": "Reduce body fat mass by 2kg this month",
+    "xpReward": 200,
+    "participants": 34,
+    "status": "active",
+    "progress": 60
+  },
+  {
+    "id": "chal_02",
+    "title": "Attend Gym 20 Times",
+    "description": "Check in to the gym 20 times this month",
+    "xpReward": 150,
+    "participants": 52,
+    "status": "completed",
+    "progress": 100
+  },
+  {
+    "id": "chal_03",
+    "title": "Gain 1kg Muscle",
+    "description": "Increase skeletal muscle mass by 1kg",
+    "xpReward": 180,
+    "participants": 28,
+    "status": "active",
+    "progress": 45
+  },
+  {
+    "id": "chal_04",
+    "title": "Workout 5 Days",
+    "description": "Complete a workout on 5 different days this week",
+    "xpReward": 75,
+    "participants": 61,
+    "status": "completed",
+    "progress": 100
+  },
+  {
+    "id": "chal_05",
+    "title": "Drink 2L Water",
+    "description": "Log 2 liters of water intake today",
+    "xpReward": 50,
+    "participants": 89,
+    "status": "active",
+    "progress": 0
+  }
+]

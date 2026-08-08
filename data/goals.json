@@ -1,0 +1,60 @@
+{
+  "currentGoal": {
+    "id": "goal_003",
+    "title": "Lose 10kg",
+    "category": "weight-loss",
+    "targetValue": 10,
+    "unit": "kg",
+    "progressValue": 7.4,
+    "progressPercent": 74,
+    "startDate": "2026-01-05",
+    "deadline": "2026-09-30",
+    "rewardXp": 500,
+    "status": "Active"
+  },
+  "completedGoals": [
+    {
+      "id": "goal_001",
+      "title": "Reach 25% Body Fat",
+      "category": "body-composition",
+      "targetValue": 25,
+      "unit": "%",
+      "progressValue": 25,
+      "progressPercent": 100,
+      "startDate": "2025-08-05",
+      "deadline": "2025-12-01",
+      "completedDate": "2025-11-10",
+      "rewardXp": 500,
+      "status": "Completed"
+    },
+    {
+      "id": "goal_002",
+      "title": "Attend 100 Gym Sessions",
+      "category": "consistency",
+      "targetValue": 100,
+      "unit": "sessions",
+      "progressValue": 100,
+      "progressPercent": 100,
+      "startDate": "2025-07-08",
+      "deadline": "2025-12-13",
+      "completedDate": "2025-11-13",
+      "rewardXp": 350,
+      "status": "Completed"
+    }
+  ],
+  "futureGoals": [
+    {
+      "id": "goal_004",
+      "title": "Reach 15% Body Fat",
+      "category": "body-composition",
+      "targetValue": 15,
+      "unit": "%",
+      "progressValue": 0,
+      "progressPercent": 0,
+      "startDate": "2026-09-15",
+      "deadline": "2027-01-15",
+      "rewardXp": 600,
+      "status": "Upcoming"
+    }
+  ]
+}

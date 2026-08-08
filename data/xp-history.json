@@ -1,0 +1,1402 @@
+[
+  {
+    "id": "xp_0001",
+    "date": "2025-07-12",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0002",
+    "date": "2025-07-12",
+    "activity": "Workout",
+    "xpEarned": 14,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0003",
+    "date": "2025-07-14",
+    "activity": "Workout",
+    "xpEarned": 20,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0004",
+    "date": "2025-07-17",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0005",
+    "date": "2025-07-18",
+    "activity": "Workout",
+    "xpEarned": 19,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0006",
+    "date": "2025-07-19",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0007",
+    "date": "2025-07-21",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0008",
+    "date": "2025-07-23",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0009",
+    "date": "2025-07-25",
+    "activity": "Workout",
+    "xpEarned": 10,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0010",
+    "date": "2025-07-28",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0011",
+    "date": "2025-07-30",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0012",
+    "date": "2025-08-02",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0013",
+    "date": "2025-08-02",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0014",
+    "date": "2025-08-03",
+    "activity": "Assessment",
+    "xpEarned": 100,
+    "description": "First body composition assessment"
+  },
+  {
+    "id": "xp_0015",
+    "date": "2025-08-04",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0016",
+    "date": "2025-08-08",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0017",
+    "date": "2025-08-10",
+    "activity": "Workout",
+    "xpEarned": 7,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0018",
+    "date": "2025-08-11",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0019",
+    "date": "2025-08-12",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0020",
+    "date": "2025-08-16",
+    "activity": "Workout",
+    "xpEarned": 14,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0021",
+    "date": "2025-08-16",
+    "activity": "Workout",
+    "xpEarned": 10,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0022",
+    "date": "2025-08-21",
+    "activity": "Workout",
+    "xpEarned": 12,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0023",
+    "date": "2025-08-23",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0024",
+    "date": "2025-08-23",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0025",
+    "date": "2025-08-25",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0026",
+    "date": "2025-08-25",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0027",
+    "date": "2025-08-31",
+    "activity": "Workout",
+    "xpEarned": 14,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0028",
+    "date": "2025-09-01",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0029",
+    "date": "2025-09-02",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0030",
+    "date": "2025-09-04",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0031",
+    "date": "2025-09-06",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0032",
+    "date": "2025-09-07",
+    "activity": "Fat Loss",
+    "xpEarned": 80,
+    "description": "Lost 1kg of body fat"
+  },
+  {
+    "id": "xp_0033",
+    "date": "2025-09-08",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0034",
+    "date": "2025-09-10",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0035",
+    "date": "2025-09-13",
+    "activity": "Workout",
+    "xpEarned": 22,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0036",
+    "date": "2025-09-14",
+    "activity": "Workout",
+    "xpEarned": 19,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0037",
+    "date": "2025-09-15",
+    "activity": "Challenge",
+    "xpEarned": 50,
+    "description": "Participated in a gym challenge"
+  },
+  {
+    "id": "xp_0038",
+    "date": "2025-09-20",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0039",
+    "date": "2025-09-22",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0040",
+    "date": "2025-09-25",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0041",
+    "date": "2025-09-27",
+    "activity": "Workout",
+    "xpEarned": 22,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0042",
+    "date": "2025-09-28",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0043",
+    "date": "2025-10-02",
+    "activity": "Workout",
+    "xpEarned": 6,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0044",
+    "date": "2025-10-05",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0045",
+    "date": "2025-10-06",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0046",
+    "date": "2025-10-06",
+    "activity": "Workout",
+    "xpEarned": 14,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0047",
+    "date": "2025-10-08",
+    "activity": "Fat Loss",
+    "xpEarned": 80,
+    "description": "Lost 1kg of body fat"
+  },
+  {
+    "id": "xp_0048",
+    "date": "2025-10-10",
+    "activity": "Muscle Gain",
+    "xpEarned": 100,
+    "description": "Gained 1kg of muscle"
+  },
+  {
+    "id": "xp_0049",
+    "date": "2025-10-11",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0050",
+    "date": "2025-10-12",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0051",
+    "date": "2025-10-16",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0052",
+    "date": "2025-10-17",
+    "activity": "Workout",
+    "xpEarned": 20,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0053",
+    "date": "2025-10-18",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0054",
+    "date": "2025-10-22",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0055",
+    "date": "2025-10-24",
+    "activity": "Workout",
+    "xpEarned": 15,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0056",
+    "date": "2025-10-25",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0057",
+    "date": "2025-10-30",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0058",
+    "date": "2025-11-01",
+    "activity": "Workout",
+    "xpEarned": 15,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0059",
+    "date": "2025-11-01",
+    "activity": "Workout",
+    "xpEarned": 12,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0060",
+    "date": "2025-11-02",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0061",
+    "date": "2025-11-04",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0062",
+    "date": "2025-11-05",
+    "activity": "Fat Loss",
+    "xpEarned": 80,
+    "description": "Lost 1kg of body fat"
+  },
+  {
+    "id": "xp_0063",
+    "date": "2025-11-06",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0064",
+    "date": "2025-11-08",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0065",
+    "date": "2025-11-10",
+    "activity": "Goal Completed",
+    "xpEarned": 500,
+    "description": "Completed goal: Reach 25% Body Fat"
+  },
+  {
+    "id": "xp_0066",
+    "date": "2025-11-11",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0067",
+    "date": "2025-11-13",
+    "activity": "Goal Completed",
+    "xpEarned": 350,
+    "description": "Completed goal: Attend 100 Gym Sessions"
+  },
+  {
+    "id": "xp_0068",
+    "date": "2025-11-16",
+    "activity": "Workout",
+    "xpEarned": 15,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0069",
+    "date": "2025-11-16",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0070",
+    "date": "2025-11-20",
+    "activity": "Challenge",
+    "xpEarned": 50,
+    "description": "Participated in a gym challenge"
+  },
+  {
+    "id": "xp_0071",
+    "date": "2025-11-21",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0072",
+    "date": "2025-11-22",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0073",
+    "date": "2025-11-22",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0074",
+    "date": "2025-11-24",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0075",
+    "date": "2025-11-24",
+    "activity": "Workout",
+    "xpEarned": 15,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0076",
+    "date": "2025-11-28",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0077",
+    "date": "2025-11-28",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0078",
+    "date": "2025-12-01",
+    "activity": "Workout",
+    "xpEarned": 7,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0079",
+    "date": "2025-12-02",
+    "activity": "Workout",
+    "xpEarned": 17,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0080",
+    "date": "2025-12-05",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0081",
+    "date": "2025-12-06",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0082",
+    "date": "2025-12-08",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0083",
+    "date": "2025-12-09",
+    "activity": "Fat Loss",
+    "xpEarned": 80,
+    "description": "Lost 1kg of body fat"
+  },
+  {
+    "id": "xp_0084",
+    "date": "2025-12-10",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0085",
+    "date": "2025-12-11",
+    "activity": "Workout",
+    "xpEarned": 19,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0086",
+    "date": "2025-12-12",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0087",
+    "date": "2025-12-14",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0088",
+    "date": "2025-12-19",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0089",
+    "date": "2025-12-19",
+    "activity": "Workout",
+    "xpEarned": 10,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0090",
+    "date": "2025-12-22",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0091",
+    "date": "2025-12-23",
+    "activity": "Workout",
+    "xpEarned": 19,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0092",
+    "date": "2025-12-23",
+    "activity": "Workout",
+    "xpEarned": 20,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0093",
+    "date": "2025-12-26",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0094",
+    "date": "2025-12-28",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0095",
+    "date": "2025-12-30",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0096",
+    "date": "2026-01-01",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0097",
+    "date": "2026-01-04",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0098",
+    "date": "2026-01-05",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0099",
+    "date": "2026-01-08",
+    "activity": "Fat Loss",
+    "xpEarned": 80,
+    "description": "Lost 1kg of body fat"
+  },
+  {
+    "id": "xp_0100",
+    "date": "2026-01-09",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0101",
+    "date": "2026-01-09",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0102",
+    "date": "2026-01-10",
+    "activity": "Muscle Gain",
+    "xpEarned": 100,
+    "description": "Gained 1kg of muscle"
+  },
+  {
+    "id": "xp_0103",
+    "date": "2026-01-14",
+    "activity": "Workout",
+    "xpEarned": 17,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0104",
+    "date": "2026-01-16",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0105",
+    "date": "2026-01-17",
+    "activity": "Workout",
+    "xpEarned": 15,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0106",
+    "date": "2026-01-20",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0107",
+    "date": "2026-01-21",
+    "activity": "Workout",
+    "xpEarned": 12,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0108",
+    "date": "2026-01-22",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0109",
+    "date": "2026-01-25",
+    "activity": "Challenge",
+    "xpEarned": 50,
+    "description": "Participated in a gym challenge"
+  },
+  {
+    "id": "xp_0110",
+    "date": "2026-01-27",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0111",
+    "date": "2026-01-29",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0112",
+    "date": "2026-02-01",
+    "activity": "Workout",
+    "xpEarned": 15,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0113",
+    "date": "2026-02-03",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0114",
+    "date": "2026-02-05",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0115",
+    "date": "2026-02-07",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0116",
+    "date": "2026-02-08",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0117",
+    "date": "2026-02-10",
+    "activity": "Workout",
+    "xpEarned": 12,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0118",
+    "date": "2026-02-11",
+    "activity": "Fat Loss",
+    "xpEarned": 80,
+    "description": "Lost 1kg of body fat"
+  },
+  {
+    "id": "xp_0119",
+    "date": "2026-02-12",
+    "activity": "Workout",
+    "xpEarned": 22,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0120",
+    "date": "2026-02-15",
+    "activity": "Challenge",
+    "xpEarned": 200,
+    "description": "Won challenge: Attend Gym 20 Times"
+  },
+  {
+    "id": "xp_0121",
+    "date": "2026-02-17",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0122",
+    "date": "2026-02-17",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0123",
+    "date": "2026-02-20",
+    "activity": "Workout",
+    "xpEarned": 10,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0124",
+    "date": "2026-02-21",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0125",
+    "date": "2026-02-21",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0126",
+    "date": "2026-02-23",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0127",
+    "date": "2026-02-23",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0128",
+    "date": "2026-02-25",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0129",
+    "date": "2026-02-28",
+    "activity": "Leaderboard Reward",
+    "xpEarned": 100,
+    "description": "Top-5 finish on the monthly leaderboard"
+  },
+  {
+    "id": "xp_0130",
+    "date": "2026-03-01",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0131",
+    "date": "2026-03-03",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0132",
+    "date": "2026-03-07",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0133",
+    "date": "2026-03-10",
+    "activity": "Fat Loss",
+    "xpEarned": 80,
+    "description": "Lost 1kg of body fat"
+  },
+  {
+    "id": "xp_0134",
+    "date": "2026-03-11",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0135",
+    "date": "2026-03-12",
+    "activity": "Muscle Gain",
+    "xpEarned": 100,
+    "description": "Gained 1kg of muscle"
+  },
+  {
+    "id": "xp_0136",
+    "date": "2026-03-13",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0137",
+    "date": "2026-03-15",
+    "activity": "Challenge",
+    "xpEarned": 50,
+    "description": "Participated in a gym challenge"
+  },
+  {
+    "id": "xp_0138",
+    "date": "2026-03-17",
+    "activity": "Workout",
+    "xpEarned": 6,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0139",
+    "date": "2026-03-19",
+    "activity": "Workout",
+    "xpEarned": 12,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0140",
+    "date": "2026-03-19",
+    "activity": "Workout",
+    "xpEarned": 9,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0141",
+    "date": "2026-03-23",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0142",
+    "date": "2026-03-23",
+    "activity": "Workout",
+    "xpEarned": 14,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0143",
+    "date": "2026-03-24",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0144",
+    "date": "2026-03-27",
+    "activity": "Workout",
+    "xpEarned": 17,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0145",
+    "date": "2026-03-28",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0146",
+    "date": "2026-03-30",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0147",
+    "date": "2026-04-04",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0148",
+    "date": "2026-04-05",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0149",
+    "date": "2026-04-06",
+    "activity": "Workout",
+    "xpEarned": 15,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0150",
+    "date": "2026-04-08",
+    "activity": "Fat Loss",
+    "xpEarned": 80,
+    "description": "Lost 1kg of body fat"
+  },
+  {
+    "id": "xp_0151",
+    "date": "2026-04-12",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0152",
+    "date": "2026-04-14",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0153",
+    "date": "2026-04-16",
+    "activity": "Workout",
+    "xpEarned": 6,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0154",
+    "date": "2026-04-17",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0155",
+    "date": "2026-04-20",
+    "activity": "Workout",
+    "xpEarned": 17,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0156",
+    "date": "2026-04-21",
+    "activity": "Workout",
+    "xpEarned": 7,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0157",
+    "date": "2026-04-22",
+    "activity": "Workout",
+    "xpEarned": 19,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0158",
+    "date": "2026-04-23",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0159",
+    "date": "2026-04-24",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0160",
+    "date": "2026-04-28",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0161",
+    "date": "2026-04-30",
+    "activity": "Monthly Champion",
+    "xpEarned": 250,
+    "description": "#1 in your gym for the month"
+  },
+  {
+    "id": "xp_0162",
+    "date": "2026-05-01",
+    "activity": "Workout",
+    "xpEarned": 5,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0163",
+    "date": "2026-05-03",
+    "activity": "Workout",
+    "xpEarned": 7,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0164",
+    "date": "2026-05-05",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0165",
+    "date": "2026-05-05",
+    "activity": "Challenge",
+    "xpEarned": 50,
+    "description": "Participated in a gym challenge"
+  },
+  {
+    "id": "xp_0166",
+    "date": "2026-05-08",
+    "activity": "Workout",
+    "xpEarned": 22,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0167",
+    "date": "2026-05-09",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0168",
+    "date": "2026-05-11",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0169",
+    "date": "2026-05-12",
+    "activity": "Workout",
+    "xpEarned": 6,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0170",
+    "date": "2026-05-14",
+    "activity": "Workout",
+    "xpEarned": 7,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0171",
+    "date": "2026-05-16",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0172",
+    "date": "2026-05-19",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0173",
+    "date": "2026-05-20",
+    "activity": "Workout",
+    "xpEarned": 10,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0174",
+    "date": "2026-05-22",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0175",
+    "date": "2026-05-23",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0176",
+    "date": "2026-05-23",
+    "activity": "Gym Streak",
+    "xpEarned": 60,
+    "description": "Monthly consistency bonus"
+  },
+  {
+    "id": "xp_0177",
+    "date": "2026-05-24",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0178",
+    "date": "2026-05-26",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0179",
+    "date": "2026-05-30",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0180",
+    "date": "2026-05-30",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0181",
+    "date": "2026-05-31",
+    "activity": "Leaderboard Reward",
+    "xpEarned": 100,
+    "description": "Top-5 finish on the monthly leaderboard"
+  },
+  {
+    "id": "xp_0182",
+    "date": "2026-06-03",
+    "activity": "Workout",
+    "xpEarned": 18,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0183",
+    "date": "2026-06-06",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0184",
+    "date": "2026-06-08",
+    "activity": "Workout",
+    "xpEarned": 12,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0185",
+    "date": "2026-06-09",
+    "activity": "Workout",
+    "xpEarned": 22,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0186",
+    "date": "2026-06-11",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0187",
+    "date": "2026-06-11",
+    "activity": "Muscle Gain",
+    "xpEarned": 100,
+    "description": "Gained 1kg of muscle"
+  },
+  {
+    "id": "xp_0188",
+    "date": "2026-06-13",
+    "activity": "Workout",
+    "xpEarned": 25,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0189",
+    "date": "2026-06-17",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0190",
+    "date": "2026-06-18",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0191",
+    "date": "2026-06-20",
+    "activity": "Challenge",
+    "xpEarned": 50,
+    "description": "Participated in a gym challenge"
+  },
+  {
+    "id": "xp_0192",
+    "date": "2026-06-21",
+    "activity": "Workout",
+    "xpEarned": 13,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0193",
+    "date": "2026-06-23",
+    "activity": "Workout",
+    "xpEarned": 10,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0194",
+    "date": "2026-06-27",
+    "activity": "Workout",
+    "xpEarned": 8,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0195",
+    "date": "2026-06-29",
+    "activity": "Gym Streak",
+    "xpEarned": 25,
+    "description": "7-day gym streak bonus"
+  },
+  {
+    "id": "xp_0196",
+    "date": "2026-07-01",
+    "activity": "Workout",
+    "xpEarned": 21,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0197",
+    "date": "2026-07-01",
+    "activity": "Workout",
+    "xpEarned": 11,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0198",
+    "date": "2026-07-03",
+    "activity": "Workout",
+    "xpEarned": 16,
+    "description": "Logged a workout session"
+  },
+  {
+    "id": "xp_0199",
+    "date": "2026-07-04",
+    "activity": "Assessment",
+    "xpEarned": 40,
+    "description": "Completed monthly assessment"
+  },
+  {
+    "id": "xp_0200",
+    "date": "2026-07-06",
+    "activity": "Workout",
+    "xpEarned": 12,
+    "description": "Logged a workout session"
+  }
+]

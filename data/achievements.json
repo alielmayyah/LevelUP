@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ach_01",
+    "title": "First Assessment",
+    "description": "Completed your first body composition assessment",
+    "unlocked": true,
+    "unlockedDate": "2025-08-03",
+    "xpReward": 100,
+    "icon": "clipboard-check"
+  },
+  {
+    "id": "ach_02",
+    "title": "First Goal",
+    "description": "Created your first goal",
+    "unlocked": true,
+    "unlockedDate": "2025-08-05",
+    "xpReward": 50,
+    "icon": "flag"
+  },
+  {
+    "id": "ach_03",
+    "title": "5 Assessments",
+    "description": "Completed 5 body composition assessments",
+    "unlocked": true,
+    "unlockedDate": "2025-12-06",
+    "xpReward": 150,
+    "icon": "clipboard-list"
+  },
+  {
+    "id": "ach_04",
+    "title": "10 Assessments",
+    "description": "Completed 10 body composition assessments",
+    "unlocked": true,
+    "unlockedDate": "2026-05-09",
+    "xpReward": 250,
+    "icon": "clipboard-list"
+  },
+  {
+    "id": "ach_05",
+    "title": "1000 XP",
+    "description": "Earned 1,000 total XP",
+    "unlocked": true,
+    "unlockedDate": "2025-09-28",
+    "xpReward": 100,
+    "icon": "zap"
+  },
+  {
+    "id": "ach_06",
+    "title": "5000 XP",
+    "description": "Earned 5,000 total XP",
+    "unlocked": true,
+    "unlockedDate": "2026-04-08",
+    "xpReward": 200,
+    "icon": "zap"
+  },
+  {
+    "id": "ach_07",
+    "title": "Gold Badge",
+    "description": "Reached Gold tier",
+    "unlocked": true,
+    "unlockedDate": "2026-02-21",
+    "xpReward": 300,
+    "icon": "award"
+  },
+  {
+    "id": "ach_08",
+    "title": "Consistency Champion",
+    "description": "Attended the gym 7 days in a row",
+    "unlocked": true,
+    "unlockedDate": "2025-07-17",
+    "xpReward": 200,
+    "icon": "flame"
+  },
+  {
+    "id": "ach_09",
+    "title": "Goal Crusher",
+    "description": "Completed your first goal",
+    "unlocked": true,
+    "unlockedDate": "2025-11-10",
+    "xpReward": 250,
+    "icon": "trophy"
+  },
+  {
+    "id": "ach_10",
+    "title": "Workout Warrior",
+    "description": "Logged 100 gym visits",
+    "unlocked": true,
+    "unlockedDate": "2025-11-13",
+    "xpReward": 300,
+    "icon": "dumbbell"
+  }
+]

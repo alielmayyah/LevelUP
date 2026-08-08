@@ -1,0 +1,82 @@
+[
+  {
+    "id": "notif_01",
+    "date": "2026-07-06",
+    "type": "level_up",
+    "title": "Level Up!",
+    "message": "You reached Level 18. 420 XP to go until Level 19.",
+    "read": false
+  },
+  {
+    "id": "notif_02",
+    "date": "2026-07-05",
+    "type": "goal_progress",
+    "title": "Goal Progress",
+    "message": "You're 74% toward your \"Lose 10kg\" goal — keep it up!",
+    "read": false
+  },
+  {
+    "id": "notif_03",
+    "date": "2026-07-04",
+    "type": "challenge_starting",
+    "title": "Challenge Starting Tomorrow",
+    "message": "\"Drink 2L Water\" challenge starts tomorrow. +50 XP for finishing.",
+    "read": true
+  },
+  {
+    "id": "notif_04",
+    "date": "2026-07-03",
+    "type": "leaderboard_updated",
+    "title": "Leaderboard Updated",
+    "message": "You moved up to #23 in your gym this month.",
+    "read": true
+  },
+  {
+    "id": "notif_05",
+    "date": "2026-07-01",
+    "type": "coach_comment",
+    "title": "Coach Comment",
+    "message": "\"You're doing great — keep this pace up.\" - Coach Sarah",
+    "read": true
+  },
+  {
+    "id": "notif_06",
+    "date": "2026-06-29",
+    "type": "achievement_unlocked",
+    "title": "Achievement Unlocked",
+    "message": "You unlocked \"Workout Warrior\" for logging 100 gym visits.",
+    "read": true
+  },
+  {
+    "id": "notif_07",
+    "date": "2026-06-22",
+    "type": "new_assessment_available",
+    "title": "New Assessment Available",
+    "message": "It's been almost a month since your last assessment — book your next one.",
+    "read": true
+  },
+  {
+    "id": "notif_08",
+    "date": "2026-06-17",
+    "type": "achievement_unlocked",
+    "title": "Achievement Unlocked",
+    "message": "You unlocked \"Consistency Champion\" for a 7-day gym streak.",
+    "read": true
+  },
+  {
+    "id": "notif_09",
+    "date": "2026-06-03",
+    "type": "goal_progress",
+    "title": "Goal Progress",
+    "message": "You've lost 6kg of your 10kg goal — over halfway there!",
+    "read": true
+  },
+  {
+    "id": "notif_10",
+    "date": "2026-05-28",
+    "type": "leaderboard_updated",
+    "title": "Leaderboard Updated",
+    "message": "You finished last month ranked in the gym's Top 10.",
+    "read": true
+  }
+]

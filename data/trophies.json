@@ -1,0 +1,66 @@
+[
+  {
+    "id": "trophy_01",
+    "title": "Bronze",
+    "description": "Completed your first month of tracking",
+    "date": "2025-08-07",
+    "rarity": "bronze",
+    "icon": "medal"
+  },
+  {
+    "id": "trophy_02",
+    "title": "Silver",
+    "description": "Reached Level 10",
+    "date": "2025-11-10",
+    "rarity": "silver",
+    "icon": "medal"
+  },
+  {
+    "id": "trophy_03",
+    "title": "Gold",
+    "description": "Reached Level 15 and earned Gold tier",
+    "date": "2026-02-21",
+    "rarity": "gold",
+    "icon": "medal"
+  },
+  {
+    "id": "trophy_04",
+    "title": "Monthly Champion",
+    "description": "#1 in your gym for the month",
+    "date": "2026-04-30",
+    "rarity": "gold",
+    "icon": "crown"
+  },
+  {
+    "id": "trophy_05",
+    "title": "Top 10",
+    "description": "Finished a month ranked in your gym's Top 10",
+    "date": "2026-02-28",
+    "rarity": "silver",
+    "icon": "trending-up"
+  },
+  {
+    "id": "trophy_06",
+    "title": "Top 3",
+    "description": "Finished a month ranked in your gym's Top 3",
+    "date": "2026-05-31",
+    "rarity": "gold",
+    "icon": "trending-up"
+  },
+  {
+    "id": "trophy_07",
+    "title": "Most Consistent",
+    "description": "Highest attendance rate in your gym for the month",
+    "date": "2025-07-17",
+    "rarity": "silver",
+    "icon": "flame"
+  },
+  {
+    "id": "trophy_08",
+    "title": "Most Improved",
+    "description": "Greatest body composition improvement in your gym for the month",
+    "date": "2026-03-01",
+    "rarity": "gold",
+    "icon": "trending-up"
+  }
+]
