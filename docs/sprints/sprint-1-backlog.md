@@ -2,7 +2,7 @@
 
 This is the Jira-ready backlog for Sprint 1. Each story below becomes one Jira issue. The build steps for each story are in the [Sprint 1 plan](../superpowers/plans/2026-11-13-sprint-1-frontend-mvp.md). This file says what "done" looks like to a user.
 
-**Sprint goal:** a member can open the app, sign in with a Fit ID, and use all five tabs in English or Arabic, in light or dark mode, on any screen size. All data comes from the built-in mock server. There is no backend yet.
+**Sprint goal:** a member can open the app, sign in with a Fit ID, and use all five tabs in English or Arabic, in light or dark mode, on any screen size. All data comes from the built-in mock server. There is no backend yet; it will be built in the separate `levelup-backend` repo.
 
 **Epic:** Sprint 1 — Frontend MVP (mock data)
 
@@ -46,17 +46,17 @@ The Arabic copy below is a first draft. A native speaker should review it before
 
 ## Foundation
 
-### S1-01 Monorepo and Ionic scaffold
+### S1-01 Ionic app scaffold
 
 **Type:** Task · **Points:** 3 · **Plan task:** 1
 
 **Story:** As a developer, I want a working project skeleton, so that every later story has a place to live and a way to be tested.
 
 **Acceptance criteria**
-1. `npm install` at the repo root installs everything, with no errors.
+1. The Ionic app lives at the root of the `LevelUP` repo, and `npm install` there installs everything, with no errors.
 2. `npm run dev` serves the app at `http://localhost:5173`.
 3. `npm test` runs the unit tests and passes.
-4. `npm -w apps/mobile run test:e2e` runs Playwright on all 5 device projects (iphone, android, small, tablet, desktop) and passes.
+4. `npm run test:e2e` runs Playwright on all 5 device projects (iphone, android, small, tablet, desktop) and passes.
 5. Loading `/` returns the app with no console errors.
 6. The repo has `master`, `dev`, and `feature/sprint-1-frontend-mvp` branches.
 
@@ -104,7 +104,7 @@ The number, sign, and unit keep the same order in both.
 
 ---
 
-### S1-03 Shared data types and mock server
+### S1-03 API data types and mock server
 
 **Type:** Task · **Points:** 5 · **Plan task:** 3
 
@@ -843,9 +843,9 @@ In Arabic, the range reads `20.0 ← 15.0 كجم`, with the arrow pointing from 
 
 | Key | Story | Points | Plan task |
 |---|---|---|---|
-| S1-01 | Monorepo and Ionic scaffold | 3 | 1 |
+| S1-01 | Ionic app scaffold | 3 | 1 |
 | S1-02 | Languages, themes, and safe-area shell | 5 | 2 |
-| S1-03 | Shared data types and mock server | 5 | 3 |
+| S1-03 | API data types and mock server | 5 | 3 |
 | #15 | White-label branding | 3 | 4 |
 | #16 | Bottom tab navigation | 3 | 4 |
 | #1 | Splash screen | 3 | 5 |

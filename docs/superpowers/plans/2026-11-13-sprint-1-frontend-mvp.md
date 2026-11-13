@@ -4,7 +4,7 @@
 
 **Goal:** Build the frontend for LevelUP core features 1–16 as a working Ionic app that runs entirely on mock data, with no backend.
 
-**Architecture:** An npm-workspaces monorepo with `apps/mobile` (Ionic React + Vite + Capacitor) and `packages/shared` (DTO types). Every screen calls `api<T>(path, init)`. When `VITE_USE_MOCKS=true`, `api` sends the call to an in-memory mock server, which answers from typed fixtures and keeps state (settings, read notifications, opt-in) for the session. The mock routes and DTOs match the backend contract in the [core plan](2026-11-13-levelup-core.md) Tasks 5–9, so in Sprint 2 the NestJS API replaces the mocks by setting the flag to `false`. No component changes are needed.
+**Architecture:** A single Ionic React app (Vite + Capacitor) at the root of this repo. The backend lives in a separate repo, [`levelup-backend`](https://github.com/alielmayyah/levelup-backend), and is not touched in this sprint. Every screen calls `api<T>(path, init)`. When `VITE_USE_MOCKS=true`, `api` sends the call to an in-memory mock server, which answers from typed fixtures and keeps state (settings, read notifications, opt-in) for the session. The mock routes and DTOs match the backend contract in the [core plan](2026-11-13-levelup-core.md) Tasks 5–9, so in Sprint 2 the NestJS API replaces the mocks by setting the flag to `false`. In Sprint 2, `src/api/types.ts` also switches from hand-written interfaces to re-exports of types generated from the API's `openapi.json` (core plan, Task 10). No component changes are needed.
 
 **Tech Stack:** Node 22 LTS, TypeScript (strict), Ionic 8 + React 18 + Vite + Capacitor 7, i18next + react-i18next, Chart.js via react-chartjs-2 (lazy-loaded), date-fns, Vitest + Testing Library, Playwright.
 
@@ -16,10 +16,10 @@
 
 - Everything in the core plan's Global Constraints applies, except the backend-only rules (`GYM_TZ`, staff key, Prisma). In particular: no XP, levels, streaks, visits, achievements, trophies, challenges, or community page. The tagline is `Track. Improve. Transform.` and the splash call to action is `Tap to Begin`. Login uses a numeric Fit ID and has no password field. There are exactly 5 tabs: Home, Progress, Goals, Leaderboard, Profile.
 - No `fetch` to any server in Sprint 1. `VITE_USE_MOCKS` defaults to `true` in `.env.development`. `VITE_API_URL` is read but unused.
-- DTO types live only in `packages/shared/src/index.ts`. Components and fixtures import them from `@levelup/shared`. Their shapes are the ones in the core plan, Tasks 5, 7, 8, and 9.
+- DTO types live only in `src/api/types.ts`. Components and fixtures import them from there. Their shapes are the ones in the core plan, Tasks 5, 7, 8, and 9, written by hand for now.
 - CLAUDE.md rules on every screen: copy in `src/i18n/en.json` and `src/i18n/ar.json` only, `dir="rtl"` for Arabic, light and dark from theme tokens only (no color literals in `.tsx`/`.css` outside `src/theme/` and `brand.config.ts`), 320 px to desktop with no horizontal scroll, safe-area insets respected.
 - Performance budgets from `ui-standards`: initial JS ≤ 200 KB gzip, each lazy route ≤ 80 KB gzip, and every tab page lazy-loaded with `React.lazy`. The Home tab makes 1 call on load (`/me/dashboard`).
-- Git: `git init` with `master` and `dev`. Work happens on `feature/sprint-1-frontend-mvp`, branched from `dev`. Use `type(scope): summary` commits with no AI attribution.
+- Git: the repo already exists with `master`. Create `dev` from `master` if it does not exist yet. Work happens on `feature/sprint-1-frontend-mvp`, branched from `dev`. Use `type(scope): summary` commits with no AI attribution.
 
 ### Decisions this plan makes where the spec is silent (confirm or change before execution)
 
@@ -50,42 +50,41 @@
 ## File Structure
 
 ```
-package.json                         workspaces: apps/*, packages/*; scripts dev, test, build
-packages/shared/src/index.ts         DTO types (from the core plan, Tasks 5, 7, 8, 9)
-apps/mobile/
-  .env.development                   VITE_USE_MOCKS=true
-  src/brand.config.ts                gym name, logo, tagline key, brand hues
-  src/theme/{tokens.css,applyBrand.ts,theme.ts}
-  src/i18n/{index.ts,en.json,ar.json,format.ts}
-  src/api/client.ts                  api<T>(), ApiError, onUnauthorized
-  src/api/mock/{server.ts,fixtures.ts,members.ts}   mock routes, state, data
-  src/auth/AuthContext.tsx, src/sound/useSound.ts, src/settings/SettingsContext.tsx
-  src/lib/greeting.ts
-  src/pages/{Splash,Login,Dashboard,Progress,Goals,Leaderboard,Profile}.tsx
-  src/components/{TabBar,NotificationBell,NotificationsModal,EmptyState,SoundToggle}.tsx
-  src/components/dashboard/{Greeting,LeaderboardSummaryCard,FitScoreCard,MissionCard,MonthlyWins}.tsx
-  src/components/progress/{BodyCompChart,FitScoreChart,LatestScanTable}.tsx
-  e2e/{fixtures.ts,smoke.spec.ts,<feature>.spec.ts}
-  playwright.config.ts
+package.json                         Ionic app at the repo root; scripts dev, test, test:e2e, build, lint
+.env.development                     VITE_USE_MOCKS=true
+src/brand.config.ts                  gym name, logo, tagline key, brand hues
+src/theme/{tokens.css,applyBrand.ts,theme.ts}
+src/i18n/{index.ts,en.json,ar.json,format.ts}
+src/api/types.ts                     DTO types (from the core plan, Tasks 5, 7, 8, 9)
+src/api/client.ts                    api<T>(), ApiError, onUnauthorized
+src/api/mock/{server.ts,fixtures.ts,members.ts}   mock routes, state, data
+src/auth/AuthContext.tsx, src/sound/useSound.ts, src/settings/SettingsContext.tsx
+src/lib/greeting.ts
+src/pages/{Splash,Login,Dashboard,Progress,Goals,Leaderboard,Profile}.tsx
+src/components/{TabBar,NotificationBell,NotificationsModal,EmptyState,SoundToggle}.tsx
+src/components/dashboard/{Greeting,LeaderboardSummaryCard,FitScoreCard,MissionCard,MonthlyWins}.tsx
+src/components/progress/{BodyCompChart,FitScoreChart,LatestScanTable}.tsx
+e2e/{fixtures.ts,smoke.spec.ts,<feature>.spec.ts}
+playwright.config.ts
 ```
 
 ---
 
-### Task 1: Monorepo and Ionic scaffold
+### Task 1: Ionic app scaffold
 
 **ClickUp:** S1-01
 
 **Files:**
-- Create: root `package.json`, `.gitignore`, `.nvmrc` (`22`), `packages/shared/{package.json,tsconfig.json,src/index.ts}`, `apps/mobile/*` (Ionic scaffold), `apps/mobile/public/brand/logo.webp` (from root `logo.png`, ≤ 100 KB), `apps/mobile/playwright.config.ts`, `apps/mobile/e2e/boot.spec.ts`
-- Test: `apps/mobile/src/App.test.tsx`
+- Create: `.nvmrc` (`22`), Ionic scaffold at the repo root (`package.json`, `src/`, `public/`, config files), `public/brand/logo.webp` (from root `logo.png`, ≤ 100 KB), `playwright.config.ts`, `e2e/boot.spec.ts`
+- Test: `src/App.test.tsx`
 
 **Interfaces:**
-- Produces: package `@levelup/shared`. Scripts: root `npm run dev` (Vite on 5173), `npm test` (Vitest in all workspaces), `npm -w apps/mobile run test:e2e` (Playwright), `npm -w apps/mobile run build`.
+- Produces: scripts `npm run dev` (Vite on 5173), `npm test` (Vitest), `npm run test:e2e` (Playwright), `npm run build`.
 
-- [ ] **Step 1:** Run `git init`. Create `master`, then `dev`, then `feature/sprint-1-frontend-mvp`. In `apps/`, run `npx @ionic/cli start mobile blank --type=react --capacitor --no-git`. Delete the Cypress folder. Add Vitest, Testing Library, and Playwright. Add the 5 device projects from the `e2e-testing` skill to `playwright.config.ts`. `webServer` runs `npm run dev` with `VITE_USE_MOCKS=true`.
+- [ ] **Step 1:** Create `dev` from `master` (if missing), then `feature/sprint-1-frontend-mvp` from `dev`. Run `npx @ionic/cli start levelup blank --type=react --capacitor --no-git` in a temporary folder and move the generated files to the repo root, keeping the existing `.gitignore` entries. Delete the Cypress folder. Add Vitest, Testing Library, and Playwright. Add the 5 device projects from the `e2e-testing` skill to `playwright.config.ts`. `webServer` runs `npm run dev` with `VITE_USE_MOCKS=true`.
 - [ ] **Step 2:** Write `App.test.tsx`: `it('renders without crashing')`. Write `boot.spec.ts`, which loads `/` and expects HTTP 200 with no console errors.
-- [ ] **Step 3:** Run `npm test && npm -w apps/mobile run test:e2e`. Expected: PASS.
-- [ ] **Step 4:** Commit: `chore: scaffold monorepo and ionic app`.
+- [ ] **Step 3:** Run `npm test && npm run test:e2e`. Expected: PASS.
+- [ ] **Step 4:** Commit: `chore(mobile): scaffold ionic app`.
 
 ### Task 2: i18n, theme tokens, safe areas
 
@@ -117,15 +116,15 @@ The `shell.spec.ts` e2e test loops over `en/ar` × `light/dark` and asserts `dir
 
 - [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Add a `scripts/check-colors` npm script that greps `src/**/*.{tsx,css}` for `#[0-9a-f]{3,8}|rgb\(|hsl\(`, excluding `src/theme/` and `brand.config.ts`, and fails on any match. Use CSS logical properties (`margin-inline-start`, `padding-inline`) instead of left/right throughout.
-- [ ] **Step 4:** Run `npm test && npm run check-colors && npm -w apps/mobile run test:e2e`. Expected: PASS.
+- [ ] **Step 4:** Run `npm test && npm run check-colors && npm run test:e2e`. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(mobile): i18n with rtl, light/dark tokens, safe-area shell`.
 
-### Task 3: Shared DTOs and mock API
+### Task 3: DTO types and mock API
 
 **ClickUp:** S1-03
 
 **Files:**
-- Create: `packages/shared/src/index.ts` (all DTOs), `src/api/client.ts`, `src/api/mock/{server.ts,fixtures.ts,members.ts}`, `src/api/mock/README.md` (lists the mock Fit IDs)
+- Create: `src/api/types.ts` (all DTOs), `src/api/client.ts`, `src/api/mock/{server.ts,fixtures.ts,members.ts}`, `src/api/mock/README.md` (lists the mock Fit IDs)
 - Modify: `.eslintrc` (`no-restricted-imports` for `**/api/mock/**`, except in `src/api/client.ts` and `*.test.*`)
 - Test: `src/api/mock/server.test.ts`
 
@@ -165,8 +164,8 @@ it('unknown board → 400', async () => expect((await get('/leaderboard?board=xp
 
 - [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Leaderboards are computed from the fixture members (`members.ts`): keep only opted-in members, sort descending, and break ties by the lower id. Monthly boards skip members whose fixtures have no scan this month. Sam's fixture has 6 monthly scans, 1 active goal, 2 completed goals, 1 upcoming goal, and 4 notifications (2 unread). `api` waits `VITE_MOCK_LATENCY_MS` before it resolves.
-- [ ] **Step 4:** Run `npm test && npm -w apps/mobile run lint`. Expected: PASS.
-- [ ] **Step 5:** Commit: `feat(shared,mobile): dto contract and in-memory mock api`.
+- [ ] **Step 4:** Run `npm test && npm run lint`. Expected: PASS.
+- [ ] **Step 5:** Commit: `feat(mobile): dto types and in-memory mock api`.
 
 ### Task 4: White-label branding and floating tab bar
 
@@ -229,7 +228,7 @@ Behavior and copy follow the core plan's Task 11. Additions: a 429 shows the `lo
 - [ ] **Step 1: Write the failing tests:** the 3 tests from the core plan's Task 13 (member `100003` covers both "one scan" and "FitScore hidden"), plus `progress.spec.ts` covering `en/ar` × `light/dark`.
 - [ ] **Step 2:** Run the tests. Expected: FAIL.
 - [ ] **Step 3:** Implement.
-- [ ] **Step 4:** Run the tests and `npm -w apps/mobile run build`. Expected: PASS, and the Progress chunk is ≤ 80 KB gzip.
+- [ ] **Step 4:** Run the tests and `npm run build`. Expected: PASS, and the Progress chunk is ≤ 80 KB gzip.
 - [ ] **Step 5:** Commit: `feat(mobile): progress page with lazy charts`.
 
 ### Task 8: Goals and Leaderboard pages
@@ -273,8 +272,8 @@ Layout and copy follow the core plan's Task 15. The Settings list adds Language 
 - Create: `e2e/smoke.spec.ts`, `e2e/newMember.spec.ts`, `README.md`
 
 - [ ] **Step 1:** Write `smoke.spec.ts`: the core plan's Task 16 journey, run in `en/ar` × `light/dark` across all 5 device projects. Write `newMember.spec.ts`: log in as `100002`, visit every tab, and assert that each page shows its empty state and that the page text contains no `NaN` or `undefined`.
-- [ ] **Step 2:** Run `npm -w apps/mobile run test:e2e`. Expected: PASS on all projects.
-- [ ] **Step 3:** Run `npm -w apps/mobile run build`. Check the budgets: initial JS ≤ 200 KB gzip and each tab chunk ≤ 80 KB gzip. Record the numbers in the README.
+- [ ] **Step 2:** Run `npm run test:e2e`. Expected: PASS on all projects.
+- [ ] **Step 3:** Run `npm run build`. Check the budgets: initial JS ≤ 200 KB gzip and each tab chunk ≤ 80 KB gzip. Record the numbers in the README.
 - [ ] **Step 4:** Use the `playwright-browser-check` skill to check every tab in Arabic + dark on the iPhone notch and at 320 px. Fix anything it finds and re-run Step 2.
 - [ ] **Step 5:** Write the README: setup, the mock Fit IDs, the `VITE_USE_MOCKS` switch and how Sprint 2 turns it off, how to rebrand (`brand.config.ts` + `public/brand/logo.webp`), and the Capacitor build steps.
 - [ ] **Step 6:** Commit: `test(mobile): e2e smoke and new-member suites; docs: readme`. Open a PR into `dev` following `git-workflow`.

@@ -4,7 +4,7 @@
 
 **Goal:** Build all 17 LevelUP core features from scratch: a white-label Ionic gym member app on a NestJS + Prisma + PostgreSQL API.
 
-**Architecture:** An npm-workspaces monorepo with three packages. `apps/api` is a NestJS REST API. Members sign in with a Fit ID and get a JWT; staff endpoints use an API key. Domain rules (FitScore, goal progress, monthly wins) are pure functions with unit tests, and services call them. `apps/mobile` is an Ionic React app (Vite + Capacitor) with five tabs, branded from one config file. `packages/shared` holds the DTO types both apps import, so the two sides cannot drift apart.
+**Architecture:** Two repos. [`levelup-backend`](https://github.com/alielmayyah/levelup-backend) is a NestJS REST API (Phase 1). Members sign in with a Fit ID and get a JWT; staff endpoints use an API key. Domain rules (FitScore, goal progress, monthly wins) are pure functions with unit tests, and services call them. [`LevelUP`](https://github.com/alielmayyah/LevelUP) (this repo) is an Ionic React app (Vite + Capacitor) with five tabs, branded from one config file (Phase 2). The API is the source of truth for the contract: its DTO classes carry `@nestjs/swagger` decorators, and it commits the generated `openapi.json`. The app generates its types from that file with `openapi-typescript`, so drift between the two sides shows up as a type error in the app. This plan, the spec, and the backlog live in this repo; the API repo links here.
 
 **Tech Stack:** Node 22 LTS, TypeScript (strict), NestJS 11, Prisma 6, PostgreSQL 16 (docker-compose), Jest + supertest (API), Ionic 8 + React 18 + Vite + Capacitor 7, Vitest + Testing Library (mobile), Chart.js via react-chartjs-2, date-fns + date-fns-tz.
 
@@ -18,11 +18,11 @@
 - Login uses a numeric Fit ID only. There is no password field.
 - FitScore is private by default. The API returns another member's FitScore only when that member has `fitScoreOnLeaderboard = true`, and only in leaderboard data.
 - FitScore is an integer from 0 to 100. Tiers run from `Elite` down to `Needs Improvement`.
-- Branding (gym name, logo, colors) comes from one file: `apps/mobile/src/brand.config.ts`. No other file hard-codes a brand value.
+- Branding (gym name, logo, colors) comes from one file in the app repo: `src/brand.config.ts`. No other file hard-codes a brand value.
 - The tab bar is a floating bar with exactly 5 tabs: Home, Progress, Goals, Leaderboard, Profile.
 - One deployment serves one gym (single-tenant). There is no `gymId` column.
 - All month and day boundaries use the `GYM_TZ` env var (IANA zone, default `UTC`).
-- Every task follows [CLAUDE.md](../../../CLAUDE.md): English + Arabic (RTL), light + dark themes, responsive from 320 px, safe-area aware, and within the performance budgets in `.claude/skills/ui-standards`. Mobile tasks add `en` and `ar` strings and Playwright coverage per `.claude/skills/e2e-testing`.
+- Each task follows the `CLAUDE.md` of the repo it runs in. App tasks follow [this repo's CLAUDE.md](../../../CLAUDE.md): English + Arabic (RTL), light + dark themes, responsive from 320 px, safe-area aware, and within the performance budgets in `.claude/skills/ui-standards`. Mobile tasks add `en` and `ar` strings and Playwright coverage per `.claude/skills/e2e-testing`.
 - Git follows `.claude/skills/git-workflow`: feature branches off `dev`, `type(scope): summary` commits grouped by topic, and no AI attribution in commits or PRs.
 
 ### Decisions this plan makes where the spec is silent (confirm or change before execution)
@@ -37,6 +37,7 @@
 | Workouts / visits | Not tracked. There is no Visit model. |
 | Assessments, goals, members | Created through staff endpoints protected by `x-staff-key` |
 | Sound preference | Stored on the device (Capacitor Preferences), not on the server |
+| Repos and contract | Two repos: `levelup-backend` (Phase 1) and `LevelUP` (Phase 2). The API commits `openapi.json` (`npm run openapi`), and the app regenerates `src/api/schema.d.ts` from it (`npm run api:types`). A change to a DTO is two PRs: the API PR first, then the app PR that regenerates types, each linking the other. |
 | FitScore visibility | Per-member setting `showFitScore` stored on the server, default `true`. When `false`, the app hides the FitScore card, the change indicator, and the FitScore chart. The score is still computed and stored, and turning the setting back on restores it. This setting is independent of the leaderboard opt-in. |
 
 ## Review Focus
@@ -52,45 +53,52 @@
 ## File Structure
 
 ```
-package.json                    workspaces: apps/*, packages/*
-docker-compose.yml              postgres:16
-packages/shared/src/index.ts    DTO types (LoginResponse, DashboardDto, ProgressDto, GoalsDto, LeaderboardDto, ProfileDto, NotificationDto)
-apps/api/
+levelup-backend/                    (separate repo; Phase 1)
+  package.json, docker-compose.yml (postgres:16), .env.example
+  openapi.json                  generated contract, committed (npm run openapi)
   prisma/schema.prisma, prisma/seed.ts
   src/main.ts, src/app.module.ts
   src/prisma/prisma.service.ts
   src/domain/fitscore.ts        pure: computeFitScore, fitScoreTier
   src/domain/goal-progress.ts   pure: goalProgress
   src/domain/month.ts           pure: monthRange(date, tz)
-  src/auth/                     auth.controller, auth.service, jwt.guard, staff-key.guard
-  src/staff/                    staff.controller, ingest.service (assessments, members, goals)
-  src/me/                       me.controller, dashboard.service, progress.service, goals.service
-  src/leaderboard/              leaderboard.controller, leaderboard.service
-  src/notifications/            notifications.controller, notifications.service
+  src/auth/                     auth.controller, auth.service, jwt.guard, staff-key.guard, dto/
+  src/staff/                    staff.controller, ingest.service (assessments, members, goals), dto/
+  src/me/                       me.controller, dashboard.service, progress.service, goals.service, dto/
+  src/leaderboard/              leaderboard.controller, leaderboard.service, dto/
+  src/notifications/            notifications.controller, notifications.service, dto/
   test/*.e2e-spec.ts
-apps/mobile/
+LevelUP/                        (this repo; Phase 2)
+  package.json                  Ionic app at the repo root
   src/brand.config.ts, src/theme/applyBrand.ts
-  src/api/client.ts, src/auth/AuthContext.tsx, src/sound/useSound.ts
+  src/api/client.ts, src/api/types.ts (DTO names), src/api/schema.d.ts (generated)
+  src/auth/AuthContext.tsx, src/sound/useSound.ts
   src/lib/greeting.ts
   src/pages/{Splash,Login,Dashboard,Progress,Goals,Leaderboard,Profile}.tsx
   src/components/{TabBar,NotificationBell,NotificationsModal}.tsx
   src/components/dashboard/{Greeting,LeaderboardSummaryCard,FitScoreCard,MissionCard,MonthlyWins}.tsx
 ```
 
+`src/api/types.ts` is the only file components import DTO types from. In Sprint 1 it holds hand-written interfaces copied from this plan. Once the API exists, each type becomes a re-export from the generated schema (`export type DashboardDto = components['schemas']['DashboardDto']`), so components never change.
+
+Every DTO in Phase 1 is a class in the module's `dto/` folder with `@ApiProperty` decorators. Nullable fields use `nullable: true` and unions use `enum`, so the generated schema matches the interfaces in this plan exactly.
+
 ---
 
-## Phase 1 — Backend
+## Phase 1 — Backend (repo: `levelup-backend`)
 
-### Task 1: Monorepo, Postgres, API skeleton
+All paths and commands in Phase 1 are relative to the root of the `levelup-backend` repo.
+
+### Task 1: API scaffold, Postgres, OpenAPI contract
 
 **Files:**
-- Create: `package.json`, `docker-compose.yml`, `.gitignore`, `.env.example`, `apps/api/*` (Nest CLI scaffold), `packages/shared/{package.json,tsconfig.json,src/index.ts}`
-- Test: `apps/api/test/health.e2e-spec.ts`
+- Create: `package.json`, `docker-compose.yml`, `.gitignore`, `.env.example`, Nest CLI scaffold at the repo root, `scripts/openapi.ts`, `openapi.json`
+- Test: `test/health.e2e-spec.ts`
 
 **Interfaces:**
-- Produces: `GET /health` → `{ status: "ok" }`. Env vars `DATABASE_URL`, `JWT_SECRET`, `STAFF_API_KEY`, `GYM_TZ`. Package name `@levelup/shared`.
+- Produces: `GET /health` → `{ status: "ok" }`. `GET /docs-json` serves the OpenAPI document. `npm run openapi` writes it to `openapi.json` without a database. Env vars `DATABASE_URL`, `JWT_SECRET`, `STAFF_API_KEY`, `GYM_TZ`.
 
-- [ ] **Step 1:** Run `git init`. Create the root `package.json` with `"workspaces": ["apps/*","packages/*"]`. Scaffold the API with `npx @nestjs/cli new apps/api --skip-git --package-manager npm`. Create `docker-compose.yml` with a `postgres:16` service on port 5432 (user, password, and db all `levelup`).
+- [ ] **Step 1:** Scaffold the API at the repo root with `npx @nestjs/cli new . --skip-git --package-manager npm`. Create `docker-compose.yml` with a `postgres:16` service on port 5432 (user, password, and db all `levelup`). Add `@nestjs/swagger`: `main.ts` builds the document with `DocumentBuilder` and serves it at `/docs` and `/docs-json`. `scripts/openapi.ts` creates the app with `NestFactory.create(AppModule, { preview: true })`, builds the same document, and writes `openapi.json`.
 - [ ] **Step 2: Write the failing test**
 
 ```ts
@@ -98,16 +106,18 @@ it('GET /health returns ok', () =>
   request(app.getHttpServer()).get('/health').expect(200, { status: 'ok' }));
 ```
 
-- [ ] **Step 3:** Run `npm -w apps/api run test:e2e`. Expected: FAIL with a 404.
+- [ ] **Step 3:** Run `npm run test:e2e`. Expected: FAIL with a 404.
 - [ ] **Step 4:** Add a `HealthController` with `@Get('health')`. Add `ConfigModule.forRoot({ isGlobal: true })`.
-- [ ] **Step 5:** Run `npm -w apps/api run test:e2e`. Expected: PASS.
-- [ ] **Step 6:** Commit: `chore: scaffold monorepo, api, postgres`.
+- [ ] **Step 5:** Run `npm run test:e2e`, then `npm run openapi`. Expected: PASS, and `openapi.json` lists `/health`.
+- [ ] **Step 6:** Commit: `chore(api): scaffold api, postgres, openapi contract`.
+
+From Task 5 on, every task that adds or changes a DTO ends by running `npm run openapi` and committing `openapi.json` in the same commit. CI fails if `openapi.json` is out of date (`npm run openapi && git diff --exit-code openapi.json`).
 
 ### Task 2: Prisma schema and seed
 
 **Files:**
-- Create: `apps/api/prisma/schema.prisma`, `apps/api/prisma/seed.ts`, `apps/api/src/prisma/prisma.service.ts`
-- Test: `apps/api/test/seed.e2e-spec.ts`
+- Create: `prisma/schema.prisma`, `prisma/seed.ts`, `src/prisma/prisma.service.ts`
+- Test: `test/seed.e2e-spec.ts`
 
 **Interfaces:**
 - Produces these models, with field names used by every later task:
@@ -127,16 +137,16 @@ expect(await prisma.assessment.count({ where: { memberId: demo.id } })).toBeGrea
 expect(await prisma.goal.count({ where: { memberId: demo.id, status: 'ACTIVE' } })).toBe(1);
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/api run test:e2e -- seed`. Expected: FAIL (the models do not exist).
-- [ ] **Step 3:** Write the schema. Run `npx prisma migrate dev --name init`. Write the seed: 2 coaches; 20 members with fitIds `100001`–`100020`; 6 monthly assessments for the demo member and 1–4 for the others; one ACTIVE, one COMPLETED, and one UPCOMING goal for the demo member; set `fitScoreOnLeaderboard = true` on 15 of the 20 members (including the demo member) so the leaderboard has a spread. Compute the seed's `fitScore` values with Task 3's function if it exists, or hard-code them for now and re-seed after Task 3.
+- [ ] **Step 2:** Run `npm run test:e2e -- seed`. Expected: FAIL (the models do not exist).
+- [ ] **Step 3:** Write the schema. Run `npx prisma migrate dev --name init`. Write the seed: 2 coaches; 20 members with fitIds `100001`–`100020`; 6 monthly assessments for the demo member and 1–4 for the others; one ACTIVE, one COMPLETED, and one UPCOMING goal for the demo member; set `fitScoreOnLeaderboard = true` on 15 of the 20 members (including the demo member) so the leaderboard has a spread. Compute the seed's `fitScore` values with Task 3's function if it exists, or hard-code them for now and re-seed after Task 3. Add the script `db:reset` (`prisma migrate reset --force`, which re-runs the seed); the app repo's e2e setup calls it.
 - [ ] **Step 4:** Re-run the test. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): prisma schema and seed`.
 
 ### Task 3: FitScore domain
 
 **Files:**
-- Create: `apps/api/src/domain/fitscore.ts`
-- Test: `apps/api/src/domain/fitscore.spec.ts`
+- Create: `src/domain/fitscore.ts`
+- Test: `src/domain/fitscore.spec.ts`
 
 **Interfaces:**
 - Produces: `computeFitScore(a: { sex: 'MALE'|'FEMALE'; weightKg: number; skeletalMuscleKg: number; bodyFatPct: number; visceralFatLevel: number }): number` and `fitScoreTier(score: number): 'Elite'|'Strong'|'On Track'|'Building'|'Needs Improvement'`.
@@ -158,7 +168,7 @@ it.each([[85,'Elite'],[84,'Strong'],[70,'Strong'],[55,'On Track'],[40,'Building'
   ('tier(%i)=%s', (s, t) => expect(fitScoreTier(s)).toBe(t));
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/api test -- fitscore`. Expected: FAIL (the module is not found).
+- [ ] **Step 2:** Run `npm test -- fitscore`. Expected: FAIL (the module is not found).
 - [ ] **Step 3:** Implement both functions in `fitscore.ts`.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): fitscore formula and tiers`.
@@ -166,8 +176,8 @@ it.each([[85,'Elite'],[84,'Strong'],[70,'Strong'],[55,'On Track'],[40,'Building'
 ### Task 4: Goal progress and month domain
 
 **Files:**
-- Create: `apps/api/src/domain/goal-progress.ts`, `apps/api/src/domain/month.ts`
-- Test: `apps/api/src/domain/{goal-progress,month}.spec.ts`
+- Create: `src/domain/goal-progress.ts`, `src/domain/month.ts`
+- Test: `src/domain/{goal-progress,month}.spec.ts`
 
 **Interfaces:**
 - Produces:
@@ -197,7 +207,7 @@ it('month in gym tz', () => expect(monthRange(new Date('2026-10-31T21:30:00Z'), 
   .toEqual(new Date('2026-10-31T20:00:00Z')));
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/api test -- domain`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm test -- domain`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Use `date-fns-tz` (`toZonedTime` / `fromZonedTime`) for `monthRange`.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): goal progress and month helpers`.
@@ -205,9 +215,9 @@ it('month in gym tz', () => expect(monthRange(new Date('2026-10-31T21:30:00Z'), 
 ### Task 5: Fit ID auth and staff key
 
 **Files:**
-- Create: `apps/api/src/auth/{auth.module,auth.controller,auth.service,jwt.guard,staff-key.guard,current-member.decorator}.ts`
-- Modify: `packages/shared/src/index.ts` (add `LoginResponse`)
-- Test: `apps/api/test/auth.e2e-spec.ts`
+- Create: `src/auth/{auth.module,auth.controller,auth.service,jwt.guard,staff-key.guard,current-member.decorator}.ts`
+- Create: `src/auth/dto/login.dto.ts` (`LoginDto`, `LoginResponse`)
+- Test: `test/auth.e2e-spec.ts`
 
 **Interfaces:**
 - Produces:
@@ -233,7 +243,7 @@ it('6th attempt in a minute is 429', async () => { for (let i=0;i<5;i++) await r
 it('staff route without key is 401', () => request(s).post('/staff/members').send({}).expect(401));
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/api run test:e2e -- auth`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm run test:e2e -- auth`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Validation failures throw the same `UnauthorizedException('Invalid Fit ID')` as unknown IDs. Do not use a 400. Add a stub `POST /staff/members` behind `StaffKeyGuard` so the last test has a target; Task 6 fills it in.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): fit id login, jwt and staff guards`.
@@ -241,8 +251,8 @@ it('staff route without key is 401', () => request(s).post('/staff/members').sen
 ### Task 6: Staff ingest (members, assessments, goals)
 
 **Files:**
-- Create: `apps/api/src/staff/{staff.module,staff.controller,ingest.service}.ts`, `apps/api/src/notifications/notifications.service.ts` (the `create` method only)
-- Test: `apps/api/test/staff.e2e-spec.ts`
+- Create: `src/staff/{staff.module,staff.controller,ingest.service}.ts`, `src/notifications/notifications.service.ts` (the `create` method only)
+- Test: `test/staff.e2e-spec.ts`
 
 **Interfaces:**
 - Consumes: `computeFitScore` (Task 3), `goalProgress` (Task 4), `StaffKeyGuard` (Task 5)
@@ -270,7 +280,7 @@ it('reaching target completes goal and promotes upcoming', async () => {
 it('rejects negative weight with 400', () => staff.post('/staff/assessments').send({ ...scan, weightKg: -1 }).expect(400));
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/api run test:e2e -- staff`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm run test:e2e -- staff`. Expected: FAIL.
 - [ ] **Step 3:** Implement with `class-validator` DTOs (`@IsPositive` on the masses, `@IsDateString` on the dates) and a global `ValidationPipe({ whitelist: true })`.
 - [ ] **Step 4:** Re-run. Expected: PASS. Then re-run `npx prisma db seed` so the seed's fitScores come from the real formula.
 - [ ] **Step 5:** Commit: `feat(api): staff ingest with fitscore and goal completion`.
@@ -278,9 +288,9 @@ it('rejects negative weight with 400', () => staff.post('/staff/assessments').se
 ### Task 7: Dashboard endpoint
 
 **Files:**
-- Create: `apps/api/src/me/{me.module,me.controller,dashboard.service}.ts`
-- Modify: `packages/shared/src/index.ts` (add `DashboardDto`)
-- Test: `apps/api/test/dashboard.e2e-spec.ts`
+- Create: `src/me/{me.module,me.controller,dashboard.service}.ts`
+- Create: `src/me/dto/dashboard.dto.ts` (`DashboardDto`)
+- Test: `test/dashboard.e2e-spec.ts`
 
 **Interfaces:**
 - Consumes: `fitScoreTier`, `goalProgress`, `monthRange`, `monthDelta`, `JwtGuard`, `LeaderboardService.monthlySummary` (Task 8; build Task 8 first or stub it and fill it in during Task 8)
@@ -326,7 +336,7 @@ it('opted-out member gets optedIn false and no standing', async () => {
 it('401 without token', () => request(s).get('/me/dashboard').expect(401));
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/api run test:e2e -- dashboard`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm run test:e2e -- dashboard`. Expected: FAIL.
 - [ ] **Step 3:** Implement `DashboardService.forMember(memberId: number, now = new Date()): Promise<DashboardDto>`.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): member dashboard endpoint`.
@@ -334,15 +344,15 @@ it('401 without token', () => request(s).get('/me/dashboard').expect(401));
 ### Task 8: Leaderboard
 
 **Files:**
-- Create: `apps/api/src/leaderboard/{leaderboard.module,leaderboard.controller,leaderboard.service}.ts`
-- Modify: `packages/shared/src/index.ts` (add `LeaderboardDto`)
-- Test: `apps/api/test/leaderboard.e2e-spec.ts`
+- Create: `src/leaderboard/{leaderboard.module,leaderboard.controller,leaderboard.service}.ts`
+- Create: `src/leaderboard/dto/leaderboard.dto.ts` (`LeaderboardDto`, `LeaderboardBoard`)
+- Test: `test/leaderboard.e2e-spec.ts`
 
 **Interfaces:**
 - Consumes: `monthRange`, `monthDelta` (Task 4), `PATCH /me/settings` (Task 9) for the opt-out test
 - Produces:
   - `LeaderboardService.monthlySummary(memberId: number, now: Date): Promise<DashboardDto['leaderboard']>`
-  - `GET /leaderboard?board=score|progress|muscle|fatLoss` (default `score`, JWT required) → `LeaderboardDto { board: LeaderboardBoard; optedIn: boolean; rows: { rank: number; memberId: number; name: string; value: number; isMe: boolean }[] }`. `LeaderboardBoard = 'score'|'progress'|'muscle'|'fatLoss'` is exported from `@levelup/shared`. An unknown board is a 400.
+  - `GET /leaderboard?board=score|progress|muscle|fatLoss` (default `score`, JWT required) → `LeaderboardDto { board: LeaderboardBoard; optedIn: boolean; rows: { rank: number; memberId: number; name: string; value: number; isMe: boolean }[] }`. `LeaderboardBoard = 'score'|'progress'|'muscle'|'fatLoss'` is a swagger `enum`, so the app gets it as a string union. An unknown board is a 400.
 - The pool is members with `fitScoreOnLeaderboard = true`. The `value` for each board:
   - `score`: the latest fitScore. Requires ≥1 assessment.
   - `progress`: `monthDelta` of fitScore.
@@ -384,7 +394,7 @@ it('summary math', async () => {
 });
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/api run test:e2e -- leaderboard`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm run test:e2e -- leaderboard`. Expected: FAIL.
 - [ ] **Step 3:** Implement. One query fetches opted-in members with their assessments from the start of the previous month onward, plus the latest assessment before that. Values come from `monthDelta` and ranks are computed in memory. Seed data must give at least 3 opted-in members scans this month so each monthly board has rows. Return an explicit DTO; never spread the Member object.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): opt-in fitscore leaderboard`.
@@ -392,9 +402,10 @@ it('summary math', async () => {
 ### Task 9: Progress, goals, profile, and notifications endpoints
 
 **Files:**
-- Create: `apps/api/src/me/{progress.service,goals.service}.ts`, `apps/api/src/notifications/notifications.controller.ts`
-- Modify: `apps/api/src/me/me.controller.ts`, `apps/api/src/notifications/notifications.service.ts`, `packages/shared/src/index.ts`
-- Test: `apps/api/test/me.e2e-spec.ts`
+- Create: `src/me/{progress.service,goals.service}.ts`, `src/notifications/notifications.controller.ts`
+- Create: `src/me/dto/{progress,assessment,goals,profile,settings}.dto.ts`, `src/notifications/dto/notification.dto.ts`
+- Modify: `src/me/me.controller.ts`, `src/notifications/notifications.service.ts`
+- Test: `test/me.e2e-spec.ts`
 
 **Interfaces:**
 - Produces (all JWT-guarded):
@@ -432,19 +443,21 @@ it('read-all zeroes unread count', async () => {
 });
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/api run test:e2e -- me`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm run test:e2e -- me`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Every query filters by `memberId` from the JWT. Updates use `updateMany({ where: { id, memberId } })` and return 404 when the count is 0.
-- [ ] **Step 4:** Run the full suite with `npm -w apps/api test && npm -w apps/api run test:e2e`. Expected: all PASS.
+- [ ] **Step 4:** Run the full suite with `npm test && npm run test:e2e`. Expected: all PASS.
 - [ ] **Step 5:** Commit: `feat(api): progress, goals, profile, notifications`.
 
 ---
 
-## Phase 2 — Mobile (Ionic React)
+## Phase 2 — Mobile (Ionic React, repo: `LevelUP`)
+
+All paths and commands in Phase 2 are relative to the root of this repo. Running the app against the real API needs a `levelup-backend` checkout running locally (see its README); the app reads its URL from `VITE_API_URL`.
 
 ### Task 10: Ionic scaffold, branding, tab bar, API client
 
 **Files:**
-- Create: `apps/mobile/*` (Ionic CLI scaffold), `src/brand.config.ts`, `src/theme/applyBrand.ts`, `src/components/TabBar.tsx`, `src/api/client.ts`, `public/brand/logo.png` (copied from the root `logo.png`)
+- Create: Ionic CLI scaffold at the repo root, `src/api/schema.d.ts` (generated), `src/api/types.ts`, `src/brand.config.ts`, `src/theme/applyBrand.ts`, `src/components/TabBar.tsx`, `src/api/client.ts`, `public/brand/logo.png` (copied from the root `logo.png`)
 - Test: `src/theme/applyBrand.test.ts`, `src/components/TabBar.test.tsx`
 
 **Interfaces:**
@@ -454,7 +467,7 @@ it('read-all zeroes unread count', async () => {
   - `api<T>(path: string, init?: RequestInit): Promise<T>`. It reads the base URL from `VITE_API_URL` and adds `Authorization: Bearer <token>` from `getToken()`. On 401 it calls the registered `onUnauthorized()` handler.
   - Routes: `/splash`, `/login`, `/tabs/home`, `/tabs/progress`, `/tabs/goals`, `/tabs/leaderboard`, `/tabs/profile`
 
-- [ ] **Step 1:** Scaffold with `npx @ionic/cli start mobile tabs --type=react --capacitor --no-git` inside `apps/`. Add `@levelup/shared` as a dependency.
+- [ ] **Step 1:** Scaffold with `npx @ionic/cli start levelup tabs --type=react --capacitor --no-git` and move the generated files to the repo root. Add `openapi-typescript` and the script `api:types`, which runs `openapi-typescript ${OPENAPI_SRC:-../levelup-backend/openapi.json} -o src/api/schema.d.ts`. `OPENAPI_SRC` can also be the raw GitHub URL of the API repo's `openapi.json`. Run it, and make `src/api/types.ts` re-export each DTO from the generated `components['schemas']`.
 - [ ] **Step 2: Write the failing tests**
 
 ```ts
@@ -469,9 +482,9 @@ it('tab bar has 5 tabs in order', () => {
 });
 ```
 
-- [ ] **Step 3:** Run `npm -w apps/mobile run test.unit`. Expected: FAIL.
+- [ ] **Step 3:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 4:** Implement. The tab bar floats with `position: absolute; bottom: 16px; border-radius: 24px`. A pill indicator `div` sits behind the active tab and animates with `transform: translateX(index * 100%)` (`transition: transform 250ms ease`). Its offset comes from the matched route.
-- [ ] **Step 5:** Re-run. Expected: PASS. Run `grep -rn "#[0-9a-fA-F]\{6\}" apps/mobile/src --include=*.tsx`. Expected: no matches (colors live only in the config).
+- [ ] **Step 5:** Re-run. Expected: PASS. Run `grep -rn "#[0-9a-fA-F]\{6\}" src --include=*.tsx`. Expected: no matches (colors live only in the config).
 - [ ] **Step 6:** Commit: `feat(mobile): ionic scaffold, white-label theme, tab bar`.
 
 ### Task 11: Splash, Fit ID login, sound toggle, auth
@@ -507,7 +520,7 @@ it('sound off means play is a no-op', () => {
 });
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/mobile run test.unit`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Respect `prefers-reduced-motion` by turning off the starfield drift and the ring pulse.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(mobile): splash, fit id login, sound toggle`.
@@ -557,7 +570,7 @@ it('bell shows unread dot', () => { render(<NotificationBell unread={3} onClick=
   expect(screen.getByLabelText('Notifications, 3 unread')).toBeInTheDocument(); });
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/mobile run test.unit`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Use `IonRefresher` for pull-to-refresh and `IonSkeletonText` while loading. The bell opens `NotificationsModal` (Task 15); until then it can be a no-op.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(mobile): dashboard with greeting, fitscore, mission, wins, leaderboard summary`.
@@ -596,7 +609,7 @@ it('one scan shows trend placeholder', async () => {
 });
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/mobile run test.unit`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement with `react-chartjs-2`. Chart colors come from `brand.colors`. Mock `react-chartjs-2` in tests, because canvas is not available in jsdom.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(mobile): progress page charts`.
@@ -639,7 +652,7 @@ it('join button opts in and refetches', async () => {
 });
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/mobile run test.unit`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(mobile): goals and opt-in leaderboard pages`.
@@ -686,7 +699,7 @@ it('mark all read calls endpoint', async () => {
 });
 ```
 
-- [ ] **Step 2:** Run `npm -w apps/mobile run test.unit`. Expected: FAIL.
+- [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement.
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(mobile): profile page and notifications`.
@@ -694,12 +707,12 @@ it('mark all read calls endpoint', async () => {
 ### Task 16: End-to-end smoke test and README
 
 **Files:**
-- Create: `apps/mobile/playwright.config.ts`, `apps/mobile/e2e/{fixtures,smoke}.spec.ts` (remove the Cypress folder Ionic scaffolds), `README.md`
-- Modify: root `package.json` scripts: `dev` (runs the API and mobile together via `concurrently`), `test`, `db:reset`
+- Create: `playwright.config.ts`, `e2e/{fixtures,smoke}.spec.ts` (remove the Cypress folder Ionic scaffolds), `README.md`
+- Modify: `package.json` scripts: `dev` (the app only), `test`, `test:e2e`
 
 - [ ] **Step 1: Write the smoke test.** Visit `/`, click `Tap to Begin`, type `100001`, and sign in. Assert that the Home tab shows `Good` or `Late` in the greeting, a FitScore number, and the mission percent. Visit each of the 5 tabs and assert each one's page heading. Sign out from Profile and assert that `/login` is shown.
-- [ ] **Step 2:** Run `docker compose up -d && npm run db:reset && npm run dev`, then `npm -w apps/mobile run test.e2e`. Expected: PASS.
-- [ ] **Step 3:** Write the README with setup steps, the env vars, how to rebrand (edit only `brand.config.ts` and `public/brand/logo.png`), the staff API examples (`curl` with `x-staff-key`), and the Capacitor build steps (`npx cap add ios|android`, `npx cap sync`).
+- [ ] **Step 2:** In the `levelup-backend` checkout, run `docker compose up -d && npm run db:reset && npm run start:dev`. In this repo, run `npm run test:e2e`. Expected: PASS.
+- [ ] **Step 3:** Write the README with setup steps (including cloning `levelup-backend` next to this repo), the env vars, `npm run api:types`, how to rebrand (edit only `brand.config.ts` and `public/brand/logo.png`), and the Capacitor build steps (`npx cap add ios|android`, `npx cap sync`). The staff API examples (`curl` with `x-staff-key`) go in the `levelup-backend` README.
 - [ ] **Step 4:** Commit: `test: e2e smoke; docs: readme`.
 
 ---
@@ -724,4 +737,4 @@ it('mark all read calls endpoint', async () => {
 | 14 | Member Profile | 9, 15 |
 | 15 | White-Label Branding | 10 |
 | 16 | Bottom Tab Navigation | 10 |
-| 17 | Backend API | 1–9 |
+| 17 | Backend API | 1–9 (`levelup-backend` repo) |

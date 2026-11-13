@@ -32,7 +32,7 @@ This is a reduced version of the full feature list. It excludes LevelUP Score (X
 | 14 | Member Profile | Profile | Personal details, membership (with a "Renews soon" badge), coach, and Settings: sound, show/hide FitScore, leaderboard opt-in, and sign out | Planned |
 | 15 | White-Label Branding | Platform | A single config file sets each gym's name, logo, and colors | Planned |
 | 16 | Bottom Tab Navigation | Platform | Floating 5-tab bar (Home, Progress, Goals, Leaderboard, Profile) with an animated active indicator | Planned |
-| 17 | Backend API | Platform | NestJS + Prisma + PostgreSQL serving all app data. Includes staff endpoints for members, scans, and goals. | Planned |
+| 17 | Backend API | Platform | NestJS + Prisma + PostgreSQL serving all app data, in the separate `levelup-backend` repo. Includes staff endpoints for members, scans, and goals. | Planned |
 
 ## Key Rules
 
