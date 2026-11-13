@@ -1,0 +1,257 @@
+/*
+ * Login shares the splash's dusk palette in both themes: the pixel-art gym and
+ * the white wordmark only read on a dark backdrop.
+ */
+
+.lu-login {
+  color: var(--lu-splash-text);
+}
+
+.lu-login-content {
+  --background: var(--lu-splash-bg);
+  --color: var(--lu-splash-text);
+}
+
+.lu-login-content:lang(ar) {
+  font-family: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+}
+
+.lu-login-layout {
+  position: relative;
+  min-block-size: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+/* ---------- Hero: gym scene with the logo over it ---------- */
+
+.lu-login-hero {
+  position: relative;
+  overflow: hidden;
+  block-size: calc(clamp(220px, 44vh, 420px) + var(--ion-safe-area-top, 0px));
+}
+
+/* The logo sits in the dark ceiling; the members stay visible below it. */
+.lu-login-scene {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 68% 100%;
+}
+
+.lu-login-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--lu-splash-bg) 80%, transparent),
+    color-mix(in srgb, var(--lu-splash-bg) 45%, transparent) 38%,
+    transparent 62%,
+    color-mix(in srgb, var(--lu-splash-bg) 40%, transparent) 84%,
+    var(--lu-splash-bg)
+  );
+}
+
+.lu-login-lockup {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding-block-start: calc(clamp(14px, 3vh, 32px) + var(--ion-safe-area-top, 0px));
+}
+
+.lu-login-logo {
+  display: block;
+  inline-size: clamp(120px, 22vh, 210px);
+  block-size: auto;
+  filter: drop-shadow(0 2px 8px var(--lu-splash-bg));
+}
+
+/* ---------- Form ---------- */
+
+.lu-login-form {
+  box-sizing: border-box;
+  inline-size: min(100%, 460px);
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  /* A landscape notch is a physical inset in either reading direction. */
+  padding: 4px calc(20px + var(--ion-safe-area-right, 0px)) calc(24px + var(--ion-safe-area-bottom, 0px))
+    calc(20px + var(--ion-safe-area-left, 0px));
+}
+
+.lu-login-title {
+  margin: 0 0 20px;
+  font-size: clamp(1.5rem, 6.5vw, 2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: start;
+}
+
+.lu-login-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-block-end: 8px;
+  color: var(--lu-splash-text-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.lu-login-label ion-icon {
+  font-size: 1.15rem;
+}
+
+.lu-login-input {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 56px;
+  padding: 0 16px;
+  border: 2px solid color-mix(in srgb, var(--ion-color-secondary) 40%, var(--lu-splash-bg));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--lu-splash-bg) 86%, var(--ion-color-primary));
+  color: var(--lu-splash-text);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  outline: none;
+  transition:
+    border-color 120ms ease-out,
+    box-shadow 120ms ease-out;
+}
+
+/* The field is always LTR; in Arabic it sits against the reading edge. */
+.lu-login-form:dir(rtl) .lu-login-input {
+  text-align: end;
+}
+
+.lu-login-input:focus-visible {
+  border-color: var(--ion-color-secondary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ion-color-primary) 40%, transparent);
+}
+
+.lu-login-input[aria-invalid='true'] {
+  border-color: var(--lu-splash-danger);
+}
+
+.lu-login-hint-slot {
+  min-block-size: 3.2em;
+}
+
+.lu-login-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 8px 0 0;
+  color: var(--lu-splash-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.lu-login-hint ion-icon {
+  flex: none;
+  margin-block-start: 0.1em;
+  font-size: 1.05rem;
+}
+
+.lu-login-error {
+  color: var(--lu-splash-danger);
+  font-weight: 600;
+}
+
+.lu-login-submit {
+  inline-size: 100%;
+  margin-block-start: 16px;
+}
+
+.lu-login-submit-icon {
+  font-size: 1.2rem;
+}
+
+.lu-login-form:dir(rtl) .lu-login-submit-icon {
+  transform: scaleX(-1);
+}
+
+.lu-login-sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Side by side: phones in landscape, and wide screens ---------- */
+
+@media (orientation: landscape) and (max-height: 480px), (min-width: 900px) {
+  .lu-login-layout {
+    grid-template-rows: 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .lu-login-hero {
+    block-size: auto;
+    min-block-size: 100%;
+  }
+
+  .lu-login-hero::after {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--lu-splash-bg) 30%, transparent),
+      color-mix(in srgb, var(--lu-splash-bg) 15%, transparent) 60%,
+      var(--lu-splash-bg)
+    );
+  }
+
+  .lu-login-layout:dir(rtl) .lu-login-hero::after {
+    transform: scaleX(-1);
+  }
+
+  .lu-login-form {
+    align-self: center;
+    padding-block: calc(16px + var(--ion-safe-area-top, 0px)) calc(16px + var(--ion-safe-area-bottom, 0px));
+  }
+}
+
+@media (min-width: 900px) {
+  .lu-login-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(400px, 40%);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 480px) {
+  .lu-login-title {
+    margin-block-end: 10px;
+    font-size: 1.35rem;
+  }
+
+  .lu-login-input {
+    min-block-size: 48px;
+  }
+
+  .lu-login-hint-slot {
+    min-block-size: 2.6em;
+  }
+
+  .lu-login-submit {
+    margin-block-start: 8px;
+    min-block-size: 48px;
+  }
+
+  .lu-login-logo {
+    inline-size: clamp(110px, 40vh, 180px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lu-login-input {
+    transition: none;
+  }
+}
