@@ -15,15 +15,23 @@ for (const lang of LOCALES)
       test('every tab opens its page and moves the pill', async ({ page, loginAs }) => {
         await loginAs();
         await page.goto('/tabs/home');
-        const tablist = page.getByRole('tablist');
+        const tablist = page.getByRole('navigation', { name: strings[lang].tabs.navLabel });
         await expect(tablist).toBeVisible();
 
         for (const [i, tab] of TABS.entries()) {
-          await tablist.getByRole('tab', { name: strings[lang].tabs[tab], exact: true }).click();
+          await tablist.getByRole('tab', { name: strings[lang].tabs.short[tab], exact: true }).click();
           await expect(page).toHaveURL(new RegExp(`/tabs/${tab}$`));
-          await expect(page.getByTestId(`page-${tab}`).locator('ion-title')).toHaveText(strings[lang].tabs[tab]);
+          // Home greets the member; every other tab shows its name as the page heading.
+          if (tab === 'home') await expect(page.getByTestId('page-home').getByTestId('greeting')).toBeVisible();
+          else
+            await expect(page.getByTestId(`page-${tab}`).getByRole('heading', { level: 1 })).toHaveText(
+              strings[lang].tabs[tab],
+            );
           const sign = lang === 'ar' && i > 0 ? '-' : '';
-          await expect(page.getByTestId('tab-pill')).toHaveAttribute('style', new RegExp(`translateX\\(${sign}${i * 100}%\\)`));
+          await expect(page.getByTestId('tab-pill')).toHaveAttribute(
+            'style',
+            new RegExp(`translateX\\(${sign}${i * 100}%\\)`),
+          );
         }
         expect(await noHorizontalOverflow(page)).toBe(true);
       });
@@ -58,7 +66,7 @@ test('the bar stays above the home indicator', async ({ page, loginAs }) => {
   await page.goto('/tabs/home');
   // Simulate an iPhone home indicator; Ionic reads the inset from this variable.
   await page.evaluate(() => document.documentElement.style.setProperty('--ion-safe-area-bottom', '34px'));
-  const box = (await page.getByRole('tablist').boundingBox())!;
+  const box = (await page.getByRole('navigation', { name: en.tabs.navLabel }).boundingBox())!;
   expect(box.y + box.height).toBeLessThanOrEqual(page.viewportSize()!.height - 34);
 });
 
@@ -75,9 +83,10 @@ test('labels show at 360 px and up, icons only below', async ({ page, loginAs })
   await loginAs();
   await page.goto('/tabs/home');
   const label = page.getByTestId('tab-home').locator('ion-label');
-  if (page.viewportSize()!.width < 360) await expect(label).toBeHidden();
+  // Below 360 px the label is visually hidden (1 px, clipped) but still names the tab for screen readers.
+  if (page.viewportSize()!.width < 360) expect((await label.boundingBox())!.width).toBeLessThanOrEqual(1);
   else await expect(label).toBeVisible();
-  await expect(page.getByRole('tab', { name: en.tabs.home, exact: true })).toBeVisible();
+  await expect(page.getByRole('tab', { name: en.tabs.short.home, exact: true })).toBeVisible();
 });
 
 test('every tab button is at least 44 × 44 px', async ({ page, loginAs }) => {

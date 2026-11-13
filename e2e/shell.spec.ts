@@ -20,7 +20,8 @@ for (const lang of LOCALES)
         if (theme === 'dark') await expect(html).toHaveClass(/ion-palette-dark/);
         else await expect(html).not.toHaveClass(/ion-palette-dark/);
 
-        await expect(page.getByTestId('page-home').locator('ion-title')).toHaveText(strings[lang].tabs.home);
+        await expect(page.getByTestId('page-home').getByTestId('greeting')).toContainText('Sam');
+        await expect(page.getByTestId('tab-home')).toHaveText(strings[lang].tabs.short.home);
         expect(await noHorizontalOverflow(page)).toBe(true);
       });
 
@@ -49,7 +50,7 @@ test.describe('first launch', () => {
     await seedToken(page);
     await page.goto('/tabs/home');
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-    await expect(page.getByTestId('page-home').locator('ion-title')).toHaveText(ar.tabs.home);
+    await expect(page.getByTestId('tab-home')).toHaveText(ar.tabs.short.home);
   });
 });
 

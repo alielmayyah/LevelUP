@@ -22,21 +22,16 @@ describe('TabBar', () => {
   // see, so these query the buttons directly. e2e/tabs.spec.ts checks roles.
   const tabs = () => Array.from(document.querySelectorAll('ion-tab-button'));
 
-  it('tab bar has 5 tabs in order', () => {
+  it('tab bar has 5 tabs in order, named by their visible labels', () => {
     renderAt('/tabs/home');
-    expect(tabs().map((t) => t.textContent)).toEqual(['Home', 'Progress', 'Goals', 'Leaderboard', 'Profile']);
+    expect(tabs().map((t) => t.textContent)).toEqual(['Home', 'Progress', 'Goals', 'Board', 'Profile']);
+    // No aria-label on the buttons: the visible label is the name (WCAG 2.5.3).
+    expect(tabs().some((t) => t.hasAttribute('aria-label'))).toBe(false);
   });
 
-  it('every tab has an accessible name, even when labels are hidden', () => {
+  it('sits in a navigation landmark', () => {
     renderAt('/tabs/home');
-    expect(tabs().map((t) => t.getAttribute('aria-label'))).toEqual([
-      'Home',
-      'Progress',
-      'Goals',
-      'Leaderboard',
-      'Profile',
-    ]);
-    expect(screen.getByRole('tablist')).toHaveAttribute('aria-label', 'Main navigation');
+    expect(screen.getByRole('navigation', { name: 'Main navigation' })).toBeInTheDocument();
   });
 
   it('pill sits under the active tab', () => {
@@ -48,7 +43,7 @@ describe('TabBar', () => {
     await setLanguage('ar');
     renderAt('/tabs/goals');
     expect(screen.getByTestId('tab-pill').style.transform).toBe('translateX(-200%)');
-    expect(tabs()[0]).toHaveAttribute('aria-label', 'الرئيسية');
+    expect(tabs()[0]).toHaveTextContent('الرئيسية');
   });
 
   it('pill hides outside the tabs', () => {
