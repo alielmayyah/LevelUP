@@ -1,0 +1,72 @@
+.lu-dialog {
+  inline-size: min(calc(100% - 32px), 360px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--lu-text);
+}
+
+.lu-dialog::backdrop {
+  background: color-mix(in srgb, var(--lu-pixel-ink) 55%, transparent);
+}
+
+.lu-dialog-box {
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+  border: 2px solid var(--lu-border);
+  border-radius: 12px;
+  background: var(--lu-surface);
+  box-shadow: 0 5px 0 var(--lu-pixel-shadow);
+}
+
+.lu-dialog-box:lang(ar) {
+  font-family: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+}
+
+.lu-dialog-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.lu-dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.lu-dialog-button {
+  min-block-size: 46px;
+  border: 2px solid var(--lu-border);
+  border-radius: 10px;
+  background: var(--lu-surface-2);
+  color: var(--lu-text);
+  box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.lu-dialog-confirm {
+  border-color: var(--ion-color-primary);
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+}
+
+.lu-dialog-confirm.is-destructive {
+  border-color: var(--lu-danger);
+  background: var(--lu-danger);
+  color: var(--lu-surface);
+}
+
+.lu-dialog-button:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}
+
+.lu-dialog-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--lu-pixel-shadow);
+}

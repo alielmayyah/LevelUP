@@ -1,0 +1,23 @@
+.lu-toast-region {
+  position: fixed;
+  z-index: 20;
+  inset-inline: 0;
+  bottom: calc(var(--lu-tabbar-height) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px));
+  display: grid;
+  justify-items: center;
+  padding-inline: var(--lu-gutter);
+  pointer-events: none;
+}
+
+.lu-toast {
+  margin: 0;
+  max-inline-size: 420px;
+  padding: 10px 14px;
+  border: 2px solid var(--lu-border);
+  border-radius: 10px;
+  background: var(--lu-text);
+  color: var(--lu-bg);
+  box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+  font-size: 0.9rem;
+  font-weight: 800;
+}

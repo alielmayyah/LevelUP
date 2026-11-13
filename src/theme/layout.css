@@ -3,6 +3,14 @@
  * --ion-safe-area-top). The body clears the floating tab bar and the home
  * indicator so the last item can always scroll into view.
  */
+/*
+ * When focus or a scroll brings a control into view, keep it clear of the
+ * floating tab bar (WCAG 2.4.11, focus not obscured).
+ */
+ion-tabs ion-content::part(scroll) {
+  scroll-padding-block-end: calc(var(--lu-tabbar-height) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px));
+}
+
 .lu-page-body {
   box-sizing: border-box;
   min-height: 100%;
