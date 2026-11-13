@@ -1,9 +1,12 @@
 # LevelUP
 
-White-label gym member app. Ionic React (Vite + Capacitor) in `apps/mobile`, NestJS + Prisma + PostgreSQL in `apps/api`, shared DTO types in `packages/shared`.
+White-label gym member app. This repo is the Ionic React app (Vite + Capacitor), at the repo root. The backend (NestJS + Prisma + PostgreSQL) lives in a separate repo: [levelup-backend](https://github.com/alielmayyah/levelup-backend). The app's DTO types are generated from the API's `openapi.json` into `src/api/schema.d.ts`, and components import them only from `src/api/types.ts`.
 
 - Spec: [LevelUP-Features-Core.md](LevelUP-Features-Core.md)
-- Plan: [docs/superpowers/plans/2026-11-13-levelup-core.md](docs/superpowers/plans/2026-11-13-levelup-core.md)
+- Plan: [docs/superpowers/plans/2026-11-13-levelup-core.md](docs/superpowers/plans/2026-11-13-levelup-core.md) (Phase 1 runs in `levelup-backend`, Phase 2 here)
+- Sprint 1: [plan](docs/superpowers/plans/2026-11-13-sprint-1-frontend-mvp.md) and [backlog](docs/sprints/sprint-1-backlog.md)
+- This repo holds the spec, plans, and backlog for both repos.
+- Local layout: clone both repos into one workspace folder, `LevelUP/levelup-frontend` (this repo) and `LevelUP/levelup-backend`. Paths like `../levelup-backend` depend on it.
 
 ## Rules for every task
 
@@ -30,8 +33,8 @@ Load the matching skill before starting work of that kind:
 
 | Task | Command |
 |---|---|
-| Start database | `docker compose up -d` |
-| Reset and seed database | `npm run db:reset` |
-| Run API and app | `npm run dev` |
+| Run the app | `npm run dev` (http://localhost:5173) |
 | Unit tests | `npm test` |
-| E2E tests | `npm -w apps/mobile run test:e2e` |
+| E2E tests | `npm run test:e2e` |
+| Regenerate API types | `npm run api:types` (reads `../levelup-backend/openapi.json`, or set `OPENAPI_SRC`) |
+| Run against the real API | Set `VITE_USE_MOCKS=false`, then in `levelup-backend`: `docker compose up -d`, `npm run db:reset`, `npm run start:dev` |

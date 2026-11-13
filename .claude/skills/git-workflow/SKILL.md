@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Use when creating a branch, committing, pushing, merging, opening or describing a pull request, or deploying in the LevelUP repo.
+description: Use when creating a branch, committing, pushing, merging, opening or describing a pull request, or deploying in the LevelUP app repo.
 ---
 
 # LevelUP Git Workflow
@@ -46,10 +46,11 @@ Format: `type(scope): imperative summary`. Keep the subject under 72 characters,
 | `chore` | Tooling, dependencies, config |
 | `ci` | GitHub Actions and deploy config |
 
-Scopes: `api`, `mobile`, `shared`, `db`, `e2e`, `repo`.
+Scopes: `mobile`, `types`, `e2e`, `repo`. Use `types` for changes to `src/api/types.ts` or a regenerated `src/api/schema.d.ts`. The backend lives in the separate `levelup-backend` repo, which has its own scopes.
 
 Examples:
-- `feat(api): add opt-in fitscore leaderboard boards`
+- `feat(mobile): add leaderboard board switcher`
+- `chore(types): regenerate api types for leaderboard boards`
 - `i18n(mobile): add arabic strings for goals page`
 - `fix(mobile): keep tab bar above home indicator`
 
@@ -60,7 +61,7 @@ Add a body when the reason isn't obvious from the subject. Wrap it at 72 charact
 One commit is one topic. Before committing, run `git status` and `git diff`, then stage by topic with `git add <paths>` (or `git add -p` for mixed files):
 
 1. Group the changed files by what they accomplish, not by folder.
-2. Commit each group separately, in dependency order. Schema and shared types go first, then the API, then the app, then tests that span both.
+2. Commit each group separately, in dependency order: API types first, then the screens that use them.
 3. Tests for a feature go in the same commit as the feature. A separate `test` commit is only for tests added on their own.
 4. Lockfile changes go with the commit that changed `package.json`.
 5. Don't mix formatting-only changes into a feature commit. Make a separate `style` or `chore` commit.
@@ -70,7 +71,8 @@ One commit is one topic. Before committing, run `git status` and `git diff`, the
 - Title: same format as a commit subject.
 - Body: a **Summary** (what and why, in 1–3 bullets), a **Testing** section (commands run and results), and **Screenshots** for UI changes (light, dark, and Arabic).
 - Open PRs with `gh pr create --base dev`. Use `--base staging` or `--base master` only for promotion PRs.
+- **Changes that span both repos** (a new or changed DTO): open the `levelup-backend` PR first. Then open the app PR, which runs `npm run api:types` against that branch's `openapi.json`. Link each PR from the other, and merge the API PR first.
 
 ## Before pushing
 
-Run `npm test` and `npm -w apps/mobile run test:e2e`. Push only when both pass. If something fails, fix it or report it. Never push with `--no-verify`.
+Run `npm test` and `npm run test:e2e`. Push only when both pass. If something fails, fix it or report it. Never push with `--no-verify`.

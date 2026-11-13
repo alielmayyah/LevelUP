@@ -10,18 +10,18 @@ A user-visible task isn't done until a Playwright test proves it works across de
 ## Layout
 
 ```
-apps/mobile/
-  playwright.config.ts
-  e2e/
-    fixtures.ts          login, locale, theme helpers
-    smoke.spec.ts        full journey: splash → login → every tab → sign out
-    <feature>.spec.ts    one file per feature: dashboard, leaderboard, goals...
+playwright.config.ts     (repo root)
+e2e/
+  fixtures.ts            login, locale, theme helpers
+  smoke.spec.ts          full journey: splash → login → every tab → sign out
+  <feature>.spec.ts      one file per feature: dashboard, leaderboard, goals...
 ```
 
 ## Config
 
-- `webServer` starts both servers with `npm run dev` from the repo root (API + app) and waits for `http://localhost:5173`.
-- Before the run, `globalSetup` runs `npm run db:reset` so every run starts from the seed data. Seed member `100001` is the demo user.
+- `webServer` starts the app with `npm run dev` and waits for `http://localhost:5173`.
+- **Mock mode** (`VITE_USE_MOCKS=true`, all of Sprint 1): nothing else is needed. `loginAs` writes `lu.token = mock.<fitId>` to storage, and edge states use the mock members `100002` and `100003`.
+- **Real API mode** (Sprint 2 on): the API lives in the separate `levelup-backend` repo. Point `LEVELUP_API_DIR` at its checkout (default `../levelup-backend`). A second `webServer` entry runs `npm --prefix $LEVELUP_API_DIR run start:dev` and waits for `http://localhost:3000/health`, and `globalSetup` runs `npm --prefix $LEVELUP_API_DIR run db:reset` so every run starts from the seed data. Postgres must already be up (`docker compose up -d` in the API repo). Seed member `100001` is the demo user.
 - Projects (device matrix):
 
 | Project | Device | Why |
@@ -45,7 +45,7 @@ apps/mobile/
 1. **Happy path** in `en` + `light`.
 2. **Arabic:** the same flow in `ar`. Assert `html[dir="rtl"]` and at least one Arabic string from `ar.json`.
 3. **Dark:** the same flow in `dark`. Assert `html.ion-palette-dark`.
-4. **Empty or edge state:** for example, a member with no scans (create one with the staff API in `beforeEach`).
+4. **Empty or edge state:** for example, a member with no scans (mock member `100002`, or in real API mode create one with the API's staff endpoints in `beforeEach`).
 5. **No horizontal overflow:** `expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)`.
 
 Loop over the language and theme combinations instead of copying tests:
@@ -81,7 +81,7 @@ Use `getByRole` with an accessible name first, then `getByTestId`. Never select 
 
 | Goal | Command |
 |---|---|
-| All projects | `npm -w apps/mobile run test:e2e` |
+| All projects | `npm run test:e2e` |
 | One project | `npx playwright test --project=iphone` |
 | One file, headed | `npx playwright test e2e/leaderboard.spec.ts --headed` |
 | Debug a failure | `npx playwright show-trace test-results/<test>/trace.zip` |
