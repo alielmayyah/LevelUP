@@ -1,0 +1,116 @@
+.lu-progress-grid {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 900px) {
+  .lu-progress-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .lu-progress-grid > .lu-scan {
+    grid-row: span 2;
+  }
+}
+
+.lu-scan .lu-card-head {
+  justify-content: space-between;
+  margin-block-end: 12px;
+}
+
+.lu-scan-date {
+  color: var(--lu-text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* 3 × 3 measurements; 2 columns on the narrowest phones so values never wrap. */
+.lu-scan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+@media (min-width: 360px) {
+  .lu-scan-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.lu-scan-cell {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 2px solid var(--lu-border);
+  border-radius: 8px;
+  background: var(--lu-surface-2);
+}
+
+.lu-scan-cell dt {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-inline-size: 0;
+  color: var(--lu-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.lu-scan-cell dt ion-icon {
+  flex: none;
+  color: var(--ion-color-primary);
+  font-size: 1rem;
+}
+
+:root.ion-palette-dark .lu-scan-cell dt ion-icon {
+  color: var(--ion-color-secondary);
+}
+
+.lu-scan-cell dt .lu-pixel-icon {
+  flex: none;
+  font-size: 1.1rem;
+}
+
+.lu-scan-cell dd {
+  margin: 0;
+  color: var(--lu-text);
+  font-size: 1.2rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.lu-scan-fat {
+  --px-fill: var(--lu-fat);
+  --px-hi: var(--lu-fat-hi);
+  --px-core: var(--lu-fat-core);
+  border-color: color-mix(in srgb, var(--lu-fat) 40%, var(--lu-border));
+}
+
+.lu-scan-muscle {
+  --px-fill: var(--lu-muscle);
+  --px-hi: var(--lu-muscle-hi);
+  border-color: color-mix(in srgb, var(--lu-muscle) 40%, var(--lu-border));
+}
+
+.lu-progress-chart .lu-card-head {
+  justify-content: space-between;
+}
+
+.lu-chart-units {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0 0;
+  color: var(--lu-text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.lu-skeleton-scan {
+  min-block-size: 260px;
+}
+
+.lu-skeleton-chart {
+  min-block-size: 220px;
+}
