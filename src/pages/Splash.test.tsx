@@ -5,6 +5,7 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setToken } from '../auth/token';
+import { brand } from '../brand.config';
 import { setLanguage } from '../i18n';
 import { resetSound } from '../sound/useSound';
 import Splash from './Splash';
@@ -34,8 +35,8 @@ describe('Splash', () => {
 
   it('shows the app name, tagline, and call to action', () => {
     renderSplash();
-    expect(screen.getByRole('heading', { name: 'LevelUP' })).toBeInTheDocument();
-    expect(screen.getByText('Track. Improve. Transform.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'LevelUP' })).toHaveAccessibleDescription('Track. Improve. Transform.');
+    expect(screen.getByRole('img', { name: 'LevelUP' })).toHaveAttribute('src', brand.logo);
     expect(screen.getByRole('button', { name: 'Tap to Begin' })).toBeInTheDocument();
   });
 
@@ -47,7 +48,7 @@ describe('Splash', () => {
   });
 
   it('goes straight to home when already signed in', async () => {
-    await setToken('mock.100001');
+    await setToken('mock.101');
     renderSplash();
     await userEvent.click(screen.getByRole('button', { name: 'Tap to Begin' }));
     expect(await screen.findByText('home page')).toBeInTheDocument();
@@ -67,8 +68,8 @@ describe('Splash', () => {
   it('renders the Arabic copy', async () => {
     await setLanguage('ar');
     renderSplash();
-    expect(screen.getByText('تابع. تطوّر. تحوّل.')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'اضغط للبدء' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'كتم الصوت' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'LevelUP' })).toHaveAccessibleDescription('تابع. اتطوّر. اتغيّر.');
+    expect(screen.getByRole('button', { name: 'دوس عشان تبدأ' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'اكتم الصوت' })).toBeInTheDocument();
   });
 });

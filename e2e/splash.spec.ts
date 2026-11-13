@@ -1,5 +1,6 @@
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
+import { brand } from '../src/brand.config';
 import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
 
 const strings = { en, ar };
@@ -13,9 +14,16 @@ for (const lang of LOCALES)
         await page.goto('/');
         await expect(page).toHaveURL(/\/splash$/);
         const splash = page.getByTestId('page-splash');
-        await expect(splash.getByTestId('splash-logo')).toBeVisible();
-        await expect(splash.getByRole('heading', { name: 'LevelUP' })).toBeVisible();
-        await expect(splash.getByText(strings[lang].splash.tagline)).toBeVisible();
+        const scene = splash.getByTestId('splash-scene');
+        await expect(scene).toBeVisible();
+        await expect.poll(() => scene.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+        const logo = splash.getByRole('img', { name: brand.name });
+        await expect(logo).toBeVisible();
+        await expect(logo).toHaveAttribute('src', brand.logo);
+        await expect.poll(() => logo.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+        await expect(splash.getByRole('heading', { name: brand.name })).toHaveAccessibleDescription(
+          strings[lang].splash.tagline,
+        );
         const cta = splash.getByRole('button', { name: strings[lang].splash.cta });
         await expect(cta).toBeInViewport();
         expect(await noHorizontalOverflow(page)).toBe(true);
@@ -105,10 +113,31 @@ test.describe('landscape phone', () => {
   });
 });
 
+test('the artwork is full bleed while controls clear the safe areas', async ({ page }) => {
+  await page.goto('/splash');
+  await page.evaluate(() => {
+    const { style } = document.documentElement;
+    style.setProperty('--ion-safe-area-top', '59px');
+    style.setProperty('--ion-safe-area-bottom', '34px');
+  });
+  const splash = page.getByTestId('page-splash');
+  const bounds = (await splash.boundingBox())!;
+  const scene = (await splash.getByTestId('splash-scene').boundingBox())!;
+  const sound = (await splash.getByTestId('sound-toggle').boundingBox())!;
+  const logo = (await splash.getByTestId('splash-logo').boundingBox())!;
+  const cta = (await splash.getByRole('button', { name: en.splash.cta }).boundingBox())!;
+
+  expect(scene.x).toBeCloseTo(bounds.x);
+  expect(scene.width).toBeCloseTo(bounds.width);
+  expect(sound.y).toBeGreaterThanOrEqual(bounds.y + 59);
+  expect(logo.y).toBeGreaterThanOrEqual(bounds.y + 59);
+  expect(cta.y + cta.height).toBeLessThanOrEqual(bounds.y + bounds.height - 34);
+});
+
 test.describe('reduced motion', () => {
   test.use({ reducedMotion: 'reduce' });
 
-  test('starfield and glow ring stand still', async ({ page }) => {
+  test('starfield stands still', async ({ page }) => {
     await page.goto('/splash');
     const animations = await page
       .getByTestId('page-splash')

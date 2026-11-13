@@ -1,16 +1,5 @@
-/*
- * The splash is a night sky in both themes: the LevelUP wordmark and the
- * stars only read on a dark backdrop. The light and dark themes each set
- * their own --lu-splash-* tokens (src/theme/tokens.css).
- *
- *   logo mark      ← top
- *   LevelUP
- *   TAGLINE
- *   ~~ ribbon ~~   ← lower half, behind
- *   [ Tap to Begin ]
- */
 .lu-splash {
-  background: radial-gradient(ellipse at 50% 28%, var(--lu-splash-bg-2), var(--lu-splash-bg) 70%);
+  background: radial-gradient(ellipse at 50% 24%, var(--lu-splash-bg-2), var(--lu-splash-bg) 66%);
   color: var(--lu-splash-text);
   cursor: pointer;
   overflow: hidden;
@@ -18,170 +7,234 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Everything GSAP animates lives in here (its useGSAP scope). */
 .lu-splash-stage {
   position: absolute;
   inset: 0;
+  isolation: isolate;
 }
 
-/* Both canvases may sit under the notch and the home indicator. */
-.lu-splash-stars,
-.lu-splash-waves {
+.lu-splash-stage:lang(ar) {
+  font-family: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+}
+
+.lu-splash-scene {
   position: absolute;
-  display: block;
-  inline-size: 100%;
+  inset: auto 0 0;
+  block-size: 67%;
+  mask-image: linear-gradient(to bottom, transparent, black 24%);
   pointer-events: none;
 }
 
-.lu-splash-stars {
-  inset: 0;
+.lu-splash-scene img {
+  display: block;
+  inline-size: 100%;
   block-size: 100%;
+  object-fit: cover;
+  object-position: 80% 69%;
 }
 
-.lu-splash-waves {
-  inset-inline: 0;
-  inset-block-end: 0;
-  block-size: 60%;
-  /* Fade the ribbon's top edge into the sky. */
-  mask-image: linear-gradient(to bottom, transparent, black 35%);
-}
-
-/* Top inline-end corner: top-right in English, top-left in Arabic. */
-.lu-splash-sound {
+.lu-splash-scene::after {
+  content: '';
   position: absolute;
-  z-index: 2;
-  inset-block-start: calc(8px + var(--ion-safe-area-top, 0px));
-  inset-inline-end: calc(8px + max(var(--ion-safe-area-left, 0px), var(--ion-safe-area-right, 0px)));
-  color: var(--lu-splash-text);
-  background: color-mix(in srgb, var(--lu-splash-text) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--lu-splash-text) 16%, transparent);
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--lu-splash-bg),
+    color-mix(in srgb, var(--lu-splash-bg) 87%, transparent) 13%,
+    color-mix(in srgb, var(--lu-splash-bg) 48%, transparent) 29%,
+    transparent 58%,
+    color-mix(in srgb, var(--lu-splash-bg) 55%, transparent) 84%,
+    var(--lu-splash-bg) 100%
+  );
+}
+
+.lu-splash-stars {
+  position: absolute;
+  inset-block: 4% auto;
+  inset-inline: 0;
+  block-size: 42%;
+  pointer-events: none;
+}
+
+.lu-splash-stars::before,
+.lu-splash-stars::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  animation: lu-splash-drift 12s ease-in-out infinite alternate;
+}
+
+.lu-splash-stars::before {
+  background-image:
+    linear-gradient(var(--ion-color-secondary), var(--ion-color-secondary)),
+    linear-gradient(var(--lu-splash-star), var(--lu-splash-star)),
+    linear-gradient(var(--ion-color-secondary), var(--ion-color-secondary)),
+    linear-gradient(var(--ion-color-secondary), var(--ion-color-secondary)),
+    linear-gradient(var(--lu-splash-star), var(--lu-splash-star)),
+    linear-gradient(var(--ion-color-secondary), var(--ion-color-secondary)),
+    linear-gradient(var(--ion-color-secondary), var(--ion-color-secondary));
+  background-position:
+    7% 29%,
+    17% 58%,
+    29% 14%,
+    67% 22%,
+    84% 42%,
+    92% 65%,
+    72% 84%;
+  background-size:
+    4px 4px,
+    2px 2px,
+    3px 3px,
+    4px 4px,
+    2px 2px,
+    4px 4px,
+    3px 3px;
+}
+
+.lu-splash-stars::after {
+  background-image:
+    linear-gradient(var(--lu-accent), var(--lu-accent)), linear-gradient(var(--lu-accent), var(--lu-accent)),
+    linear-gradient(var(--lu-accent), var(--lu-accent)), linear-gradient(var(--lu-accent), var(--lu-accent));
+  background-position:
+    11% 73%,
+    23% 37%,
+    77% 50%,
+    90% 24%;
+  background-size:
+    3px 3px,
+    2px 2px,
+    3px 3px,
+    2px 2px;
+  animation-delay: -4s;
+}
+
+@keyframes lu-splash-drift {
+  from {
+    transform: translate(0, 0);
+    opacity: 0.65;
+  }
+
+  to {
+    transform: translate(6px, -9px);
+    opacity: 1;
+  }
 }
 
 .lu-splash-body {
   position: relative;
-  z-index: 1;
   box-sizing: border-box;
   block-size: 100%;
   display: grid;
   grid-template-rows: 1fr auto;
   justify-items: center;
   text-align: center;
-  /* Safe-area insets are physical (the notch is on a physical side in landscape). */
-  padding: calc(clamp(32px, 11vh, 120px) + var(--ion-safe-area-top, 0px)) calc(24px + var(--ion-safe-area-right, 0px))
-    calc(clamp(24px, 7vh, 64px) + var(--ion-safe-area-bottom, 0px)) calc(24px + var(--ion-safe-area-left, 0px));
+  /* A landscape notch is a physical inset in either reading direction. */
+  padding: calc(clamp(55px, 11vh, 96px) + var(--ion-safe-area-top, 0px)) calc(20px + var(--ion-safe-area-right, 0px))
+    calc(clamp(16px, 3.5vh, 32px) + var(--ion-safe-area-bottom, 0px)) calc(20px + var(--ion-safe-area-left, 0px));
 }
 
 .lu-splash-brand {
   position: relative;
   align-self: start;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(6px, 1.6vmin, 14px);
+  inline-size: clamp(180px, min(73vw, 37vh), 308px);
+  max-inline-size: 100%;
 }
 
-/* A soft halo behind the mark that slowly breathes (opacity only). */
-.lu-splash-brand::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset-block-start: -10%;
-  inline-size: clamp(180px, 46vmin, 380px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--ion-color-primary) 45%, transparent), transparent 65%);
-  animation: lu-splash-glow 4s ease-in-out infinite;
+.lu-splash-lockup {
+  position: relative;
+  margin: 0;
+  filter: drop-shadow(0 2px 8px var(--lu-splash-bg));
 }
 
-@keyframes lu-splash-glow {
-  0%,
-  100% {
-    opacity: 0.55;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.lu-splash-mark {
-  inline-size: clamp(84px, 22vmin, 170px);
+.lu-splash-lockup img {
+  display: block;
+  inline-size: 100%;
   block-size: auto;
-  margin-block-end: clamp(4px, 1.5vmin, 12px);
-  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--ion-color-primary) 55%, transparent));
-}
-
-.lu-splash-name {
-  margin: 0;
-  font-size: clamp(2.25rem, 10vmin, 4.5rem);
-  font-weight: 800;
-  font-style: italic;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-
-/* "UP" in the brand gradient, as in the logo. */
-.lu-splash-name-accent {
-  /* Room for the italic overhang, or the last letter gets clipped. */
-  padding-inline-end: 0.08em;
-  background: linear-gradient(100deg, var(--ion-color-secondary), var(--ion-color-primary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.lu-splash-tagline {
-  margin: 0;
-  color: var(--lu-splash-text-muted);
-  font-size: clamp(0.72rem, 2.3vmin, 0.95rem);
-  font-weight: 600;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-}
-
-/* Letter spacing breaks Arabic letter joining, and Arabic has no capitals. */
-.lu-splash-tagline:lang(ar) {
-  font-size: clamp(0.9rem, 2.8vmin, 1.1rem);
-  letter-spacing: 0;
 }
 
 .lu-splash-cta {
   align-self: end;
-  inline-size: min(100%, 340px);
-  min-block-size: 52px;
-  padding-inline: 28px;
-  border: 0;
-  border-radius: 999px;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--ion-color-primary) 88%, var(--lu-splash-text)),
-    var(--ion-color-primary)
-  );
-  color: var(--ion-color-primary-contrast);
-  font: inherit;
-  font-size: 1.05rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow:
-    0 10px 30px color-mix(in srgb, var(--ion-color-primary) 50%, transparent),
-    inset 0 1px 0 color-mix(in srgb, var(--lu-splash-text) 30%, transparent);
-  transition: transform 120ms ease-out;
+  inline-size: min(86%, 300px);
 }
 
-.lu-splash-cta:active {
-  transform: scale(0.97);
+@media (min-width: 720px) {
+  .lu-splash-scene img {
+    object-position: 65% 74%;
+  }
 }
 
-.lu-splash-cta:focus-visible {
-  outline: 2px solid var(--lu-splash-text);
-  outline-offset: 3px;
-}
+@media (orientation: landscape) and (max-height: 480px) {
+  .lu-splash-scene {
+    inset: 0;
+    block-size: 100%;
+    mask-image: none;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .lu-splash-brand::before {
-    animation: none;
+  .lu-splash-scene img {
+    object-position: 70% 76%;
+  }
+
+  .lu-splash-scene::after {
+    background: linear-gradient(
+      90deg,
+      var(--lu-splash-bg) 6%,
+      color-mix(in srgb, var(--lu-splash-bg) 92%, transparent) 30%,
+      color-mix(in srgb, var(--lu-splash-bg) 45%, transparent) 60%,
+      color-mix(in srgb, var(--lu-splash-bg) 16%, transparent)
+    );
+  }
+
+  .lu-splash-stage:dir(rtl) .lu-splash-scene {
+    transform: scaleX(-1);
+  }
+
+  .lu-splash-body {
+    inline-size: 58%;
+    padding-block-start: calc(22px + var(--ion-safe-area-top, 0px));
+  }
+
+  .lu-splash-brand {
+    align-self: center;
+    inline-size: clamp(130px, 56vh, 228px);
   }
 
   .lu-splash-cta {
-    transition: none;
+    inline-size: min(92%, 270px);
+  }
+}
+
+/*
+ * Intro: the scene and logo settle into place. Plain CSS, so no animation
+ * library ships in the first download. "backwards" applies only before and
+ * during the run, so the exit animation's inline styles win afterwards.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .lu-splash-scene {
+    animation: lu-splash-scene-in 700ms ease-out backwards;
+  }
+
+  .lu-splash-brand {
+    animation: lu-splash-brand-in 700ms ease-out backwards;
+  }
+}
+
+@keyframes lu-splash-scene-in {
+  from {
+    opacity: 0.45;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes lu-splash-brand-in {
+  from {
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lu-splash-stars::before,
+  .lu-splash-stars::after {
+    animation: none;
   }
 }
