@@ -1,0 +1,181 @@
+.lu-lb-banner {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-block-end: 16px;
+  text-align: center;
+}
+
+.lu-lb-banner ion-icon {
+  color: var(--lu-text-muted);
+  font-size: 28px;
+}
+
+.lu-lb-banner p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.lu-lb-banner .lu-cta {
+  inline-size: min(100%, 240px);
+}
+
+.lu-lb-me {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-block-end: 16px;
+  border-color: color-mix(in srgb, var(--lu-gold) 45%, var(--lu-border));
+  background:
+    radial-gradient(color-mix(in srgb, var(--lu-gold) 18%, transparent) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    var(--lu-surface);
+}
+
+.lu-lb-me > div {
+  display: grid;
+  gap: 2px;
+}
+
+.lu-lb-me-rank {
+  color: var(--lu-text);
+  font-size: 2.6rem;
+  line-height: 1;
+}
+
+.lu-lb-me-of {
+  color: var(--lu-text-muted);
+  font-weight: 700;
+}
+
+.lu-lb-me-trophy {
+  --px-fill: var(--lu-gold);
+  --px-hi: var(--lu-fat-core);
+  font-size: 72px;
+}
+
+/* Four boards: two per row on narrow phones so labels never squeeze. */
+.lu-lb-boards {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 400px) {
+  .lu-lb-boards {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+  }
+}
+
+.lu-lb-note {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 2px dashed var(--lu-border);
+  border-radius: 8px;
+  color: var(--lu-text-muted);
+  font-weight: 700;
+}
+
+.lu-lb-head,
+.lu-lb-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.lu-lb-head {
+  padding: 0 12px 6px;
+  color: var(--lu-text-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.lu-lb-head span:last-child {
+  text-align: end;
+}
+
+.lu-lb-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lu-lb-row {
+  min-block-size: 52px;
+  padding: 6px 12px;
+  border: 2px solid var(--lu-border);
+  border-radius: 10px;
+  background: var(--lu-surface);
+  box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+  /* Off-screen rows skip layout and paint, so 100+ rows still scroll smoothly. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 52px;
+}
+
+.lu-lb-row.is-me {
+  border-color: var(--ion-color-primary);
+  background: color-mix(in srgb, var(--ion-color-primary) 12%, var(--lu-surface));
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-pixel-shadow));
+}
+
+.lu-lb-rank {
+  display: grid;
+  place-items: center;
+  inline-size: 30px;
+  block-size: 30px;
+  border: 2px solid var(--lu-border);
+  border-radius: 6px;
+  background: var(--lu-surface-2);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.lu-medal-1,
+.lu-medal-2,
+.lu-medal-3 {
+  border-color: var(--medal);
+  background: var(--medal);
+  color: var(--lu-pixel-ink);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--medal) 50%, var(--lu-pixel-shadow));
+}
+
+.lu-medal-1 {
+  --medal: var(--lu-gold);
+}
+
+.lu-medal-2 {
+  --medal: var(--lu-silver);
+}
+
+.lu-medal-3 {
+  --medal: var(--lu-bronze);
+}
+
+.lu-lb-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-inline-size: 0;
+  font-weight: 800;
+}
+
+.lu-lb-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lu-lb-value {
+  color: var(--ion-color-primary);
+  font-family: 'Jersey 10', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  font-size: 1.45rem;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+:root.ion-palette-dark .lu-lb-value {
+  color: var(--ion-color-secondary);
+}
