@@ -1,0 +1,747 @@
+/*
+ * Home tab. Shared pixel building blocks (cards, chips, states) live in
+ * src/theme/pixel.css; this file holds what only Home uses.
+ */
+
+/* ---------- Header ---------- */
+
+.lu-home-hero {
+  margin-block-end: 16px;
+}
+
+.lu-home-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.lu-home-hello {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.lu-home-date {
+  margin: 0 0 4px;
+  color: var(--lu-text-muted);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+/* Jersey 10 is narrow and short, so it runs larger than a regular face would. */
+.lu-home-greeting {
+  margin: 0;
+  color: var(--lu-text);
+  font-size: clamp(2.25rem, 10vw, 3rem);
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.lu-home-orb {
+  display: inline-block;
+  margin-inline-start: 0.2em;
+  font-size: 0.8em;
+  vertical-align: -0.05em;
+  --px-fill: var(--lu-accent);
+  --px-hi: var(--lu-fat-core);
+  --px-core: var(--lu-fat-core);
+}
+
+.lu-bell-badge {
+  position: absolute;
+  inset-block-start: -7px;
+  inset-inline-end: -7px;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  min-inline-size: 22px;
+  block-size: 22px;
+  padding-inline: 5px;
+  border: 2px solid var(--lu-bg);
+  border-radius: 999px;
+  background: var(--lu-danger);
+  color: var(--lu-surface);
+  /* Not the pixel face: its 2 reads like a Z at this size. */
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+:root.ion-palette-dark .lu-bell-badge {
+  color: var(--lu-pixel-ink);
+}
+
+/* ---------- Grid ---------- */
+
+.lu-home-grid {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 768px) {
+  .lu-home-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lu-home-span {
+    grid-column: 1 / -1;
+  }
+
+  /* FitScore on one side, rank and mission stacked on the other. */
+  .lu-home-grid > .lu-fitscore {
+    grid-row: span 2;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* The score sits in the middle of the tall card rather than leaving an empty block under it. */
+  .lu-home-grid > .lu-fitscore .lu-fitscore-main {
+    flex: 1;
+    align-content: center;
+  }
+}
+
+/* A card that carries a hidden heading: the card inside fills the grid cell. */
+.lu-card-slot {
+  display: grid;
+}
+
+.lu-rank-more,
+.lu-mission-details {
+  display: grid;
+  gap: 2px;
+}
+
+/* ---------- FitScore ---------- */
+
+.lu-fitscore {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-border));
+  background:
+    radial-gradient(color-mix(in srgb, var(--ion-color-primary) 22%, transparent) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    linear-gradient(160deg, color-mix(in srgb, var(--ion-color-primary) 14%, var(--lu-surface)), var(--lu-surface) 70%);
+}
+
+.lu-fitscore .lu-card-head {
+  justify-content: space-between;
+}
+
+.lu-fitscore-private {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--lu-text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.lu-fitscore-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-block-start: 6px;
+}
+
+/* Chunky pixel digits with a hard purple drop, like an arcade score. */
+.lu-fitscore-score {
+  color: var(--lu-text);
+  font-size: clamp(4rem, 22vw, 5.5rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow: 4px 4px 0 color-mix(in srgb, var(--ion-color-primary) 55%, transparent);
+}
+
+.lu-fitscore-side {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+
+.lu-fitscore-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--lu-text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.lu-trend-up {
+  color: var(--lu-success);
+}
+
+.lu-trend-down {
+  color: var(--lu-danger);
+}
+
+/* Five chunky blocks; the ones up to the member's tier are lit in their tier's color. */
+.lu-tier-meter {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  inline-size: 100%;
+  margin-block-start: 6px;
+}
+
+.lu-tier-block {
+  block-size: 10px;
+  border: 2px solid color-mix(in srgb, var(--tier) 45%, var(--lu-border));
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--tier) 10%, transparent);
+}
+
+.lu-tier-block.is-on {
+  background: color-mix(in srgb, var(--tier) 70%, transparent);
+}
+
+.lu-tier-block.is-current {
+  border-color: var(--tier);
+  background: var(--tier);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--tier) 45%, var(--lu-pixel-shadow));
+}
+
+.lu-fitscore-empty {
+  margin: 12px 0 2px;
+  font-weight: 700;
+}
+
+/* ---------- Rank ---------- */
+
+.lu-rank {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lu-rank-text {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+  color: var(--lu-text-muted);
+  font-size: 0.85rem;
+}
+
+.lu-rank-text > strong {
+  color: var(--lu-text);
+  font-size: 1rem;
+}
+
+.lu-rank-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.lu-rank-number {
+  color: var(--lu-text);
+  font-family: 'Jersey 10', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.lu-rank-number:lang(ar) {
+  font-weight: 700;
+}
+
+.lu-rank-nudge {
+  color: var(--lu-text);
+  font-weight: 700;
+}
+
+/* ---------- Mission ---------- */
+
+.lu-mission {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 10px;
+  /* Room for the grass ledge along the bottom. */
+  padding-block-end: 30px;
+}
+
+/* A grassy pixel ledge: bright blades on top, grass, then soil. Decorative. */
+/*
+ * A strip of rubber gym-floor tiles: a lit top edge, dark mat squares split by
+ * seams every 28px, and a few lighter flecks, like the speckled rubber in a gym.
+ */
+.lu-mission-ground {
+  position: absolute;
+  inset: auto 0 0;
+  block-size: 16px;
+  border-block-start: 2px solid var(--lu-floor-edge);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 26px, var(--lu-floor-seam) 26px 28px),
+    repeating-linear-gradient(
+        90deg,
+        transparent 0 9px,
+        var(--lu-floor-fleck) 9px 11px,
+        transparent 11px 19px,
+        var(--lu-floor-fleck) 19px 21px,
+        transparent 21px 28px
+      )
+      0 4px / 100% 2px no-repeat,
+    repeating-linear-gradient(
+        90deg,
+        transparent 0 4px,
+        var(--lu-floor-fleck) 4px 6px,
+        transparent 6px 15px,
+        var(--lu-floor-fleck) 15px 17px,
+        transparent 17px 28px
+      )
+      0 10px / 100% 2px no-repeat,
+    var(--lu-floor);
+}
+
+/* The dumbbell rests on the floor. */
+.lu-mission-dumbbell {
+  position: absolute;
+  inset-block-end: 16px;
+  inset-inline-end: 16px;
+  font-size: 34px;
+  --px-fill: var(--lu-metal);
+  --px-hi: var(--lu-metal-hi);
+}
+
+.lu-mission-body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lu-ring {
+  position: relative;
+  flex: none;
+  inline-size: 76px;
+  block-size: 76px;
+}
+
+.lu-ring svg {
+  inline-size: 100%;
+  block-size: 100%;
+  transform: rotate(-90deg);
+}
+
+/* Mirrored in Arabic so the ring fills counter-clockwise. */
+.lu-ring:dir(rtl) svg {
+  transform: rotate(-90deg) scaleY(-1);
+}
+
+.lu-ring circle {
+  fill: none;
+  stroke-width: 7;
+}
+
+.lu-ring-track {
+  stroke: var(--lu-surface-2);
+}
+
+.lu-ring-fill {
+  stroke: var(--ion-color-primary);
+  stroke-dashoffset: var(--lu-ring-offset);
+  animation: lu-ring-fill 900ms ease-out both;
+}
+
+:root.ion-palette-dark .lu-ring-fill {
+  stroke: var(--ion-color-secondary);
+}
+
+@keyframes lu-ring-fill {
+  from {
+    stroke-dashoffset: var(--lu-ring-full);
+  }
+}
+
+.lu-ring-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--lu-text);
+  font-family: 'Jersey 10', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  font-size: 1.45rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.lu-mission-text {
+  display: grid;
+  gap: 4px;
+  min-inline-size: 0;
+  color: var(--lu-text);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.lu-mission-text strong {
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.lu-mission-eta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--lu-text-muted);
+  font-size: 0.875rem;
+}
+
+.lu-mission-eta ion-icon {
+  flex: none;
+  font-size: 1rem;
+}
+
+.lu-mission-empty {
+  margin: 0;
+  color: var(--lu-text-muted);
+}
+
+/* ---------- Tiles ---------- */
+
+.lu-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.lu-tiles > :last-child {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 360px) {
+  .lu-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lu-tiles > :last-child {
+    grid-column: auto;
+  }
+}
+
+/*
+ * Each tile has its metric's hue (--metric) on the top bar and the icon badge.
+ * The value itself stays green or red, because that says good or bad.
+ */
+.lu-tile {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 16px 8px 12px;
+  text-align: center;
+  border-color: color-mix(in srgb, var(--metric) 35%, var(--lu-border));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--metric) 10%, var(--lu-surface)), var(--lu-surface) 60%);
+}
+
+.lu-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  block-size: 4px;
+  background: var(--metric);
+}
+
+.lu-tile-fat {
+  --metric: var(--lu-fat);
+  --px-fill: var(--lu-fat);
+  --px-hi: var(--lu-fat-hi);
+  --px-core: var(--lu-fat-core);
+}
+
+/* The tile keeps the cyan muscle hue; the flexed arm itself is skin-toned. */
+.lu-tile-muscle {
+  --metric: var(--lu-muscle);
+  --px-fill: var(--lu-skin);
+  --px-hi: var(--lu-skin-hi);
+}
+
+.lu-tile-since {
+  --metric: var(--ion-color-secondary);
+  --px-fill: var(--ion-color-primary);
+  --px-hi: var(--lu-surface);
+  --px-core: var(--ion-color-secondary);
+}
+
+/* A big centered icon, no box, as in the pixel reference. */
+.lu-tile-badge {
+  display: grid;
+  place-items: center;
+  margin-block: 2px 4px;
+  font-size: 48px;
+  filter: drop-shadow(0 3px 0 var(--lu-pixel-shadow));
+}
+
+.lu-tile-value {
+  color: var(--lu-text-muted);
+  font-size: clamp(1.55rem, 6.8vw, 2.1rem);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.lu-tile-good .lu-tile-value {
+  color: var(--lu-success);
+}
+
+.lu-tile-bad .lu-tile-value {
+  color: var(--lu-danger);
+}
+
+.lu-tile-since .lu-tile-value {
+  color: var(--lu-text);
+}
+
+.lu-tile-label {
+  color: var(--lu-text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.lu-skeleton-title {
+  inline-size: 70%;
+  block-size: 1em;
+}
+
+.lu-skeleton-tall {
+  min-block-size: 150px;
+}
+
+.lu-skeleton-tile {
+  min-block-size: 84px;
+}
+
+/* ---------- Notifications sheet ---------- */
+
+.lu-notif {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  background: var(--lu-bg);
+  color: var(--lu-text);
+}
+
+.lu-notif-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 16px 8px;
+}
+
+.lu-notif-title {
+  flex: 1;
+  margin: 0;
+  font-size: 2.1rem;
+  line-height: 1;
+}
+
+/* "2 unread" on one side, "Mark all read" on the other. */
+.lu-notif-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 16px 10px;
+}
+
+.lu-notif-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 2px solid color-mix(in srgb, var(--lu-accent) 60%, var(--lu-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--lu-accent) 16%, var(--lu-surface));
+  color: var(--lu-text);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.lu-notif-count ion-icon {
+  color: var(--lu-accent);
+  font-size: 1.05rem;
+}
+
+.lu-notif-count.is-clear {
+  border-color: color-mix(in srgb, var(--lu-success) 50%, var(--lu-border));
+  background: color-mix(in srgb, var(--lu-success) 12%, var(--lu-surface));
+}
+
+.lu-notif-count.is-clear ion-icon {
+  color: var(--lu-success);
+}
+
+.lu-notif-markall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lu-notif-markall ion-icon {
+  font-size: 1.1rem;
+}
+
+.lu-notif-scroll {
+  overflow-y: auto;
+  padding: 0 16px calc(16px + var(--ion-safe-area-bottom, 0px));
+}
+
+.lu-notif-group + .lu-notif-group {
+  margin-block-start: 8px;
+}
+
+.lu-notif-group-title {
+  margin: 8px 0;
+  color: var(--lu-text-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lu-notif-group-title:lang(ar) {
+  font-size: 0.9rem;
+  letter-spacing: 0;
+}
+
+.lu-notif-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lu-notif-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  inline-size: 100%;
+  padding: 12px;
+  border: 2px solid var(--lu-border);
+  border-radius: 10px;
+  background: var(--lu-surface);
+  color: var(--lu-text);
+  box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.lu-notif-item:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 3px;
+}
+
+/* Unread rows carry a light brand tint, so new things stand out at a glance. */
+.lu-notif-item.is-unread {
+  border-color: color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-border));
+  background: color-mix(in srgb, var(--ion-color-primary) 8%, var(--lu-surface));
+}
+
+.lu-notif-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border: 2px solid color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ion-color-primary) 12%, var(--lu-surface));
+  color: var(--ion-color-primary);
+  font-size: 22px;
+}
+
+:root.ion-palette-dark .lu-notif-icon {
+  color: var(--ion-color-secondary);
+}
+
+.lu-notif-icon.is-mission {
+  --px-fill: var(--lu-gold);
+  --px-hi: var(--lu-fat-core);
+  border-color: color-mix(in srgb, var(--lu-gold) 50%, var(--lu-border));
+  background: color-mix(in srgb, var(--lu-gold) 16%, var(--lu-surface));
+  font-size: 30px;
+}
+
+.lu-notif-text {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+  min-inline-size: 0;
+}
+
+.lu-notif-item-title {
+  font-weight: 600;
+}
+
+.is-unread .lu-notif-item-title {
+  font-weight: 800;
+}
+
+.lu-notif-body {
+  color: var(--lu-text-muted);
+  font-size: 0.9rem;
+}
+
+.lu-notif-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--lu-text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.lu-notif-time ion-icon {
+  font-size: 0.9rem;
+}
+
+/* A square marker, like a lit pixel, for unread; a check once read. */
+.lu-notif-dot {
+  flex: none;
+  inline-size: 10px;
+  block-size: 10px;
+  background: var(--lu-accent);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--lu-accent) 40%, var(--lu-pixel-shadow));
+}
+
+.lu-notif-read {
+  flex: none;
+  color: var(--lu-success);
+  font-size: 1.1rem;
+}
+
+.lu-notif-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 2px solid var(--lu-border);
+  border-radius: 10px;
+  background: var(--lu-surface);
+}
+
+.lu-notif-skeleton-icon {
+  flex: none;
+  inline-size: 44px;
+  block-size: 44px;
+}
+
+.lu-notif-skeleton-text {
+  display: grid;
+  flex: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lu-ring-fill {
+    animation: none;
+  }
+}
+
+/* The loading list sits directly in the sheet, so it needs the same side padding as the groups. */
+.lu-notif > .lu-notif-list {
+  padding-inline: 16px;
+}
