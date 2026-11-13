@@ -15,6 +15,13 @@
   --lu-danger: #c62828;
   --lu-shadow-raised: 0 8px 24px rgba(17, 20, 24, 0.12);
 
+  /* Splash night sky. Dark in both themes: the logo wordmark is white. */
+  --lu-splash-bg: #140f2b;
+  --lu-splash-bg-2: #2b1c63;
+  --lu-splash-text: #f4f1ff;
+  --lu-splash-text-muted: #cbc2ee;
+  --lu-splash-star: #ffffff;
+
   --lu-tabbar-height: 64px;
   --lu-tabbar-gap: 16px;
   --lu-gutter: 16px;
@@ -30,6 +37,9 @@
   --lu-success: #4ade80;
   --lu-danger: #f87171;
   --lu-shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  --lu-splash-bg: #07060d;
+  --lu-splash-bg-2: #1b1240;
 }
 
 /* Ionic reads its own variables; point them at the tokens in both palettes. */

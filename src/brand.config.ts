@@ -15,8 +15,10 @@
 export interface AppBrand {
   /** The app title. */
   name: string;
-  /** Path under public/. */
+  /** Full lockup (mark + wordmark + tagline), path under public/. */
   logo: string;
+  /** The mark alone, for the splash. Path under public/, ≤ 100 KB. */
+  mark: string;
   colors: {
     /** Buttons, the active tab pill, progress rings, chart lines. */
     primary: string;
@@ -33,7 +35,8 @@ export interface GymConfig {
 
 export const brand: AppBrand = {
   name: 'LevelUP',
-  logo: '/brand/logo.png',
+  logo: '/brand/logo.webp',
+  mark: '/brand/mark.webp',
   colors: {
     primary: '#6c3cf0',
     secondary: '#b77cf7',

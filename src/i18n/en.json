@@ -13,6 +13,14 @@
     "error": "Something went wrong.",
     "empty": "Nothing here yet."
   },
+  "splash": {
+    "tagline": "Track. Improve. Transform.",
+    "cta": "Tap to Begin"
+  },
+  "sound": {
+    "mute": "Mute sound",
+    "unmute": "Unmute sound"
+  },
   "settings": {
     "language": "Language",
     "theme": "Theme"

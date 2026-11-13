@@ -7,6 +7,7 @@ import { brand } from './brand.config';
 import PageShell from './components/PageShell';
 import Tabs from './components/Tabs';
 import './i18n';
+import Splash from './pages/Splash';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -24,8 +25,7 @@ import './theme/tokens.css';
 
 setupIonicReact();
 
-/** Placeholders until #1 (splash) and #2 (login) land in plan Task 5. */
-const Splash: React.FC = () => <PageShell title={brand.name} testId="page-splash" />;
+/** Placeholder until #2 (login) lands. */
 const Login: React.FC = () => <PageShell title={brand.name} testId="page-login" />;
 
 const TabsWhenSignedIn: React.FC = () => (
@@ -42,7 +42,7 @@ const App: React.FC = () => (
         <Route exact path="/login" component={Login} />
         <Route path="/tabs" component={TabsWhenSignedIn} />
         <Route exact path="/">
-          <Redirect to="/tabs/home" />
+          <Redirect to="/splash" />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>
