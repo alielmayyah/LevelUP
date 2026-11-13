@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" data-avatar="standard-male" role="img" aria-label="LevelUP standard male avatar">
+  <title>LevelUP standard male avatar</title>
+  <desc>Front-facing pixel art character with curls, a tank, shorts, and solid-color sneakers.</desc>
+  <style>
+    /* Set the base colors on the inline SVG or an ancestor. */
+    [data-avatar="standard-male"] {
+      --_hair: var(--avatar-hair, #35192f);
+      --_skin: var(--avatar-skin, #d47c51);
+    }
+    [data-avatar="standard-male"] .outline { fill: #170817; }
+    [data-avatar="standard-male"] .skin { fill: var(--_skin); }
+    [data-avatar="standard-male"] .skin-shadow { fill: #bb603f; }
+    [data-avatar="standard-male"] .hair { fill: var(--_hair); }
+    [data-avatar="standard-male"] .hair-light { fill: #49263e; }
+    [data-avatar="standard-male"] .hair-shadow { fill: #2a1426; }
+    [data-avatar="standard-male"] .tank { fill: var(--avatar-tank, #4b3763); }
+    [data-avatar="standard-male"] .shorts { fill: var(--avatar-shorts, #3b2e51); }
+    [data-avatar="standard-male"] .shoes { fill: var(--avatar-shoes, #e1d7df); }
+    [data-avatar="standard-male"] .eyes { fill: var(--avatar-eyes, #170817); }
+    [data-avatar="standard-male"] .smile { fill: var(--avatar-smile, #170817); }
+
+    @supports (color: rgb(from #000 r g b)) {
+      /* Match the original palette at the default colors. Shadows scale each
+         channel toward black. Highlights use the available room toward white. */
+      [data-avatar="standard-male"] .skin-shadow {
+        fill: rgb(from var(--_skin) calc(r * 187 / 212) calc(g * 96 / 124) calc(b * 63 / 81));
+      }
+      [data-avatar="standard-male"] .hair-light {
+        fill: rgb(from var(--_hair) calc(r + (255 - r) * 20 / 202)
+                                    calc(g + (255 - g) * 13 / 230)
+                                    calc(b + (255 - b) * 15 / 208));
+      }
+      [data-avatar="standard-male"] .hair-shadow {
+        fill: rgb(from var(--_hair) calc(r * 42 / 53) calc(g * 20 / 25) calc(b * 38 / 47));
+      }
+    }
+  </style>
+  <g transform="translate(268 22) scale(1.1) translate(-1122 -12)" shape-rendering="crispEdges">
+    <g data-avatar-part="legs">
+      <path class="outline" d="M1219 685H1324V708H1316V760H1303V796H1205V777H1207V734H1219Z M1340 685H1445V734H1458V777H1460V796H1361V760H1348V708H1340Z"/>
+      <path class="skin" d="M1237 704H1298V753H1285V779H1224V739H1237Z M1365 704H1427V739H1440V779H1378V753H1365Z"/>
+    </g>
+    <g data-avatar-part="footwear">
+      <path class="outline" d="M1205 779H1303V811H1312V865H1300V877H1179V866H1165V820H1179V803H1205Z M1361 779H1460V803H1485V820H1498V866H1485V877H1365V865H1351V811H1361Z"/>
+      <path class="shoes" d="M1219 795H1273V820H1294V859H1183V822H1219Z M1391 795H1445V822H1480V859H1369V820H1391Z"/>
+    </g>
+    <g data-avatar-part="arms">
+      <path class="outline" d="M1218 415H1273V492H1260V533H1248V554H1236V570H1225V586H1237V654H1209V670H1165V655H1149V640H1135V585H1149V526H1165V488H1181V451H1200V433H1218Z M1389 415H1446V433H1464V451H1482V488H1498V526H1514V585H1528V640H1514V655H1499V670H1455V654H1427V586H1439V570H1427V554H1415V533H1403V492H1389Z"/>
+      <path class="skin" d="M1224 434H1254V498H1238V533H1221V562H1207V596H1222V639H1204V653H1167V639H1153V587H1167V529H1185V495H1202V453H1219V442H1224Z M1407 434H1437V442H1444V453H1461V495H1479V529H1496V587H1510V639H1496V653H1459V639H1440V596H1454V562H1441V533H1424V498H1407Z"/>
+    </g>
+    <g data-avatar-part="clothing">
+      <path class="outline" d="M1253 572H1409V591H1422V621H1437V639H1452V686H1444V705H1340V686H1324V705H1220V686H1212V639H1227V621H1241V591H1253Z"/>
+      <path class="shorts" d="M1254 586H1408V622H1422V640H1430V685H1350V636H1314V685H1233V640H1241V622H1254Z"/>
+      <path class="outline" d="M1254 413H1407V500H1424V533H1413V585H1395V601H1268V586H1248V533H1238V500H1254Z"/>
+      <path class="tank" d="M1271 429H1288V443H1298V455H1309V466H1352V454H1363V443H1373V429H1390V505H1403V533H1394V578H1387V585H1275V578H1268V533H1259V505H1271Z"/>
+    </g>
+    <g data-avatar-part="head">
+      <path class="outline" d="M1280 392H1380V432H1373V444H1362V456H1298V444H1288V431H1280Z"/>
+      <path class="skin" d="M1297 409H1363V443H1351V453H1309V443H1297Z"/>
+      <path class="skin-shadow" d="M1297 409H1363V435H1297Z"/>
+      <path class="outline" d="M1190 240H1219V221H1241V206H1417V222H1445V244H1474V278H1487V294H1500V337H1484V358H1470V374H1435V389H1417V405H1398V419H1261V405H1243V389H1220V374H1192V358H1176V340H1162V294H1174V276H1190Z"/>
+      <path class="skin" d="M1219 258H1236V242H1255V229H1391V243H1411V257H1436V293H1451V295H1481V338H1467V351H1434V375H1416V389H1386V404H1274V389H1244V375H1225V351H1194V339H1180V295H1205V292H1219Z"/>
+      <path class="eyes" d="M1261 282H1288V334H1261Z M1368 282H1395V334H1368Z"/>
+      <path class="smile" shape-rendering="auto" d="M1293 354L1302 348Q1313 361 1329 361Q1346 361 1355 348L1364 354Q1353 373 1329 373Q1306 373 1293 354Z"/>
+    </g>
+    <g data-avatar-part="curls">
+      <path class="outline" d="M1122 116H1150V81H1175V55H1225V34H1265V12H1323V34H1334V55H1342V12H1400V34H1418V55H1485V91H1519V120H1543V182H1524V230H1499V270H1478V295H1451V331H1436V264H1415V246H1391V228H1372V214H1282V224H1254V243H1236V264H1219V331H1205V295H1181V277H1162V229H1143V182H1122Z"/>
+      <path class="hair" d="M1148 128H1180V81H1220V100H1247V55H1278V34H1310V55H1333V77H1355V34H1388V55H1397V96H1422V77H1463V113H1495V134H1519V167H1497V188H1502V210H1483V230H1468V253H1450V242H1437V226H1414V211H1389V196H1362V210H1337V203H1305V212H1282V202H1251V218H1228V238H1211V253H1183V231H1170V198H1148Z"/>
+      <path class="hair-light" d="M1148 128H1180V81H1220V100H1247V55H1278V34H1310V55H1333V77H1355V34H1388V55H1397V96H1422V77H1463V113H1495V134H1519V154H1483V140H1450V110H1425V128H1396V95H1367V85H1345V126H1315V85H1291V117H1270V108H1247V142H1220V120H1197V153H1148Z"/>
+      <path class="hair-shadow" d="M1169 179H1197V169H1233V154H1268V142H1285V168H1324V142H1350V168H1389V152H1407V179H1461V199H1484V190H1498V215H1483V230H1468V253H1450V242H1437V226H1414V211H1389V196H1362V210H1337V203H1305V212H1282V202H1251V218H1228V238H1211V253H1183V231H1170Z"/>
+    </g>
+  </g>
+</svg>
