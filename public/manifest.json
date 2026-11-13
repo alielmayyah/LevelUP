@@ -1,0 +1,14 @@
+{
+  "short_name": "LevelUP",
+  "name": "LevelUP",
+  "icons": [
+    {
+      "src": "brand/logo.png",
+      "type": "image/png",
+      "sizes": "833x719",
+      "purpose": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone"
+}

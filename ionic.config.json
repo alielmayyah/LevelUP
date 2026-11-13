@@ -1,0 +1,7 @@
+{
+  "name": "levelup",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
