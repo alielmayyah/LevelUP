@@ -1,5 +1,6 @@
 import { IonIcon } from '@ionic/react';
 import { volumeHighOutline, volumeMuteOutline } from 'ionicons/icons';
+import { AnimatePresence, m } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
 import { useSound } from '../sound/useSound';
@@ -27,7 +28,19 @@ const SoundToggle: React.FC<SoundToggleProps> = ({ className }) => {
         toggle();
       }}
     >
-      <IonIcon icon={enabled ? volumeHighOutline : volumeMuteOutline} aria-hidden="true" />
+      {/* The icon swap is state-driven, so it uses Motion (see ui-standards → Animation). */}
+      <AnimatePresence mode="popLayout" initial={false}>
+        <m.span
+          key={enabled ? 'on' : 'off'}
+          className="lu-sound-icon"
+          initial={{ opacity: 0, scale: 0.5, rotate: -25 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          exit={{ opacity: 0, scale: 0.5, rotate: 25 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
+        >
+          <IonIcon icon={enabled ? volumeHighOutline : volumeMuteOutline} aria-hidden="true" />
+        </m.span>
+      </AnimatePresence>
     </button>
   );
 };

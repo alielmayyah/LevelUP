@@ -41,6 +41,47 @@ for (const lang of LOCALES)
       });
     });
 
+test('intro settles with everything fully shown', async ({ page }) => {
+  await page.goto('/splash');
+  const splash = page.getByTestId('page-splash');
+  for (const part of [
+    splash.getByTestId('splash-logo'),
+    splash.getByRole('heading'),
+    splash.getByRole('button', { name: en.splash.cta }),
+  ])
+    await expect(part).toHaveCSS('opacity', '1');
+});
+
+test('the exit animation hands over to login within 600 ms', async ({ page }) => {
+  await page.goto('/splash');
+  await expect(page.getByRole('button', { name: en.splash.cta })).toHaveCSS('opacity', '1');
+  // Time it inside the page, from the tap to the route change, so test polling doesn't count.
+  await page.evaluate(() => {
+    const w = window as unknown as { tapAt?: number; navAt?: number };
+    document.addEventListener('click', () => (w.tapAt ??= performance.now()), { capture: true });
+    const replace = history.replaceState.bind(history);
+    history.replaceState = (...args) => {
+      w.navAt ??= performance.now();
+      return replace(...args);
+    };
+  });
+  await page.getByTestId('page-splash').click();
+  await expect(page).toHaveURL(/\/login$/);
+  const elapsed = await page.evaluate(() => {
+    const w = window as unknown as { tapAt: number; navAt: number };
+    return w.navAt - w.tapAt;
+  });
+  expect(elapsed).toBeLessThanOrEqual(650); // 600 ms budget plus one frame of slack
+});
+
+test('the sound icon swaps when toggled', async ({ page }) => {
+  await page.goto('/splash');
+  const toggle = page.getByTestId('sound-toggle');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  await expect(toggle.locator('.lu-sound-icon')).toHaveCount(1);
+});
+
 test('signed-in member skips login', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/splash');

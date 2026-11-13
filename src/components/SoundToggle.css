@@ -13,6 +13,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.lu-sound-icon {
+  display: grid;
+  grid-area: 1 / 1;
+  place-items: center;
+}
+
 .lu-sound-toggle:focus-visible {
   outline: 2px solid var(--ion-color-primary);
   outline-offset: 2px;

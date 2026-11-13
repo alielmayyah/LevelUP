@@ -12,6 +12,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Everything GSAP animates lives in here (its useGSAP scope). */
+.lu-splash-stage {
+  position: absolute;
+  inset: 0;
+}
+
 /* Starfield: two tiled layers of dots drifting at different speeds. It may sit under the notch. */
 .lu-splash-stars {
   position: absolute;
@@ -153,6 +159,14 @@
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+}
+
+/*
+ * The breathing sits on the label, not the button: a running CSS animation
+ * would override GSAP's inline opacity on the button during the intro.
+ */
+.lu-splash-cta span {
+  display: inline-block;
   animation: lu-splash-breathe 2.4s ease-in-out infinite;
 }
 
@@ -175,7 +189,7 @@
   .lu-splash-stars::before,
   .lu-splash-stars::after,
   .lu-splash-ring::after,
-  .lu-splash-cta {
+  .lu-splash-cta span {
     animation: none;
   }
 }
