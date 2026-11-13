@@ -47,6 +47,26 @@ A UI task is done only when it passes every row of the checklist at the bottom.
 - Capacitor: `StatusBar.setOverlaysWebView({ overlay: true })`, with the status bar style switching with the theme.
 - Make sure the last scrollable item clears the floating tab bar: `IonContent` bottom padding = tab bar height + 16px + safe-area-bottom.
 
+## Animation
+
+Pick the lightest tool that does the job:
+
+| Need | Tool | Examples |
+|---|---|---|
+| A loop or a simple state change | CSS (`transition`, `@keyframes`) | Tab pill slide, glow pulse, skeleton shimmer, button press |
+| Animation driven by React state: something appears, leaves, reorders, or follows a gesture | Motion (`motion/react`) | Icon swap on a toggle, cards entering a list, leaderboard rows changing rank, swipe to dismiss |
+| A scripted sequence with steps and timing, SVG drawing, or scroll-driven effects | GSAP (`gsap` + `useGSAP` from `@gsap/react`) | Splash intro and exit, a mission-complete celebration, a FitScore count-up with staged reveals |
+| Page-to-page transitions | Ionic's built-in router animation | Never wrap Ionic pages in Motion or GSAP |
+
+Rules:
+- **Motion:** use `m.*` components inside the app-wide `<LazyMotion features={…} strict>` (in `src/motion/MotionProvider.tsx`), never `motion.*`. That keeps Motion's first load at about 5 KB, and the animation features load in their own chunk.
+- **GSAP:** animate inside `useGSAP(() => { … }, { scope: ref })` so everything is cleaned up when the component unmounts. Register plugins only in the component that uses them.
+- **Reduced motion:** Motion follows the device setting through `<MotionConfig reducedMotion="user">`. In GSAP, wrap timelines in `gsap.matchMedia()` with `(prefers-reduced-motion: no-preference)`, and jump to the end state otherwise. CSS uses `@media (prefers-reduced-motion: reduce)`.
+- Animate `transform` and `opacity` only.
+- Content must be readable with no animation running. Never leave something hidden until a timeline finishes. If JS fails, the screen still works.
+- Navigation never waits more than 600 ms on an exit animation.
+- Direction-aware movement (slide in from the start side) flips in RTL. Read the direction from `i18n.dir()`.
+
 ## Performance
 
 | Budget | Limit |

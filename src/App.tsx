@@ -7,6 +7,7 @@ import { brand } from './brand.config';
 import PageShell from './components/PageShell';
 import Tabs from './components/Tabs';
 import './i18n';
+import MotionProvider from './motion/MotionProvider';
 import Splash from './pages/Splash';
 
 /* Core CSS required for Ionic components to work properly */
@@ -36,16 +37,18 @@ const TabsWhenSignedIn: React.FC = () => (
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/splash" component={Splash} />
-        <Route exact path="/login" component={Login} />
-        <Route path="/tabs" component={TabsWhenSignedIn} />
-        <Route exact path="/">
-          <Redirect to="/splash" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
+    <MotionProvider>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/splash" component={Splash} />
+          <Route exact path="/login" component={Login} />
+          <Route path="/tabs" component={TabsWhenSignedIn} />
+          <Route exact path="/">
+            <Redirect to="/splash" />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </MotionProvider>
   </IonApp>
 );
 
