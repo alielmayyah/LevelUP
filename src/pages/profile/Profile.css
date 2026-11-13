@@ -1,0 +1,173 @@
+.lu-profile {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 900px) {
+  .lu-profile {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .lu-profile-id {
+    grid-column: 1 / -1;
+  }
+}
+
+.lu-profile-id {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Initials in a pixel tile, standing in for a photo. */
+.lu-avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 60px;
+  block-size: 60px;
+  border: 2px solid color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border));
+  border-radius: 10px;
+  background:
+    radial-gradient(color-mix(in srgb, var(--ion-color-primary-contrast) 18%, transparent) 1px, transparent 1.5px) 0 0 /
+      6px 6px,
+    var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  box-shadow: 0 3px 0 var(--ion-color-primary-shade);
+  font-size: 2rem;
+}
+
+.lu-profile-name {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.lu-profile-fitid {
+  margin: 4px 0 0;
+  color: var(--lu-text-muted);
+  font-weight: 700;
+}
+
+.lu-rows {
+  display: grid;
+  padding-block: 6px;
+}
+
+.lu-row-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 4px;
+  color: var(--ion-color-primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+:root.ion-palette-dark .lu-row-section {
+  color: var(--ion-color-secondary);
+}
+
+.lu-row-section:lang(ar) {
+  font-size: 0.9rem;
+  letter-spacing: 0;
+}
+
+.lu-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  min-block-size: 52px;
+  padding-block: 8px;
+  border-block-end: 2px solid var(--lu-surface-2);
+  color: var(--lu-text-muted);
+  font-weight: 600;
+}
+
+.lu-row:last-child {
+  border-block-end: 0;
+}
+
+.lu-row strong {
+  color: var(--lu-text);
+  font-weight: 800;
+  text-align: end;
+}
+
+.lu-row-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-inline-size: 0;
+  color: var(--lu-text);
+  font-weight: 700;
+}
+
+.lu-row-label > span {
+  display: grid;
+}
+
+.lu-row-label small {
+  color: var(--lu-text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.lu-row-label ion-icon {
+  flex: none;
+  color: var(--lu-text-muted);
+  font-size: 1.2rem;
+}
+
+.lu-row-button {
+  inline-size: 100%;
+  border: 0;
+  border-block-end: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.lu-signout,
+.lu-signout .lu-row-label,
+.lu-signout ion-icon {
+  color: var(--lu-danger);
+}
+
+.lu-choice {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 2px solid var(--lu-border);
+  border-radius: 8px;
+  background: var(--lu-surface-2);
+}
+
+.lu-choice button {
+  min-block-size: 36px;
+  min-inline-size: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--lu-text-muted);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.lu-choice button[aria-checked='true'] {
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+}
+
+.lu-choice button:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}
