@@ -24,5 +24,15 @@
     "system": "النظام",
     "light": "فاتح",
     "dark": "داكن"
+  },
+  "notifications": {
+    "scanResult": {
+      "title": "نتائج فحصك الجديد جاهزة",
+      "body": "مؤشر لياقتك الآن {{score}}."
+    },
+    "missionComplete": {
+      "title": "اكتملت المهمة!",
+      "body": "لقد حققت \"{{title}}\"."
+    }
   }
 }

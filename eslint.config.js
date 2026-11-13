@@ -18,6 +18,25 @@ export default tseslint.config(
     },
   },
   {
+    // Screens and components must go through api(); only the client and tests
+    // may reach the mock server, so turning mocks off can't break a screen.
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/api/client.ts', 'src/api/mock/**', 'src/**/*.test.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/api/mock', '**/api/mock/**', './mock', './mock/**'],
+              message: 'Import data through api() from src/api/client.ts, never from src/api/mock/.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['*.config.{ts,js}', 'e2e/**/*.ts', 'scripts/**/*.{js,mjs}'],
     languageOptions: {
       globals: globals.node,

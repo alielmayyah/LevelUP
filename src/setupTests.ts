@@ -8,7 +8,7 @@ afterEach(() => {
 });
 
 // jsdom doesn't implement matchMedia, which Ionic uses for platform and dark mode checks.
-if (!window.matchMedia) {
+if (typeof window !== 'undefined' && !window.matchMedia) {
   window.matchMedia = (query: string): MediaQueryList => ({
     matches: false,
     media: query,
