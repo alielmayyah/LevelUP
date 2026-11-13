@@ -1,47 +1,228 @@
 {
   "tabs": {
-    "navLabel": "التنقل الرئيسي",
+    "navLabel": "التنقّل الرئيسي",
     "home": "الرئيسية",
-    "progress": "التقدّم",
-    "goals": "الأهداف",
-    "leaderboard": "المتصدرون",
-    "profile": "حسابي"
+    "progress": "تقدّمك",
+    "goals": "أهدافك",
+    "leaderboard": "الترتيب",
+    "profile": "حسابي",
+    "short": {
+      "home": "الرئيسية",
+      "progress": "تقدّمك",
+      "goals": "أهدافك",
+      "leaderboard": "الترتيب",
+      "profile": "حسابي"
+    }
   },
   "common": {
-    "loading": "جارٍ التحميل…",
-    "retry": "إعادة المحاولة",
-    "error": "حدث خطأ ما.",
-    "empty": "لا يوجد شيء هنا بعد."
+    "loading": "بنحمّل…",
+    "retry": "جرّب تاني",
+    "error": "حصلت مشكلة.",
+    "empty": "مفيش حاجة هنا لسه."
+  },
+  "units": {
+    "kg": "كجم",
+    "kcal": "سعرة",
+    "cm": "سم",
+    "pts": "نقطة"
+  },
+  "progress": {
+    "subtitle": "تاريخ قياساتك",
+    "latest": "آخر قياس",
+    "metric": {
+      "weight": "الوزن",
+      "muscle": "العضلات",
+      "bodyFat": "دهون الجسم",
+      "bmi": "مؤشر كتلة الجسم",
+      "visceral": "الدهون الحشوية",
+      "water": "المية",
+      "protein": "البروتين",
+      "minerals": "المعادن",
+      "bmr": "معدل الحرق"
+    },
+    "empty": "مفيش قياسات لسه. احجز واحد من الريسبشن.",
+    "composition": "تكوين الجسم",
+    "fitScoreChart": "الـ FitScore مع الوقت",
+    "secondScan": "اتجاهاتك هتظهر بعد تاني قياس.",
+    "summary": "{{metric}} اتغيّر من {{from}} لـ {{to}} بين {{first}} و{{last}}.",
+    "error": "مقدرناش نحمّل تقدّمك."
+  },
+  "goals": {
+    "subtitle": "مهماتك",
+    "start": "البداية",
+    "target": "الهدف",
+    "progress": "التقدّم",
+    "due": "آخر ميعاد {{date}}",
+    "completedOn": "خلصت يوم {{date}}",
+    "upcomingNote": "هتبدأ بعد مهمتك الحالية",
+    "overdue": "متأخرة",
+    "empty": "مفيش حاجة هنا لسه",
+    "error": "مقدرناش نحمّل أهدافك.",
+    "journey": "رحلتك",
+    "done": "أهداف خلصت",
+    "section": {
+      "active": "شغّال عليها",
+      "upcoming": "الجاية",
+      "completed": "اللي خلصت"
+    }
+  },
+  "leaderboard": {
+    "subtitle": "ترتيب الجيم",
+    "yourRank": "ترتيبك في الجيم",
+    "board": {
+      "score": "أعلى نتيجة",
+      "progress": "أكبر تقدّم",
+      "muscle": "أكتر عضلات",
+      "fatLoss": "أكتر خسارة دهون"
+    },
+    "rank": "المركز",
+    "member": "العضو",
+    "value": {
+      "score": "FitScore",
+      "progress": "النقط",
+      "muscle": "العضلات",
+      "fatLoss": "الدهون"
+    },
+    "you": "إنت",
+    "hidden": "الـ FitScore بتاعك مخفي من الترتيب.",
+    "join": "انضم",
+    "joinFailed": "مقدرناش نضمّك. جرّب تاني.",
+    "noScan": "هتظهر هنا بعد أول قياس.",
+    "emptyBoard": "مفيش نتايج الشهر ده لسه",
+    "error": "مقدرناش نحمّل الترتيب.",
+    "of": "من {{total}}"
+  },
+  "profile": {
+    "subtitle": "إعدادات العضو",
+    "fitId": "رقم العضوية {{id}}",
+    "personal": "بياناتك",
+    "settings": "الإعدادات",
+    "age": "السن",
+    "height": "الطول",
+    "sound": "الصوت",
+    "soundHint": "أصوات الأبلكيشن",
+    "showFitScore": "اظهر الـ FitScore",
+    "showFitScoreHint": "على شاشاتك إنت",
+    "leaderboard": "اظهر الـ FitScore بتاعي في الترتيب",
+    "leaderboardHint": "خلّي باقي الأعضاء يشوفوا نتايجك",
+    "signOut": "اخرج",
+    "signOutConfirm": "عايز تخرج من {{name}}؟",
+    "cancel": "لأ",
+    "saveFailed": "مقدرناش نحفظ. جرّب تاني.",
+    "error": "مقدرناش نحمّل حسابك."
   },
   "splash": {
-    "tagline": "تابع. تطوّر. تحوّل.",
-    "cta": "اضغط للبدء"
+    "tagline": "تابع. اتطوّر. اتغيّر.",
+    "cta": "دوس عشان تبدأ"
+  },
+  "home": {
+    "greeting": {
+      "morning": "صباح الخير يا {{name}}",
+      "afternoon": "يومك سعيد يا {{name}}",
+      "evening": "مساء الخير يا {{name}}",
+      "late": "بتتمرّن بالليل كده يا {{name}}؟ احترامي."
+    },
+    "fitScore": {
+      "title": "FitScore",
+      "private": "خاص",
+      "since": "من آخر قياس",
+      "noChange": "مفيش تغيير من آخر قياس",
+      "firstScan": "أول قياس ليك",
+      "empty": "الـ FitScore بتاعك هيظهر بعد أول قياس."
+    },
+    "tier": {
+      "elite": "نخبة",
+      "strong": "قوي",
+      "onTrack": "ماشي صح",
+      "building": "بتبني",
+      "needsImprovement": "محتاج تحسين"
+    },
+    "rank": {
+      "title": "ترتيبك في الجيم",
+      "ofTotal": "{{rank}} من {{total}}",
+      "top": "من أحسن {{percent}}",
+      "behind_zero": "مفيش حد وراك لسه",
+      "behind_one": "عضو واحد وراك",
+      "behind_two": "عضوين وراك",
+      "behind_few": "{{count}} أعضاء وراك",
+      "behind_many": "{{count}} عضو وراك",
+      "behind_other": "{{count}} عضو وراك",
+      "toClimb_zero": "{{count}} نقطة وتوصل للمركز {{rank}}",
+      "toClimb_one": "نقطة واحدة وتوصل للمركز {{rank}}",
+      "toClimb_two": "نقطتين وتوصل للمركز {{rank}}",
+      "toClimb_few": "{{count}} نقط وتوصل للمركز {{rank}}",
+      "toClimb_many": "{{count}} نقطة وتوصل للمركز {{rank}}",
+      "toClimb_other": "{{count}} نقطة وتوصل للمركز {{rank}}",
+      "first": "إنت الأول، حافظ على مكانك!",
+      "join": "اشترك في ترتيب الـ FitScore",
+      "joinHint": "اعرف ترتيبك وسط أعضاء الجيم.",
+      "noScan": "ترتيبك هيظهر بعد أول قياس."
+    },
+    "mission": {
+      "title": "المهمة الحالية",
+      "progress": "{{done}} من {{total}} كجم",
+      "eta": "متوقع توصل {{date}}",
+      "noEta": "كمّل عشان تعرف هتوصل إمتى",
+      "empty": "مفيش مهمة دلوقتي. الكوتش هيحددلك واحدة قريب."
+    },
+    "wins": {
+      "title": "إنجازات {{month}}",
+      "bodyFat": "دهون الجسم",
+      "muscle": "العضلات",
+      "memberSince": "عضو من"
+    },
+    "notifications": {
+      "bell": "الإشعارات",
+      "bellUnread": "الإشعارات، {{n}} مش مقروءة",
+      "title": "الإشعارات",
+      "markAll": "علّم الكل مقروء",
+      "close": "اقفل",
+      "empty": "مفيش إشعارات جديدة.",
+      "unread": "مش مقروء",
+      "new": "جديد",
+      "earlier": "قبل كده",
+      "unreadCount": "{{n}} مش مقروءة",
+      "read": "مقروء"
+    },
+    "error": "مقدرناش نحمّل الصفحة."
+  },
+  "login": {
+    "welcome": "أهلاً بيك في {{name}}",
+    "fitId": "رقم العضوية",
+    "help": "اسأل الريسبشن لو معندكش رقم.",
+    "submit": "ادخل",
+    "signingIn": "بندخّلك…",
+    "notFound": "مش لاقيين رقم العضوية ده. راجع الريسبشن.",
+    "tooMany": "حاولت كتير. استنى دقيقة وجرّب تاني.",
+    "failed": "مقدرناش ندخّلك. اتأكد من النت وجرّب تاني."
   },
   "sound": {
-    "mute": "كتم الصوت",
-    "unmute": "تشغيل الصوت"
+    "mute": "اكتم الصوت",
+    "unmute": "شغّل الصوت"
   },
   "settings": {
     "language": "اللغة",
-    "theme": "المظهر"
+    "theme": "الشكل"
   },
   "language": {
     "en": "English",
-    "ar": "العربية"
+    "ar": "عربي",
+    "switchToAr": "ع: حوّل للعربي",
+    "switchToEn": "EN: حوّل للإنجليزي"
   },
   "theme": {
-    "system": "النظام",
+    "system": "زي الموبايل",
     "light": "فاتح",
-    "dark": "داكن"
+    "dark": "غامق"
   },
   "notifications": {
     "scanResult": {
-      "title": "نتائج فحصك الجديد جاهزة",
-      "body": "مؤشر لياقتك الآن {{score}}."
+      "title": "نتايج القياس الجديد وصلت",
+      "body": "الـ FitScore بتاعك بقى {{score}}."
     },
     "missionComplete": {
-      "title": "اكتملت المهمة!",
-      "body": "لقد حققت \"{{title}}\"."
+      "title": "خلّصت المهمة!",
+      "body": "حقّقت \"{{title}}\"."
     }
   }
 }

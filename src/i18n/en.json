@@ -5,7 +5,14 @@
     "progress": "Progress",
     "goals": "Goals",
     "leaderboard": "Leaderboard",
-    "profile": "Profile"
+    "profile": "Profile",
+    "short": {
+      "home": "Home",
+      "progress": "Progress",
+      "goals": "Goals",
+      "leaderboard": "Board",
+      "profile": "Profile"
+    }
   },
   "common": {
     "loading": "Loading…",
@@ -13,9 +20,181 @@
     "error": "Something went wrong.",
     "empty": "Nothing here yet."
   },
+  "units": {
+    "kg": "kg",
+    "kcal": "kcal",
+    "cm": "cm",
+    "pts": "pts"
+  },
+  "progress": {
+    "subtitle": "Your scan history",
+    "latest": "Latest scan",
+    "metric": {
+      "weight": "Weight",
+      "muscle": "Muscle",
+      "bodyFat": "Body fat",
+      "bmi": "BMI",
+      "visceral": "Visceral fat",
+      "water": "Water",
+      "protein": "Protein",
+      "minerals": "Minerals",
+      "bmr": "BMR"
+    },
+    "empty": "No scans yet. Book one at the front desk.",
+    "composition": "Body composition",
+    "fitScoreChart": "FitScore over time",
+    "secondScan": "Your trends appear after your second scan.",
+    "summary": "{{metric}} went from {{from}} to {{to}} between {{first}} and {{last}}.",
+    "error": "Couldn't load your progress."
+  },
+  "goals": {
+    "subtitle": "Your missions",
+    "start": "Start",
+    "target": "Target",
+    "progress": "Progress",
+    "due": "Due {{date}}",
+    "completedOn": "Completed {{date}}",
+    "upcomingNote": "Starts after your current mission",
+    "overdue": "Overdue",
+    "empty": "Nothing here yet",
+    "error": "Couldn't load your goals.",
+    "journey": "Your journey",
+    "done": "goals done",
+    "section": {
+      "active": "In progress",
+      "upcoming": "Up next",
+      "completed": "Completed"
+    }
+  },
+  "leaderboard": {
+    "subtitle": "Gym rankings",
+    "yourRank": "Your gym rank",
+    "board": {
+      "score": "Top Score",
+      "progress": "Top Progress",
+      "muscle": "Most Muscle",
+      "fatLoss": "Most Fat Lost"
+    },
+    "rank": "Rank",
+    "member": "Member",
+    "value": {
+      "score": "FitScore",
+      "progress": "Points",
+      "muscle": "Muscle",
+      "fatLoss": "Body fat"
+    },
+    "you": "you",
+    "hidden": "Your FitScore is hidden from the leaderboard.",
+    "join": "Join",
+    "joinFailed": "Couldn't join. Try again.",
+    "noScan": "You'll appear here after your first scan.",
+    "emptyBoard": "No results yet this month",
+    "error": "Couldn't load the leaderboard.",
+    "of": "of {{total}}"
+  },
+  "profile": {
+    "subtitle": "Member settings",
+    "fitId": "Fit ID {{id}}",
+    "personal": "Personal",
+    "settings": "Member settings",
+    "age": "Age",
+    "height": "Height",
+    "sound": "Sound",
+    "soundHint": "Play app sounds",
+    "showFitScore": "Show FitScore",
+    "showFitScoreHint": "On your own screens",
+    "leaderboard": "Show my FitScore on the leaderboard",
+    "leaderboardHint": "Let other members see your results",
+    "signOut": "Sign out",
+    "signOutConfirm": "Sign out of {{name}}?",
+    "cancel": "Cancel",
+    "saveFailed": "Couldn't save. Try again.",
+    "error": "Couldn't load your profile."
+  },
   "splash": {
     "tagline": "Track. Improve. Transform.",
     "cta": "Tap to Begin"
+  },
+  "home": {
+    "greeting": {
+      "morning": "Good morning, {{name}}",
+      "afternoon": "Good afternoon, {{name}}",
+      "evening": "Good evening, {{name}}",
+      "late": "Late session, {{name}}? Respect."
+    },
+    "fitScore": {
+      "title": "FitScore",
+      "private": "Private",
+      "since": "since last scan",
+      "noChange": "No change since last scan",
+      "firstScan": "Your first scan",
+      "empty": "Your FitScore appears after your first scan."
+    },
+    "tier": {
+      "elite": "Elite",
+      "strong": "Strong",
+      "onTrack": "On Track",
+      "building": "Building",
+      "needsImprovement": "Needs Improvement"
+    },
+    "rank": {
+      "title": "Gym leaderboard",
+      "ofTotal": "{{rank}} of {{total}}",
+      "top": "Top {{percent}}",
+      "behind_zero": "Nobody behind you yet",
+      "behind_one": "{{count}} member behind you",
+      "behind_two": "{{count}} members behind you",
+      "behind_few": "{{count}} members behind you",
+      "behind_many": "{{count}} members behind you",
+      "behind_other": "{{count}} members behind you",
+      "toClimb_zero": "{{count}} points to reach {{rank}}",
+      "toClimb_one": "{{count}} point to reach {{rank}}",
+      "toClimb_two": "{{count}} points to reach {{rank}}",
+      "toClimb_few": "{{count}} points to reach {{rank}}",
+      "toClimb_many": "{{count}} points to reach {{rank}}",
+      "toClimb_other": "{{count}} points to reach {{rank}}",
+      "first": "You're #1, defend it!",
+      "join": "Join the FitScore leaderboard",
+      "joinHint": "See how you rank against your gym.",
+      "noScan": "You'll be ranked after your first scan."
+    },
+    "mission": {
+      "title": "Current mission",
+      "progress": "{{done}} of {{total}} kg",
+      "eta": "Estimated {{date}}",
+      "noEta": "Keep going to see your ETA",
+      "empty": "No active mission. Your coach will set one soon."
+    },
+    "wins": {
+      "title": "{{month}} wins",
+      "bodyFat": "Body fat",
+      "muscle": "Muscle",
+      "memberSince": "Member since"
+    },
+    "notifications": {
+      "bell": "Notifications",
+      "bellUnread": "Notifications, {{n}} unread",
+      "title": "Notifications",
+      "markAll": "Mark all read",
+      "close": "Close",
+      "empty": "You're all caught up.",
+      "unread": "Unread",
+      "new": "New",
+      "earlier": "Earlier",
+      "unreadCount": "{{n}} unread",
+      "read": "Read"
+    },
+    "error": "Couldn't load your dashboard."
+  },
+  "login": {
+    "welcome": "Welcome to {{name}}",
+    "fitId": "Fit ID",
+    "help": "Ask the front desk if you don't have one.",
+    "submit": "Sign in",
+    "signingIn": "Signing in…",
+    "notFound": "We couldn't find that Fit ID. Check with the front desk.",
+    "tooMany": "Too many tries. Wait a minute and try again.",
+    "failed": "Couldn't sign in. Check your connection and try again."
   },
   "sound": {
     "mute": "Mute sound",
@@ -27,7 +206,9 @@
   },
   "language": {
     "en": "English",
-    "ar": "العربية"
+    "ar": "العربية",
+    "switchToAr": "ع: Switch to Arabic",
+    "switchToEn": "EN: Switch to English"
   },
   "theme": {
     "system": "System",
