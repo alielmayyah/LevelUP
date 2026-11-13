@@ -1,9 +1,11 @@
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { useTranslation } from 'react-i18next';
 import { Redirect, Route } from 'react-router-dom';
 
+import RequireAuth from './auth/RequireAuth';
+import { brand } from './brand.config';
 import PageShell from './components/PageShell';
+import Tabs from './components/Tabs';
 import './i18n';
 
 /* Core CSS required for Ionic components to work properly */
@@ -22,19 +24,25 @@ import './theme/tokens.css';
 
 setupIonicReact();
 
-/** Placeholder until the Home tab lands in #4–#9. */
-const Home: React.FC = () => {
-  const { t } = useTranslation();
-  return <PageShell title={t('tabs.home')} testId="page-home" />;
-};
+/** Placeholders until #1 (splash) and #2 (login) land in plan Task 5. */
+const Splash: React.FC = () => <PageShell title={brand.name} testId="page-splash" />;
+const Login: React.FC = () => <PageShell title={brand.name} testId="page-login" />;
+
+const TabsWhenSignedIn: React.FC = () => (
+  <RequireAuth>
+    <Tabs />
+  </RequireAuth>
+);
 
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path="/home" component={Home} />
+        <Route exact path="/splash" component={Splash} />
+        <Route exact path="/login" component={Login} />
+        <Route path="/tabs" component={TabsWhenSignedIn} />
         <Route exact path="/">
-          <Redirect to="/home" />
+          <Redirect to="/tabs/home" />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

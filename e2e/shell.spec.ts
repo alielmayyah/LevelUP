@@ -2,7 +2,7 @@ import { test as base } from '@playwright/test';
 
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
-import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
+import { expect, LOCALES, noHorizontalOverflow, seedToken, test, THEMES } from './fixtures';
 
 const strings = { en, ar };
 
@@ -11,8 +11,9 @@ for (const lang of LOCALES)
     test.describe(`${lang}/${theme}`, () => {
       test.use({ lang, theme });
 
-      test('shell applies language, direction, and theme', async ({ page }) => {
-        await page.goto('/');
+      test('shell applies language, direction, and theme', async ({ page, loginAs }) => {
+        await loginAs();
+        await page.goto('/tabs/home');
         const html = page.locator('html');
         await expect(html).toHaveAttribute('lang', lang);
         await expect(html).toHaveAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
@@ -23,9 +24,10 @@ for (const lang of LOCALES)
         expect(await noHorizontalOverflow(page)).toBe(true);
       });
 
-      test('page body leaves room for the floating tab bar', async ({ page }) => {
-        await page.goto('/');
-        const body = page.getByTestId('page-body');
+      test('page body leaves room for the floating tab bar', async ({ page, loginAs }) => {
+        await loginAs();
+        await page.goto('/tabs/home');
+        const body = page.getByTestId('page-home').getByTestId('page-body');
         await expect(body).toBeVisible();
         const { padding, tabbar } = await body.evaluate((el) => {
           const css = getComputedStyle(el);
@@ -44,9 +46,10 @@ test.describe('first launch', () => {
   base.use({ locale: 'ar-EG' });
 
   base('follows an Arabic device language when nothing is saved', async ({ page }) => {
-    await page.goto('/');
+    await seedToken(page);
+    await page.goto('/tabs/home');
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-    await expect(page.locator('ion-title')).toHaveText(ar.tabs.home);
+    await expect(page.getByTestId('page-home').locator('ion-title')).toHaveText(ar.tabs.home);
   });
 });
 

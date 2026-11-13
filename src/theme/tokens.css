@@ -13,6 +13,7 @@
   --lu-border: #dde1e6;
   --lu-success: #1a7f37;
   --lu-danger: #c62828;
+  --lu-shadow-raised: 0 8px 24px rgba(17, 20, 24, 0.12);
 
   --lu-tabbar-height: 64px;
   --lu-tabbar-gap: 16px;
@@ -28,6 +29,7 @@
   --lu-border: #2c3138;
   --lu-success: #4ade80;
   --lu-danger: #f87171;
+  --lu-shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 /* Ionic reads its own variables; point them at the tokens in both palettes. */

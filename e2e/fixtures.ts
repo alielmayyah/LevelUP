@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect, type Page } from '@playwright/test';
 
 export type Locale = 'en' | 'ar';
 export type Theme = 'light' | 'dark';
@@ -35,14 +35,17 @@ export const test = base.extend<Options & Fixtures>({
   },
 
   loginAs: async ({ page }, use) => {
-    await use(async (fitId = '100001') => {
-      await page.addInitScript(
-        ({ key, token }) => localStorage.setItem(key, token),
-        { key: `${PREFS}lu.token`, token: `mock.${fitId}` },
-      );
-    });
+    await use((fitId = '100001') => seedToken(page, fitId));
   },
 });
+
+/** Writes lu.token = mock.<fitId> before the page loads. */
+export async function seedToken(page: Page, fitId = '100001'): Promise<void> {
+  await page.addInitScript(({ key, token }) => localStorage.setItem(key, token), {
+    key: `${PREFS}lu.token`,
+    token: `mock.${fitId}`,
+  });
+}
 
 export { expect };
 
@@ -50,5 +53,5 @@ export const LOCALES: Locale[] = ['en', 'ar'];
 export const THEMES: Theme[] = ['light', 'dark'];
 
 /** True when the page has no horizontal scroll. */
-export const noHorizontalOverflow = (page: import('@playwright/test').Page) =>
+export const noHorizontalOverflow = (page: Page) =>
   page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);

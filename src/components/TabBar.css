@@ -1,0 +1,74 @@
+/*
+ * Floating tab bar: centered, at most 480 px wide, above the home indicator.
+ * Page bodies reserve room for it (see PageShell.css).
+ */
+.lu-tabbar {
+  --lu-tabbar-padding: 6px;
+
+  position: absolute;
+  z-index: 10;
+  inset-inline: 0;
+  bottom: calc(var(--lu-tabbar-gap) + var(--ion-safe-area-bottom, 0px));
+  box-sizing: border-box;
+  width: calc(100% - var(--lu-gutter) * 2 - var(--ion-safe-area-left, 0px) - var(--ion-safe-area-right, 0px));
+  max-width: 480px;
+  height: var(--lu-tabbar-height);
+  margin-inline: auto;
+  padding: var(--lu-tabbar-padding);
+  border: 1px solid var(--lu-border);
+  border-radius: 24px;
+  background: var(--lu-surface);
+  box-shadow: var(--lu-shadow-raised);
+}
+
+.lu-tab-pill {
+  position: absolute;
+  top: var(--lu-tabbar-padding);
+  bottom: var(--lu-tabbar-padding);
+  inset-inline-start: var(--lu-tabbar-padding);
+  width: calc((100% - var(--lu-tabbar-padding) * 2) / 5);
+  border-radius: 18px;
+  background: var(--ion-color-primary);
+  transition: transform 250ms ease;
+}
+
+.lu-tab-pill[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lu-tab-pill {
+    transition: none;
+  }
+}
+
+.lu-tabbar ion-tab-bar {
+  --background: transparent;
+  --border: 0;
+  position: relative;
+  height: 100%;
+  padding: 0;
+  border: 0;
+}
+
+.lu-tabbar ion-tab-button {
+  --background: transparent;
+  --color: var(--lu-text-muted);
+  --color-selected: var(--ion-color-primary-contrast);
+  --ripple-color: transparent;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.lu-tabbar ion-label {
+  margin-top: 2px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Below 360 px only icons show; each button keeps its aria-label. */
+@media (max-width: 359.98px) {
+  .lu-tabbar ion-label {
+    display: none;
+  }
+}

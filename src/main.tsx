@@ -3,7 +3,10 @@ import { createRoot } from 'react-dom/client';
 
 import App from './App';
 import { initLanguage } from './i18n';
+import { applyBrand } from './theme/applyBrand';
 import { initTheme } from './theme/theme';
+
+applyBrand();
 
 // Resolve language and theme before the first paint so the page never flashes
 // the wrong direction or palette.
