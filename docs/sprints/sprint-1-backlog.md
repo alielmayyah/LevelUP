@@ -34,9 +34,9 @@ Add this checklist to every Jira issue. A story is not done until all of these p
 
 | Fit ID | Name | Use it to test |
 |---|---|---|
-| `100001` | Sam Khalil | The full experience: 6 scans, goals, notifications, opted in to the leaderboard |
-| `100002` | Lina Haddad | A brand-new member: no scans, no goals, not on the leaderboard |
-| `100003` | Omar Aziz | One scan only, FitScore hidden, membership ending in 10 days |
+| `101` | Sam Khalil | The full experience: 6 scans, goals, notifications, opted in to the leaderboard |
+| `102` | Lina Haddad | A brand-new member: no scans, no goals, not on the leaderboard |
+| `103` | Omar Aziz | One scan only, FitScore hidden, membership ending in 10 days |
 
 Suggested values for Sam, so screenshots and examples match: FitScore 72 (Strong), up 3 since the last scan. Rank #4 of 13 on Top Score. Mission "Lose 5 kg of body fat", 3.0 of 5.0 kg done. This month: body fat −1.2%, muscle +0.8 kg.
 
@@ -112,10 +112,10 @@ The number, sign, and unit keep the same order in both.
 
 **Acceptance criteria**
 1. With `VITE_USE_MOCKS=true`, the app makes no network requests to any server.
-2. Signing in with `100001`, `100002`, or `100003` works. Any other ID is rejected.
+2. Signing in with `101`, `102`, or `103` works. Any other ID is rejected.
 3. The sixth sign-in attempt within 60 seconds is refused with a "too many tries" result.
 4. Any data request without a signed-in member is refused, and the app returns to the login screen.
-5. Lina (`100002`) gets empty values for FitScore, mission, and monthly wins. No response contains `NaN`.
+5. Lina (`102`) gets empty values for FitScore, mission, and monthly wins. No response contains `NaN`.
 6. When a member opts out of the leaderboard, they disappear from all four boards on the next request.
 7. Marking all notifications read sets the unread count to 0.
 8. Dates in the mock data are relative to today, so "this month" and "ends in 10 days" are always true.
@@ -207,36 +207,38 @@ Arabic (right to left)
 **Story:** As a member, I want a welcoming first screen, so that opening the app feels like the start of something.
 
 **Acceptance criteria**
-1. The screen shows the gym logo inside a softly pulsing glow ring, over a slowly drifting starfield.
-2. Under the logo are the gym name, the tagline, and "Tap to Begin".
-3. Tapping anywhere on the screen moves on: to Login if signed out, or straight to Home if already signed in.
+1. The screen shows the LevelUP logo (mark, wordmark and tagline "Track. Improve. Transform.") at the top. Below it is a pixel-art gym scene with two members training, over a dusk-purple sky with a few softly drifting pixel stars.
+2. A "Tap to Begin" button sits near the bottom. This button style is the app's shared primary button (`CtaButton`).
+3. Tapping anywhere on the screen moves on: to Login if signed out, or straight to Home if already signed in. The exit animation never delays navigation by more than 600 ms.
 4. Tapping plays the tap sound, unless sound is muted.
-5. The sound toggle is in the top corner (top-right in English, top-left in Arabic).
-6. With "reduce motion" on, the starfield and the ring stay still.
-7. On a notched phone, the starfield fills the whole screen including behind the notch, but the logo, text, and sound toggle stay inside the safe area.
-8. In landscape on a small phone (667×375), "Tap to Begin" is visible without scrolling.
-9. The logo image is 100 KB or smaller.
+5. The language button ("ع" / "EN") and the sound button sit together in the top corner: top-right in English, top-left in Arabic. Using either one does not count as "tap to begin".
+6. With "reduce motion" on, nothing animates: no intro and no drifting stars.
+7. On a notched phone, the scene fills the whole screen, including behind the notch. The logo, buttons and toggles stay inside the safe area.
+8. In landscape on a small phone (667×375), the scene fills the screen and the logo and "Tap to Begin" sit beside it, visible without scrolling. In Arabic the scene is mirrored.
+9. The splash looks the same in light and dark mode, because the white wordmark needs a dark backdrop. Every image on the splash is 100 KB or smaller.
 
 **UI/UX examples**
 
 ```
 ┌──────────────────────────┐
-│ ·    ·        ·     🔊  │  ← sound toggle, inside safe area
-│    ·       ·       ·     │
-│        ╭───────╮         │
-│   ·    │ LOGO  │  ·      │  ← glow ring pulses
-│        ╰───────╯         │
-│         Iron Gym         │
-│ Track. Improve. Transform. │
-│                          │
-│  ·    Tap to Begin    ·  │  ← gently fades in and out
+│               [ع] [🔊]  │  ← language + sound, inside safe area
+│   ·        ·        ·    │
+│          [mark]          │
+│         LevelUP          │
+│ TRACK. IMPROVE. TRANSFORM│
+│   ▓▓ pixel-art gym ▓▓    │
+│   ▓  two members     ▓   │
+│ ╭──────────────────────╮ │
+│ │     Tap to Begin     │ │  ← shared CtaButton
+│ ╰──────────────────────╯ │
 └──────────────────────────┘
 ```
 
 | Text | English | Arabic |
 |---|---|---|
-| Tagline | Track. Improve. Transform. | تابع. تطوّر. تحوّل. |
+| Tagline (in the logo, and for screen readers) | Track. Improve. Transform. | تابع. تطوّر. تحوّل. |
 | Call to action | Tap to Begin | اضغط للبدء |
+| Language button label | Switch to Arabic | التبديل إلى الإنجليزية |
 
 ---
 
@@ -250,45 +252,51 @@ Arabic (right to left)
 1. The screen has one field labeled "Fit ID" and one "Sign in" button. There is no password field.
 2. The field opens the numeric keypad on phones and accepts digits only. Typing `12ab` leaves `12`.
 3. The field accepts at most 8 digits.
-4. The "Sign in" button is disabled until 6 to 8 digits are entered.
+4. The "Sign in" button is disabled until 3 to 8 digits are entered.
 5. A valid ID signs the member in and opens the Home tab.
-6. An unknown ID shows the "not found" message under the field. The field keeps its value so the member can correct it.
+6. An unknown ID shows the "not found" message under the field, and the field is marked invalid. The field keeps its value so the member can correct it.
 7. After too many attempts, the "too many tries" message shows instead.
 8. While the request is running, the button shows a spinner and can't be pressed twice.
 9. A successful sign-in plays the success sound, unless sound is muted.
-10. Closing and reopening the app keeps the member signed in.
-11. The Fit ID field is always left-to-right, even in Arabic, because it is a number.
+10. Closing and reopening the app keeps the member signed in. A member who is already signed in skips this screen.
+11. The Fit ID field is always left-to-right, even in Arabic, because it is a number. In Arabic the digits line up on the right.
+12. The language button ("ع" / "EN") and the sound button sit together in the top corner, as on the splash.
+13. Sign in uses the shared primary button (`CtaButton`), the same as "Tap to Begin". The arrow on it flips in Arabic.
+14. Like the splash, the screen uses the dusk palette in both themes, with the pixel-art gym and logo at the top. On landscape phones and wide screens the scene and the form sit side by side, and Sign in is visible without scrolling at 667×375.
 
 **UI/UX examples**
 
 ```
 ┌──────────────────────────┐
-│                      🔊  │
-│         [logo]           │
-│     Welcome to Iron Gym  │
+│               [ع] [🔊]  │
+│          [logo]          │  ← logo in the gym's ceiling
+│   ▓▓ pixel-art gym ▓▓    │
 │                          │
-│  Fit ID                  │
-│  ┌────────────────────┐  │
-│  │ 100001             │  │
-│  └────────────────────┘  │
-│  Ask the front desk if   │  ← helper text
-│  you don't have one.     │
-│                          │
-│  ┌────────────────────┐  │
-│  │      Sign in       │  │
-│  └────────────────────┘  │
+│ Welcome to LevelUP       │
+│ 🪪 Fit ID                │
+│ ┌──────────────────────┐ │
+│ │ 101               │ │
+│ └──────────────────────┘ │
+│ ⓘ Ask the front desk if  │  ← helper text, replaced by errors
+│   you don't have one.    │
+│ ╭──────────────────────╮ │
+│ │      Sign in  →      │ │  ← shared CtaButton
+│ ╰──────────────────────╯ │
 └──────────────────────────┘
 ```
 
 | State | English | Arabic |
 |---|---|---|
+| Title | Welcome to LevelUP | أهلاً بك في LevelUP |
 | Field label | Fit ID | رقم العضوية |
 | Helper text | Ask the front desk if you don't have one. | اسأل مكتب الاستقبال إن لم يكن لديك رقم. |
 | Button | Sign in | تسجيل الدخول |
+| While signing in (screen reader) | Signing in… | جارٍ تسجيل الدخول… |
 | Unknown ID | We couldn't find that Fit ID. Check with the front desk. | لم نعثر على رقم العضوية هذا. راجع مكتب الاستقبال. |
 | Too many tries | Too many tries. Wait a minute and try again. | محاولات كثيرة. انتظر دقيقة ثم حاول مجدداً. |
+| Network or server error | Couldn't sign in. Check your connection and try again. | تعذّر تسجيل الدخول. تحقق من اتصالك ثم حاول مجدداً. |
 
-Try it: `100001` signs in. `999999` shows "not found". Six quick wrong tries show "too many tries".
+Try it: `101` signs in. `999` shows "not found". Six quick wrong tries show "too many tries".
 
 ---
 
@@ -299,7 +307,7 @@ Try it: `100001` signs in. `999999` shows "not found". Six quick wrong tries sho
 **Story:** As a member, I want to mute the app's sounds, so that I can use it quietly at the gym.
 
 **Acceptance criteria**
-1. A speaker icon button appears on the Splash and Login screens, and as a switch in Profile → Settings.
+1. A speaker icon button appears on the Splash and Login screens. (The Profile → Settings switch ships with #14.)
 2. Sound is on by default.
 3. Tapping the button mutes or unmutes. The icon changes between a speaker and a crossed-out speaker.
 4. When muted, no sound plays anywhere in the app.
@@ -357,10 +365,11 @@ On screens 768 px and wider, the cards sit in two columns. Pulling down refreshe
 
 **Acceptance criteria**
 1. The greeting uses the member's first name and depends on the time of day on their device (see the table).
-2. Under the greeting is a motivational quote.
-3. The quote stays the same all day and changes the next day.
-4. There are at least 14 quotes, each in English and Arabic.
-5. A long name or long quote wraps onto more lines. It never pushes the bell off screen or gets cut off.
+2. Above the greeting is today's date in the app's language ("Friday, November 13" / "الجمعة، 13 نوفمبر").
+3. A long name wraps onto more lines. It never pushes the bell off screen or gets cut off.
+4. Pulling to refresh also refreshes the greeting and date, so an app left open overnight greets the new day.
+
+_Changed during the sprint: the daily motivational quote was removed at the product owner's request._
 
 **UI/UX examples**
 
@@ -369,9 +378,7 @@ On screens 768 px and wider, the cards sit in two columns. Pulling down refreshe
 | 05:00–11:59 | Good morning, Sam | صباح الخير يا سام |
 | 12:00–16:59 | Good afternoon, Sam | طاب يومك يا سام |
 | 17:00–21:59 | Good evening, Sam | مساء الخير يا سام |
-| 22:00–04:59 | Late session, Sam? Respect. | تمرين في وقت متأخر يا سام؟ كل الاحترام. |
-
-Example quotes: "Small steps every day." / "خطوات صغيرة كل يوم." and "You showed up. That's the hard part." / "حضرت اليوم، وهذا أصعب جزء."
+| 22:00–04:59 | Late session, Sam? Respect. | بتتمرّن بالليل كده يا سام؟ احترامي. |
 
 ---
 
@@ -453,11 +460,11 @@ Example quotes: "Small steps every day." / "خطوات صغيرة كل يوم." 
 **Story:** As a member, I want to see my active goal and how close I am, so that I stay focused on it.
 
 **Acceptance criteria**
-1. The card shows the goal title, a progress ring with the percentage, kilograms done out of the total, the estimated completion date, and the coach's note.
+1. The card shows the goal title, a progress ring with the percentage, kilograms done out of the total, and the estimated completion date. (_Changed during the sprint: the coach's note was removed from Home at the product owner's request; it shows in the goal's details on the Goals tab._)
 2. The ring fills clockwise in English and counter-clockwise in Arabic, and animates from 0 when the card first appears.
 3. The percentage never shows below 0% or above 100%.
 4. If there isn't enough progress to estimate a date, the card shows the "keep going" line instead of a date.
-5. If there is no coach note, that line is left out, with no empty gap.
+5. _Removed with the coach's note (see 1)._
 6. A member with no active goal (Lina) sees the empty state.
 7. Dates are written in the app's language (for example "Dec 18" / "18 ديسمبر").
 8. Tapping the card opens the Goals tab.
@@ -667,15 +674,18 @@ FitScore
 **Story:** As a member, I want to see all my goals in one place, so that I know what I'm working on, what I've achieved, and what's next.
 
 **Acceptance criteria**
-1. A switch at the top has three options: Active, Completed, Upcoming. Active is selected first.
-2. Each goal card shows its title, the start and target values, and the deadline.
-3. Active goals also show a progress bar with a percentage.
-4. Completed goals show a check mark and the date they were completed, instead of a progress bar.
-5. Upcoming goals show "Starts after your current mission" and no progress bar.
-6. The progress bar fills from left to right in English and from right to left in Arabic.
-7. An option with no goals shows the empty state.
-8. A deadline in the past on an active goal is marked "Overdue" in the negative color.
-9. Switching options is instant, with no reload.
+1. All goals are on one page, so the member sees their whole progress at once. At the top, "Your journey" shows "2/4 goals done" and one pixel block per goal: filled for done, partly filled for the goal in progress, dashed for what's next.
+2. Below it are three sections, in this order: In progress, Up next, Completed, each with a count. A section with no goals is left out.
+3. Each goal is a compact row: the metric's pixel icon and color (flame for fat, flexed arm for muscle, scale for weight), the title, and one status line.
+4. In progress: the status line reads "60% · 3.0 / 5.0 kg", with a progress bar in the metric's color.
+5. Completed: a check mark and "Completed Oct 12, 2026", with a full green bar.
+6. Up next: "Starts after your current mission", with no bar.
+7. Tapping a row opens its details: start → target, the due date, and the coach's note.
+8. Bars and the journey fill from left to right in English and from right to left in Arabic.
+9. A member with no goals sees one empty state and no journey.
+10. A deadline in the past on an in-progress goal is marked "Overdue" in the negative color.
+
+_Changed during the sprint at the product owner's request: the Active / Completed / Upcoming switch was replaced by this single page._
 
 **UI/UX examples**
 
@@ -762,9 +772,9 @@ In Arabic, the range reads `20.0 ← 15.0 كجم`, with the arrow pointing from 
 **Story:** As a member, I want to see my details and control my settings, so that the app works the way I like and I decide what I share.
 
 **Acceptance criteria**
-1. The page shows three sections: Personal (name, Fit ID, age, height), Membership (plan, start and end dates), and Coach (name).
-2. When the membership ends within 14 days (Omar), a "Renews soon" badge shows next to the end date.
-3. A member with no coach sees "No coach assigned".
+1. The page shows the member's name and Fit ID, and a Personal section (age, height).
+2. _Removed during the sprint at the product owner's request: the Membership section (plan, dates, "Renews soon")._
+3. _Removed during the sprint at the product owner's request: the Coach section._
 4. Settings has these rows: Language, Theme, Sound, Show FitScore, Show my FitScore on the leaderboard, and Sign out.
 5. Changing Language switches the whole app and its direction immediately.
 6. Changing Theme switches the whole app immediately.
@@ -780,7 +790,7 @@ In Arabic, the range reads `20.0 ← 15.0 كجم`, with the arrow pointing from 
 ```
 ┌──────────────────────────┐
 │  (SK)  Sam Khalil        │
-│        Fit ID 100001     │
+│        Fit ID 101     │
 ├─ Personal ───────────────┤
 │ Age            29        │
 │ Height         178 cm    │
@@ -826,7 +836,7 @@ In Arabic, the range reads `20.0 ← 15.0 كجم`, with the arrow pointing from 
 
 **Acceptance criteria**
 1. One automated journey passes on all 5 device sizes, in both languages and both themes: splash → sign in → visit all 5 tabs → sign out.
-2. A second journey signs in as the new member (`100002`), visits every tab, and confirms each one shows an empty state, with no `NaN` or `undefined` anywhere on the page.
+2. A second journey signs in as the new member (`102`), visits every tab, and confirms each one shows an empty state, with no `NaN` or `undefined` anywhere on the page.
 3. No screen scrolls sideways at 320 px in either language.
 4. On the iPhone size, the tab bar sits above the home indicator on every tab.
 5. Every tab has been looked at in Arabic + dark mode, on the notched iPhone size and at 320 px, and any problems found are fixed.
@@ -835,7 +845,7 @@ In Arabic, the range reads `20.0 ← 15.0 كجم`, with the arrow pointing from 
 8. A pull request into `dev` is open, with screenshots in light, dark, and Arabic.
 
 **UI/UX examples**
-- Sprint demo script: open the app → tap the splash → sign in as `100001` → show Home → switch to Arabic in Profile → switch to dark mode → walk through each tab → turn off Show FitScore and return to Home → sign out → sign in as `100002` to show the empty states.
+- Sprint demo script: open the app → tap the splash → sign in as `101` → show Home → switch to Arabic in Profile → switch to dark mode → walk through each tab → turn off Show FitScore and return to Home → sign out → sign in as `102` to show the empty states.
 
 ---
 

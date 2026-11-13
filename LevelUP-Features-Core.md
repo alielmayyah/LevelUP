@@ -19,7 +19,7 @@ This is a reduced version of the full feature list. It excludes LevelUP Score (X
 | 1 | Splash Screen | Onboarding | Animated welcome screen with logo, glow ring, starfield, tagline, and "Tap to Begin" | Planned |
 | 2 | Fit ID Login | Onboarding | Sign in with a 6–8 digit numeric ID from the front desk, no password. Repeated attempts are rate-limited. | Planned |
 | 3 | Sound Toggle | Onboarding | Mute/unmute button for audio feedback, on the splash and login screens and in Settings. Saved on the device. | Planned |
-| 4 | Personalized Greeting | Dashboard | Time-of-day greeting by first name with a quote that rotates daily | Planned |
+| 4 | Personalized Greeting | Dashboard | Time-of-day greeting by first name with today's date | Planned |
 | 5 | Leaderboard Summary | Dashboard | Your rank on the Top Score board, top %, members behind, and points needed to climb. Shows a "Join the leaderboard" prompt if you haven't opted in. | Planned |
 | 6 | FitScore | Dashboard | Private 0–100 body composition score with change since last scan and tier (Elite, Strong, On Track, Building, Needs Improvement). Can be hidden in Settings. | Planned |
 | 7 | Current Mission | Dashboard | Active goal with % done, kg progress, estimated completion, and coach note | Planned |

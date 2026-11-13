@@ -6,7 +6,7 @@
 
 **Architecture:** A single Ionic React app (Vite + Capacitor) at the root of this repo. The backend lives in a separate repo, [`levelup-backend`](https://github.com/alielmayyah/levelup-backend), and is not touched in this sprint. Every screen calls `api<T>(path, init)`. When `VITE_USE_MOCKS=true`, `api` sends the call to an in-memory mock server, which answers from typed fixtures and keeps state (settings, read notifications, opt-in) for the session. The mock routes and DTOs match the backend contract in the [core plan](2026-11-13-levelup-core.md) Tasks 5–9, so in Sprint 2 the NestJS API replaces the mocks by setting the flag to `false`. In Sprint 2, `src/api/types.ts` also switches from hand-written interfaces to re-exports of types generated from the API's `openapi.json` (core plan, Task 10). No component changes are needed.
 
-**Tech Stack:** Node 22 LTS, TypeScript (strict), Ionic 8 + React 18 + Vite + Capacitor 7, i18next + react-i18next, Chart.js via react-chartjs-2 (lazy-loaded), date-fns, Vitest + Testing Library, Playwright.
+**Tech Stack:** Node 22 LTS, TypeScript (strict), Ionic 8 + React 18 + Vite + Capacitor 7, i18next + react-i18next, small hand-built SVG line charts (lazy-loaded; chosen over Chart.js during the sprint to stay inside the 80 KB tab budget and fit the pixel style), Intl for dates, Vitest + Testing Library, Playwright.
 
 **Spec:** [LevelUP-Features-Core.md](../../../LevelUP-Features-Core.md). Features 1–16 are in scope. Feature 17 (Backend API) is Sprint 2.
 
@@ -26,7 +26,7 @@
 | Topic | Decision |
 |---|---|
 | Mock switch | `VITE_USE_MOCKS=true` selects the mock server. Mock latency is set by `VITE_MOCK_LATENCY_MS`: 300 by default, and 0 in unit tests. |
-| Mock members | `100001` Sam (full history, opted in, coach assigned). `100002` Lina (new member: 0 scans, no goals, opted out). `100003` Omar (1 scan, `showFitScore=false`, membership ends in 10 days). There are 12 more opted-in filler members, so the leaderboard has rows. |
+| Mock members | `101` Sam (full history, opted in, coach assigned). `102` Lina (new member: 0 scans, no goals, opted out). `103` Omar (1 scan, `showFitScore=false`, membership ends in 10 days). There are 12 more opted-in filler members, so the leaderboard has rows. |
 | Mock auth | Login returns the token `mock.<fitId>`. An unknown Fit ID returns 401. The 6th attempt within 60 s returns 429. |
 | Mock state | It lives in memory and resets on page reload. Settings changes also go to Preferences (`lu.mock.settings.<fitId>`), so a reload keeps them. |
 | Mock dates | Fixtures are built relative to `new Date()` when the mock server starts, so "this month", "renews soon", and goal ETAs always look current. |
@@ -40,7 +40,7 @@
 ## Review Focus
 
 1. **Arabic layout.** Expected: the tab pill, back arrows, progress bars, chart axes, and `▲/▼` change indicators mirror correctly in RTL, and mixed text such as `#3` or `+0.8 kg` doesn't scramble. Test: the `ar` run in each e2e spec (Tasks 4–9), plus a `formatSigned` unit test in Task 2.
-2. **The new-member path (100002).** Expected: every tab renders an empty state with no `NaN`, `undefined`, or blank card. Test: `newMember.spec.ts` in Task 10.
+2. **The new-member path (102).** Expected: every tab renders an empty state with no `NaN`, `undefined`, or blank card. Test: `newMember.spec.ts` in Task 10.
 3. **Narrow screens and long Arabic strings.** Expected: no horizontal scroll at 320 px in either language, and long names truncate with an ellipsis. Test: the overflow assertion in every e2e spec, run under the `small` project.
 4. **Settings stay in sync across tabs.** Expected: turning off Show FitScore on Profile hides the FitScore card on Home and the FitScore chart on Progress without a reload, and opting out removes you from the leaderboard right away. Test: Task 9, `settings-sync` e2e.
 5. **Mock-to-real swap.** Expected: no component imports anything from `src/api/mock/`, so turning off the flag cannot break a screen. Test: Task 3 adds an ESLint `no-restricted-imports` rule that allows `src/api/mock/**` only from `src/api/client.ts` and test files.
@@ -101,7 +101,7 @@ playwright.config.ts
   - `formatNumber(n: number, digits?: number): string` and `formatSigned(n: number | null, unit?: string): string`. `formatSigned` returns `'+0.8 kg'`, `'−1.2%'` (a true minus sign), or `'—'` for null. The whole string is wrapped in U+2066/U+2069 isolates, so RTL doesn't reorder it.
   - `<PageShell title>`: an `IonPage` with a header that pads by `env(safe-area-inset-top)`, and content that pads its bottom by the tab bar height plus `env(safe-area-inset-bottom)`.
   - The token names in `tokens.css`, for both palettes: `--lu-bg`, `--lu-surface`, `--lu-surface-2`, `--lu-text`, `--lu-text-muted`, `--lu-border`, `--lu-success`, `--lu-danger`.
-  - e2e `fixtures.ts`: the `locale` and `theme` options (set storage and `colorScheme` before load), and `loginAs(fitId = '100001')`.
+  - e2e `fixtures.ts`: the `locale` and `theme` options (set storage and `colorScheme` before load), and `loginAs(fitId = '101')`.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -140,26 +140,26 @@ The `shell.spec.ts` e2e test loops over `en/ar` × `light/dark` and asserts `dir
 ```ts
 beforeEach(() => resetMockServer(new Date('2026-11-13T10:00:00Z')));
 it('login: known id → token, unknown → 401, 6th attempt → 429', async () => {
-  expect((await login('100001')).body).toMatchObject({ accessToken: 'mock.100001', member: { firstName: 'Sam' } });
-  expect((await login('999999')).status).toBe(401);
-  for (let i = 0; i < 3; i++) await login('999999');
-  expect((await login('999999')).status).toBe(429);
+  expect((await login('101')).body).toMatchObject({ accessToken: 'mock.101', member: { firstName: 'Sam' } });
+  expect((await login('999')).status).toBe(401);
+  for (let i = 0; i < 3; i++) await login('999');
+  expect((await login('999')).status).toBe(429);
 });
 it('no token → 401 on /me', async () => expect((await mockServer.handle('GET','/me',null,null)).status).toBe(401));
 it('new member dashboard has nulls, never NaN', async () => {
-  const d = (await get('/me/dashboard','100002')).body;
+  const d = (await get('/me/dashboard','102')).body;
   expect(d.fitScore).toBeNull(); expect(d.mission).toBeNull(); expect(d.monthlyWins).toEqual({ bodyFatChangePct: null, muscleGainedKg: null });
   expect(JSON.stringify(d)).not.toContain('NaN');
 });
 it('opt-out removes member from every board immediately', async () => {
-  await patch('/me/settings', { fitScoreOnLeaderboard: false }, '100001');
-  for (const b of ['score','progress','muscle','fatLoss']) expect((await get(`/leaderboard?board=${b}`,'100001')).body.rows.some(r => r.isMe)).toBe(false);
+  await patch('/me/settings', { fitScoreOnLeaderboard: false }, '101');
+  for (const b of ['score','progress','muscle','fatLoss']) expect((await get(`/leaderboard?board=${b}`,'101')).body.rows.some(r => r.isMe)).toBe(false);
 });
 it('read-all zeroes unread count', async () => {
-  await post('/me/notifications/read-all', '100001');
-  expect((await get('/me/dashboard','100001')).body.unreadNotifications).toBe(0);
+  await post('/me/notifications/read-all', '101');
+  expect((await get('/me/dashboard','101')).body.unreadNotifications).toBe(0);
 });
-it('unknown board → 400', async () => expect((await get('/leaderboard?board=xp','100001')).status).toBe(400));
+it('unknown board → 400', async () => expect((await get('/leaderboard?board=xp','101')).status).toBe(400));
 ```
 
 - [ ] **Step 2:** Run `npm test`. Expected: FAIL.
@@ -199,9 +199,9 @@ it('unknown board → 400', async () => expect((await get('/leaderboard?board=xp
 - Consumes: `api`, `brand`, `LoginResponse`
 - Produces: `useAuth()` and `useSound()`, exactly as in the core plan's Task 11. `<SoundToggle />` is reused in Profile.
 
-Behavior and copy follow the core plan's Task 11. Additions: a 429 shows the `login.tooMany` message ("Too many tries. Wait a minute and try again."). The input accepts 6–8 digits, and the submit button stays disabled until then. The starfield and glow ring stop under `prefers-reduced-motion`.
+Behavior and copy follow the core plan's Task 11. Additions: a 429 shows the `login.tooMany` message ("Too many tries. Wait a minute and try again."). The input accepts 3–8 digits, and the submit button stays disabled until then. The starfield and glow ring stop under `prefers-reduced-motion`.
 
-- [ ] **Step 1: Write the failing tests:** the 4 tests from the core plan's Task 11, plus `it('429 shows wait message')` and `it('submit disabled under 6 digits')`. `login.spec.ts` covers splash → `Tap to Begin` → typing `100001` → Home, in `en/ar` × `light/dark`.
+- [ ] **Step 1: Write the failing tests:** the 4 tests from the core plan's Task 11, plus `it('429 shows wait message')` and `it('submit disabled under 6 digits')`. `login.spec.ts` covers splash → `Tap to Begin` → typing `101` → Home, in `en/ar` × `light/dark`.
 - [ ] **Step 2:** Run the tests. Expected: FAIL.
 - [ ] **Step 3:** Implement.
 - [ ] **Step 4:** Run the tests. Expected: PASS.
@@ -211,9 +211,9 @@ Behavior and copy follow the core plan's Task 11. Additions: a 429 shows the `lo
 
 **ClickUp:** #4, #5, #6, #7, #8, and the bell half of #9
 
-**Files and interfaces:** these follow the core plan's Task 12 exactly. Copy goes through i18n keys, and the 14+ quotes exist in both `en.json` and `ar.json`. Monthly Wins and change values use `formatSigned`.
+**Files and interfaces:** these follow the core plan's Task 12 exactly. Copy goes through i18n keys. (The daily quote was dropped during the sprint at the product owner's request.) Monthly Wins and change values use `formatSigned`.
 
-- [ ] **Step 1: Write the failing tests:** all of the core plan's Task 12 tests, using fixtures `100001` and `100002` and with `mockApi` replaced by `resetMockServer`. Add `dashboard.spec.ts` covering `en/ar` × `light/dark` and member `100002`'s empty states.
+- [ ] **Step 1: Write the failing tests:** all of the core plan's Task 12 tests, using fixtures `101` and `102` and with `mockApi` replaced by `resetMockServer`. Add `dashboard.spec.ts` covering `en/ar` × `light/dark` and member `102`'s empty states.
 - [ ] **Step 2:** Run the tests. Expected: FAIL.
 - [ ] **Step 3:** Implement. On wide screens (≥ 768 px), the cards sit in a 2-column grid.
 - [ ] **Step 4:** Run the tests. Expected: PASS.
@@ -223,9 +223,9 @@ Behavior and copy follow the core plan's Task 11. Additions: a 429 shows the `lo
 
 **ClickUp:** #10 + #11
 
-**Files and interfaces:** these follow the core plan's Task 13. The chart components are `React.lazy` chunks so Chart.js stays out of the initial bundle. In RTL, the x-axis runs right to left (`reverse: true`) and the body-fat axis moves to the left.
+**Files and interfaces:** these follow the core plan's Task 13. The charts (`src/pages/progress/LineChart.tsx`, plain SVG) load as a `React.lazy` chunk after the page. In RTL, time runs right to left and the body-fat axis moves to the left. Each scan is a keyboard-focusable point (arrow keys move between scans) and each chart has a screen-reader summary.
 
-- [ ] **Step 1: Write the failing tests:** the 3 tests from the core plan's Task 13 (member `100003` covers both "one scan" and "FitScore hidden"), plus `progress.spec.ts` covering `en/ar` × `light/dark`.
+- [ ] **Step 1: Write the failing tests:** the 3 tests from the core plan's Task 13 (member `103` covers both "one scan" and "FitScore hidden"), plus `progress.spec.ts` covering `en/ar` × `light/dark`.
 - [ ] **Step 2:** Run the tests. Expected: FAIL.
 - [ ] **Step 3:** Implement.
 - [ ] **Step 4:** Run the tests and `npm run build`. Expected: PASS, and the Progress chunk is ≤ 80 KB gzip.
@@ -237,7 +237,7 @@ Behavior and copy follow the core plan's Task 11. Additions: a 429 shows the `lo
 
 **Files and interfaces:** these follow the core plan's Task 14. Values use `formatSigned`. Long names truncate with an ellipsis.
 
-- [ ] **Step 1: Write the failing tests:** the 5 tests from the core plan's Task 14, plus `goals.spec.ts` and `leaderboard.spec.ts` covering `en/ar` × `light/dark`. The leaderboard spec checks that member `100002` sees the Join banner, and that after joining (with no scans yet) the member is still absent from the monthly boards.
+- [ ] **Step 1: Write the failing tests:** the 5 tests from the core plan's Task 14, plus `goals.spec.ts` and `leaderboard.spec.ts` covering `en/ar` × `light/dark`. The leaderboard spec checks that member `102` sees the Join banner, and that after joining (with no scans yet) the member is still absent from the monthly boards.
 - [ ] **Step 2:** Run the tests. Expected: FAIL.
 - [ ] **Step 3:** Implement.
 - [ ] **Step 4:** Run the tests. Expected: PASS.
@@ -258,7 +258,7 @@ Behavior and copy follow the core plan's Task 11. Additions: a 429 shows the `lo
 
 Layout and copy follow the core plan's Task 15. The Settings list adds Language (English / العربية) and Theme (System / Light / Dark).
 
-- [ ] **Step 1: Write the failing tests:** the 4 tests from the core plan's Task 15 (the renews-soon test uses member `100003`), plus `it('switching language to Arabic flips dir')`. `settings-sync.spec.ts`: turn off Show FitScore on Profile, go to Home (no `fitscore-card`) and Progress (no `fitscore-chart`), then opt out and check the leaderboard has no `row-me`.
+- [ ] **Step 1: Write the failing tests:** the 4 tests from the core plan's Task 15 (the renews-soon test uses member `103`), plus `it('switching language to Arabic flips dir')`. `settings-sync.spec.ts`: turn off Show FitScore on Profile, go to Home (no `fitscore-card`) and Progress (no `fitscore-chart`), then opt out and check the leaderboard has no `row-me`.
 - [ ] **Step 2:** Run the tests. Expected: FAIL.
 - [ ] **Step 3:** Implement.
 - [ ] **Step 4:** Run the tests. Expected: PASS.
@@ -271,7 +271,7 @@ Layout and copy follow the core plan's Task 15. The Settings list adds Language 
 **Files:**
 - Create: `e2e/smoke.spec.ts`, `e2e/newMember.spec.ts`, `README.md`
 
-- [ ] **Step 1:** Write `smoke.spec.ts`: the core plan's Task 16 journey, run in `en/ar` × `light/dark` across all 5 device projects. Write `newMember.spec.ts`: log in as `100002`, visit every tab, and assert that each page shows its empty state and that the page text contains no `NaN` or `undefined`.
+- [ ] **Step 1:** Write `smoke.spec.ts`: the core plan's Task 16 journey, run in `en/ar` × `light/dark` across all 5 device projects. Write `newMember.spec.ts`: log in as `102`, visit every tab, and assert that each page shows its empty state and that the page text contains no `NaN` or `undefined`.
 - [ ] **Step 2:** Run `npm run test:e2e`. Expected: PASS on all projects.
 - [ ] **Step 3:** Run `npm run build`. Check the budgets: initial JS ≤ 200 KB gzip and each tab chunk ≤ 80 KB gzip. Record the numbers in the README.
 - [ ] **Step 4:** Use the `playwright-browser-check` skill to check every tab in Arabic + dark on the iPhone notch and at 320 px. Fix anything it finds and re-run Step 2.

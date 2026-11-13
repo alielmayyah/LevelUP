@@ -9,6 +9,7 @@ A UI task is done only when it passes every row of the checklist at the bottom.
 
 ## Languages: English and Arabic
 
+- **Arabic is Egyptian Arabic (عامية مصرية), not Modern Standard Arabic.** Write it the way a member in a Cairo gym talks: "دوس عشان تبدأ" not "اضغط للبدء", "جرّب تاني" not "إعادة المحاولة", "مفيش" not "لا يوجد", "عشان" not "لكي", "إنت" not "أنت". Use everyday loanwords Egyptians use ("الريسبشن", "الجيم"). Keep brand and product names in Latin script (LevelUP, FitScore). Every new Arabic string follows this, and so does any copy in the backlog or tickets.
 - Use `i18next` + `react-i18next`. Strings live in `src/i18n/locales/{en,ar}.json`, keyed by screen: `dashboard.fitScore.title`.
 - Every key exists in both files. `npm run i18n:check` fails on missing keys.
 - When the language changes, set `<html lang dir>`: `dir="rtl"` for `ar` and `dir="ltr"` for `en`. Ionic mirrors its own components from `dir`.
@@ -16,7 +17,7 @@ A UI task is done only when it passes every row of the checklist at the bottom.
 - Mirror directional icons (back arrows, chevrons, progress direction) in RTL with `:dir(rtl) .icon-directional { transform: scaleX(-1); }`. Don't mirror logos, charts, or the ▲/▼ change indicators.
 - Format numbers, dates, and units with `Intl`, using locale `ar-u-nu-latn` for Arabic so digits stay Latin. Never concatenate strings around numbers. Use interpolation: `t('mission.progress', { done, total })`.
 - Language setting order: the user's choice in Settings, then the device language, then `en`. Store it in Preferences under `lu.lang`.
-- Arabic font: `IBM Plex Sans Arabic` (self-hosted, `font-display: swap`). Arabic text needs about 10% more line-height.
+- Arabic font: `IBM Plex Sans Arabic` in weights 400, 600 and 700 (self-hosted via `@fontsource`, loaded in `App.tsx`, `font-display: swap`). Load every weight the UI uses, or regular text renders from the bold file. Arabic text needs about 10% more line-height.
 - Check every screen in Arabic for clipped text, because Arabic words run longer and wrap differently.
 
 ## Themes: light and dark
@@ -55,13 +56,13 @@ Pick the lightest tool that does the job:
 |---|---|---|
 | A loop or a simple state change | CSS (`transition`, `@keyframes`) | Tab pill slide, glow pulse, skeleton shimmer, button press |
 | Animation driven by React state: something appears, leaves, reorders, or follows a gesture | Motion (`motion/react`) | Icon swap on a toggle, cards entering a list, leaderboard rows changing rank, swipe to dismiss |
-| A scripted sequence with steps and timing, SVG drawing, or scroll-driven effects | GSAP (`gsap` + `useGSAP` from `@gsap/react`) | Splash intro and exit, a mission-complete celebration, a FitScore count-up with staged reveals |
-| Hundreds of moving pieces: particles, star fields, line fields | `<canvas>` + `requestAnimationFrame` | `Starfield`, `Waves` on the splash |
+| A scripted sequence with steps and timing, SVG drawing, or scroll-driven effects | GSAP (`gsap` + `useGSAP` from `@gsap/react`) | Splash exit (loaded on demand from `src/pages/splash/splashMotion.ts`), a mission-complete celebration, the FitScore count-up |
+| Hundreds of moving pieces: particles, star fields, line fields | `<canvas>` + `requestAnimationFrame` | Confetti burst, a particle background |
 | Page-to-page transitions | Ionic's built-in router animation | Never wrap Ionic pages in Motion or GSAP |
 
 Rules:
 - **Motion:** use `m.*` components inside the app-wide `<LazyMotion features={…} strict>` (in `src/motion/MotionProvider.tsx`), never `motion.*`. That keeps Motion's first load at about 5 KB, and the animation features load in their own chunk.
-- **GSAP:** animate inside `useGSAP(() => { … }, { scope: ref })` so everything is cleaned up when the component unmounts. Register plugins only in the component that uses them.
+- **GSAP:** animate inside `useGSAP(() => { … }, { scope: ref })` (or `gsap.context`) so everything is cleaned up when the component unmounts. Register plugins only in the component that uses them. **Never import GSAP from a screen in the main bundle** (splash, login): load it with `import()` so it stays out of the initial download. Simple one-off intros are CSS keyframes.
 - **Reduced motion:** Motion follows the device setting through `<MotionConfig reducedMotion="user">`. In GSAP, wrap timelines in `gsap.matchMedia()` with `(prefers-reduced-motion: no-preference)`, and jump to the end state otherwise. CSS uses `@media (prefers-reduced-motion: reduce)`.
 - Animate `transform` and `opacity` only.
 - Content must be readable with no animation running. Never leave something hidden until a timeline finishes. If JS fails, the screen still works.
@@ -79,11 +80,40 @@ Rules:
 | Lighthouse mobile performance (staging) | ≥ 90 |
 
 - Lazy-load every tab page with `React.lazy`. The splash and login screens stay in the main bundle.
-- Register only the Chart.js components a chart actually uses. Never `import 'chart.js/auto'`.
+- Charts are the small SVG `LineChart` (`src/pages/progress/LineChart.tsx`), loaded as a lazy chunk. Don't add a chart library; extend `LineChart` instead.
+- Don't use Ionic overlays (`IonAlert`, `IonToast`, `IonActionSheet`, `IonPopover`): `@ionic/react` is one module, so any overlay used anywhere lands in the initial bundle. Use `PixelDialog` and `PixelToast`. (`IonModal` for the notifications sheet is already paid for.)
 - Memoize list rows (`React.memo`) on the leaderboard. Virtualize it once there are more than 100 rows.
 - Use CSS animations on `transform`/`opacity` only, and respect `prefers-reduced-motion`.
 - Fetch each screen's data in as few calls as the API allows. Query-level rules (Prisma `select`, indexes, no N+1) live in the `levelup-backend` repo's CLAUDE.md.
 - Run `npm run build` and check the size report against the budget table above.
+
+## Pixel style
+
+The look is pixel-art: build screens from the shared pieces, don't restyle per screen.
+
+| Piece | Where | Rule |
+|---|---|---|
+| Card | `.lu-px-card` (`src/theme/pixel.css`) | 2px border, 10px corners, hard unblurred drop shadow `0 4px 0 var(--lu-pixel-shadow)` |
+| Page | `TabPage` | Big display title (`.lu-display`, Jersey 10: one weight, 400; sized about 20% larger than a regular face) and subtitle; body clears the notch and the tab bar |
+| Primary action | `CtaButton` | One per screen. Secondary actions: `.lu-link-button` or the dialog's secondary button |
+| Segmented switch | `.lu-segment` | Tabs pattern with arrow keys (`src/components/roving.ts`) |
+| Choice | `.lu-choice` | Radio group pattern with arrow keys |
+| Switch | `.lu-switch` | `role="switch"`, `aria-describedby` its one-line hint |
+| Icons | `PixelIcon` for body metrics (flame = fat, muscle, calendar, trophy); ionicons for UI chrome | Every icon is `aria-hidden` unless it is the only label |
+| Colors | `tokens.css` | One hue per metric (`--lu-fat`, `--lu-muscle`), tiers `--lu-tier-1..5`, medals `--lu-gold/silver/bronze` |
+
+Labels in small caps (`.lu-card-kicker`) use the normal font, never a pixel font: small pixel text is hard to read.
+
+## Accessibility
+
+Target WCAG 2.2 AA. `e2e/a11y.spec.ts` runs axe-core on every screen in both languages and both themes; it must stay at zero violations.
+
+- **Label in name (2.5.3):** a control's spoken name contains its visible text. Don't give a card-button a shorter `aria-label`; don't put a different word on screen than in the name (the tab bar shows "Board" because it is part of "Leaderboard").
+- **Tab bar:** no `aria-label` on `IonTabButton`; the visible label names the tab. The bar is a `<nav>` landmark.
+- **Keyboard:** every action works from the keyboard, including chart points (arrow keys) and segmented switches (arrow keys, one Tab stop). Focus is always visible in both themes.
+- **Text size:** sizes in `rem`, so text follows the device setting. Check 200% text and the 1.4.12 text-spacing override for clipping.
+- **Headings:** each tab has one `h1`; each card or section an `h2` (visually hidden if the card already shows a title).
+- **Dialogs:** have a name; Escape and the back gesture close them.
 
 ## Done checklist
 
@@ -96,3 +126,4 @@ Rules:
 | Notch-safe | The iPhone project screenshot shows nothing under the notch or home indicator |
 | Bundle within budget | Build size report |
 | E2E test added or updated | See the `e2e-testing` skill |
+| Accessibility | `e2e/a11y.spec.ts` covers the screen and passes with zero violations |

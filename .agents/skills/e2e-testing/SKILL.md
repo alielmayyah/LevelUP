@@ -13,15 +13,17 @@ A user-visible task isn't done until a Playwright test proves it works across de
 playwright.config.ts     (repo root)
 e2e/
   fixtures.ts            login, locale, theme helpers
-  smoke.spec.ts          full journey: splash → login → every tab → sign out
+  journey.spec.ts        full journey: splash → login → every tab → sign out; new-member empty states
+  a11y.spec.ts           axe (WCAG 2.2 AA) on every screen; focus never under the tab bar
+  mobile.spec.ts         navigation, overlays, Android back, resume, double taps (ionic-mobile-experience)
   <feature>.spec.ts      one file per feature: dashboard, leaderboard, goals...
 ```
 
 ## Config
 
 - `webServer` starts the app with `npm run dev` and waits for `http://localhost:5173`.
-- **Mock mode** (`VITE_USE_MOCKS=true`, all of Sprint 1): nothing else is needed. `loginAs` writes `lu.token = mock.<fitId>` to storage, and edge states use the mock members `100002` and `100003`.
-- **Real API mode** (Sprint 2 on): the API lives in the separate `levelup-backend` repo. Point `LEVELUP_API_DIR` at its checkout (default `../levelup-backend`). A second `webServer` entry runs `npm --prefix $LEVELUP_API_DIR run start:dev` and waits for `http://localhost:3000/health`, and `globalSetup` runs `npm --prefix $LEVELUP_API_DIR run db:reset` so every run starts from the seed data. Postgres must already be up (`docker compose up -d` in the API repo). Seed member `100001` is the demo user.
+- **Mock mode** (`VITE_USE_MOCKS=true`, all of Sprint 1): nothing else is needed. `loginAs` writes `lu.token = mock.<fitId>` to storage, and edge states use the mock members `102` and `103`.
+- **Real API mode** (Sprint 2 on): the API lives in the separate `levelup-backend` repo. Point `LEVELUP_API_DIR` at its checkout (default `../levelup-backend`). A second `webServer` entry runs `npm --prefix $LEVELUP_API_DIR run start:dev` and waits for `http://localhost:3000/health`, and `globalSetup` runs `npm --prefix $LEVELUP_API_DIR run db:reset` so every run starts from the seed data. Postgres must already be up (`docker compose up -d` in the API repo). Seed member `101` is the demo user.
 - Projects (device matrix):
 
 | Project | Device | Why |
@@ -37,7 +39,7 @@ e2e/
 ## Fixtures
 
 `fixtures.ts` extends `test` with:
-- `loginAs(fitId = '100001')`. It logs in through the API and puts the token in storage, so tests skip the UI login. Only `smoke.spec.ts` and `login.spec.ts` use the real login screen.
+- `loginAs(fitId = '101')`. It logs in through the API and puts the token in storage, so tests skip the UI login. Only `journey.spec.ts` and `login.spec.ts` use the real login screen.
 - `locale: 'en' | 'ar'` and `theme: 'light' | 'dark'` options. Before the page loads, they set `lu.lang` / `lu.theme` in storage and set `colorScheme` on the context.
 
 ## What every feature spec covers
@@ -45,7 +47,7 @@ e2e/
 1. **Happy path** in `en` + `light`.
 2. **Arabic:** the same flow in `ar`. Assert `html[dir="rtl"]` and at least one Arabic string from `ar.json`.
 3. **Dark:** the same flow in `dark`. Assert `html.ion-palette-dark`.
-4. **Empty or edge state:** for example, a member with no scans (mock member `100002`, or in real API mode create one with the API's staff endpoints in `beforeEach`).
+4. **Empty or edge state:** for example, a member with no scans (mock member `102`, or in real API mode create one with the API's staff endpoints in `beforeEach`).
 5. **No horizontal overflow:** `expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)`.
 
 Loop over the language and theme combinations instead of copying tests:
@@ -66,10 +68,10 @@ for (const locale of ['en', 'ar'] as const)
 
 ## Safe-area check (iPhone project)
 
-`smoke.spec.ts` asserts that the tab bar's bottom edge sits above the home indicator:
+`journey.spec.ts` asserts on every tab that the tab bar's bottom edge sits above the home indicator:
 
 ```ts
-const box = await page.getByRole('tablist').boundingBox();
+const box = await page.getByRole('navigation', { name: en.tabs.navLabel }).boundingBox();
 expect(box!.y + box!.height).toBeLessThanOrEqual(page.viewportSize()!.height - 34);
 ```
 

@@ -26,6 +26,7 @@ Load the matching skill before starting work of that kind:
 |---|---|
 | `git-workflow` | Creating a branch, committing, pushing, or opening a PR |
 | `ui-standards` | Building or changing any screen, component, or style |
+| `ionic-mobile-experience` | Adding a page, changing navigation or the tab bar, adding a modal/sheet/dialog, a gesture or pull-to-refresh, changing scrolling/keyboard/back behavior, or a mobile audit |
 | `e2e-testing` | Writing or running Playwright tests, or declaring a UI task done |
 | `playwright-browser-check` | Visually checking a screen in a live browser (RTL, dark, notch, sizes) |
 
