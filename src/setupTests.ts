@@ -7,6 +7,12 @@ afterEach(() => {
   cleanup();
 });
 
+// jsdom has no canvas; returning null (as a browser does when it can't make a
+// context) lets the starfield and waves skip drawing instead of logging errors.
+if (typeof HTMLCanvasElement !== 'undefined') {
+  HTMLCanvasElement.prototype.getContext = (() => null) as typeof HTMLCanvasElement.prototype.getContext;
+}
+
 // jsdom doesn't implement matchMedia, which Ionic uses for platform and dark mode checks.
 if (typeof window !== 'undefined' && !window.matchMedia) {
   window.matchMedia = (query: string): MediaQueryList => ({

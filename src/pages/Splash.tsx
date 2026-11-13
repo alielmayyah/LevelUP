@@ -8,24 +8,32 @@ import { useHistory } from 'react-router-dom';
 import { getToken } from '../auth/token';
 import { brand } from '../brand.config';
 import SoundToggle from '../components/SoundToggle';
+import Starfield from '../components/Starfield';
+import Waves from '../components/Waves';
 import { useSound } from '../sound/useSound';
 import './Splash.css';
 
 gsap.registerPlugin(useGSAP);
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
-/** The intro runs about 1.4 s; past this it jumps to the end. */
-const INTRO_MAX_MS = 2000;
+/** The intro runs about 1.6 s; past this it jumps to the end. */
+const INTRO_MAX_MS = 2200;
 /** The exit runs about 0.55 s; past this it navigates anyway. */
 const EXIT_MAX_MS = 600;
+
+/** "Level" + "UP": the accent part of the name gets the brand gradient, as in the logo. */
+const nameLead = brand.name.endsWith(brand.nameAccent)
+  ? brand.name.slice(0, brand.name.length - brand.nameAccent.length)
+  : brand.name;
 
 /**
  * First screen. Tapping anywhere moves on: to Login when signed out, straight
  * to Home when a session exists. The "Tap to Begin" button is the keyboard and
  * screen-reader way in; a tap on it bubbles up to the same handler.
  *
- * The intro and the exit are scripted sequences, so they use GSAP. The idle
- * loops (star drift, glow pulse, button breathing) stay in CSS.
+ * Layout: the logo up top, a flowing silk ribbon across the lower half, and
+ * the button pinned low. The stars and the ribbon are canvases. The intro and
+ * the exit are scripted sequences, so they use GSAP.
  */
 const Splash: React.FC = () => {
   const { t } = useTranslation();
@@ -42,20 +50,17 @@ const Splash: React.FC = () => {
         const intro = gsap
           .timeline({ defaults: { ease: 'power3.out' } })
           .from('.lu-splash-stars', { opacity: 0, duration: 1.2 }, 0)
-          .from('.lu-splash-ring', { scale: 0.6, opacity: 0, duration: 0.9, ease: 'back.out(1.6)' }, 0.15)
-          .from('.lu-splash-ring img', { y: 18, opacity: 0, duration: 0.7 }, 0.45)
-          .from(
-            ['.lu-splash-name', '.lu-splash-tagline', '.lu-splash-cta'],
-            { y: 16, opacity: 0, duration: 0.6, stagger: 0.12 },
-            0.6,
-          )
-          .from('.lu-splash-sound', { opacity: 0, duration: 0.5 }, 0.9);
+          .from('.lu-splash-waves', { opacity: 0, yPercent: 14, duration: 1.4, ease: 'power2.out' }, 0.1)
+          .from('.lu-splash-mark', { y: -24, scale: 0.85, opacity: 0, duration: 0.8, ease: 'back.out(1.7)' }, 0.3)
+          .from(['.lu-splash-name', '.lu-splash-tagline'], { y: 12, opacity: 0, duration: 0.6, stagger: 0.14 }, 0.6)
+          .from('.lu-splash-cta', { y: 20, opacity: 0, duration: 0.6 }, 1.0)
+          .from('.lu-splash-sound', { opacity: 0, duration: 0.5 }, 1.1);
 
         // GSAP runs on requestAnimationFrame, which a busy or backgrounded browser can
         // pause. A plain timer makes sure the content is never left hidden.
         const settle = window.setTimeout(() => intro.progress(1), INTRO_MAX_MS);
 
-        // Warps out in ≤ 0.55 s: the stars rush past and the ring zooms through.
+        // Warps out in ≤ 0.55 s: the stars rush past, the mark zooms through, the ribbon sweeps up.
         warpOut.current = contextSafe!((onDone: () => void) => {
           window.clearTimeout(settle);
           intro.kill();
@@ -74,8 +79,9 @@ const Splash: React.FC = () => {
               { opacity: 0, y: -10, duration: 0.25, stagger: 0.03 },
               0,
             )
-            .to('.lu-splash-ring', { scale: 1.4, opacity: 0, duration: 0.45 }, 0.05)
-            .to('.lu-splash-stars', { scale: 2.2, opacity: 0, duration: 0.5 }, 0);
+            .to('.lu-splash-mark', { scale: 1.5, opacity: 0, duration: 0.45 }, 0.05)
+            .to('.lu-splash-waves', { yPercent: -20, opacity: 0, duration: 0.5 }, 0)
+            .to('.lu-splash-stars', { scale: 1.6, opacity: 0, duration: 0.5 }, 0);
         });
         return () => {
           window.clearTimeout(settle);
@@ -99,14 +105,26 @@ const Splash: React.FC = () => {
   return (
     <IonPage className="lu-splash" data-testid="page-splash" onClick={() => void begin()}>
       <div className="lu-splash-stage" ref={stage}>
-        <div className="lu-splash-stars" aria-hidden="true" />
+        <Starfield className="lu-splash-stars" />
+        <Waves className="lu-splash-waves" />
         <SoundToggle className="lu-splash-sound" />
         <main className="lu-splash-body">
-          <div className="lu-splash-ring">
-            <img src={brand.mark} alt="" width={360} height={252} data-testid="splash-logo" />
+          <div className="lu-splash-brand">
+            <img
+              className="lu-splash-mark"
+              src={brand.mark}
+              alt=""
+              width={360}
+              height={252}
+              data-testid="splash-logo"
+            />
+            {/* The product name stays Latin and left-to-right in Arabic too. */}
+            <h1 className="lu-splash-name" dir="ltr">
+              {nameLead}
+              <span className="lu-splash-name-accent">{brand.nameAccent}</span>
+            </h1>
+            <p className="lu-splash-tagline">{t('splash.tagline')}</p>
           </div>
-          <h1 className="lu-splash-name">{brand.name}</h1>
-          <p className="lu-splash-tagline">{t('splash.tagline')}</p>
           <button type="button" className="lu-splash-cta">
             <span>{t('splash.cta')}</span>
           </button>

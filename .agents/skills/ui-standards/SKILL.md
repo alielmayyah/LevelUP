@@ -56,6 +56,7 @@ Pick the lightest tool that does the job:
 | A loop or a simple state change | CSS (`transition`, `@keyframes`) | Tab pill slide, glow pulse, skeleton shimmer, button press |
 | Animation driven by React state: something appears, leaves, reorders, or follows a gesture | Motion (`motion/react`) | Icon swap on a toggle, cards entering a list, leaderboard rows changing rank, swipe to dismiss |
 | A scripted sequence with steps and timing, SVG drawing, or scroll-driven effects | GSAP (`gsap` + `useGSAP` from `@gsap/react`) | Splash intro and exit, a mission-complete celebration, a FitScore count-up with staged reveals |
+| Hundreds of moving pieces: particles, star fields, line fields | `<canvas>` + `requestAnimationFrame` | `Starfield`, `Waves` on the splash |
 | Page-to-page transitions | Ionic's built-in router animation | Never wrap Ionic pages in Motion or GSAP |
 
 Rules:

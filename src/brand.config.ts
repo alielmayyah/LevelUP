@@ -15,6 +15,8 @@
 export interface AppBrand {
   /** The app title. */
   name: string;
+  /** The end of the name drawn in the brand gradient, as in the logo ("UP"). */
+  nameAccent: string;
   /** Full lockup (mark + wordmark + tagline), path under public/. */
   logo: string;
   /** The mark alone, for the splash. Path under public/, ≤ 100 KB. */
@@ -35,6 +37,7 @@ export interface GymConfig {
 
 export const brand: AppBrand = {
   name: 'LevelUP',
+  nameAccent: 'UP',
   logo: '/brand/logo.webp',
   mark: '/brand/mark.webp',
   colors: {
