@@ -13,17 +13,22 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "i18n:check": "vitest run src/i18n/i18n.test.ts",
+    "check-colors": "node scripts/check-colors.mjs",
     "lint": "eslint --max-warnings 0 . && tsc -p tsconfig.e2e.json",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write \"**/*.{ts,tsx,css,json}\""
   },
   "dependencies": {
     "@capacitor/core": "^7.6.10",
+    "@capacitor/preferences": "^7.0.4",
     "@ionic/react": "^8.8.19",
     "@ionic/react-router": "^8.8.19",
+    "i18next": "^27.1.1",
     "ionicons": "^7.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-i18next": "^18.0.1",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4"
   },

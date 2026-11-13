@@ -11,14 +11,14 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['src/**/*.{ts,tsx}'],
     extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite],
     languageOptions: {
       globals: globals.browser,
     },
   },
   {
-    files: ['*.config.{ts,js}', 'e2e/**/*.ts'],
+    files: ['*.config.{ts,js}', 'e2e/**/*.ts', 'scripts/**/*.{js,mjs}'],
     languageOptions: {
       globals: globals.node,
     },

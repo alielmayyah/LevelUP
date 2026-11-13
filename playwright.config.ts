@@ -21,7 +21,8 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } } },
   ],
   webServer: {
-    command: 'npm run dev',
+    // E2E_PROD=1 runs the suite against the production build instead of the dev server.
+    command: process.env.E2E_PROD ? 'npm run build && npx vite preview --port 5173 --strictPort' : 'npm run dev',
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

@@ -1,0 +1,28 @@
+{
+  "tabs": {
+    "home": "Home",
+    "progress": "Progress",
+    "goals": "Goals",
+    "leaderboard": "Leaderboard",
+    "profile": "Profile"
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry",
+    "error": "Something went wrong.",
+    "empty": "Nothing here yet."
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "language": {
+    "en": "English",
+    "ar": "العربية"
+  },
+  "theme": {
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  }
+}

@@ -1,0 +1,16 @@
+/*
+ * The header's top inset comes from Ionic (first toolbar in ion-header pads by
+ * --ion-safe-area-top). The body clears the floating tab bar and the home
+ * indicator so the last item can always scroll into view.
+ */
+.lu-page-body {
+  box-sizing: border-box;
+  min-height: 100%;
+  padding-block-start: var(--lu-gutter);
+  padding-block-end: calc(var(--lu-tabbar-height) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px));
+  /* Safe-area insets are physical (the notch is on a physical side in landscape). */
+  padding-left: calc(var(--lu-gutter) + var(--ion-safe-area-left, 0px));
+  padding-right: calc(var(--lu-gutter) + var(--ion-safe-area-right, 0px));
+  max-width: 960px;
+  margin-inline: auto;
+}

@@ -1,0 +1,53 @@
+/*
+ * LevelUP theme tokens. This file and brand.config.ts are the only places
+ * allowed to contain color literals (see npm run check-colors).
+ * Light is the default palette; dark applies when <html> has .ion-palette-dark.
+ */
+
+:root {
+  --lu-bg: #f5f6f8;
+  --lu-surface: #ffffff;
+  --lu-surface-2: #eef0f3;
+  --lu-text: #111418;
+  --lu-text-muted: #5b626b;
+  --lu-border: #dde1e6;
+  --lu-success: #1a7f37;
+  --lu-danger: #c62828;
+
+  --lu-tabbar-height: 64px;
+  --lu-tabbar-gap: 16px;
+  --lu-gutter: 16px;
+}
+
+:root.ion-palette-dark {
+  --lu-bg: #0d0f12;
+  --lu-surface: #171a1f;
+  --lu-surface-2: #20242a;
+  --lu-text: #f1f3f5;
+  --lu-text-muted: #a3abb5;
+  --lu-border: #2c3138;
+  --lu-success: #4ade80;
+  --lu-danger: #f87171;
+}
+
+/* Ionic reads its own variables; point them at the tokens in both palettes. */
+:root,
+:root.ion-palette-dark {
+  --ion-background-color: var(--lu-bg);
+  --ion-text-color: var(--lu-text);
+  --ion-toolbar-background: var(--lu-bg);
+  --ion-toolbar-color: var(--lu-text);
+  --ion-item-background: var(--lu-surface);
+  --ion-card-background: var(--lu-surface);
+  --ion-border-color: var(--lu-border);
+}
+
+body {
+  background: var(--lu-bg);
+  color: var(--lu-text);
+}
+
+/* Arabic script needs about 10% more line height. */
+:root[lang='ar'] body {
+  line-height: 1.65;
+}

@@ -1,0 +1,28 @@
+{
+  "tabs": {
+    "home": "الرئيسية",
+    "progress": "التقدّم",
+    "goals": "الأهداف",
+    "leaderboard": "المتصدرون",
+    "profile": "حسابي"
+  },
+  "common": {
+    "loading": "جارٍ التحميل…",
+    "retry": "إعادة المحاولة",
+    "error": "حدث خطأ ما.",
+    "empty": "لا يوجد شيء هنا بعد."
+  },
+  "settings": {
+    "language": "اللغة",
+    "theme": "المظهر"
+  },
+  "language": {
+    "en": "English",
+    "ar": "العربية"
+  },
+  "theme": {
+    "system": "النظام",
+    "light": "فاتح",
+    "dark": "داكن"
+  }
+}
