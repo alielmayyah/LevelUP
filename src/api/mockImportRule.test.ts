@@ -1,8 +1,14 @@
 // @vitest-environment node
 import { ESLint } from 'eslint';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 const eslint = new ESLint();
+
+// The first lint loads the full config and plugins, which can take longer
+// than the default test timeout when other test files run in parallel.
+beforeAll(async () => {
+  await eslint.lintText('', { filePath: 'src/warmup.ts' });
+}, 30_000);
 
 const errorsFor = async (filePath: string, code: string) => {
   const [result] = await eslint.lintText(code, { filePath });
