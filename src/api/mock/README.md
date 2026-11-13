@@ -8,10 +8,10 @@ Only `src/api/client.ts` and test files may import from this folder. ESLint (`no
 
 | Fit ID | Name | Use it to test |
 |---|---|---|
-| `100001` | Sam Khalil | The full experience: 6 monthly scans, 1 active / 2 completed / 1 upcoming goal, 4 notifications (2 unread), opted in to the leaderboard, coach assigned |
-| `100002` | Lina Haddad | A brand-new member: no scans, no goals, no notifications, not on the leaderboard |
-| `100003` | Omar Aziz | One scan only, FitScore hidden (`showFitScore=false`), membership ending in 10 days |
-| `100004`–`100015` | Fillers | 12 opted-in members so the leaderboard has rows. The last 4 have no scan this month, so they appear only on Top Score. |
+| `101` | Sam Khalil | The full experience: 6 monthly scans, 1 active / 2 completed / 1 upcoming goal, 4 notifications (2 unread), opted in to the leaderboard, coach assigned |
+| `102` | Lina Haddad | A brand-new member: no scans, no goals, no notifications, not on the leaderboard |
+| `103` | Omar Aziz | One scan only, FitScore hidden (`showFitScore=false`), membership ending in 10 days |
+| `104`–`115` | Fillers | 12 opted-in members so the leaderboard has rows. The last 4 have no scan this month, so they appear only on Top Score. |
 
 Sam's values match the backlog screenshots: FitScore 72 (Strong), +3 since the last scan, rank #4 of 13 on Top Score, mission "Lose 5 kg of body fat" at 3.0 of 5.0 kg, and this month body fat −1.2% and muscle +0.8 kg.
 

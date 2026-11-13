@@ -35,12 +35,12 @@ export const test = base.extend<Options & Fixtures>({
   },
 
   loginAs: async ({ page }, use) => {
-    await use((fitId = '100001') => seedToken(page, fitId));
+    await use((fitId = '101') => seedToken(page, fitId));
   },
 });
 
 /** Writes lu.token = mock.<fitId> before the page loads. */
-export async function seedToken(page: Page, fitId = '100001'): Promise<void> {
+export async function seedToken(page: Page, fitId = '101'): Promise<void> {
   await page.addInitScript(({ key, token }) => localStorage.setItem(key, token), {
     key: `${PREFS}lu.token`,
     token: `mock.${fitId}`,

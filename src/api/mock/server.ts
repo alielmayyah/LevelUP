@@ -35,7 +35,7 @@ export interface MockResponse {
 
 const LOGIN_LIMIT = 5;
 const LOGIN_WINDOW_MS = 60_000;
-const FIT_ID = /^\d{6,8}$/;
+const FIT_ID = /^\d{3,8}$/;
 
 let now = new Date();
 let members: MockMember[] = [];
@@ -107,13 +107,22 @@ function boardValue(m: MockMember, board: LeaderboardBoard): number | null {
     case 'score':
       return m.assessments[m.assessments.length - 1].fitScore;
     case 'progress':
-      return monthDelta(samples(m, (a) => a.fitScore), month);
+      return monthDelta(
+        samples(m, (a) => a.fitScore),
+        month,
+      );
     case 'muscle': {
-      const d = monthDelta(samples(m, (a) => a.skeletalMuscleKg), month);
+      const d = monthDelta(
+        samples(m, (a) => a.skeletalMuscleKg),
+        month,
+      );
       return d === null ? null : round1(d);
     }
     case 'fatLoss': {
-      const d = monthDelta(samples(m, (a) => a.bodyFatPct), month);
+      const d = monthDelta(
+        samples(m, (a) => a.bodyFatPct),
+        month,
+      );
       return d === null ? null : round1(-d);
     }
   }
@@ -189,8 +198,14 @@ function dashboard(m: MockMember): DashboardDto {
   const last = latest(m);
   const prev = scans.length > 1 ? scans[scans.length - 2] : null;
   const month = monthRange(now);
-  const fat = monthDelta(samples(m, (a) => a.bodyFatPct), month);
-  const muscle = monthDelta(samples(m, (a) => a.skeletalMuscleKg), month);
+  const fat = monthDelta(
+    samples(m, (a) => a.bodyFatPct),
+    month,
+  );
+  const muscle = monthDelta(
+    samples(m, (a) => a.skeletalMuscleKg),
+    month,
+  );
 
   const active = m.goals
     .filter((g) => g.status === 'ACTIVE')
@@ -198,7 +213,11 @@ function dashboard(m: MockMember): DashboardDto {
   const p = active ? progressFor(active, m) : null;
 
   return {
-    member: { firstName: m.firstName, showFitScore: m.settings.showFitScore },
+    member: {
+      firstName: m.firstName,
+      showFitScore: m.settings.showFitScore,
+      memberSince: m.membershipStart.toISOString(),
+    },
     fitScore: last
       ? {
           score: last.fitScore,

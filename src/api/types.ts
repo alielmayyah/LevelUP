@@ -63,7 +63,8 @@ export interface LeaderboardSummary {
 }
 
 export interface DashboardDto {
-  member: { firstName: string; showFitScore: boolean };
+  /** memberSince: the membership start date, for the "Member since" tile. */
+  member: { firstName: string; showFitScore: boolean; memberSince: string };
   fitScore: FitScoreSummary | null;
   mission: MissionSummary | null;
   monthlyWins: MonthlyWins;

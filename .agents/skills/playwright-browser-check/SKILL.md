@@ -11,7 +11,7 @@ Use this skill to look at the running app with the Playwright MCP browser. It do
 
 1. Make sure the app is running: `npm run dev` (app on `http://localhost:5173`). Run it in the background if it isn't already up. With `VITE_USE_MOCKS=true` that is all you need. With mocks off, the API must also be running on `:3000` from a `levelup-backend` checkout (`npm run start:dev` there).
 2. Load the browser tools in one call: `ToolSearch` with `select:mcp__plugin_playwright_playwright__browser_navigate,mcp__plugin_playwright_playwright__browser_resize,mcp__plugin_playwright_playwright__browser_take_screenshot,mcp__plugin_playwright_playwright__browser_snapshot,mcp__plugin_playwright_playwright__browser_evaluate,mcp__plugin_playwright_playwright__browser_click,mcp__plugin_playwright_playwright__browser_type,mcp__plugin_playwright_playwright__browser_console_messages`.
-3. Log in as the demo member (`100001`) through the UI once. The token persists for the rest of the session.
+3. Log in as the demo member (`101`) through the UI once. The token persists for the rest of the session.
 
 ## Switching language and theme without the UI
 

@@ -1,10 +1,10 @@
 /*
  * Mock members. See README.md in this folder for what each one is for.
  *
- *   100001 Sam Khalil   full history, opted in, coach assigned
- *   100002 Lina Haddad  new member: no scans, no goals, opted out
- *   100003 Omar Aziz    one scan, FitScore hidden, membership ends in 10 days
- *   100004–100015       12 opted-in fillers so the leaderboard has rows
+ *   101 Sam Khalil   full history, opted in, coach assigned
+ *   102 Lina Haddad  new member: no scans, no goals, opted out
+ *   103 Omar Aziz    one scan, FitScore hidden, membership ends in 10 days
+ *   104–115       12 opted-in fillers so the leaderboard has rows
  */
 import type { AssessmentDto, NotificationDto, SettingsDto, Sex } from '../types';
 import {
@@ -52,7 +52,7 @@ function sam(now: Date): MockMember {
   const assessments = series.map((s, i) => assessment({ ...s, takenAt: dates[i] }, heightCm, 'MALE'));
   return {
     id: 1,
-    fitId: '100001',
+    fitId: '101',
     firstName: 'Sam',
     lastName: 'Khalil',
     sex: 'MALE',
@@ -126,7 +126,7 @@ function sam(now: Date): MockMember {
 function lina(now: Date): MockMember {
   return {
     id: 2,
-    fitId: '100002',
+    fitId: '102',
     firstName: 'Lina',
     lastName: 'Haddad',
     sex: 'FEMALE',
@@ -148,7 +148,7 @@ function omar(now: Date): MockMember {
   const takenAt = thisMonthScan(now);
   return {
     id: 3,
-    fitId: '100003',
+    fitId: '103',
     firstName: 'Omar',
     lastName: 'Aziz',
     sex: 'MALE',
@@ -209,7 +209,7 @@ function filler(now: Date, i: number): MockMember {
   ];
   return {
     id: 4 + i,
-    fitId: String(100004 + i),
+    fitId: String(104 + i),
     firstName: f.first,
     lastName: f.last,
     sex: f.sex,
