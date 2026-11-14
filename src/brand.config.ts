@@ -35,11 +35,14 @@ export interface GymConfig {
   logo: string | null;
 }
 
+/** Where public files are served from: / in dev and the app, /LevelUP/ on GitHub Pages. Node (e2e) has no import.meta.env. */
+const BASE: string = (import.meta as { env?: { BASE_URL?: string } }).env?.BASE_URL ?? '/';
+
 export const brand: AppBrand = {
   name: 'LevelUP',
   nameAccent: 'UP',
-  logo: '/brand/logo.webp',
-  mark: '/brand/mark.webp',
+  logo: `${BASE}brand/logo.webp`,
+  mark: `${BASE}brand/mark.webp`,
   colors: {
     primary: '#6c3cf0',
     secondary: '#b77cf7',

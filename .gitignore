@@ -5,6 +5,7 @@ build/
 .env.*
 !.env.example
 !.env.development
+!.env.demo
 coverage/
 playwright-report/
 test-results/

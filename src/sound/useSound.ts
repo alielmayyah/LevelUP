@@ -30,7 +30,7 @@ function play(name: SoundName): void {
   if (!enabled) return;
   let clip = clips.get(name);
   if (!clip) {
-    clip = new Audio(`/sounds/${name}.mp3`);
+    clip = new Audio(`${import.meta.env.BASE_URL}sounds/${name}.mp3`);
     clip.preload = 'auto';
     clips.set(name, clip);
   }

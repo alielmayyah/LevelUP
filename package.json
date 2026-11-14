@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run lint && tsc && vite build",
+    "build:demo": "npm run lint && tsc && vite build --mode demo",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

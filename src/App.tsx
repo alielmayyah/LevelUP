@@ -48,7 +48,8 @@ const TabsWhenSignedIn: React.FC = () => (
 const App: React.FC = () => (
   <IonApp>
     <MotionProvider>
-      <IonReactRouter>
+      {/* The base path is /LevelUP/ on GitHub Pages and / everywhere else. */}
+      <IonReactRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
         <IonRouterOutlet>
           <Route exact path="/splash" component={Splash} />
           <Route exact path="/login" component={Login} />
