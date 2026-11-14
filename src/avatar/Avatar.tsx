@@ -1,9 +1,8 @@
 import { memo, useMemo } from 'react';
 
-import { paintFor, stylesFor, WOMEN_HAIR, type AvatarConfigDto } from './catalog';
+import { paintFor, stylesFor, type AvatarConfigDto } from './catalog';
 import { Hands, TopDetails } from './ClothingDetails';
 import { AltHair, Beard, Pants, ShoePair, SleeveTop, Socks } from './VariantArt';
-import { FittedTank, TiedHair } from './WomenArt';
 
 /*
  * The standard character, drawn on its art grid. Coordinates are the original
@@ -54,18 +53,15 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
   const showLegs = full || crop === 'socks';
   const showTorso = crop === 'portrait' || crop === 'full' || crop === 'body' || crop === 'top';
   const showHead = crop === 'portrait' || crop === 'hair' || crop === 'full' || crop === 'beard';
-  const { top, hair } = styles;
-  const women = config.rig === 'women';
-  const tiedHair = WOMEN_HAIR.find((id) => id === hair);
-  const fittedTank = top === 'longline-tank' || top === 'racerback-bra';
+  const { top } = styles;
   const tankCut = top === 'tank' || top === 'sleeveless-hoodie';
-  const longSleeves = !tankCut && !fittedTank && top !== 'tee' && top !== 'mesh-tee';
+  const longSleeves = !tankCut && styles.top !== 'tee' && styles.top !== 'mesh-tee';
   const barefoot = styles.shoes === 'barefoot';
   const [width, height] = BODY_PROPORTIONS[styles.body];
   // Scale around the shoulders, then line up everyone's soles in full crops.
   const shoulder = 416;
   const offset = full ? (877 - shoulder) * (1 - height) : 0;
-  const bodyTransform = `translate(1332 ${shoulder + offset}) scale(${width * (women ? 0.92 : 1)} ${height}) translate(-1332 ${-shoulder})`;
+  const bodyTransform = `translate(1332 ${shoulder + offset}) scale(${width} ${height}) translate(-1332 ${-shoulder})`;
   const smilePath = 'M1298 355Q1311 367 1329 367Q1347 367 1359 355';
   return (
     <svg
@@ -79,13 +75,12 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
       focusable="false"
       data-testid={testId}
       data-crop={crop}
-      data-rig={config.rig}
     >
       {crop === 'shoes' && <ShoePair style={styles.shoes} paint={p} />}
       {(showTorso || showLegs) && (
         <g transform={bodyTransform} data-style-layer="body" data-variant={styles.body}>
           {showLegs && (
-            <g transform={women ? 'translate(1332 0) scale(1.07 1) translate(-1332 0)' : undefined}>
+            <>
               {/* Legs */}
               <path
                 fill={p.outline}
@@ -99,7 +94,7 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
               <Socks style={styles.socks} shoes={styles.shoes} paint={p} />
               {full && <Pants style={styles.pants} paint={p} />}
               {!barefoot && <ShoePair style={styles.shoes} paint={p} />}
-            </g>
+            </>
           )}
           {/* Arms */}
           {showTorso && !longSleeves && (
@@ -116,9 +111,7 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
           )}
           {showTorso && <Hands paint={p} sleeves={longSleeves} />}
           {showTorso &&
-            (fittedTank ? (
-              <FittedTank style={top} paint={p} />
-            ) : tankCut ? (
+            (tankCut ? (
               <g data-style-layer="top" data-variant={top}>
                 {top === 'sleeveless-hoodie' && (
                   <>
@@ -151,7 +144,6 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
           <path fill={p.outline} d="M1280 392H1380V432H1373V444H1362V456H1298V444H1288V431H1280Z" />
           <path fill={p.skin} d="M1297 409H1363V443H1351V453H1309V443H1297Z" />
           <path fill={p.skinShade} d="M1297 409H1363V435H1297Z" />
-          {tiedHair && <TiedHair style={tiedHair} paint={p} back />}
           <path
             fill={p.outline}
             d="M1190 240H1219V221H1241V206H1417V222H1445V244H1474V278H1487V294H1500V337H1484V358H1470V374H1435V389H1417V405H1398V419H1261V405H1243V389H1220V374H1192V358H1176V340H1162V294H1174V276H1190Z"
@@ -170,9 +162,6 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
               />
             )}
           </g>
-          {women && (
-            <path fill={p.eyes} d="M1258 282h30v5h-30z M1368 282h30v5h-30z" />
-          )}
           <Beard style={styles.beard} paint={p} />
           <path
             data-feature="smile"
@@ -183,7 +172,7 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
             shapeRendering="auto"
             d={smilePath}
           />
-          {hair === 'curls' ? (
+          {styles.hair === 'curls' ? (
             <g data-style-layer="hair" data-variant="curls">
               <path
                 fill={p.outline}
@@ -211,10 +200,8 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
                 d="M1212 199h9v-9h16v-7h16v7h8v10h-7v-6h-19v8h-12v10h-11z M1265 187h10v-9h16v-6h15v6h9v11h-7v-7h-19v8h-12v11h-12z M1320 183h11v-10h16v-6h15v6h9v11h-7v-7h-18v9h-13v12h-13z M1376 187h10v-8h15v-6h17v6h8v11h-7v-7h-18v8h-11v10h-14z M1431 203h9v-9h15v-6h16v6h9v10h-7v-6h-17v8h-11v10h-14z"
               />
             </g>
-          ) : hair === 'high-ponytail' || hair === 'braided-ponytail' || hair === 'low-bun' || hair === 'puff' ? (
-            <TiedHair style={hair} paint={p} />
           ) : (
-            <AltHair style={hair} paint={p} />
+            <AltHair style={styles.hair} paint={p} />
           )}
         </g>
       )}
