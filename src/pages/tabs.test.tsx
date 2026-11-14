@@ -49,10 +49,10 @@ describe('Progress', () => {
     expect(within(scan).getAllByRole('term')).toHaveLength(3);
     const more = screen.getByTestId('more-metrics');
     expect(within(more).getAllByRole('term')).toHaveLength(6);
-    expect(within(scan).getByTestId('metric-weight')).toHaveTextContent('82.6 kg');
+    expect(within(scan).getByTestId('metric-weight')).toHaveTextContent(/82\.6\s?kg/);
     expect(within(scan).getByTestId('metric-bodyFat')).toHaveTextContent('21.2%');
     expect(within(more).getByTestId('metric-visceral')).toHaveTextContent(/^Visceral fat9/);
-    expect(within(more).getByTestId('metric-bmr')).toHaveTextContent(/1,\d{3} kcal/);
+    expect(within(more).getByTestId('metric-bmr')).toHaveTextContent(/1,\d{3}\s?kcal/);
     // The six smaller cards show the change since the scan before, with a sign.
     for (const key of ['water', 'protein', 'minerals', 'bmr', 'bmi', 'visceral'])
       expect(within(more).getByTestId(`change-${key}`)).toHaveTextContent(/^[+−]|±0/);
@@ -90,7 +90,7 @@ describe('Progress', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
     expect(screen.getByTestId('scan-title')).toHaveTextContent('Earlier scan');
     expect(screen.getByTestId('scan-date')).toHaveTextContent('scan 5 of 6');
-    expect(screen.getByTestId('metric-weight')).toHaveTextContent('83.3 kg');
+    expect(screen.getByTestId('metric-weight')).toHaveTextContent(/83\.3\s?kg/);
     for (let i = 0; i < 4; i++) await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
     expect(screen.getByTestId('scan-older')).toBeDisabled();
     expect(screen.getByTestId('change-weight')).toHaveTextContent('Your first scan');

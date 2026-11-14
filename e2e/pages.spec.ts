@@ -10,9 +10,9 @@ test.describe('Progress', () => {
     await loginAs();
     await page.goto('/tabs/progress');
     const p = page.locator(tab('progress'));
-    await expect(p.getByTestId('metric-weight')).toContainText('82.6 kg');
+    await expect(p.getByTestId('metric-weight')).toContainText(/82\.6\s?kg/);
     await expect(p.getByTestId('change-muscle')).toContainText('▲ 0.8 kg');
-    await expect(p.getByTestId('trend-headline')).toContainText('82.6 kg');
+    await expect(p.getByTestId('trend-headline')).toContainText(/82\.6\s?kg/);
     // All nine measurements show; the six smaller cards keep just a name and value.
     await expect(p.getByTestId('metric-visceral')).toContainText(en.progress.metric.visceral);
     await expect(p.getByTestId('metric-visceral')).not.toContainText(en.progress.info.visceral.what);
@@ -24,7 +24,7 @@ test.describe('Progress', () => {
     await expect(info).toBeHidden();
     // An earlier scan is one tap away.
     await p.getByRole('button', { name: en.progress.olderScan }).click();
-    await expect(p.getByTestId('metric-weight')).toContainText('83.3 kg');
+    await expect(p.getByTestId('metric-weight')).toContainText(/83\.3\s?kg/);
     await p.getByRole('button', { name: en.progress.newerScan }).click();
     // View all scans: pick any scan from the full list.
     await p.getByTestId('view-all-scans').click();

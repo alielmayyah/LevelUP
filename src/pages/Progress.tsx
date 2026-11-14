@@ -180,8 +180,8 @@ const Progress: React.FC = () => {
     return (
       <>
         {formatNumber(v, m.digits)}
-        {/* The unit is smaller than the number and sits close to it, so the value fits a narrow tile. */}
-        <span className="ms-[0.15em] text-[0.7em]">{unit(m.unit).trim()}</span>
+        {/* The unit is smaller than the number, after a thin space, so the value fits a narrow tile. */}
+        <span className="text-[0.7em]">{unit(m.unit).replace(' ', ' ')}</span>
       </>
     );
   };
