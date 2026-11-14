@@ -43,46 +43,75 @@ afterEach(async () => {
 });
 
 describe('Progress', () => {
-  it("shows Sam's latest scan with all 9 measurements and the right decimals", async () => {
+  it("shows Sam's 3 key numbers with their change, and the other 6 under More", async () => {
     await renderAs('101', Progress);
     const scan = await screen.findByTestId('latest-scan');
     expect(within(scan).getAllByRole('term')).toHaveLength(9);
     expect(within(scan).getByTestId('metric-weight')).toHaveTextContent('82.6 kg');
     expect(within(scan).getByTestId('metric-bodyFat')).toHaveTextContent('21.2%');
-    expect(within(scan).getByTestId('metric-visceral')).toHaveTextContent(/^Visceral fat9$/);
+    expect(within(scan).getByTestId('metric-visceral')).toHaveTextContent(/^Visceral fat9/);
     expect(within(scan).getByTestId('metric-bmr')).toHaveTextContent(/1,\d{3} kcal/);
+    // Muscle up is good news (green), body fat down is good news (green), weight has no right way.
+    expect(within(scan).getByText('Up 0.8 kg since the scan before').parentElement).toHaveClass('text-success');
+    expect(within(scan).getByText('Down 1.2% since the scan before').parentElement).toHaveClass('text-success');
+    expect(within(scan).getByText('Down 0.7 kg since the scan before').parentElement).toHaveClass('text-muted');
   });
 
-  it('draws both charts for Sam, with a screen-reader summary', async () => {
+  it('draws one trend at a time, with a screen-reader summary, and switches metric', async () => {
     await renderAs('101', Progress);
-    expect(await screen.findByTestId('chart-composition')).toBeInTheDocument();
-    expect(screen.getByTestId('fitscore-chart')).toBeInTheDocument();
+    expect(await screen.findByTestId('chart-trend')).toBeInTheDocument();
     expect(screen.getByText(/Weight went from 86\.0 kg to 82\.6 kg/)).toBeInTheDocument();
-  });
-
-  it('tapping a point shows its values and date; the legend hides a line', async () => {
-    await renderAs('101', Progress);
-    await screen.findByTestId('chart-composition');
-    await userEvent.click(screen.getByTestId('chart-composition-point-5'));
-    const tip = screen.getByTestId('chart-composition-tip');
-    expect(tip).toHaveTextContent('Weight 82.6 kg');
-    const weightKey = screen.getByRole('button', { name: 'Weight' });
-    await userEvent.click(weightKey);
-    expect(weightKey).toHaveAttribute('aria-pressed', 'false');
-    expect(tip).not.toHaveTextContent('Weight');
+    await userEvent.click(screen.getByRole('radio', { name: 'Body fat' }));
+    expect(screen.getByText(/Body fat went from 26\.0% to 21\.2%/)).toBeInTheDocument();
+    expect(screen.getByTestId('trend-score')).toBeInTheDocument();
   });
 
   it('the chart points work from the keyboard: arrow keys move between scans', async () => {
     await renderAs('101', Progress);
-    await screen.findByTestId('chart-composition');
-    const last = screen.getByTestId('chart-composition-point-5');
+    await screen.findByTestId('chart-trend');
+    const last = screen.getByTestId('chart-trend-point-5');
     expect(last).toHaveAttribute('tabindex', '0');
-    expect(last).toHaveAccessibleName(/Weight 82\.6 kg, Muscle 34\.9 kg, Body fat 21\.2%/);
+    expect(last).toHaveAccessibleName(/Weight 82\.6 kg/);
     last.focus();
     await userEvent.keyboard('{ArrowLeft}');
-    const prev = screen.getByTestId('chart-composition-point-4');
-    expect(prev).toHaveFocus();
-    expect(screen.getByTestId('chart-composition-tip')).toHaveTextContent('Weight 83.3 kg');
+    expect(screen.getByTestId('chart-trend-point-4')).toHaveFocus();
+    expect(screen.getByTestId('chart-trend-tip')).toHaveTextContent('Weight 83.3 kg');
+  });
+
+  it('steps back to an earlier scan and compares it with the one before', async () => {
+    await renderAs('101', Progress);
+    await screen.findByTestId('latest-scan');
+    expect(screen.getByTestId('scan-newer')).toBeDisabled();
+    await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
+    expect(screen.getByTestId('scan-title')).toHaveTextContent('Earlier scan');
+    expect(screen.getByTestId('scan-date')).toHaveTextContent('scan 5 of 6');
+    expect(screen.getByTestId('metric-weight')).toHaveTextContent('83.3 kg');
+    for (let i = 0; i < 4; i++) await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
+    expect(screen.getByTestId('scan-older')).toBeDisabled();
+    expect(screen.getByTestId('change-weight')).toHaveTextContent('Your first scan');
+  });
+
+  it('View all scans lists every scan and opens the one tapped', async () => {
+    await renderAs('101', Progress);
+    await screen.findByTestId('latest-scan');
+    await userEvent.click(screen.getByRole('button', { name: 'All scans (6)' }));
+    const rows = await screen.findAllByTestId('scan-row');
+    expect(rows).toHaveLength(6);
+    expect(rows[0]).toHaveAttribute('aria-current', 'true');
+    await userEvent.click(rows[2]);
+    expect(screen.getByTestId('scan-date')).toHaveTextContent('scan 4 of 6');
+  });
+
+  it('every measurement has an info button that explains it', async () => {
+    await renderAs('101', Progress);
+    await screen.findByTestId('latest-scan');
+    expect(screen.getAllByRole('button', { name: /^About / })).toHaveLength(9);
+    await userEvent.click(screen.getByRole('button', { name: 'About Visceral fat' }));
+    const dialog = screen.getByTestId('metric-info');
+    expect(dialog).toHaveTextContent('Fat stored deep in your belly');
+    expect(dialog).toHaveTextContent('What to do');
+    await userEvent.click(screen.getByRole('button', { name: 'Got it' }));
+    expect(screen.getByTestId('metric-info')).not.toHaveTextContent('Fat stored deep');
   });
 
   it('Lina sees the empty state', async () => {
@@ -90,10 +119,11 @@ describe('Progress', () => {
     expect(await screen.findByText('No scans yet. Book one at the front desk.')).toBeInTheDocument();
   });
 
-  it('Omar (one scan, FitScore hidden) sees the second-scan message and no FitScore chart', async () => {
+  it('Omar (one scan, FitScore hidden) sees when changes and trends will appear, and no FitScore trend', async () => {
     await renderAs('103', Progress);
     expect(await screen.findByText('Your trends appear after your second scan.')).toBeInTheDocument();
-    expect(screen.queryByTestId('fitscore-chart')).toBeNull();
+    expect(screen.getByTestId('change-weight')).toHaveTextContent('After 2nd scan');
+    expect(screen.queryByTestId('trend-score')).toBeNull();
   });
 });
 
@@ -152,18 +182,20 @@ describe('Leaderboard', () => {
     const mine = await screen.findByTestId('my-row');
     expect(mine).toHaveTextContent('Sam K.');
     expect(mine).toHaveTextContent('you');
-    expect(screen.getAllByTestId('row')[0].querySelector('.lu-medal-1')).not.toBeNull();
+    const podium = screen.getByTestId('podium');
+    expect(podium.querySelectorAll('[data-crop="full"]')).toHaveLength(3);
+    expect(podium.querySelector('.lu-medal-1')).not.toBeNull();
     expect(screen.getByTestId('my-rank')).toHaveTextContent('#4');
   });
 
   it('formats each board and remembers the last one', async () => {
     await renderAs('101', Leaderboard);
     await screen.findByTestId('my-row');
-    await userEvent.click(screen.getByTestId('board-fatLoss'));
-    await waitFor(() => expect(screen.getByTestId('my-row')).toHaveTextContent(/−\d\.\d%/));
-    expect((await Preferences.get({ key: 'lu.board' })).value).toBe('fatLoss');
+    await userEvent.click(screen.getByTestId('board-bodyFat'));
+    await waitFor(() => expect(screen.getByTestId('my-row')).toHaveTextContent('21.2%'));
+    expect((await Preferences.get({ key: 'lu.board' })).value).toBe('bodyFat');
     await userEvent.click(screen.getByTestId('board-muscle'));
-    await waitFor(() => expect(screen.getByTestId('my-row')).toHaveTextContent(/\+\d\.\d kg/));
+    await waitFor(() => expect(screen.getByTestId('my-row')).toHaveTextContent('34.9 kg'));
   });
 
   it('Lina sees the Join banner; joining with no scan explains why she is not listed', async () => {

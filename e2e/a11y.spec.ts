@@ -19,6 +19,7 @@ const SCREENS: { name: string; url: string; fitId?: string; open?: 'notification
   { name: 'leaderboard', url: '/tabs/leaderboard', fitId: '101' },
   { name: 'leaderboard (not joined)', url: '/tabs/leaderboard', fitId: '102' },
   { name: 'profile', url: '/tabs/profile', fitId: '101' },
+  { name: 'character editor', url: '/tabs/profile/character', fitId: '101' },
   { name: 'sign-out dialog', url: '/tabs/profile', fitId: '101', open: 'signOut' },
 ];
 
