@@ -58,7 +58,8 @@
   --lu-splash-danger: #ff9b9b;
 
   --lu-tabbar-height: 64px;
-  --lu-tabbar-gap: 16px;
+  /* Breathing room between the last item on a page and the dock (counted twice in layout.css). */
+  --lu-tabbar-gap: 8px;
   --lu-gutter: 16px;
 }
 

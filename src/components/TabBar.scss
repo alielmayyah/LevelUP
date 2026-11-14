@@ -1,8 +1,10 @@
 /*
- * Styles for Ionic's tab bar parts inside the floating bar. The bar and the
- * pill are Tailwind classes in TabBar.tsx. These rules stay outside any
- * cascade layer on purpose: ion-label's styles are injected unlayered by
- * Ionic, and layered rules would lose to them.
+ * The pixel game dock: a dusk panel with stepped corners (the same in both
+ * themes, like the splash and the podium), pixel-art icons, and a raised
+ * bevel block that slides under the active tab.
+ *
+ * The tab-button rules stay outside any cascade layer on purpose: ion-label's
+ * styles are injected unlayered by Ionic, and layered rules would lose to them.
  */
 @mixin visually-hidden {
   position: absolute;
@@ -10,6 +12,68 @@
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
+}
+
+/* Corners cut in $s-pixel steps. */
+@function px-corners($s) {
+  @return polygon(
+    0 #{2 * $s},
+    #{$s} #{2 * $s},
+    #{$s} #{$s},
+    #{2 * $s} #{$s},
+    #{2 * $s} 0,
+    calc(100% - #{2 * $s}) 0,
+    calc(100% - #{2 * $s}) #{$s},
+    calc(100% - #{$s}) #{$s},
+    calc(100% - #{$s}) #{2 * $s},
+    100% #{2 * $s},
+    100% calc(100% - #{2 * $s}),
+    calc(100% - #{$s}) calc(100% - #{2 * $s}),
+    calc(100% - #{$s}) calc(100% - #{$s}),
+    calc(100% - #{2 * $s}) calc(100% - #{$s}),
+    calc(100% - #{2 * $s}) 100%,
+    #{2 * $s} 100%,
+    #{2 * $s} calc(100% - #{$s}),
+    #{$s} calc(100% - #{$s}),
+    #{$s} calc(100% - #{2 * $s}),
+    0 calc(100% - #{2 * $s})
+  );
+}
+
+@layer components {
+  /* Only the top corners are stepped: the dock sits flush on the bottom edge. */
+  .lu-dock {
+    clip-path: polygon(
+      0 8px,
+      4px 8px,
+      4px 4px,
+      8px 4px,
+      8px 0,
+      calc(100% - 8px) 0,
+      calc(100% - 8px) 4px,
+      calc(100% - 4px) 4px,
+      calc(100% - 4px) 8px,
+      100% 8px,
+      100% 100%,
+      0 100%
+    );
+    background: linear-gradient(var(--lu-splash-bg-2), var(--lu-splash-bg) 70%);
+    /* Hard pixel rim: a light top edge, a dark bottom edge, and a 2px frame. */
+    box-shadow:
+      inset 0 2px 0 color-mix(in srgb, var(--lu-splash-bg-2) 70%, var(--lu-splash-text) 30%),
+      inset 0 5px 0 color-mix(in srgb, var(--lu-splash-bg-2) 60%, var(--lu-splash-text) 20%);
+  }
+
+  /* The active tab: a raised purple block, gold-lit on top, shaded below. */
+  .lu-dock-pill {
+    clip-path: px-corners(3px);
+    background: var(--ion-color-primary);
+    box-shadow:
+      inset 0 3px 0 color-mix(in srgb, var(--lu-gold) 70%, var(--ion-color-primary)),
+      inset 3px 0 0 color-mix(in srgb, var(--ion-color-primary) 70%, var(--lu-splash-star)),
+      inset -3px 0 0 var(--ion-color-primary-shade),
+      inset 0 -5px 0 var(--ion-color-primary-shade);
+  }
 }
 
 .lu-tabbar {
@@ -24,50 +88,64 @@
 
   /*
    * Ionic's own "selected" color is turned off: it switches the instant you tap,
-   * while the pill is still on its way, which left white text on the white bar.
-   * TabBar adds .is-lit when the pill is actually under the label.
-   * Muted text is ≥ 6:1 on the bar; white on the purple pill is ≥ 5.5:1.
+   * while the pill is still on its way. TabBar adds .is-lit when the pill is
+   * actually under the label. Muted text on the dusk panel and white on the
+   * purple block both clear 4.5:1.
    */
-  ion-tab-button.is-lit {
-    --color: var(--ion-color-primary-contrast);
-    --color-selected: var(--ion-color-primary-contrast);
-  }
-
   ion-tab-button {
     --background: transparent;
-    --color: var(--lu-text-muted);
-    --color-selected: var(--lu-text-muted);
+    --color: var(--lu-splash-text-muted);
+    --color-selected: var(--lu-splash-text-muted);
     --ripple-color: transparent;
     /* Ionic's default side padding is what cut labels to "Progr…". */
     --padding-start: 0;
     --padding-end: 0;
     min-width: 44px;
     min-height: 44px;
+
+    /* Resting icons: a light outline so they read on the dark panel, quiet fill. */
+    --px-line: var(--lu-splash-text-muted);
+    --px-fill: color-mix(in srgb, var(--lu-splash-text-muted) 30%, var(--lu-splash-bg-2));
+    --px-hi: color-mix(in srgb, var(--lu-splash-text-muted) 55%, var(--lu-splash-bg-2));
+    --px-core: var(--lu-splash-bg);
+  }
+
+  /* Active icon: full color, and it hops once when the block arrives. */
+  ion-tab-button.is-lit {
+    --color: var(--ion-color-primary-contrast);
+    --color-selected: var(--ion-color-primary-contrast);
+    --px-line: var(--lu-pixel-ink);
+    --px-fill: var(--lu-splash-star);
+    --px-hi: var(--lu-gold);
+    --px-core: var(--lu-gold);
+
+    .lu-pixel-icon {
+      animation: lu-dock-hop 260ms steps(4, end) both;
+    }
   }
 
   /*
-   * Keyboard focus: a two-tone ring (surface, then text color) so it shows on the
-   * plain bar and on the purple pill alike, in both themes (WCAG 2.4.7, 1.4.11).
+   * Keyboard focus: a two-tone ring (dark, then light) so it shows on the panel
+   * and on the purple block alike (WCAG 2.4.7, 1.4.11).
    */
   ion-tab-button.ion-focused {
     --background-focused: transparent;
-    border-radius: 10px;
     box-shadow:
-      inset 0 0 0 2px var(--lu-surface),
-      inset 0 0 0 4px var(--lu-text);
+      inset 0 0 0 2px var(--lu-splash-bg),
+      inset 0 0 0 4px var(--lu-splash-text);
   }
 
   /* rem, not px, so the bar follows the member's text size (WCAG 1.4.4). */
-  ion-icon {
+  .lu-pixel-icon {
     font-size: 1.375rem;
   }
 
   ion-label {
-    margin-top: 2px;
+    margin-top: 3px;
     max-width: 100%;
     overflow: visible;
     font-size: 0.66rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: -0.01em;
     white-space: nowrap;
     text-overflow: clip;
@@ -89,8 +167,26 @@
       @include visually-hidden;
     }
 
-    ion-icon {
+    .lu-pixel-icon {
       font-size: 1.25rem;
     }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ion-tab-button.is-lit .lu-pixel-icon {
+      animation: none;
+    }
+  }
+}
+
+/* Stepped, like a sprite: up two pixels, back down. */
+@keyframes lu-dock-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
   }
 }

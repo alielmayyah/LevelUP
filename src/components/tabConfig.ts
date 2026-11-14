@@ -1,12 +1,12 @@
-import { flag, home, person, podium, trendingUp } from 'ionicons/icons';
+import type { PixelIconName } from './PixelIcon';
 
 export const TABS = [
-  { tab: 'home', href: '/tabs/home', icon: home },
-  { tab: 'progress', href: '/tabs/progress', icon: trendingUp },
-  { tab: 'goals', href: '/tabs/goals', icon: flag },
-  { tab: 'leaderboard', href: '/tabs/leaderboard', icon: podium },
-  { tab: 'profile', href: '/tabs/profile', icon: person },
-] as const;
+  { tab: 'home', href: '/tabs/home', icon: 'house' },
+  { tab: 'progress', href: '/tabs/progress', icon: 'chart' },
+  { tab: 'goals', href: '/tabs/goals', icon: 'flag' },
+  { tab: 'leaderboard', href: '/tabs/leaderboard', icon: 'trophy' },
+  { tab: 'profile', href: '/tabs/profile', icon: 'person' },
+] as const satisfies readonly { tab: string; href: string; icon: PixelIconName }[];
 
 /** Index of the tab that owns `pathname`, or -1. */
 export const tabIndex = (pathname: string): number =>

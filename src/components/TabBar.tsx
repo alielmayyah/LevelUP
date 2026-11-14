@@ -1,21 +1,23 @@
-import { IonIcon, IonLabel, IonTabBar, IonTabButton } from '@ionic/react';
+import { IonLabel, IonTabBar, IonTabButton } from '@ionic/react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
+import PixelIcon from './PixelIcon';
 import { pillTransform, tabIndex, TABS } from './tabConfig';
 import './TabBar.scss';
 
 /*
- * Floating bar in the pixel style: chunky border, hard drop shadow, and a blocky
- * pill. Centered, at most 480 px wide, above the home indicator. Page bodies
- * reserve room for it (theme/layout.css). Slimmer on a phone held sideways.
+ * The pixel dock: full width along the bottom of the screen, above the home
+ * indicator. Page bodies reserve room for it (theme/layout.css).
  */
 const BAR = [
-  'lu-tabbar absolute inset-x-0 bottom-[calc(var(--lu-tabbar-gap)+var(--ion-safe-area-bottom,0px))] z-10 mx-auto box-border',
-  'h-(--lu-tabbar-height) w-[calc(100%-var(--lu-gutter)*2-var(--ion-safe-area-left,0px)-var(--ion-safe-area-right,0px))] max-w-[480px]',
-  'rounded-2xl border-2 border-line bg-surface p-(--lu-tabbar-padding) shadow-px [--lu-tabbar-padding:6px]',
-  'short-landscape:bottom-[calc(8px+var(--ion-safe-area-bottom,0px))] short-landscape:h-12 short-landscape:max-w-[360px] short-landscape:[--lu-tabbar-padding:4px]',
+  // Full width, flush with the bottom edge; the home indicator sits inside its bottom padding.
+  'lu-tabbar absolute inset-x-0 bottom-0 z-10 box-border w-full',
+  'h-[calc(var(--lu-tabbar-height)+var(--ion-safe-area-bottom,0px))]',
+  'lu-dock pt-(--lu-tabbar-padding) pb-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-bottom,0px))] [--lu-tabbar-padding:6px]',
+  'ps-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-left,0px))] pe-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-right,0px))]',
+  'short-landscape:h-[calc(48px+var(--ion-safe-area-bottom,0px))] short-landscape:[--lu-tabbar-padding:4px]',
 ].join(' ');
 
 /*
@@ -23,7 +25,7 @@ const BAR = [
  * Reduced motion: it jumps.
  */
 const PILL =
-  'absolute start-(--lu-tabbar-padding) top-(--lu-tabbar-padding) bottom-(--lu-tabbar-padding) w-[calc((100%-var(--lu-tabbar-padding)*2)/5)] rounded-[10px] bg-primary shadow-[inset_0_-3px_0_var(--ion-color-primary-shade)] transition-transform duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
+  'absolute inset-y-0 start-0 w-1/5 lu-dock-pill transition-transform duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 
@@ -31,7 +33,7 @@ const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 const LIT_FALLBACK_MS = 400;
 
 /**
- * Floating 5-tab bar inside a <nav> landmark. IonTabBar only renders
+ * Full-width 5-tab dock inside a <nav> landmark. IonTabBar only renders
  * IonTabButton children, so the sliding pill sits beside it.
  *
  * Each tab is named by its visible label (WCAG 2.5.3, label in name). Ionic
@@ -86,28 +88,33 @@ const TabBar: React.FC = () => {
 
   return (
     <nav className={BAR} slot="bottom" aria-label={t('tabs.navLabel')}>
-      <div className={PILL} data-testid="tab-pill" ref={pill} aria-hidden="true" hidden={index < 0} />
-      <IonTabBar>
-        {TABS.map(({ tab, href, icon }, i) => (
-          <IonTabButton
-            key={tab}
-            tab={tab}
-            href={href}
-            data-testid={`tab-${tab}`}
-            className={i === lit ? 'is-lit' : undefined}
-            // Tapping the tab you're already on scrolls it back to the top (iOS and Android convention).
-            onClick={() => {
-              if (i !== index) return;
-              const content = document.querySelector<HTMLIonContentElement>(`[data-testid="page-${tab}"] ion-content`);
-              void content?.scrollToTop(window.matchMedia(MOTION_OK).matches ? 300 : 0);
-            }}
-          >
-            <IonIcon icon={icon} aria-hidden="true" />
-            {/* Short labels fit a 320–390 px bar. Below 360 px they are visually hidden but still read out. */}
-            <IonLabel>{t(`tabs.short.${tab}`)}</IonLabel>
-          </IonTabButton>
-        ))}
-      </IonTabBar>
+      {/* The panel spans the screen; the five tabs stay in a centered row so wide screens don't get giant tabs. */}
+      <div className="relative mx-auto h-full max-w-[560px]">
+        <div className={PILL} data-testid="tab-pill" ref={pill} aria-hidden="true" hidden={index < 0} />
+        <IonTabBar>
+          {TABS.map(({ tab, href, icon }, i) => (
+            <IonTabButton
+              key={tab}
+              tab={tab}
+              href={href}
+              data-testid={`tab-${tab}`}
+              className={i === lit ? 'is-lit' : undefined}
+              // Tapping the tab you're already on scrolls it back to the top (iOS and Android convention).
+              onClick={() => {
+                if (i !== index) return;
+                const content = document.querySelector<HTMLIonContentElement>(
+                  `[data-testid="page-${tab}"] ion-content`,
+                );
+                void content?.scrollToTop(window.matchMedia(MOTION_OK).matches ? 300 : 0);
+              }}
+            >
+              <PixelIcon name={icon} />
+              {/* Short labels fit a 320–390 px bar. Below 360 px they are visually hidden but still read out. */}
+              <IonLabel>{t(`tabs.short.${tab}`)}</IonLabel>
+            </IonTabButton>
+          ))}
+        </IonTabBar>
+      </div>
     </nav>
   );
 };
