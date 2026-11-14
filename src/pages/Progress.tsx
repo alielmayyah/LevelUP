@@ -225,13 +225,14 @@ const Progress: React.FC = () => {
                     className={`lu-scan-tile relative grid content-start justify-items-center gap-1 rounded-lg px-1 pt-2.5 pb-2 text-center ${m.tone}`}
                     data-testid={`metric-${m.key}`}
                   >
-                    <InfoButton
-                      className="absolute -end-1 -top-1"
-                      label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
-                      onClick={() => setInfo(m)}
-                      testId={`info-${m.key}`}
-                    />
                     <dt className="grid justify-items-center gap-1 text-[0.75rem] font-bold text-muted">
+                      {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
+                      <InfoButton
+                        className="absolute -end-1 -top-1"
+                        label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
+                        onClick={() => setInfo(m)}
+                        testId={`info-${m.key}`}
+                      />
                       <PixelIcon className="text-[1.6rem]" name={m.icon} />
                       {t(`progress.metric.${m.key}`)}
                     </dt>
@@ -279,13 +280,14 @@ const Progress: React.FC = () => {
                   className={`lu-more-card relative grid content-start gap-1 rounded-lg p-2.5 pe-9 ${m.tone}`}
                   data-testid={`metric-${m.key}`}
                 >
-                  <InfoButton
-                    className="absolute -end-1 -top-1"
-                    label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
-                    onClick={() => setInfo(m)}
-                    testId={`info-${m.key}`}
-                  />
                   <dt className="grid gap-1">
+                    {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
+                    <InfoButton
+                      className="absolute -end-1 -top-1"
+                      label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
+                      onClick={() => setInfo(m)}
+                      testId={`info-${m.key}`}
+                    />
                     <span className="flex items-center gap-1.5 text-[0.85rem] font-extrabold text-ink">
                       <PixelIcon className="flex-none text-[1.25rem]" name={m.icon} />
                       {t(`progress.metric.${m.key}`)}
