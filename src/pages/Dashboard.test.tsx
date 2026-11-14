@@ -56,9 +56,9 @@ describe('Home', () => {
   it('shows rank, top percent, and the nudge; tapping opens the leaderboard', async () => {
     await renderHome();
     const card = screen.getByTestId('rank-card');
-    expect(within(card).getByTestId('rank-number')).toHaveTextContent(/#2⁩ of 7/);
+    expect(within(card).getByTestId('rank-number')).toHaveTextContent(/#6⁩ of 19/);
     expect(card).toHaveTextContent(/Top ⁦\d+%⁩/); // isolated so Arabic keeps the % in place
-    expect(card).toHaveTextContent('5 members behind you');
+    expect(card).toHaveTextContent('13 members behind you');
     expect(card).toHaveTextContent(/\d+ points to reach/);
     await userEvent.click(card);
     expect(await screen.findByText('leaderboard page')).toBeInTheDocument();

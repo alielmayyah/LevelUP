@@ -4,7 +4,7 @@
  *   101 Sam Khalil   full history, opted in, coach assigned
  *   102 Lina Haddad  new member: no scans, no goals, opted out
  *   103 Omar Aziz    one scan, FitScore hidden, membership ends in 10 days
- *   104–115       12 opted-in fillers so the leaderboard has rows
+ *   104–139       36 opted-in fillers (18 men, 18 women) so both leaderboards have rows
  */
 import type { AssessmentDto, NotificationDto, SettingsDto, Sex } from '../types';
 import {
@@ -184,6 +184,31 @@ const FILLERS: { first: string; last: string; sex: Sex; score: number; scannedTh
   { first: 'Fadi', last: 'Azar', sex: 'MALE', score: 54, scannedThisMonth: false },
   { first: 'Lara', last: 'Mikhael', sex: 'FEMALE', score: 49, scannedThisMonth: false },
   { first: 'Sami', last: 'Daher', sex: 'MALE', score: 44, scannedThisMonth: false },
+  // 24 more, so both divisions have enough people to fill the podium and a second page.
+  { first: 'Youssef', last: 'Hamdy', sex: 'MALE', score: 90, scannedThisMonth: true },
+  { first: 'Salma', last: 'Hussein', sex: 'FEMALE', score: 92, scannedThisMonth: true },
+  { first: 'Mostafa', last: 'Adel', sex: 'MALE', score: 86, scannedThisMonth: true },
+  { first: 'Habiba', last: 'Mourad', sex: 'FEMALE', score: 84, scannedThisMonth: true },
+  { first: 'Ahmed', last: 'Fathy', sex: 'MALE', score: 78, scannedThisMonth: false },
+  { first: 'Farida', last: 'Zaki', sex: 'FEMALE', score: 79, scannedThisMonth: false },
+  { first: 'Mahmoud', last: 'Saeed', sex: 'MALE', score: 75, scannedThisMonth: true },
+  { first: 'Mariam', last: 'Sobhy', sex: 'FEMALE', score: 74, scannedThisMonth: true },
+  { first: 'Khaled', last: 'Ibrahim', sex: 'MALE', score: 69, scannedThisMonth: true },
+  { first: 'Jana', last: 'Ashraf', sex: 'FEMALE', score: 71, scannedThisMonth: true },
+  { first: 'Amr', last: 'Nabil', sex: 'MALE', score: 67, scannedThisMonth: false },
+  { first: 'Laila', last: 'Shawky', sex: 'FEMALE', score: 66, scannedThisMonth: false },
+  { first: 'Hassan', last: 'Farouk', sex: 'MALE', score: 62, scannedThisMonth: true },
+  { first: 'Hana', last: 'Gamal', sex: 'FEMALE', score: 61, scannedThisMonth: true },
+  { first: 'Mohamed', last: 'Tawfik', sex: 'MALE', score: 58, scannedThisMonth: true },
+  { first: 'Rana', last: 'Fouad', sex: 'FEMALE', score: 56, scannedThisMonth: true },
+  { first: 'Ali', last: 'Ragab', sex: 'MALE', score: 52, scannedThisMonth: false },
+  { first: 'Nada', last: 'Essam', sex: 'FEMALE', score: 53, scannedThisMonth: false },
+  { first: 'Islam', last: 'Samir', sex: 'MALE', score: 48, scannedThisMonth: true },
+  { first: 'Aya', last: 'Mamdouh', sex: 'FEMALE', score: 47, scannedThisMonth: true },
+  { first: 'Sherif', last: 'Lotfy', sex: 'MALE', score: 41, scannedThisMonth: true },
+  { first: 'Malak', last: 'Tamer', sex: 'FEMALE', score: 43, scannedThisMonth: true },
+  { first: 'Wael', last: 'Kamal', sex: 'MALE', score: 38, scannedThisMonth: false },
+  { first: 'Reem', last: 'Helmy', sex: 'FEMALE', score: 39, scannedThisMonth: false },
 ];
 
 function filler(now: Date, i: number): MockMember {
@@ -213,7 +238,7 @@ function filler(now: Date, i: number): MockMember {
     firstName: f.first,
     lastName: f.last,
     sex: f.sex,
-    birthDate: new Date(Date.UTC(1985 + i, i % 12, 10)),
+    birthDate: new Date(Date.UTC(1976 + (i % 29), i % 12, 10)),
     heightCm,
     membershipPlan: 'Standard · 12 months',
     membershipStart: midMonth(now, 6),

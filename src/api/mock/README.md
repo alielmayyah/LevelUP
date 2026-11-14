@@ -11,9 +11,9 @@ Only `src/api/client.ts` and test files may import from this folder. ESLint (`no
 | `101`       | Sam Khalil  | The full experience: 6 monthly scans, 1 active / 2 completed / 1 upcoming goal, 4 notifications (2 unread), opted in to the leaderboard, coach assigned |
 | `102`       | Lina Haddad | A brand-new member: no scans, no goals, no notifications, not on the leaderboard                                                                        |
 | `103`       | Omar Aziz   | One scan only, FitScore hidden (`showFitScore=false`), membership ending in 10 days                                                                     |
-| `104`–`115` | Fillers     | 12 opted-in members (6 men, 6 women) so both leaderboards have rows. Every board ranks the latest scan.                                  |
+| `104`–`139` | Fillers     | 36 opted-in members (18 men, 18 women) so both leaderboards have a podium and a second page. Every board ranks the latest scan.                         |
 
-Sam's values match the backlog screenshots: FitScore 72 (Strong), +3 since the last scan, rank #2 of 7 on the men's Top Score board (men and women are ranked separately), mission "Lose 5 kg of body fat" at 3.0 of 5.0 kg, and this month body fat −1.2% and muscle +0.8 kg.
+Sam's values match the backlog screenshots: FitScore 72 (Strong), +3 since the last scan, rank #6 of 19 on the men's Top Score board (men and women are ranked separately), mission "Lose 5 kg of body fat" at 3.0 of 5.0 kg, and this month body fat −1.2% and muscle +0.8 kg.
 
 ## Behavior
 

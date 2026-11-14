@@ -87,7 +87,7 @@ describe('dashboard', () => {
     expect(d.monthlyWins).toEqual({ bodyFatChangePct: -1.2, muscleGainedKg: 0.8 });
     expect(d.leaderboard).toEqual({
       optedIn: true,
-      standing: { rank: 2, totalMembers: 7, topPercent: 29, membersBehind: 5, pointsToNextRank: 10 },
+      standing: { rank: 6, totalMembers: 19, topPercent: 32, membersBehind: 13, pointsToNextRank: 4 },
     });
     expect(d.unreadNotifications).toBe(2);
   });
@@ -209,13 +209,13 @@ describe('settings', () => {
 });
 
 describe('leaderboard', () => {
-  it("only opted-in men appear on Sam's board; Sam is #2 of 7 on Top Score", async () => {
+  it("only opted-in men appear on Sam's board; Sam is #6 of 19 on Top Score", async () => {
     const r = (await get<LeaderboardDto>('/leaderboard', '101')).body;
     expect(r.board).toBe('score');
     expect(r.division).toBe('MALE');
     expect(r.optedIn).toBe(true);
-    expect(r.rows).toHaveLength(7);
-    expect(r.rows.find((x) => x.isMe)).toMatchObject({ rank: 2, name: 'Sam K.', value: 72 });
+    expect(r.rows).toHaveLength(19);
+    expect(r.rows.find((x) => x.isMe)).toMatchObject({ rank: 6, name: 'Sam K.', value: 72 });
     expect(r.rows.map((x) => x.name)).not.toContain('Nour S.');
     expect(r.rows.map((x) => x.name)).not.toContain('Lina H.');
     expect(r.rows.map((x) => x.name)).not.toContain('Omar A.');

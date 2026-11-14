@@ -188,7 +188,7 @@ describe('Leaderboard', () => {
     const podium = screen.getByTestId('podium');
     expect(podium.querySelectorAll('[data-crop="full"]')).toHaveLength(3);
     expect(podium.querySelector('.lu-medal-1')).not.toBeNull();
-    expect(screen.getByTestId('my-rank')).toHaveTextContent('#2');
+    expect(screen.getByTestId('my-rank')).toHaveTextContent('#6');
     expect(screen.getByText("Men's rankings")).toBeInTheDocument();
   });
 
