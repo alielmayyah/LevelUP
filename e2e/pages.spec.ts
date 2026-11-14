@@ -101,6 +101,42 @@ test.describe('Goals', () => {
     await expect(first).toHaveAttribute('aria-expanded', 'true');
     await expect(g.getByText(en.goals.due.replace(' {{date}}', ''), { exact: false }).first()).toBeVisible();
   });
+
+  test('a member creates their own goal and it goes live at once', async ({ page, loginAs }) => {
+    await loginAs('103');
+    await page.goto('/tabs/goals');
+    const g = page.locator(tab('goals'));
+    await g.getByTestId('goal-new-empty').click();
+
+    const n = page.locator(tab('new-goal'));
+    await expect(n.getByRole('heading', { level: 1 })).toHaveText(en.newGoal.title);
+    await n.getByTestId('goal-type-MUSCLE_KG').click();
+    await n.getByTestId('goal-more').click();
+    await expect(n.getByTestId('goal-name')).toHaveText('Gain 2.5 kg of muscle');
+    await n.getByTestId('goal-months-6').click();
+    await expect(n.getByTestId('goal-months-6')).toHaveAttribute('aria-checked', 'true');
+    await n.getByTestId('goal-create').click();
+
+    await expect(page).toHaveURL(/\/tabs\/goals$/);
+    await expect(g.getByTestId('section-active').getByTestId('goal')).toContainText('Gain 2.5 kg of muscle');
+    // It is also today's mission on Home.
+    await page.goto('/tabs/home');
+    await expect(page.getByTestId('mission-card')).toContainText('Gain 2.5 kg of muscle');
+  });
+
+  test('the new goal page has a way back and keyboard choices', async ({ page, loginAs }) => {
+    await loginAs();
+    await page.goto('/tabs/goals');
+    await page.locator(tab('goals')).getByTestId('goal-new').click();
+    const n = page.locator(tab('new-goal'));
+    await expect(n.getByTestId('goal-starts')).toHaveText(en.newGoal.startsNext);
+    await n.getByTestId('goal-type-BODY_FAT_KG').focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(n.getByTestId('goal-type-MUSCLE_KG')).toBeFocused();
+    await expect(n.getByTestId('goal-type-MUSCLE_KG')).toHaveAttribute('aria-checked', 'true');
+    await n.getByTestId('new-goal-back').click();
+    await expect(page).toHaveURL(/\/tabs\/goals$/);
+  });
 });
 
 test.describe('Leaderboard', () => {
@@ -233,7 +269,9 @@ test.describe('Character', () => {
           await expect(darkHoodie).toHaveAttribute('aria-pressed', 'true');
           await expect(summer).toHaveAttribute('aria-pressed', 'false');
           await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'hoodie');
+          await expect(preview.locator('[data-art-detail="stitched-hoodie"]')).toHaveCount(1);
           await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'joggers');
+          await expect(preview.locator('image')).toHaveCount(0);
           const choices = [
             ['hair', 'locs'],
             ['body', 'broad'],
@@ -241,6 +279,7 @@ test.describe('Character', () => {
             ['shoes', 'high-tops'],
             ['pants', 'cargo'],
             ['beard', 'goatee'],
+            ['socks', 'striped-socks'],
           ] as const;
           for (const [part, id] of choices) {
             await selectTab(part);
@@ -255,6 +294,12 @@ test.describe('Character', () => {
             if (part === 'top') await color('tank', 'teal').click();
             if (part === 'pants') await color('shorts', 'olive').click();
             if (part === 'beard') await color('beard', 'auburn').click();
+            if (part === 'socks') {
+              const sock = preview.locator('[data-paint="sock-fabric"]').first();
+              const before = await sock.getAttribute('fill');
+              await color('socks', 'violet').click();
+              await expect(sock).not.toHaveAttribute('fill', before!);
+            }
           }
           await selectTab('face');
           await color('eyes', 'brown').click();
@@ -279,6 +324,8 @@ test.describe('Character', () => {
           }
           await selectTab('beard');
           await expect(color('beard', 'auburn')).toHaveAttribute('aria-checked', 'true');
+          await selectTab('socks');
+          await expect(color('socks', 'violet')).toHaveAttribute('aria-checked', 'true');
           await selectTab('hair');
           await expect(color('hair', 'silver')).toHaveAttribute('aria-checked', 'true');
         });

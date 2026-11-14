@@ -40,6 +40,31 @@
     box-shadow: 0 3px 0 color-mix(in srgb, var(--metric) 35%, var(--lu-pixel-shadow));
   }
 
+  /* New goal: the picked kind takes its metric's hue. */
+  .lu-goal-choice {
+    box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+    transition: transform 90ms steps(2);
+
+    &:active {
+      transform: translateY(2px);
+    }
+
+    &[aria-checked='true'] {
+      border-color: var(--metric);
+      background: color-mix(in srgb, var(--metric) 12%, var(--lu-surface));
+      box-shadow: 0 3px 0 color-mix(in srgb, var(--metric) 45%, var(--lu-pixel-shadow));
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
   .lu-goal-chevron {
     transition: transform 150ms steps(3);
 

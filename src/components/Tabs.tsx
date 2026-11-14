@@ -20,6 +20,7 @@ const LOADERS = {
   home: () => import('../pages/Dashboard'),
   progress: () => import('../pages/Progress'),
   goals: () => import('../pages/Goals'),
+  newGoal: () => import('../pages/NewGoal'),
   character: () => import('../pages/Character'),
   leaderboard: () => import('../pages/Leaderboard'),
   profile: () => import('../pages/Profile'),
@@ -28,6 +29,7 @@ const LOADERS = {
 const Home = withSuspense(lazy(LOADERS.home));
 const Progress = withSuspense(lazy(LOADERS.progress));
 const Goals = withSuspense(lazy(LOADERS.goals));
+const NewGoal = withSuspense(lazy(LOADERS.newGoal));
 const Character = withSuspense(lazy(LOADERS.character));
 const Leaderboard = withSuspense(lazy(LOADERS.leaderboard));
 const Profile = withSuspense(lazy(LOADERS.profile));
@@ -64,6 +66,7 @@ const Tabs: React.FC = () => {
         <Route exact path="/tabs/home" component={Home} />
         <Route exact path="/tabs/progress" component={Progress} />
         <Route exact path="/tabs/goals" component={Goals} />
+        <Route exact path="/tabs/goals/new" component={NewGoal} />
         <Route exact path="/tabs/leaderboard" component={Leaderboard} />
         <Route exact path="/tabs/profile" component={Profile} />
         <Route exact path="/tabs/profile/character" component={Character} />

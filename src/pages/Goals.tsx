@@ -1,5 +1,12 @@
-import { IonIcon } from '@ionic/react';
-import { arrowForward, chatbubbleEllipsesOutline, checkmarkCircle, chevronDown, flagOutline } from 'ionicons/icons';
+import { IonIcon, useIonRouter } from '@ionic/react';
+import {
+  add,
+  arrowForward,
+  chatbubbleEllipsesOutline,
+  checkmarkCircle,
+  chevronDown,
+  flagOutline,
+} from 'ionicons/icons';
 import { useId, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -140,8 +147,10 @@ const GoalRow: React.FC<{ goal: GoalView; kind: GoalTab; now: number }> = ({ goa
 /** Goals tab: every goal on one page, in progress first, then up next, then completed. */
 const Goals: React.FC = () => {
   const { t } = useTranslation();
+  const router = useIonRouter();
   const goals = useApi<GoalsDto>('/me/goals');
   const [now] = useState(() => Date.now());
+  const newGoal = () => router.push('/tabs/goals/new', 'forward');
   useRefreshOnEnter(goals.reload);
 
   const data = goals.status === 'ready' ? goals.data : null;
@@ -154,6 +163,16 @@ const Goals: React.FC = () => {
       titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="flag" />}
       subtitle={t('goals.subtitle')}
       onRefresh={goals.reload}
+      actions={
+        <CtaButton
+          className="min-h-11 flex-none gap-1 px-3 pt-1 pb-2 text-[1.05rem]"
+          onClick={newGoal}
+          data-testid="goal-new"
+        >
+          <IonIcon className="text-[1.1rem]" icon={add} aria-hidden="true" />
+          {t('goals.new')}
+        </CtaButton>
+      }
     >
       {goals.status === 'loading' && (
         <div className={LIST} aria-busy="true">
@@ -173,6 +192,9 @@ const Goals: React.FC = () => {
         <div className="lu-px-card lu-state" data-testid="goals-empty">
           <IonIcon icon={flagOutline} aria-hidden="true" />
           <p>{t('goals.empty')}</p>
+          <CtaButton onClick={newGoal} data-testid="goal-new-empty">
+            {t('goals.emptyCta')}
+          </CtaButton>
         </div>
       )}
 

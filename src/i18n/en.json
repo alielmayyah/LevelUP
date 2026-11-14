@@ -146,7 +146,9 @@
       "active": "In progress",
       "upcoming": "Up next",
       "completed": "Completed"
-    }
+    },
+    "new": "New goal",
+    "emptyCta": "Set your first goal"
   },
   "leaderboard": {
     "subtitle": "Gym rankings",
@@ -245,7 +247,7 @@
     "mission": {
       "title": "Current mission",
       "progress": "{{done}} of {{total}} kg",
-      "empty": "No active mission. Your coach will set one soon.",
+      "empty": "No active mission. Set a goal to start one.",
       "toGo": "{{left}} kg to go",
       "reached": "Goal reached!"
     },
@@ -332,6 +334,7 @@
       "top": "Tops",
       "pants": "Pants",
       "shoes": "Shoes",
+      "socks": "Socks",
       "beard": "Beard",
       "face": "Face"
     },
@@ -341,6 +344,7 @@
       "top": "Top style",
       "pants": "Pants style",
       "shoes": "Shoe style",
+      "socks": "Sock style",
       "beard": "Beard style"
     },
     "style": {
@@ -370,7 +374,11 @@
       "trainers": "Trainers",
       "high-tops": "High tops",
       "runners": "Running shoes",
-      "slip-ons": "Slip-ons"
+      "slip-ons": "Slip-ons",
+      "no-socks": "No socks",
+      "ankle-socks": "Ankle socks",
+      "crew-socks": "Crew socks",
+      "striped-socks": "Striped socks"
     },
     "part": {
       "skin": "Skin tone",
@@ -380,8 +388,10 @@
       "tank": "Top color",
       "shorts": "Pants color",
       "shoes": "Shoe color",
+      "socks": "Sock color",
       "beard": "Beard color"
     },
+    "socksHint": "Long pants can cover your socks.",
     "randomize": "Surprise me",
     "reset": "Undo changes",
     "saving": "Saving…",
@@ -467,5 +477,45 @@
     "legendThen": "Compared scan ({{date}})",
     "upSince": "Up {{amount}} since the compared scan",
     "downSince": "Down {{amount}} since the compared scan"
+  },
+  "newGoal": {
+    "title": "New goal",
+    "subtitle": "Pick what to work on. It's your goal, no approval needed.",
+    "back": "Back to goals",
+    "type": "What do you want to do?",
+    "metric": {
+      "BODY_FAT_KG": "Lose body fat",
+      "MUSCLE_KG": "Gain muscle",
+      "WEIGHT_KG": "Reach a weight"
+    },
+    "now": "Now {{value}} kg",
+    "amount": {
+      "BODY_FAT_KG": "How much fat to lose?",
+      "MUSCLE_KG": "How much muscle to gain?",
+      "WEIGHT_KG": "Your target weight"
+    },
+    "less": "Less",
+    "more": "More",
+    "fromScan": "{{change}} kg from your last scan",
+    "deadline": "By when?",
+    "months": {
+      "1": "1 month",
+      "2": "2 months",
+      "3": "3 months",
+      "6": "6 months"
+    },
+    "name": {
+      "BODY_FAT_KG": "Lose {{amount}} kg of body fat",
+      "MUSCLE_KG": "Gain {{amount}} kg of muscle",
+      "WEIGHT_KG": "Reach {{amount}} kg"
+    },
+    "summary": "Your goal",
+    "startsNow": "Starts today, from your last scan.",
+    "startsNext": "Starts after your current mission.",
+    "create": "Create goal",
+    "creating": "Creating…",
+    "failed": "Couldn't create the goal. Try again.",
+    "noScan": "You need a body scan before you can set a goal. Book one at the front desk.",
+    "error": "Couldn't load your last scan."
   }
 }

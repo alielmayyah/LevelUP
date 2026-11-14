@@ -10,11 +10,13 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { mockServer, resetMockServer } from '../api/mock/server';
+import type { AssessmentDto, GoalsDto } from '../api/types';
 import { setToken } from '../auth/token';
 import { setLanguage } from '../i18n';
 import { resetSound } from '../sound/useSound';
 import Goals from './Goals';
 import Leaderboard from './Leaderboard';
+import NewGoal from './NewGoal';
 import Profile from './Profile';
 import { ageOn } from './profile/age';
 import Progress from './Progress';
@@ -222,6 +224,71 @@ describe('Goals', () => {
     await renderAs('102', Goals);
     expect(await screen.findByText('Nothing here yet')).toBeInTheDocument();
     expect(screen.queryByTestId('journey')).toBeNull();
+    expect(screen.getByTestId('goal-new-empty')).toHaveTextContent('Set your first goal');
+  });
+
+  it('always offers a New goal button in the header', async () => {
+    await renderAs('101', Goals);
+    expect(await screen.findByTestId('goal-new')).toHaveTextContent('New goal');
+  });
+});
+
+describe('New goal', () => {
+  const mock = <T,>(path: string, fitId: string) =>
+    mockServer.handle('GET', path, null, `mock.${fitId}`).then((r) => r.body as T);
+
+  it('Omar sets a muscle goal himself: amount, deadline, and it starts now', async () => {
+    const [scan] = await mock<AssessmentDto[]>('/me/assessments', '103');
+    await renderAs('103', NewGoal);
+    await userEvent.click(await screen.findByTestId('goal-type-MUSCLE_KG'));
+    expect(screen.getByTestId('goal-type-MUSCLE_KG')).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByTestId('goal-amount')).toHaveTextContent('2');
+    await userEvent.click(screen.getByTestId('goal-more'));
+    expect(screen.getByTestId('goal-amount')).toHaveTextContent('2.5');
+    expect(screen.getByTestId('goal-name')).toHaveTextContent('Gain 2.5 kg of muscle');
+    await userEvent.click(screen.getByTestId('goal-months-6'));
+    expect(await screen.findByTestId('goal-starts')).toHaveTextContent('Starts today');
+
+    await userEvent.click(screen.getByTestId('goal-create'));
+    await waitFor(async () => {
+      const goals = await mock<GoalsDto>('/me/goals', '103');
+      expect(goals.active).toHaveLength(1);
+      expect(goals.active[0]).toMatchObject({
+        title: 'Gain 2.5 kg of muscle',
+        metric: 'MUSCLE_KG',
+        targetValue: Math.round((scan.skeletalMuscleKg + 2.5) * 10) / 10,
+      });
+    });
+  });
+
+  it('a fat goal cannot go below half a kilo, and Sam is told it queues after his mission', async () => {
+    await renderAs('101', NewGoal);
+    const less = await screen.findByTestId('goal-less');
+    for (let i = 0; i < 4; i++) if (!(less as HTMLButtonElement).disabled) await userEvent.click(less);
+    expect(screen.getByTestId('goal-amount')).toHaveTextContent('0.5');
+    expect(less).toBeDisabled();
+    expect(await screen.findByTestId('goal-starts')).toHaveTextContent('Starts after your current mission');
+  });
+
+  it('a weight goal steps the target and skips the current weight', async () => {
+    await renderAs('103', NewGoal);
+    await userEvent.click(await screen.findByTestId('goal-type-WEIGHT_KG'));
+    expect(screen.getByTestId('goal-name')).toHaveTextContent(/^Reach [\d.]+ kg$/);
+    expect(screen.getByTestId('goal-change')).toHaveTextContent(/from your last scan/);
+  });
+
+  it('Lina, with no scan, is told to book one and has a way back', async () => {
+    await renderAs('102', NewGoal);
+    expect(await screen.findByTestId('new-goal-no-scan')).toHaveTextContent('You need a body scan');
+    expect(screen.getByTestId('new-goal-back')).toBeInTheDocument();
+    expect(screen.queryByTestId('goal-create')).toBeNull();
+  });
+
+  it('reads in Egyptian Arabic', async () => {
+    await setLanguage('ar');
+    await renderAs('103', NewGoal);
+    expect(await screen.findByText('عايز تعمل إيه؟')).toBeInTheDocument();
+    expect(screen.getByTestId('goal-create')).toHaveTextContent('اعمل الهدف');
   });
 });
 

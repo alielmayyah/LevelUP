@@ -289,7 +289,8 @@ button.lu-px-card:active {
   font-size: 1.15rem;
 }
 
-.lu-segment button[aria-selected='true'] {
+.lu-segment button[aria-selected='true'],
+.lu-segment button[aria-checked='true'] {
   background: var(--ion-color-primary);
   color: var(--ion-color-primary-contrast);
   box-shadow: 0 3px 0 var(--ion-color-primary-shade);

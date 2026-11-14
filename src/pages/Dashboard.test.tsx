@@ -89,7 +89,7 @@ describe('Home', () => {
     await renderHome('102');
     expect(await screen.findByText('Your FitScore appears after your first scan.')).toBeInTheDocument();
     expect(screen.getByText('Join the FitScore leaderboard')).toBeInTheDocument();
-    expect(screen.getByText('No active mission. Your coach will set one soon.')).toBeInTheDocument();
+    expect(screen.getByText('No active mission. Set a goal to start one.')).toBeInTheDocument();
     expect(screen.getByTestId('tile-body-fat')).toHaveTextContent('—');
     expect(screen.queryByTestId('bell-dot')).toBeNull();
     await userEvent.click(screen.getByTestId('rank-card'));
