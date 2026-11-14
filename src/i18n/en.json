@@ -247,9 +247,9 @@
     "mission": {
       "title": "Current mission",
       "progress": "{{done}} of {{total}} kg",
-      "eta": "Estimated {{date}}",
-      "noEta": "Keep going to see your ETA",
-      "empty": "No active mission. Your coach will set one soon."
+      "empty": "No active mission. Your coach will set one soon.",
+      "toGo": "{{left}} kg to go",
+      "reached": "Goal reached!"
     },
     "wins": {
       "title": "{{month}} wins",

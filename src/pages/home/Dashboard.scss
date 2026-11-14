@@ -224,3 +224,18 @@
     stroke-dashoffset: var(--lu-ring-full);
   }
 }
+
+/* The mission's pixel progress bar: ten blocks, lit in the brand color as the goal fills. */
+@layer components {
+  .lu-mission-blocks span {
+    flex: 1;
+    block-size: 8px;
+    background: var(--lu-surface-2);
+    box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--lu-pixel-shadow) 60%, transparent);
+  }
+
+  .lu-mission-blocks span.is-on {
+    background: var(--ion-color-primary);
+    box-shadow: inset 0 2px 0 color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-splash-star));
+  }
+}

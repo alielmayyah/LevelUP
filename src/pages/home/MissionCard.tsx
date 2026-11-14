@@ -10,6 +10,8 @@ import { formatNumber, formatPercent } from '../../i18n/format';
 
 const RADIUS = 26;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+/** The pixel progress bar under the amount: one block per tenth of the goal. */
+const BLOCKS = 10;
 
 /** The active goal with a progress ring. Opens the Goals tab. */
 const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) => {
@@ -87,12 +89,31 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
             <strong id={`${ids}-title`} className="text-[1.1rem] leading-[1.25] font-extrabold">
               {mission.title}
             </strong>
-            <span id={`${ids}-details`} className="grid gap-0.5">
-              <span>
+            <span id={`${ids}-details`} className="grid gap-1.5">
+              {/* Read out as one sentence; drawn as a big number, a pixel bar, and what's left. */}
+              <span className="sr-only">
                 {t('home.mission.progress', {
                   done: formatNumber(mission.doneKg, 1),
                   total: formatNumber(mission.doneKg + mission.remainingKg, 1),
                 })}
+              </span>
+              <span className="flex items-baseline gap-1.5" aria-hidden="true" data-testid="mission-amount">
+                <strong className="lu-display text-[1.75rem] leading-none font-normal text-ink">
+                  {formatNumber(mission.doneKg, 1)}
+                </strong>
+                <span className="text-[0.9rem] font-bold text-muted">
+                  / {formatNumber(mission.doneKg + mission.remainingKg, 1)} {t('units.kg')}
+                </span>
+              </span>
+              <span className="lu-mission-blocks flex gap-[3px]" aria-hidden="true">
+                {Array.from({ length: BLOCKS }, (_, i) => (
+                  <span key={i} className={i < Math.round((percent / 100) * BLOCKS) ? 'is-on' : undefined} />
+                ))}
+              </span>
+              <span className="text-[0.8rem] font-bold text-muted" data-testid="mission-left">
+                {mission.remainingKg > 0
+                  ? t('home.mission.toGo', { left: formatNumber(mission.remainingKg, 1) })
+                  : t('home.mission.reached')}
               </span>
             </span>
           </span>
