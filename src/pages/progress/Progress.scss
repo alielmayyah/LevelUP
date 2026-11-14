@@ -25,7 +25,7 @@
   }
 
   .lu-tone-muscle {
-    --tone: var(--lu-muscle);
+    --tone: var(--lu-tier-4);
     --px-fill: var(--lu-muscle);
     --px-hi: var(--lu-muscle-hi);
   }
@@ -45,7 +45,7 @@
 
   /* Drumstick: golden-brown meat, pale bone. */
   .lu-tone-protein {
-    --tone: var(--lu-bronze);
+    --tone: var(--lu-fat);
     --px-fill: var(--lu-bronze);
     --px-hi: var(--lu-gold);
     --px-core: var(--lu-metal-hi);
@@ -64,7 +64,7 @@
   }
 
   .lu-tone-bmi {
-    --tone: var(--lu-tier-4);
+    --tone: var(--lu-tier-3);
     --px-fill: var(--lu-tier-3);
     --px-hi: var(--lu-fat-core);
   }
@@ -131,6 +131,129 @@
 
   .lu-all-scans:active {
     transform: translateY(2px);
+  }
+
+  /* Calendar and title icons in the brand purple. */
+  .lu-tone-calendar,
+  .lu-progress-title-icon {
+    --px-fill: var(--ion-color-primary);
+    --px-hi: color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-splash-star));
+    --px-core: var(--lu-splash-star);
+  }
+
+  /*
+   * The latest-scan card: a pixel frame (corners cut in 4px steps, a 2px
+   * purple rim, a lit top edge) with a faint brand tint.
+   */
+  .lu-scan-card {
+    clip-path: polygon(
+      0 8px,
+      4px 8px,
+      4px 4px,
+      8px 4px,
+      8px 0,
+      calc(100% - 8px) 0,
+      calc(100% - 8px) 4px,
+      calc(100% - 4px) 4px,
+      calc(100% - 4px) 8px,
+      100% 8px,
+      100% calc(100% - 8px),
+      calc(100% - 4px) calc(100% - 8px),
+      calc(100% - 4px) calc(100% - 4px),
+      calc(100% - 8px) calc(100% - 4px),
+      calc(100% - 8px) 100%,
+      8px 100%,
+      8px calc(100% - 4px),
+      4px calc(100% - 4px),
+      4px calc(100% - 8px),
+      0 calc(100% - 8px)
+    );
+    background: color-mix(in srgb, var(--ion-color-primary) 7%, var(--lu-surface));
+    box-shadow:
+      inset 0 0 0 2px color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border)),
+      inset 0 4px 0 color-mix(in srgb, var(--ion-color-primary) 22%, transparent),
+      inset 0 -4px 0 color-mix(in srgb, var(--ion-color-primary) 18%, transparent);
+  }
+
+  .lu-compare {
+    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 35%, var(--lu-border));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ion-color-primary) 6%, var(--lu-surface));
+  }
+
+  .lu-grass-dark {
+    fill: color-mix(in srgb, var(--lu-tier-4) 70%, var(--lu-splash-bg));
+  }
+
+  .lu-grass-light {
+    fill: var(--lu-tier-4);
+  }
+
+  .lu-grass-stone {
+    fill: color-mix(in srgb, var(--lu-floor-edge) 80%, var(--lu-surface));
+  }
+
+  /* The bigger cards get a stronger rim in their own color, as in the reference. */
+  .lu-scan-tile {
+    border-color: color-mix(in srgb, var(--tone) 70%, var(--lu-border));
+  }
+
+  .lu-more-card {
+    border-color: color-mix(in srgb, var(--tone) 45%, var(--lu-border));
+    background: color-mix(in srgb, var(--tone) 7%, var(--lu-surface));
+  }
+
+  /* The header landscape (JourneyArt.tsx): night palette in both themes, like the splash. */
+  .lu-journey {
+    mask-image: linear-gradient(to right, transparent, black 38%);
+
+    &:dir(rtl) {
+      transform: scaleX(-1);
+    }
+
+    .lu-j-sky-1 {
+      fill: var(--lu-splash-bg);
+    }
+    .lu-j-sky-2 {
+      fill: color-mix(in srgb, var(--lu-splash-bg) 70%, var(--lu-splash-bg-2));
+    }
+    .lu-j-sky-3 {
+      fill: var(--lu-splash-bg-2);
+    }
+    .lu-j-moon {
+      fill: var(--lu-fat-core);
+    }
+    .lu-j-moon-shade {
+      fill: color-mix(in srgb, var(--lu-fat-core) 60%, var(--lu-gold));
+    }
+    .lu-j-star {
+      fill: var(--lu-splash-star);
+    }
+    .lu-j-far {
+      fill: color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-splash-bg-2));
+    }
+    .lu-j-snow {
+      fill: color-mix(in srgb, var(--lu-splash-text-muted) 80%, var(--ion-color-primary));
+    }
+    .lu-j-near {
+      fill: color-mix(in srgb, var(--ion-color-primary) 22%, var(--lu-splash-bg));
+    }
+    .lu-j-ground {
+      fill: var(--lu-splash-bg);
+    }
+    .lu-j-grass {
+      fill: color-mix(in srgb, var(--lu-tier-4) 75%, var(--lu-splash-bg));
+    }
+    .lu-j-rock {
+      fill: color-mix(in srgb, var(--lu-floor-edge) 70%, var(--lu-splash-bg));
+    }
+    .lu-j-rock-hi {
+      fill: var(--lu-floor-edge);
+    }
+  }
+
+  .lu-journey-hero {
+    filter: drop-shadow(0 1px 0 var(--lu-splash-bg));
   }
 
   /* Scan picker arrows: small pixel buttons with stepped corners. */

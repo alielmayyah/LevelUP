@@ -44,7 +44,6 @@
     "secondScan": "Your trends appear after your second scan.",
     "summary": "{{metric}} went from {{from}} to {{to}} between {{first}} and {{last}}.",
     "error": "Couldn't load your progress.",
-    "lastScan": "Last scan {{date}}",
     "noChange": "No change",
     "changeUp": "Up {{amount}} since the scan before",
     "changeDown": "Down {{amount}} since the scan before",
@@ -130,7 +129,9 @@
         "why": "A high level is linked to health risks, even in people who look slim.",
         "tip": "Lower is better. Regular exercise, good sleep, and less sugar help bring it down."
       }
-    }
+    },
+    "journey": "Your body journey",
+    "lastScanLabel": "Last scan"
   },
   "goals": {
     "subtitle": "Your missions",

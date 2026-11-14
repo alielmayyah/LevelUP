@@ -1,16 +1,18 @@
 import { IonIcon } from '@ionic/react';
-import { chevronBack, chevronForward, listOutline, scanOutline } from 'ionicons/icons';
+import { chevronBack, chevronForward, informationCircleOutline, listOutline } from 'ionicons/icons';
 import { lazy, Suspense, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto, ProfileDto, ProgressDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
+import { starterAvatar } from '../avatar/catalog';
 import CtaButton from '../components/CtaButton';
 import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
 import TabPage from '../components/TabPage';
 import { formatNumber, numberLocale } from '../i18n/format';
 import './progress/Progress.scss';
 import MetricInfo, { InfoButton, type InfoTopic } from './progress/MetricInfo';
+import JourneyArt from './progress/JourneyArt';
 import ScanHistory from './progress/ScanHistory';
 
 // The chart is the heaviest part of the page, so it loads after it, behind a skeleton.
@@ -78,6 +80,21 @@ const MORE: Metric<MoreKey>[] = [
 const scanDate = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
 
+/** Pixel grass and a pebble in a bottom corner of the scan card. */
+const Grass: React.FC<{ side: 'start' | 'end' }> = ({ side }) => (
+  <svg
+    className={`lu-grass pointer-events-none absolute bottom-0 h-5 w-auto ${side === 'start' ? 'start-1' : 'end-1 -scale-x-100'}`}
+    viewBox="0 0 20 8"
+    shapeRendering="crispEdges"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path className="lu-grass-dark" d="M0 8V6h1V4h1v2h1V3h1v3h1V5h1v1h2V4h1v2h1V2h1v4h1V5h1v1h2v2z" />
+    <path className="lu-grass-light" d="M2 6V4h1v2zM10 6V2h1v4zM4 6V3h1v3z" />
+    <path className="lu-grass-stone" d="M15 8V6h1V5h3v1h1v2z" />
+  </svg>
+);
+
 const STEP =
   'lu-scan-step grid size-11 flex-none cursor-pointer place-items-center border-0 bg-surface-2 font-inherit text-[1.15rem] text-ink disabled:cursor-default disabled:opacity-40';
 
@@ -116,10 +133,23 @@ const Progress: React.FC = () => {
   const points = progress.status === 'ready' ? progress.data.assessments : [];
 
   const unit = (u?: Metric<string>['unit']) => (!u ? '' : u === '%' ? '%' : ` ${t(`units.${u}`)}`);
+  /** A measurement and its unit, or a lone dash when the scan has no value for it. */
+  const value = (m: Metric<string>, of: AssessmentDto) => {
+    const v = m.value(of);
+    if (!Number.isFinite(v)) return '—';
+    return (
+      <>
+        {formatNumber(v, m.digits)}
+        {/* The unit is smaller than the number, so the value fits a narrow tile. */}
+        <span className="text-[0.7em]">{unit(m.unit)}</span>
+      </>
+    );
+  };
 
   /** "▲ 0.8 kg", colored by whether that direction is good news. Null when there is no earlier scan. */
   const change = (m: MainMetric) => {
     if (!scan || !before) return null;
+    if (!Number.isFinite(m.value(scan)) || !Number.isFinite(m.value(before))) return null;
     const diff = Math.round((m.value(scan) - m.value(before)) * 10 ** m.digits) / 10 ** m.digits;
     if (diff === 0)
       return { text: t('progress.noChange'), arrow: '', tone: 'text-muted', label: t('progress.noChange') };
@@ -138,22 +168,39 @@ const Progress: React.FC = () => {
     <TabPage
       testId="page-progress"
       title={t('tabs.progress')}
-      subtitle={latest ? t('progress.lastScan', { date: scanDate(latest.takenAt) }) : t('progress.subtitle')}
+      subtitle={t('progress.journey')}
       onRefresh={reloadAll}
-      actions={
-        list.length > 1 ? (
-          <button
-            type="button"
-            className="lu-all-scans inline-flex min-h-11 flex-none cursor-pointer items-center gap-1.5 border-0 bg-surface px-3 font-inherit text-[0.85rem] font-extrabold text-primary dark:text-secondary"
-            onClick={() => setShowAll(true)}
-            data-testid="view-all-scans"
-          >
-            <IonIcon className="text-[1.1rem]" icon={listOutline} aria-hidden="true" />
-            {t('progress.viewAll', { n: formatNumber(list.length) })}
-          </button>
+      titleIcon={<PixelIcon className="lu-progress-title-icon flex-none text-[0.75em]" name="chart" />}
+      art={
+        me.status === 'ready' ? (
+          <JourneyArt avatar={me.data.avatar ?? starterAvatar(String(me.data.memberId))} />
         ) : undefined
       }
     >
+      {latest && (
+        <div className="mb-3.5 flex flex-wrap items-center justify-between gap-3" data-testid="last-scan">
+          <p className="m-0 flex items-center gap-2.5">
+            <PixelIcon className="lu-tone-calendar flex-none text-[1.6rem]" name="calendar" />
+            <span className="grid leading-tight">
+              <span className="text-[0.8rem] font-bold text-muted">{t('progress.lastScanLabel')}</span>
+              <strong className="font-extrabold text-ink">{scanDate(latest.takenAt)}</strong>
+            </span>
+          </p>
+          {list.length > 1 && (
+            <button
+              type="button"
+              className="lu-all-scans inline-flex min-h-11 flex-none cursor-pointer items-center gap-2 border-0 bg-surface px-3.5 font-inherit text-[0.9rem] font-extrabold text-primary dark:text-secondary"
+              onClick={() => setShowAll(true)}
+              data-testid="view-all-scans"
+            >
+              <IonIcon className="text-[1.15rem]" icon={listOutline} aria-hidden="true" />
+              {t('progress.viewAll', { n: formatNumber(list.length) })}
+              <IonIcon className="text-[1rem] rtl:-scale-x-100" icon={chevronForward} aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      )}
+
       {failed && !loading && (
         <div className="lu-state" role="alert">
           <p>{t('progress.error')}</p>
@@ -172,60 +219,130 @@ const Progress: React.FC = () => {
 
       {!loading && !failed && !scan && (
         <div className="lu-px-card lu-state" data-testid="progress-empty">
-          <IonIcon icon={scanOutline} aria-hidden="true" />
+          <PixelIcon className="lu-tone-calendar text-[3rem]" name="chart" />
           <p>{t('progress.empty')}</p>
         </div>
       )}
 
       {!loading && !failed && scan && me.status === 'ready' && (
-        <div className="grid gap-3.5 wide:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] wide:items-start">
-          <section className="lu-px-card grid gap-3" aria-labelledby="latest-scan" data-testid="latest-scan">
-            {/* Scan picker: older on the start side, newer on the end side. */}
-            <header className="flex items-center gap-2">
-              <button
-                type="button"
-                className={STEP}
-                onClick={() => setPicked(index + 1)}
-                disabled={!before}
-                aria-label={t('progress.olderScan')}
-                data-testid="scan-older"
-              >
-                <IonIcon className="rtl:-scale-x-100" icon={chevronBack} aria-hidden="true" />
-              </button>
-              <div className="grid min-w-0 flex-1 justify-items-center text-center" aria-live="polite">
-                <h2 id="latest-scan" className="lu-card-title m-0" data-testid="scan-title">
-                  {index === 0 ? t('progress.latest') : t('progress.earlierScan')}
-                </h2>
-                <span className="text-[0.8rem] font-bold text-muted" data-testid="scan-date">
-                  {t('progress.scanPosition', {
-                    date: scanDate(scan.takenAt),
-                    n: formatNumber(list.length - index),
-                    total: formatNumber(list.length),
-                  })}
-                </span>
-              </div>
-              <button
-                type="button"
-                className={STEP}
-                onClick={() => setPicked(index - 1)}
-                disabled={index === 0}
-                aria-label={t('progress.newerScan')}
-                data-testid="scan-newer"
-              >
-                <IonIcon className="rtl:-scale-x-100" icon={chevronForward} aria-hidden="true" />
-              </button>
-            </header>
+        <div className="grid gap-3.5 wide:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] wide:items-start">
+          <div className="grid gap-5">
+            <section
+              className="lu-scan-card relative grid gap-3 p-3.5 pb-6"
+              aria-labelledby="latest-scan"
+              data-testid="latest-scan"
+            >
+              <Grass side="start" />
+              <Grass side="end" />
+              {/* Scan picker: older on the start side, newer on the end side. */}
+              <header className="flex items-center gap-2">
+                <button
+                  type="button"
+                  className={STEP}
+                  onClick={() => setPicked(index + 1)}
+                  disabled={!before}
+                  aria-label={t('progress.olderScan')}
+                  data-testid="scan-older"
+                >
+                  <IonIcon className="rtl:-scale-x-100" icon={chevronBack} aria-hidden="true" />
+                </button>
+                <div className="grid min-w-0 flex-1 justify-items-center text-center" aria-live="polite">
+                  <h2 id="latest-scan" className="lu-card-title m-0" data-testid="scan-title">
+                    {index === 0 ? t('progress.latest') : t('progress.earlierScan')}
+                  </h2>
+                  <span className="text-[0.8rem] font-bold text-muted" data-testid="scan-date">
+                    {t('progress.scanPosition', {
+                      date: scanDate(scan.takenAt),
+                      n: formatNumber(list.length - index),
+                      total: formatNumber(list.length),
+                    })}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className={STEP}
+                  onClick={() => setPicked(index - 1)}
+                  disabled={index === 0}
+                  aria-label={t('progress.newerScan')}
+                  data-testid="scan-newer"
+                >
+                  <IonIcon className="rtl:-scale-x-100" icon={chevronForward} aria-hidden="true" />
+                </button>
+              </header>
 
-            <dl className="m-0 grid grid-cols-3 gap-2">
-              {MAIN.map((m) => {
-                const c = change(m);
-                return (
+              <dl className="m-0 grid grid-cols-3 gap-2">
+                {MAIN.map((m) => {
+                  const c = change(m);
+                  return (
+                    <div
+                      key={m.key}
+                      className={`lu-scan-tile relative grid content-start justify-items-center gap-1 rounded-lg px-1 pt-2.5 pb-2 text-center ${m.tone}`}
+                      data-testid={`metric-${m.key}`}
+                    >
+                      <dt className="grid justify-items-center gap-1 text-[0.75rem] font-bold text-muted">
+                        {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
+                        <InfoButton
+                          className="absolute -end-1 -top-1"
+                          label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
+                          onClick={() => setInfo(m)}
+                          testId={`info-${m.key}`}
+                        />
+                        <PixelIcon className="text-[1.6rem]" name={m.icon} />
+                        {t(`progress.metric.${m.key}`)}
+                      </dt>
+                      <dd className="lu-display m-0 text-[clamp(1.3rem,6vw,1.6rem)] leading-none whitespace-nowrap text-ink">
+                        {value(m, scan)}
+                      </dd>
+                      <dd
+                        className="m-0 min-h-[1.2em] text-[0.78rem] leading-tight font-extrabold"
+                        data-testid={`change-${m.key}`}
+                      >
+                        {c ? (
+                          <span className={c.tone}>
+                            <bdi aria-hidden="true">
+                              {c.arrow && `${c.arrow} `}
+                              {c.text}
+                            </bdi>
+                            {/* Screen readers hear the full sentence instead of an arrow. */}
+                            <span className="sr-only">{c.label}</span>
+                          </span>
+                        ) : (
+                          <span className="font-semibold text-muted">
+                            {list.length === 1 ? t('progress.changeLater') : t('progress.firstScan')}
+                          </span>
+                        )}
+                      </dd>
+                    </div>
+                  );
+                })}
+              </dl>
+              {before && (
+                <p
+                  className="lu-compare m-0 flex items-center justify-center gap-2 justify-self-center px-3.5 py-1.5 text-center text-[0.8rem] font-semibold text-muted"
+                  data-testid="change-caption"
+                >
+                  <IonIcon className="flex-none text-[1rem]" icon={informationCircleOutline} aria-hidden="true" />
+                  {t('progress.changeCaption', { date: scanDate(before.takenAt) })}
+                </p>
+              )}
+            </section>
+
+            <section className="grid gap-3" aria-labelledby="more-title" data-testid="more-metrics">
+              <h2
+                id="more-title"
+                className="lu-display m-0 flex items-center gap-2 text-[1.7rem] leading-none text-ink"
+              >
+                <PixelIcon className="lu-progress-title-icon flex-none text-[0.8em]" name="chart" />
+                {t('progress.more')}
+              </h2>
+              <dl className="m-0 grid grid-cols-2 gap-2.5 md:grid-cols-3">
+                {MORE.map((m) => (
                   <div
                     key={m.key}
-                    className={`lu-scan-tile relative grid content-start justify-items-center gap-1 rounded-lg px-1 pt-2.5 pb-2 text-center ${m.tone}`}
+                    className={`lu-more-card relative grid content-start gap-1 rounded-lg p-2.5 pe-9 ${m.tone}`}
                     data-testid={`metric-${m.key}`}
                   >
-                    <dt className="grid justify-items-center gap-1 text-[0.75rem] font-bold text-muted">
+                    <dt className="grid gap-1">
                       {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
                       <InfoButton
                         className="absolute -end-1 -top-1"
@@ -233,78 +350,23 @@ const Progress: React.FC = () => {
                         onClick={() => setInfo(m)}
                         testId={`info-${m.key}`}
                       />
-                      <PixelIcon className="text-[1.6rem]" name={m.icon} />
-                      {t(`progress.metric.${m.key}`)}
+                      <span className="flex items-center gap-1.5 text-[0.85rem] font-extrabold text-ink">
+                        <PixelIcon className="flex-none text-[1.25rem]" name={m.icon} />
+                        {t(`progress.metric.${m.key}`)}
+                      </span>
                     </dt>
-                    <dd className="lu-display m-0 text-[clamp(1.3rem,6vw,1.6rem)] leading-none whitespace-nowrap text-ink">
-                      {formatNumber(m.value(scan), m.digits)}
-                      {/* The unit is smaller than the number, so the value fits a narrow tile. */}
-                      <span className="text-[0.7em]">{unit(m.unit)}</span>
+                    <dd className="lu-display m-0 text-[1.45rem] leading-none whitespace-nowrap text-ink">
+                      {value(m, scan)}
                     </dd>
-                    <dd
-                      className="m-0 min-h-[1.2em] text-[0.78rem] leading-tight font-extrabold"
-                      data-testid={`change-${m.key}`}
-                    >
-                      {c ? (
-                        <span className={c.tone}>
-                          <span aria-hidden="true">
-                            {c.arrow && `${c.arrow} `}
-                            {c.text}
-                          </span>
-                          {/* Screen readers hear the full sentence instead of an arrow. */}
-                          <span className="sr-only">{c.label}</span>
-                        </span>
-                      ) : (
-                        <span className="font-semibold text-muted">
-                          {list.length === 1 ? t('progress.changeLater') : t('progress.firstScan')}
-                        </span>
-                      )}
+                    {/* A plain-language line, so numbers like "Visceral fat 9" mean something. */}
+                    <dd className="m-0 text-[0.75rem] leading-snug font-semibold text-muted">
+                      {t(`progress.hint.${m.key}`)}
                     </dd>
                   </div>
-                );
-              })}
-            </dl>
-            {before && (
-              <p className="m-0 text-center text-[0.8rem] font-semibold text-muted" data-testid="change-caption">
-                {t('progress.changeCaption', { date: scanDate(before.takenAt) })}
-              </p>
-            )}
-
-            <h3 className="m-0 mt-1 text-[0.8rem] font-extrabold tracking-[0.06em] text-muted uppercase ar:tracking-normal">
-              {t('progress.more')}
-            </h3>
-            <dl className="m-0 grid grid-cols-2 gap-2 md:grid-cols-3">
-              {MORE.map((m) => (
-                <div
-                  key={m.key}
-                  className={`lu-more-card relative grid content-start gap-1 rounded-lg p-2.5 pe-9 ${m.tone}`}
-                  data-testid={`metric-${m.key}`}
-                >
-                  <dt className="grid gap-1">
-                    {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
-                    <InfoButton
-                      className="absolute -end-1 -top-1"
-                      label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
-                      onClick={() => setInfo(m)}
-                      testId={`info-${m.key}`}
-                    />
-                    <span className="flex items-center gap-1.5 text-[0.85rem] font-extrabold text-ink">
-                      <PixelIcon className="flex-none text-[1.25rem]" name={m.icon} />
-                      {t(`progress.metric.${m.key}`)}
-                    </span>
-                  </dt>
-                  <dd className="lu-display m-0 text-[1.35rem] leading-none whitespace-nowrap text-ink">
-                    {formatNumber(m.value(scan), m.digits)}
-                    <span className="text-[0.7em]">{unit(m.unit)}</span>
-                  </dd>
-                  {/* A plain-language line, so numbers like "Visceral fat 9" mean something. */}
-                  <dd className="m-0 text-[0.75rem] leading-snug font-semibold text-muted">
-                    {t(`progress.hint.${m.key}`)}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </section>
+                ))}
+              </dl>
+            </section>
+          </div>
 
           {points.length < 2 ? (
             <p className="lu-px-card lu-state" data-testid="second-scan">

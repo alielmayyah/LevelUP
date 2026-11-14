@@ -46,11 +46,13 @@ describe('Progress', () => {
   it("shows Sam's 3 key numbers with their change, and the other 6 under More", async () => {
     await renderAs('101', Progress);
     const scan = await screen.findByTestId('latest-scan');
-    expect(within(scan).getAllByRole('term')).toHaveLength(9);
+    expect(within(scan).getAllByRole('term')).toHaveLength(3);
+    const more = screen.getByTestId('more-metrics');
+    expect(within(more).getAllByRole('term')).toHaveLength(6);
     expect(within(scan).getByTestId('metric-weight')).toHaveTextContent('82.6 kg');
     expect(within(scan).getByTestId('metric-bodyFat')).toHaveTextContent('21.2%');
-    expect(within(scan).getByTestId('metric-visceral')).toHaveTextContent(/^Visceral fat9/);
-    expect(within(scan).getByTestId('metric-bmr')).toHaveTextContent(/1,\d{3} kcal/);
+    expect(within(more).getByTestId('metric-visceral')).toHaveTextContent(/^Visceral fat9/);
+    expect(within(more).getByTestId('metric-bmr')).toHaveTextContent(/1,\d{3} kcal/);
     // Muscle up is good news (green), body fat down is good news (green), weight has no right way.
     expect(within(scan).getByText('Up 0.8 kg since the scan before').parentElement).toHaveClass('text-success');
     expect(within(scan).getByText('Down 1.2% since the scan before').parentElement).toHaveClass('text-success');
