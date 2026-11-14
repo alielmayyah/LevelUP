@@ -57,3 +57,61 @@ describe('useSound', () => {
     expect(() => result.current.play('tap')).not.toThrow();
   });
 });
+
+describe('playIntro', () => {
+  const makeCtx = () => {
+    const node = () => ({
+      connect: vi.fn((n) => n),
+      gain: {
+        value: 0,
+        setValueAtTime: vi.fn(),
+        linearRampToValueAtTime: vi.fn(),
+        exponentialRampToValueAtTime: vi.fn(),
+      },
+    });
+    const oscillators: unknown[] = [];
+    class FakeCtx {
+      currentTime = 0;
+      destination = {};
+      resume = vi.fn(() => Promise.resolve());
+      createGain = vi.fn(node);
+      createOscillator = vi.fn(() => {
+        const osc = {
+          ...node(),
+          type: '',
+          frequency: { value: 0 },
+          detune: { value: 0 },
+          start: vi.fn(),
+          stop: vi.fn(),
+        };
+        oscillators.push(osc);
+        return osc;
+      });
+    }
+    return { FakeCtx, oscillators };
+  };
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    resetSound();
+  });
+
+  it('plays the four-note chime when sound is on', async () => {
+    const { FakeCtx, oscillators } = makeCtx();
+    vi.stubGlobal('AudioContext', FakeCtx);
+    const { playIntro } = await import('./useSound');
+    playIntro();
+    // Four notes, each a main tone plus a shimmer an octave up.
+    expect(oscillators).toHaveLength(8);
+  });
+
+  it('stays silent when the member turned sound off', async () => {
+    const { FakeCtx, oscillators } = makeCtx();
+    vi.stubGlobal('AudioContext', FakeCtx);
+    const mod = await import('./useSound');
+    const { result } = renderHook(() => mod.useSound());
+    act(() => result.current.toggle());
+    mod.playIntro();
+    expect(oscillators).toHaveLength(0);
+  });
+});

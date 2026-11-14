@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { getToken } from '../auth/token';
 import { brand } from '../brand.config';
+import { playIntro } from '../sound/useSound';
 import './Splash.scss';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
@@ -25,6 +26,12 @@ const Splash: React.FC = () => {
   const { search } = useLocation();
   const stage = useRef<HTMLDivElement>(null);
   const stay = new URLSearchParams(search).has('stay');
+
+  // The chime plays as the logo arrives (it stays silent if sound is off or the browser blocks it).
+  useEffect(() => {
+    const t = window.setTimeout(playIntro, 180);
+    return () => window.clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     if (stay) return;
@@ -73,16 +80,25 @@ const Splash: React.FC = () => {
                 height={414}
                 data-testid="splash-logo"
               />
+              {/* A streak of light sweeps across the logo once, masked to its shape. */}
+              <span
+                className="lu-splash-shine pointer-events-none absolute inset-0"
+                style={{ maskImage: `url(${brand.logo})`, WebkitMaskImage: `url(${brand.logo})` }}
+                aria-hidden="true"
+              />
             </h1>
             <span id="splash-brand-tagline" hidden>
               {t('splash.tagline')}
             </span>
           </div>
-          {/* Three pixel dots that light up in turn while the app gets ready. */}
-          <div className="lu-splash-loading flex gap-2" role="status" aria-label={t('splash.loading')}>
-            <span />
-            <span />
-            <span />
+          {/* A slim pixel bar that fills in step with the splash's timer. */}
+          <div
+            className="lu-splash-loading relative h-1.5 w-[clamp(120px,36vw,168px)] overflow-hidden"
+            role="status"
+            aria-label={t('splash.loading')}
+            style={{ '--lu-splash-ms': `${SPLASH_MS}ms` } as React.CSSProperties}
+          >
+            <span className="lu-splash-loading-fill absolute inset-0" />
           </div>
         </main>
       </div>
