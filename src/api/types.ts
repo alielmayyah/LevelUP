@@ -189,7 +189,6 @@ export interface CreateGoalRequest {
 export interface GoalsDto {
   active: GoalView[];
   completed: GoalView[];
-  upcoming: GoalView[];
 }
 
 export type Sex = 'MALE' | 'FEMALE';

@@ -254,8 +254,7 @@ function progressFor(goal: GoalRecord, m: MockMember) {
 }
 
 function goalView(goal: GoalRecord, m: MockMember): GoalView {
-  const percent =
-    goal.status === 'COMPLETED' ? 100 : goal.status === 'UPCOMING' ? 0 : (progressFor(goal, m)?.percent ?? 0);
+  const percent = goal.status === 'COMPLETED' ? 100 : (progressFor(goal, m)?.percent ?? 0);
   return {
     id: goal.id,
     title: goal.title,
@@ -352,7 +351,7 @@ async function profile(m: MockMember): Promise<ProfileDto> {
 
 function goals(m: MockMember): GoalsDto {
   const by = (status: GoalRecord['status']) => m.goals.filter((g) => g.status === status).map((g) => goalView(g, m));
-  return { active: by('ACTIVE'), completed: by('COMPLETED'), upcoming: by('UPCOMING') };
+  return { active: by('ACTIVE'), completed: by('COMPLETED') };
 }
 
 const GOAL_METRICS: readonly GoalMetric[] = ['BODY_FAT_KG', 'MUSCLE_KG', 'WEIGHT_KG'];
@@ -374,9 +373,8 @@ function goalTitle(metric: GoalMetric, start: number, target: number): string {
 
 /**
  * POST /me/goals: the member sets their own goal, no coach approval and no due
- * date. It starts from the latest scan and goes live now, or after the current
- * mission if one is in progress. A target that points the wrong way (gaining
- * fat) is a 400.
+ * date. It starts from the latest scan and is in progress at once, alongside
+ * any others. A target that points the wrong way (gaining fat) is a 400.
  */
 async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
   const req = (body && typeof body === 'object' ? body : {}) as Partial<Record<keyof CreateGoalRequest, unknown>>;
@@ -400,7 +398,7 @@ async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
     targetValue: target,
     startDate: now,
     deadline: null,
-    status: m.goals.some((g) => g.status === 'ACTIVE') ? 'UPCOMING' : 'ACTIVE',
+    status: 'ACTIVE',
     coachNote: null,
     completedAt: null,
     createdByMember: true,

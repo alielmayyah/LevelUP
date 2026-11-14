@@ -104,7 +104,8 @@ function segmental(s: ScanInput, fatKg: number, heightCm: number, sex: Sex): Seg
   return { lean, fat: fatOut };
 }
 
-export type GoalStatus = 'ACTIVE' | 'COMPLETED' | 'UPCOMING';
+/** No time factor: a goal is either being worked on or reached. */
+export type GoalStatus = 'ACTIVE' | 'COMPLETED';
 
 export interface GoalRecord {
   id: number;

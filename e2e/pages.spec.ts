@@ -98,14 +98,13 @@ test.describe('Goals', () => {
     await loginAs();
     await page.goto('/tabs/goals');
     const g = page.locator(tab('goals'));
-    await expect(g.getByTestId('section-active').getByTestId('goal')).toHaveCount(1);
-    await expect(g.getByTestId('section-upcoming').getByTestId('goal')).toContainText(en.goals.upcomingNote);
+    await expect(g.getByTestId('section-active').getByTestId('goal')).toHaveCount(2);
     await expect(g.getByTestId('section-completed').getByTestId('goal')).toHaveCount(2);
-    // Sections in order: in progress, up next, completed.
+    // Two sections: in progress, then completed. No time factor, so nothing is up next.
     const order = await g.locator('[data-testid^="section-"]').evaluateAll((els) => els.map((e) => e.dataset.testid));
-    expect(order).toEqual(['section-active', 'section-upcoming', 'section-completed']);
+    expect(order).toEqual(['section-active', 'section-completed']);
     // Every detail is on the card: start, now, target. No dates, no coach note.
-    await expect(g.getByTestId('section-active').getByTestId('goal-stats')).toContainText(en.goals.target);
+    await expect(g.getByTestId('section-active').getByTestId('goal-stats').first()).toContainText(en.goals.target);
     await expect(g.getByTestId('section-completed').getByTestId('goal').first()).toContainText(en.goals.reached);
     await expect(g.getByText('Keep protein high on training days.')).toHaveCount(0);
   });
@@ -137,7 +136,7 @@ test.describe('Goals', () => {
     await page.goto('/tabs/goals');
     await page.locator(tab('goals')).getByTestId('goal-new').click();
     const n = page.locator(tab('new-goal'));
-    await expect(n.getByTestId('goal-starts')).toHaveText(en.newGoal.startsNext);
+    await expect(n.getByTestId('goal-starts')).toHaveText(en.newGoal.startsNow);
     await n.getByTestId('goal-type-BODY_FAT_KG').focus();
     await page.keyboard.press('ArrowRight');
     await expect(n.getByTestId('goal-type-MUSCLE_KG')).toBeFocused();

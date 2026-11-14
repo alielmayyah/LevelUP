@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { createGoal } from '../api/goals';
-import type { AssessmentDto, GoalMetric, GoalsDto } from '../api/types';
+import type { AssessmentDto, GoalMetric } from '../api/types';
 import { useApi } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
 import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
@@ -104,13 +104,12 @@ const QUESTION = 'm-0 text-[1rem] font-extrabold text-ink';
 
 /**
  * The member sets their own goal: what to change and by how much. No due date.
- * It goes live at once, or queues after the current mission. No coach approval.
+ * It is in progress at once, alongside any others. No coach approval.
  */
 const NewGoal: React.FC = () => {
   const { t } = useTranslation();
   const router = useIonRouter();
   const scans = useApi<AssessmentDto[]>('/me/assessments');
-  const goals = useApi<GoalsDto>('/me/goals');
 
   const [metric, setMetric] = useState<GoalMetric>('BODY_FAT_KG');
   /** The stepper value per metric, once the member has moved it. */
@@ -125,7 +124,6 @@ const NewGoal: React.FC = () => {
   }, [router]);
 
   const scan = scans.status === 'ready' ? (scans.data[0] ?? null) : null;
-  const queued = goals.status === 'ready' && goals.data.active.length > 0;
 
   const header = (
     <div className="mb-4 flex items-center gap-3">
@@ -292,11 +290,9 @@ const NewGoal: React.FC = () => {
               <span className="text-[1.1rem] leading-tight font-extrabold text-ink" data-testid="goal-name">
                 {t(`newGoal.name.${metric}`, { amount: formatNumber(amount) })}
               </span>
-              {goals.status === 'ready' && (
-                <span className="text-[0.875rem] font-bold text-muted" data-testid="goal-starts">
-                  {queued ? t('newGoal.startsNext') : t('newGoal.startsNow')}
-                </span>
-              )}
+              <span className="text-[0.875rem] font-bold text-muted" data-testid="goal-starts">
+                {t('newGoal.startsNow')}
+              </span>
             </span>
           </div>
         </section>

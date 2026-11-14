@@ -219,20 +219,20 @@ describe('Progress', () => {
 });
 
 describe('Goals', () => {
-  it('shows every goal on one page: in progress, up next, completed', async () => {
+  it('shows every goal on one page: in progress, then completed; nothing up next', async () => {
     await renderAs('101', Goals);
     await screen.findByTestId('section-active');
     expect(screen.queryByTestId('journey')).toBeNull();
-    expect(within(screen.getByTestId('section-active')).getAllByTestId('goal')).toHaveLength(1);
-    expect(within(screen.getByTestId('section-upcoming')).getAllByTestId('goal')).toHaveLength(1);
+    expect(within(screen.getByTestId('section-active')).getAllByTestId('goal')).toHaveLength(2);
+    expect(screen.queryByTestId('section-upcoming')).toBeNull();
     expect(within(screen.getByTestId('section-completed')).getAllByTestId('goal')).toHaveLength(2);
     const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
-    expect(headings).toEqual(['In progress 1', 'Up next 1', 'Completed 2']);
+    expect(headings).toEqual(['In progress 2', 'Completed 2']);
   });
 
   it('an active goal shows percent, kg done of total, and its bar', async () => {
     await renderAs('101', Goals);
-    const goal = within(await screen.findByTestId('section-active')).getByTestId('goal');
+    const [goal] = within(await screen.findByTestId('section-active')).getAllByTestId('goal');
     expect(goal).toHaveTextContent('Gain 3 kg of muscle');
     expect(within(goal).getByTestId('goal-percent')).toHaveTextContent('67%');
     expect(within(goal).getByTestId('goal-meta')).toHaveTextContent('2.0 of 3.0 kg done');
@@ -242,16 +242,13 @@ describe('Goals', () => {
     expect(within(goal).queryByRole('button')).toBeNull();
   });
 
-  it('completed goals keep a full bar and no date; upcoming ones say when they start', async () => {
+  it('completed goals keep a full bar and no date', async () => {
     await renderAs('101', Goals);
     const done = within(await screen.findByTestId('section-completed')).getAllByTestId('goal');
     expect(done[0]).toHaveTextContent('Goal reached');
     // A scan's date is when the member was measured, not when the goal was met.
     expect(done[0]).not.toHaveTextContent(/Completed |2026/);
     expect(within(done[0]).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
-    const next = within(screen.getByTestId('section-upcoming')).getByTestId('goal');
-    expect(next).toHaveTextContent('Starts after your current mission');
-    expect(within(next).queryByRole('progressbar')).toBeNull();
   });
 
   it('cards show no due date and no coach note', async () => {
@@ -302,13 +299,13 @@ describe('New goal', () => {
     });
   });
 
-  it('a fat goal cannot go below half a kilo, and Sam is told it queues after his mission', async () => {
+  it('a fat goal cannot go below half a kilo, and starts today even with others in progress', async () => {
     await renderAs('101', NewGoal);
     const less = await screen.findByTestId('goal-less');
     for (let i = 0; i < 4; i++) if (!(less as HTMLButtonElement).disabled) await userEvent.click(less);
     expect(screen.getByTestId('goal-amount')).toHaveTextContent('0.5');
     expect(less).toBeDisabled();
-    expect(await screen.findByTestId('goal-starts')).toHaveTextContent('Starts after your current mission');
+    expect(screen.getByTestId('goal-starts')).toHaveTextContent('Starts today');
   });
 
   it('a weight goal steps the target and skips the current weight', async () => {

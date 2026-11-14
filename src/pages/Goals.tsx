@@ -12,9 +12,9 @@ import './goals/Goals.scss';
 
 const LIST = 'm-0 grid list-none gap-3 p-0 md:grid-cols-[1fr_1fr] md:items-start';
 
-type GoalTab = 'active' | 'completed' | 'upcoming';
-/** Section order: what the member is working on, what comes next, then what is done. */
-const SECTIONS: GoalTab[] = ['active', 'upcoming', 'completed'];
+type GoalTab = 'active' | 'completed';
+/** Section order: what the member is working on, then what is done. There is no time factor, so nothing waits in line. */
+const SECTIONS: GoalTab[] = ['active', 'completed'];
 
 /** Each goal metric gets the same icon and hue it has on Home and Progress. */
 const METRIC: Record<GoalMetric, { icon: PixelIconName; tone: string }> = {
@@ -44,9 +44,7 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
   const status =
     kind === 'completed'
       ? t('goals.reached')
-      : kind === 'upcoming'
-        ? t('goals.upcomingNote')
-        : t('goals.doneOf', { done: formatNumber(done, 1), total: formatNumber(total, 1) });
+      : t('goals.doneOf', { done: formatNumber(done, 1), total: formatNumber(total, 1) });
 
   return (
     <li className={`lu-px-card lu-goal grid gap-3 p-3.5 lu-goal-${tone} lu-goal-${kind}`} data-testid="goal">
@@ -86,15 +84,11 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
         </span>
         <div
           className="lu-goal-blocks flex min-w-0 flex-1 gap-[3px]"
-          {...(kind === 'upcoming'
-            ? { 'aria-hidden': true }
-            : {
-                role: 'progressbar',
-                'aria-valuemin': 0,
-                'aria-valuemax': 100,
-                'aria-valuenow': percent,
-                'aria-label': goal.title,
-              })}
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={percent}
+          aria-label={goal.title}
         >
           {Array.from({ length: BLOCKS }, (_, i) => (
             <span key={i} className={i < lit ? 'is-on' : undefined} />
@@ -118,7 +112,7 @@ const Goals: React.FC = () => {
   useRefreshOnEnter(goals.reload);
 
   const data = goals.status === 'ready' ? goals.data : null;
-  const total = data ? data.active.length + data.upcoming.length + data.completed.length : 0;
+  const total = data ? data.active.length + data.completed.length : 0;
 
   return (
     <TabPage

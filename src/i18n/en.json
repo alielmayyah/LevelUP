@@ -144,12 +144,10 @@
     "subtitle": "Your missions",
     "start": "Start",
     "target": "Target",
-    "upcomingNote": "Starts after your current mission",
     "empty": "Nothing here yet",
     "error": "Couldn't load your goals.",
     "section": {
       "active": "In progress",
-      "upcoming": "Up next",
       "completed": "Completed"
     },
     "new": "New goal",
@@ -585,7 +583,6 @@
     },
     "summary": "Your goal",
     "startsNow": "Starts today, from your last scan.",
-    "startsNext": "Starts after your current mission.",
     "create": "Create goal",
     "creating": "Creating…",
     "failed": "Couldn't create the goal. Try again.",

@@ -188,15 +188,15 @@ describe('progress, assessments, goals, profile', () => {
     expect((await get<ProgressDto>('/me/progress', '102')).body.assessments).toEqual([]);
   });
 
-  it('Mohamed’s goals: 1 active, 2 completed, 1 upcoming', async () => {
+  it('Mohamed’s goals: 2 in progress, 2 completed, none waiting', async () => {
     const g = (await get<GoalsDto>('/me/goals', '101')).body;
-    expect([g.active.length, g.completed.length, g.upcoming.length]).toEqual([1, 2, 1]);
+    expect([g.active.length, g.completed.length]).toEqual([2, 2]);
+    expect(g).not.toHaveProperty('upcoming');
     expect(g.completed.every((x) => x.percent === 100 && x.completedAt)).toBe(true);
-    expect(g.upcoming[0]).toMatchObject({ percent: 0, completedAt: null });
   });
 
   it('Lina has no goals', async () => {
-    expect((await get<GoalsDto>('/me/goals', '102')).body).toEqual({ active: [], completed: [], upcoming: [] });
+    expect((await get<GoalsDto>('/me/goals', '102')).body).toEqual({ active: [], completed: [] });
   });
 
   it('profile reflects settings', async () => {
@@ -233,14 +233,13 @@ describe('creating a goal', () => {
     expect((await get<DashboardDto>('/me/dashboard', '103')).body.mission?.goalId).toBe(r.body.id);
   });
 
-  it('Sam, mid-mission, gets the new goal queued up next, no approval needed', async () => {
+  it('Mohamed, with goals in progress, gets the new one in progress too, no approval needed', async () => {
     const [scan] = (await get<AssessmentDto[]>('/me/assessments', '101')).body;
     const r = await createGoal({ metric: 'MUSCLE_KG', targetValue: scan.skeletalMuscleKg + 1.5 }, '101');
     expect(r.status).toBe(201);
     expect(r.body.title).toBe('Gain 1.5 kg of muscle');
     const goals = (await get<GoalsDto>('/me/goals', '101')).body;
-    expect(goals.upcoming.map((g) => g.id)).toContain(r.body.id);
-    expect(goals.active.map((g) => g.id)).not.toContain(r.body.id);
+    expect(goals.active.map((g) => g.id)).toContain(r.body.id);
   });
 
   it('a weight goal is named by its target', async () => {
@@ -274,7 +273,7 @@ describe('creating a goal', () => {
     resetMockServer(NOW);
     expect((await get<GoalsDto>('/me/goals', '103')).body.active.map((g) => g.id)).toEqual([r.body.id]);
     const sam = (await get<GoalsDto>('/me/goals', '101')).body;
-    expect([...sam.active, ...sam.upcoming, ...sam.completed].map((g) => g.title)).not.toContain('Reach 70 kg');
+    expect([...sam.active, ...sam.completed].map((g) => g.title)).not.toContain('Reach 70 kg');
   });
 });
 
