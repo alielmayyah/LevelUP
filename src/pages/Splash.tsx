@@ -93,10 +93,19 @@ const Splash: React.FC = () => {
               {t('splash.tagline')}
             </span>
           </div>
-          {/* Right under the logo, with a pulsing ring that invites the first tap. */}
-          <div className="lu-splash-cta-ring relative grid w-[min(86%,300px)] short-landscape:w-[min(60%,270px)]">
-            <CtaButton className="lu-splash-cta w-full">{t('splash.cta')}</CtaButton>
-          </div>
+          {/* Right under the logo. The blinking arrow invites the first tap, like a game's "press start". */}
+          <CtaButton className="lu-splash-cta w-[min(86%,300px)] short-landscape:w-[min(60%,270px)]">
+            <svg
+              className="lu-splash-arrow h-[0.8em] w-auto rtl:-scale-x-100"
+              viewBox="0 0 4 7"
+              shapeRendering="crispEdges"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path fill="currentColor" d="M0 0h1v1h1v1h1v1h1v1H3v1H2v1H1v1H0z" />
+            </svg>
+            {t('splash.cta')}
+          </CtaButton>
         </main>
       </div>
     </IonPage>
