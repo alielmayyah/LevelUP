@@ -38,14 +38,99 @@
       "water": "Water",
       "protein": "Protein",
       "minerals": "Minerals",
-      "bmr": "BMR"
+      "bmr": "Resting calories"
     },
     "empty": "No scans yet. Book one at the front desk.",
-    "composition": "Body composition",
-    "fitScoreChart": "FitScore over time",
     "secondScan": "Your trends appear after your second scan.",
     "summary": "{{metric}} went from {{from}} to {{to}} between {{first}} and {{last}}.",
-    "error": "Couldn't load your progress."
+    "error": "Couldn't load your progress.",
+    "lastScan": "Last scan {{date}}",
+    "noChange": "No change",
+    "changeUp": "Up {{amount}} since the scan before",
+    "changeDown": "Down {{amount}} since the scan before",
+    "changeLater": "After 2nd scan",
+    "more": "More from this scan",
+    "trend": "Your trend",
+    "trendPick": "Show trend for",
+    "trendOf": "{{metric}} over time",
+    "changeCaption": "Compared with your scan on {{date}}",
+    "upSince": "up {{amount}} since {{date}}",
+    "downSince": "down {{amount}} since {{date}}",
+    "sameSince": "same as {{date}}",
+    "hint": {
+      "bmi": "Weight for your height. 18.5–25 is the usual healthy range.",
+      "visceral": "Fat around your organs. Lower is better.",
+      "water": "All the water in your body.",
+      "protein": "Protein in your body, mostly in your muscles.",
+      "minerals": "Minerals in your body, mostly in your bones.",
+      "bmr": "Calories your body burns in a day at rest."
+    },
+    "olderScan": "Older scan",
+    "newerScan": "Newer scan",
+    "earlierScan": "Earlier scan",
+    "scanPosition": "{{date}} · scan {{n}} of {{total}}",
+    "firstScan": "Your first scan",
+    "viewAll": "All scans ({{n}})",
+    "allScans": "All scans",
+    "closeScans": "Close",
+    "newest": "Latest",
+    "showing": "Showing",
+    "scanNumber": "Scan {{n}}",
+    "about": "About {{metric}}",
+    "gotIt": "Got it",
+    "infoCoach": "Your coach can turn this into a plan made for you.",
+    "infoHead": {
+      "what": "What it is",
+      "why": "Why it matters",
+      "tip": "What to do"
+    },
+    "info": {
+      "weight": {
+        "what": "Your total body weight: muscle, fat, bone, water, everything.",
+        "why": "Weight alone can't tell fat from muscle. Read it together with your muscle and body fat.",
+        "tip": "Aim for slow, steady change rather than quick drops. Your coach can help you set a target."
+      },
+      "muscle": {
+        "what": "Skeletal muscle: the muscle you train and move with.",
+        "why": "More muscle makes you stronger, protects your joints, and burns more calories even at rest.",
+        "tip": "Lift weights regularly and eat enough protein. Going up is good news."
+      },
+      "bodyFat": {
+        "what": "How much of your weight is fat, as a percentage.",
+        "why": "It shows your fitness better than weight does, because it separates fat from muscle.",
+        "tip": "Train regularly, sleep well, and eat a little less than you burn. Going down is good news."
+      },
+      "water": {
+        "what": "All the water in your body: in your muscles, blood, and organs.",
+        "why": "Staying hydrated keeps your energy up and helps you train and recover.",
+        "tip": "Drink water through the day, and more on training days."
+      },
+      "protein": {
+        "what": "The protein in your body, mostly in your muscles.",
+        "why": "It shows whether your body has what it needs to build and keep muscle.",
+        "tip": "Have some protein with every meal: chicken, eggs, fish, beans, or dairy."
+      },
+      "minerals": {
+        "what": "The minerals in your body, mostly in your bones.",
+        "why": "They keep your bones strong.",
+        "tip": "Eat a varied diet with dairy and leafy greens. Strength training helps your bones too."
+      },
+      "bmr": {
+        "what": "The calories your body burns in a day just to keep running, before any exercise.",
+        "why": "It is the starting point for how much you can eat each day.",
+        "tip": "Building muscle raises it a little, so strength training helps."
+      },
+      "bmi": {
+        "what": "Your weight compared with your height.",
+        "why": "A quick general check: 18.5–25 is the usual healthy range. It can't tell muscle from fat, so very muscular people can read high.",
+        "tip": "Read it next to your body fat and muscle, not on its own."
+      },
+      "visceral": {
+        "what": "Fat stored deep in your belly, around your organs.",
+        "why": "A high level is linked to health risks, even in people who look slim.",
+        "tip": "Lower is better. Regular exercise, good sleep, and less sugar help bring it down."
+      }
+    }
   },
   "goals": {
     "subtitle": "Your missions",
@@ -71,17 +156,15 @@
     "yourRank": "Your gym rank",
     "board": {
       "score": "Top Score",
-      "progress": "Top Progress",
       "muscle": "Most Muscle",
-      "fatLoss": "Most Fat Lost"
+      "bodyFat": "Lowest Body Fat"
     },
     "rank": "Rank",
     "member": "Member",
     "value": {
       "score": "FitScore",
-      "progress": "Points",
       "muscle": "Muscle",
-      "fatLoss": "Body fat"
+      "bodyFat": "Body fat"
     },
     "you": "you",
     "hidden": "Your FitScore is hidden from the leaderboard.",
@@ -90,7 +173,12 @@
     "noScan": "You'll appear here after your first scan.",
     "emptyBoard": "No results yet this month",
     "error": "Couldn't load the leaderboard.",
-    "of": "of {{total}}"
+    "of": "of {{total}}",
+    "podium": "Top 3",
+    "pages": "Leaderboard pages",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "pageOf": "Page {{page}} of {{pages}}"
   },
   "profile": {
     "subtitle": "Member settings",
@@ -109,7 +197,8 @@
     "signOutConfirm": "Sign out of {{name}}?",
     "cancel": "Cancel",
     "saveFailed": "Couldn't save. Try again.",
-    "error": "Couldn't load your profile."
+    "error": "Couldn't load your profile.",
+    "customize": "Customize character"
   },
   "splash": {
     "tagline": "Track. Improve. Transform.",
@@ -223,6 +312,123 @@
     "missionComplete": {
       "title": "Mission complete!",
       "body": "You hit \"{{title}}\"."
+    }
+  },
+  "avatar": {
+    "title": "Your character",
+    "subtitle": "Pick an outfit or make it your own",
+    "preview": "Your character",
+    "back": "Back to profile",
+    "customize": "Customize your character",
+    "outfitTitle": "Ready-made outfits",
+    "outfit": {
+      "dark-hoodie": "Dark Hoodie",
+      "summer-fit": "Summer Fit",
+      "gym-ready": "Gym Ready",
+      "track-fit": "Track Fit"
+    },
+    "tab": {
+      "outfits": "Outfits",
+      "hair": "Hair",
+      "body": "Body",
+      "top": "Tops",
+      "pants": "Pants",
+      "shoes": "Shoes",
+      "beard": "Beard",
+      "face": "Face"
+    },
+    "styleLabel": {
+      "hair": "Hairstyle",
+      "body": "Body shape",
+      "top": "Top style",
+      "pants": "Pants style",
+      "shoes": "Shoe style",
+      "beard": "Beard style"
+    },
+    "style": {
+      "curls": "Curls",
+      "fade": "Fade",
+      "side-part": "Side part",
+      "locs": "Locs",
+      "top-knot": "Top knot",
+      "balanced": "Balanced",
+      "lean": "Lean",
+      "broad": "Broad",
+      "compact": "Compact",
+      "tank": "Tank top",
+      "tee": "T-shirt",
+      "hoodie": "Hoodie",
+      "track-jacket": "Track jacket",
+      "shorts": "Shorts",
+      "joggers": "Joggers",
+      "cargo": "Cargo pants",
+      "track-pants": "Track pants",
+      "clean-shaven": "Clean-shaven",
+      "stubble": "Stubble",
+      "mustache": "Mustache",
+      "goatee": "Goatee",
+      "short-beard": "Short beard",
+      "full-beard": "Full beard",
+      "trainers": "Trainers",
+      "high-tops": "High tops",
+      "runners": "Running shoes",
+      "slip-ons": "Slip-ons"
+    },
+    "part": {
+      "skin": "Skin tone",
+      "hair": "Hair color",
+      "eyes": "Eyes",
+      "smile": "Smile",
+      "tank": "Top color",
+      "shorts": "Pants color",
+      "shoes": "Shoe color",
+      "beard": "Beard color"
+    },
+    "randomize": "Surprise me",
+    "reset": "Undo changes",
+    "save": "Save character",
+    "saving": "Saving…",
+    "saveFailed": "Couldn't save your character. Try again.",
+    "error": "Couldn't load your character.",
+    "leaveTitle": "Leave without saving?",
+    "keepEditing": "Keep editing",
+    "discard": "Discard changes",
+    "color": {
+      "match-hair": "Match hair",
+      "fair": "Fair",
+      "light": "Light",
+      "light-olive": "Light olive",
+      "warm-tan": "Warm tan",
+      "golden-brown": "Golden brown",
+      "medium-brown": "Medium brown",
+      "deep-brown": "Deep brown",
+      "rich-brown": "Rich brown",
+      "espresso": "Espresso",
+      "soft-black": "Soft black",
+      "brown": "Brown",
+      "auburn": "Auburn",
+      "honey-blond": "Honey blond",
+      "silver": "Silver",
+      "levelup-violet": "LevelUP violet",
+      "charcoal": "Charcoal",
+      "navy": "Navy",
+      "teal": "Teal",
+      "rust": "Rust",
+      "amber": "Amber",
+      "orchid": "Orchid",
+      "cream": "Cream",
+      "deep-violet": "Deep violet",
+      "slate": "Slate",
+      "olive": "Olive",
+      "off-white": "Off-white",
+      "violet": "Violet",
+      "dark-brown": "Dark brown",
+      "hazel": "Hazel",
+      "green": "Green",
+      "blue": "Blue",
+      "gray": "Gray",
+      "dark-plum": "Dark plum",
+      "warm-brown": "Warm brown"
     }
   }
 }
