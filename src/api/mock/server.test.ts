@@ -402,7 +402,6 @@ describe('avatar', () => {
       skin: 'deep-brown',
       hair: 'silver',
       eyes: 'hazel',
-      smile: 'brown',
       tank: 'teal',
       shorts: 'navy',
       shoes: 'amber',
@@ -419,6 +418,13 @@ describe('avatar', () => {
   it('keeps each member’s look separate', async () => {
     await put(look, '101');
     expect((await get<ProfileDto>('/me', '102')).body.avatar).toBeNull();
+  });
+
+  it('accepts the old smile field on a saved avatar', async () => {
+    const legacy = { ...look, colors: { ...look.colors, smile: 'brown' } };
+    expect((await put(legacy, '101')).status).toBe(200);
+    resetMockServer(NOW);
+    expect((await get<ProfileDto>('/me', '101')).body.avatar).toEqual(legacy);
   });
 
   it('saves all styles and returns them after a reload', async () => {

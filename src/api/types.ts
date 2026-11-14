@@ -216,16 +216,46 @@ export interface ProfileDto {
 /* ---------- Character (character customization plan) ---------- */
 
 /** Parts of the standard character that take a color preset. */
-export type AvatarPart = 'skin' | 'hair' | 'eyes' | 'smile' | 'tank' | 'shorts' | 'shoes';
+export type AvatarPart = 'skin' | 'hair' | 'eyes' | 'tank' | 'shorts' | 'shoes';
 
 export interface AvatarStyles {
-  hair: 'curls' | 'fade' | 'side-part' | 'locs' | 'top-knot';
-  body: 'balanced' | 'lean' | 'broad' | 'compact';
-  top: 'tank' | 'tee' | 'hoodie' | 'track-jacket';
-  shoes: 'trainers' | 'high-tops' | 'runners' | 'slip-ons';
-  pants?: 'shorts' | 'joggers' | 'cargo' | 'track-pants';
-  beard?: 'clean-shaven' | 'stubble' | 'mustache' | 'goatee' | 'short-beard' | 'full-beard';
-  socks?: 'no-socks' | 'ankle-socks' | 'crew-socks' | 'striped-socks';
+  hair: 'curls' | 'fade' | 'side-part' | 'locs' | 'top-knot' | 'buzz-cut' | 'waves' | 'shaved' | 'spikes' | 'braids';
+  body: 'balanced' | 'lean' | 'broad' | 'compact' | 'tall' | 'stocky' | 'athletic' | 'relaxed';
+  top:
+    | 'tank'
+    | 'tee'
+    | 'hoodie'
+    | 'track-jacket'
+    | 'sweatshirt'
+    | 'varsity'
+    | 'mesh-tee'
+    | 'compression-top'
+    | 'quarter-zip'
+    | 'sleeveless-hoodie';
+  shoes:
+    'trainers' | 'high-tops' | 'runners' | 'slip-ons' | 'boots' | 'canvas' | 'lifters' | 'cross-trainers' | 'barefoot';
+  pants?:
+    | 'shorts'
+    | 'joggers'
+    | 'cargo'
+    | 'track-pants'
+    | 'jeans'
+    | 'bike-shorts'
+    | 'liner-shorts'
+    | 'training-tights'
+    | 'split-shorts'
+    | 'warmup-pants';
+  beard?:
+    | 'clean-shaven'
+    | 'stubble'
+    | 'mustache'
+    | 'goatee'
+    | 'short-beard'
+    | 'full-beard'
+    | 'chin-strap'
+    | 'fade-beard'
+    | 'chin-tuft';
+  socks?: 'no-socks' | 'ankle-socks' | 'crew-socks' | 'striped-socks' | 'knee-highs' | 'grip-socks' | 'cushioned-socks';
 }
 
 /**
@@ -235,7 +265,12 @@ export interface AvatarStyles {
 export interface AvatarConfigDto {
   schemaVersion: 1;
   rig: 'standard';
-  colors: Record<AvatarPart, string> & { beard?: string; socks?: string };
+  colors: Record<AvatarPart, string> & {
+    beard?: string;
+    socks?: string;
+    /** Accepted when reading older saves. The mouth shade is derived from skin tone. */
+    smile?: 'dark-plum' | 'brown' | 'warm-brown';
+  };
   /** Optional for characters saved before styles were available. */
   styles?: AvatarStyles;
 }

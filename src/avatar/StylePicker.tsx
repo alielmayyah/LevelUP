@@ -7,7 +7,7 @@ import Avatar from './Avatar';
 import {
   applyOutfit,
   OUTFIT_IDS,
-  STYLES,
+  trainingStyles,
   sameAvatar,
   stylesFor,
   type AvatarConfigDto,
@@ -23,6 +23,7 @@ const ICONS: Record<CustomizerTab, string> = {
   top: 'M6 3h4v3h4V3h4v2h3v3h2v5h-5v8H6v-8H1V8h2V5h3z M8 5v2h2v2h4V7h2V5h-2v3h-4V5z',
   pants: 'M5 2h14v7h1v13h-7v-9h-2v9H4V9h1z M6 5v2h12V5z',
   shoes: 'M10 3h9v9h2v3h2v5H1v-6h2v-2h4V9h3z M3 16v2h18v-2z M11 7v2h5V7z M8 11v2h5v-2z',
+  socks: 'M8 2h13v13h-3v3h-4v3H2v-7h3v-3h3z M10 5v2h9V5z M10 9v2h9V9z',
   beard: 'M3 7h3v5h3v2h6v-2h3V7h3v10h-2v3h-3v2H8v-2H5v-3H3z M9 16v2h6v-2z',
   face: 'M6 2h12v2h3v3h2v10h-2v3h-3v2H6v-2H3v-3H1V7h2V4h3z M6 5v2H4v10h2v2h12v-2h2V7h-2V5z M7 8h3v4H7z M14 8h3v4h-3z M8 15h2v1h4v-1h2v2h-2v1h-4v-1H8z',
 };
@@ -51,10 +52,10 @@ export function OutfitPicker({
   const { t } = useTranslation();
   return (
     <div className="grid gap-2">
-      <h2 id="avatar-outfit-title" className="m-0 text-[1.1rem] leading-tight font-bold text-ink">
+      <h2 id="avatar-outfit-title" className={HEADING}>
         {t('avatar.outfitTitle')}
       </h2>
-      <div className="grid grid-cols-4 gap-1.5" role="group" aria-labelledby="avatar-outfit-title">
+      <div className="grid grid-cols-4 gap-2" role="group" aria-labelledby="avatar-outfit-title">
         {OUTFIT_IDS.map((id) => {
           const preview = applyOutfit(config, id);
           const selected = sameAvatar(config, preview);
@@ -63,17 +64,14 @@ export function OutfitPicker({
               key={id}
               type="button"
               aria-pressed={selected}
+              aria-label={t(`avatar.outfit.${id}`)}
               onClick={() => onChange(preview)}
-              className="lu-style-card grid min-w-0 cursor-pointer content-start gap-1 rounded-[10px] border-2 border-line bg-surface p-1 text-center text-[0.73rem] leading-snug font-bold wrap-anywhere text-ink shadow-px-sm aria-pressed:border-primary"
+              className={TILE}
             >
-              <span
-                className="lu-style-thumb relative grid h-[4.75rem] place-items-center rounded-[5px] wide:h-28"
-                aria-hidden="true"
-              >
-                <Avatar config={preview} crop="full" className="h-full w-full" />
+              <span className="lu-style-thumb relative grid aspect-[3/4] place-items-center" aria-hidden="true">
+                <Avatar config={preview} crop="full" className="h-[88%] w-full" />
                 {selected && <SelectedMark />}
               </span>
-              {t(`avatar.outfit.${id}`)}
             </button>
           );
         })}
@@ -82,10 +80,17 @@ export function OutfitPicker({
   );
 }
 
+/** Section label above each grid: small and quiet, so the pictures lead. */
+const HEADING = 'm-0 text-[0.78rem] font-extrabold text-muted uppercase ar:normal-case';
+
+/** A picture-only option tile. The name is its accessible label; the picked one gets a thick ring and a tick. */
+const TILE =
+  'lu-style-card relative min-w-0 cursor-pointer overflow-hidden rounded-xl border-2 border-line bg-surface p-0 aria-checked:border-primary aria-pressed:border-primary';
+
 function SelectedMark() {
   return (
-    <span className="absolute inset-e-0.5 inset-bs-0.5 grid size-4 place-items-center rounded-sm bg-accent text-accent-contrast">
-      <IonIcon icon={checkmark} className="text-[0.8rem]" />
+    <span className="absolute inset-e-1 inset-bs-1 grid size-5 place-items-center rounded-full bg-primary text-primary-contrast">
+      <IonIcon icon={checkmark} className="text-[0.85rem]" />
     </span>
   );
 }
@@ -98,21 +103,17 @@ interface StylePickerProps<K extends StylePart> {
 
 export function StylePicker<K extends StylePart>({ part, config, onChange }: StylePickerProps<K>) {
   const { t, i18n } = useTranslation();
-  const options: readonly ResolvedStyles[K][] = STYLES[part];
   const styles = stylesFor(config.styles);
+  const options = trainingStyles(part, styles[part]);
   const labelId = `style-label-${part}`;
   const labelKey: `avatar.styleLabel.${StylePart}` = `avatar.styleLabel.${part}`;
 
   return (
     <div className="grid gap-2">
-      <h2 id={labelId} className="m-0 text-[1.1rem] leading-tight font-bold text-ink">
+      <h2 id={labelId} className={HEADING}>
         {t(labelKey)}
       </h2>
-      <div
-        role="radiogroup"
-        aria-labelledby={labelId}
-        className={`grid gap-2 ${part === 'beard' ? 'grid-cols-3' : part === 'hair' ? 'grid-cols-3 wide:grid-cols-5' : 'grid-cols-2 wide:grid-cols-4'}`}
-      >
+      <div role="radiogroup" aria-labelledby={labelId} className="grid grid-cols-4 gap-2">
         {options.map((id, i) => {
           const selected = styles[part] === id;
           const optionKey: `avatar.style.${ResolvedStyles[StylePart]}` = `avatar.style.${id}`;
@@ -124,8 +125,9 @@ export function StylePicker<K extends StylePart>({ part, config, onChange }: Sty
               type="button"
               role="radio"
               aria-checked={selected}
+              aria-label={t(optionKey)}
               tabIndex={selected ? 0 : -1}
-              className="lu-style-card grid min-w-0 cursor-pointer content-start gap-1 rounded-[10px] border-2 border-line bg-surface p-1 text-center text-[0.78rem] leading-snug font-bold wrap-anywhere text-ink shadow-px-sm aria-checked:border-primary"
+              className={TILE}
               onClick={() => onChange(id)}
               onKeyDown={(e) => {
                 const to = rovingTarget(e, i, options.length, i18n.dir() === 'rtl');
@@ -134,11 +136,10 @@ export function StylePicker<K extends StylePart>({ part, config, onChange }: Sty
                 focusSibling(e, to);
               }}
             >
-              <span className="lu-style-thumb relative grid h-12 place-items-center rounded-[5px]" aria-hidden="true">
-                <Avatar config={preview} crop={part} className="h-11 w-full" />
+              <span className="lu-style-thumb relative grid aspect-square place-items-center" aria-hidden="true">
+                <Avatar config={preview} crop={part} className="h-[80%] w-full" />
                 {selected && <SelectedMark />}
               </span>
-              {t(optionKey)}
             </button>
           );
         })}

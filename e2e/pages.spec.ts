@@ -270,10 +270,20 @@ test.describe('Character', () => {
             'true',
           );
           const outfits = editor.getByRole('group', { name: copy.avatar.outfitTitle });
+          const studio = outfits.getByRole('button', { name: copy.avatar.outfit['studio-flow'] });
+          await studio.click();
+          await expect(studio).toHaveAttribute('aria-pressed', 'true');
+          await expect(preview.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'barefoot');
+          await expect(preview.locator('[data-style-layer="socks"]')).toHaveAttribute('data-variant', 'grip-socks');
+          const strength = outfits.getByRole('button', { name: copy.avatar.outfit['strength-day'] });
+          await strength.click();
+          await expect(strength).toHaveAttribute('aria-pressed', 'true');
+          await expect(preview.locator('[data-art-detail="sleeveless-hoodie"]')).toHaveCount(1);
+          await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'liner-shorts');
           const summer = outfits.getByRole('button', { name: copy.avatar.outfit['summer-fit'] });
           await summer.click();
           await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'shorts');
-          await expect(preview.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'slip-ons');
+          await expect(preview.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'cross-trainers');
           const darkHoodie = outfits.getByRole('button', { name: copy.avatar.outfit['dark-hoodie'] });
           await darkHoodie.click();
           await expect(darkHoodie).toHaveAttribute('aria-pressed', 'true');
@@ -283,13 +293,13 @@ test.describe('Character', () => {
           await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'joggers');
           await expect(preview.locator('image')).toHaveCount(0);
           const choices = [
-            ['hair', 'locs'],
-            ['body', 'broad'],
-            ['top', 'hoodie'],
-            ['shoes', 'high-tops'],
-            ['pants', 'cargo'],
-            ['beard', 'goatee'],
-            ['socks', 'striped-socks'],
+            ['hair', 'braids'],
+            ['body', 'athletic'],
+            ['top', 'quarter-zip'],
+            ['shoes', 'lifters'],
+            ['pants', 'liner-shorts'],
+            ['beard', 'chin-tuft'],
+            ['socks', 'cushioned-socks'],
           ] as const;
           for (const [part, id] of choices) {
             await selectTab(part);
@@ -301,9 +311,16 @@ test.describe('Character', () => {
             await expect(preview.locator(`[data-style-layer="${part}"]`)).toHaveAttribute('data-variant', id);
             if (part === 'hair') await color('hair', 'silver').click();
             if (part === 'body') await color('skin', 'rich-brown').click();
-            if (part === 'top') await color('tank', 'teal').click();
-            if (part === 'pants') await color('shorts', 'olive').click();
-            if (part === 'beard') await color('beard', 'auburn').click();
+            if (part === 'top') await color('tank', 'sage').click();
+            if (part === 'pants') await color('shorts', 'graphite').click();
+            if (part === 'shoes') await color('shoes', 'gum').click();
+            if (part === 'beard') {
+              const beard = preview.locator('[data-paint="beard-hair"]');
+              await color('beard', 'silver').click();
+              const silver = await beard.getAttribute('fill');
+              await color('beard', 'auburn').click();
+              await expect(beard).not.toHaveAttribute('fill', silver!);
+            }
             if (part === 'socks') {
               const sock = preview.locator('[data-paint="sock-fabric"]').first();
               const before = await sock.getAttribute('fill');
@@ -312,6 +329,8 @@ test.describe('Character', () => {
             }
           }
           await selectTab('face');
+          const face = editor.getByRole('tabpanel', { name: copy.avatar.tab.face });
+          await expect(face.getByRole('radiogroup')).toHaveCount(1);
           await color('eyes', 'brown').click();
           const eyes = preview.locator('[data-feature="eyes"] path');
           await expect(eyes).toHaveCount(2);
@@ -320,11 +339,15 @@ test.describe('Character', () => {
           expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
           // No Save button: every change saves on its own.
           await expect(editor.getByTestId('character-status')).toHaveText(copy.avatar.saved);
+          const savedColors = await page.evaluate(
+            () => JSON.parse(localStorage.getItem('CapacitorStorage.lu.mock.avatar.101')!).colors,
+          );
+          expect(savedColors).not.toHaveProperty('smile');
           await editor.getByTestId('character-back').click();
           await expect(page).toHaveURL(/\/tabs\/profile$/);
           await expect(page.getByTestId('profile-avatar').locator('[data-style-layer="hair"]')).toHaveAttribute(
             'data-variant',
-            'locs',
+            'braids',
           );
 
           await page.reload();

@@ -4,7 +4,6 @@ import {
   AVATAR_PARTS,
   OUTFIT_IDS,
   STYLE_PARTS,
-  STYLES,
   applyOutfit,
   contrastRatio,
   defaultAvatar,
@@ -15,6 +14,8 @@ import {
   randomAvatar,
   sameAvatar,
   starterAvatar,
+  stylesFor,
+  trainingStyles,
 } from './catalog';
 
 describe('avatar catalog', () => {
@@ -42,6 +43,14 @@ describe('avatar catalog', () => {
     expect(isValidAvatar(starterAvatar('101'))).toBe(true);
     const looks = ['101', '102', '103', '104', '105'].map(starterAvatar);
     expect(new Set(looks.map((l) => JSON.stringify(l))).size).toBeGreaterThan(1);
+    expect(starterAvatar('101').colors).toEqual({
+      skin: 'medium-brown',
+      hair: 'honey-blond',
+      eyes: 'brown',
+      tank: 'charcoal',
+      shorts: 'navy',
+      shoes: 'amber',
+    });
   });
 
   it('randomize only returns catalog-valid looks', () => {
@@ -50,8 +59,23 @@ describe('avatar catalog', () => {
     const first = randomAvatar(() => 0);
     const last = randomAvatar(() => 0.999999);
     for (const part of STYLE_PARTS) {
-      expect(first.styles?.[part]).toBe(STYLES[part][0]);
-      expect(last.styles?.[part]).toBe(STYLES[part].at(-1));
+      expect(first.styles?.[part]).toBe(trainingStyles(part)[0]);
+      expect(last.styles?.[part]).toBe(trainingStyles(part).at(-1));
+    }
+  });
+
+  it('offers training gear while keeping casual styles readable for existing saves', () => {
+    const legacy = { ...defaultAvatar(), styles: { ...stylesFor(), top: 'varsity', pants: 'jeans', shoes: 'canvas' } };
+    expect(isValidAvatar(legacy)).toBe(true);
+    expect(stylesFor(legacy.styles)).toMatchObject({ top: 'varsity', pants: 'jeans', shoes: 'canvas' });
+    expect(trainingStyles('top', 'varsity')).toContain('varsity');
+    expect(trainingStyles('top')).not.toContain('varsity');
+    expect(trainingStyles('pants')).not.toContain('jeans');
+    expect(trainingStyles('shoes')).not.toContain('canvas');
+    for (const id of OUTFIT_IDS) {
+      const styles = stylesFor(applyOutfit(defaultAvatar(), id).styles);
+      for (const part of ['top', 'pants', 'shoes', 'socks'] as const)
+        expect(trainingStyles(part)).toContain(styles[part]);
     }
   });
 
@@ -92,11 +116,25 @@ describe('avatar catalog', () => {
       const outfit = applyOutfit(original, id);
       expect(isValidAvatar(outfit)).toBe(true);
       expect(outfit.styles).toMatchObject({ body: 'broad', hair: 'locs', beard: 'goatee' });
-      const { tank, shorts, shoes, ...appearance } = original.colors;
+      const { tank, shorts, shoes, socks, ...appearance } = original.colors;
       expect(outfit.colors).toMatchObject(appearance);
       expect(sameAvatar(outfit, applyOutfit(outfit, id))).toBe(true);
-      expect(outfit.colors).not.toEqual({ ...appearance, tank, shorts, shoes });
+      expect(outfit.colors).not.toEqual({ ...appearance, tank, shorts, shoes, socks });
     }
+  });
+
+  it('defaults legacy saves to no socks and validates sock choices independently of shoes', () => {
+    const legacy = { ...defaultAvatar(), styles: { hair: 'curls', body: 'balanced', top: 'tank', shoes: 'trainers' } };
+    expect(isValidAvatar(legacy)).toBe(true);
+    expect(stylesFor(legacy.styles).socks).toBe('no-socks');
+    const look = { ...defaultAvatar(), styles: { ...stylesFor(), socks: 'striped-socks' as const } };
+    const recolored = { ...look, colors: { ...look.colors, socks: 'violet' } };
+    expect(isValidAvatar(recolored)).toBe(true);
+    expect(isValidAvatar({ ...look, colors: { ...look.colors, socks: 'unknown' } })).toBe(false);
+    expect(isValidAvatar({ ...look, styles: { ...look.styles, socks: 'unknown' } })).toBe(false);
+    expect(sameAvatar(look, recolored)).toBe(false);
+    expect(paintFor(recolored).socks).not.toBe(paintFor(look).socks);
+    expect(paintFor(recolored).shoes).toBe(paintFor(look).shoes);
   });
 
   it('uses the hair palette for beards until an independent color is chosen', () => {
@@ -109,23 +147,21 @@ describe('avatar catalog', () => {
     expect(paintFor(avatar).beard).toBe(silver);
     expect(paintFor(avatar).beard).not.toBe(paintFor(avatar).hair);
     expect(sameAvatar(avatar, { ...avatar, colors: { ...avatar.colors, beard: 'match-hair' } })).toBe(false);
+    const paint = paintFor(avatar);
+    expect(contrastRatio(paint.stubble, paint.skin)).toBeLessThan(contrastRatio(paint.beard, paint.skin));
   });
 
   it('keeps a visible facial detail across every skin and feature color', () => {
     for (const skin of presetsFor('skin')) {
-      for (const part of ['eyes', 'smile'] as const) {
-        for (const feature of presetsFor(part)) {
-          const config = defaultAvatar();
-          config.colors = { ...config.colors, skin: skin.id, [part]: feature.id };
-          const paint = paintFor(config);
-          const mark = part === 'eyes' ? paint.eyes : paint.mouth;
-          const minimum = part === 'eyes' ? 1.9 : 2.1;
-          if (contrastRatio(feature.color, paint.skin) >= minimum) expect(mark).toBe(feature.color);
-          else
-            expect(contrastRatio(mark, paint.skin), `${skin.id} + ${part} ${feature.id}`).toBeGreaterThanOrEqual(
-              minimum,
-            );
-        }
+      const config = defaultAvatar();
+      config.colors.skin = skin.id;
+      const { mouth } = paintFor(config);
+      expect(contrastRatio(mouth, skin.color), skin.id).toBeGreaterThanOrEqual(2.1);
+      expect(paintFor({ ...config, colors: { ...config.colors, smile: 'warm-brown' } }).mouth).toBe(mouth);
+      for (const feature of presetsFor('eyes')) {
+        const { eyes } = paintFor({ ...config, colors: { ...config.colors, eyes: feature.id } });
+        if (contrastRatio(feature.color, skin.color) >= 1.9) expect(eyes).toBe(feature.color);
+        else expect(contrastRatio(eyes, skin.color), `${skin.id} + eyes ${feature.id}`).toBeGreaterThanOrEqual(1.9);
       }
     }
   });
