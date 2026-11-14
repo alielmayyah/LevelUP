@@ -21,6 +21,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,css,scss,json}\""
   },
   "dependencies": {
+    "@capacitor/android": "^7.6.10",
     "@capacitor/app": "^7.1.2",
     "@capacitor/core": "^7.6.10",
     "@capacitor/preferences": "^7.0.4",
