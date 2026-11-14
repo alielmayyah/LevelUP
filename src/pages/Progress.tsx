@@ -230,7 +230,7 @@ const Progress: React.FC = () => {
       title={t('tabs.progress')}
       subtitle={t('progress.journey')}
       onRefresh={reloadAll}
-      titleIcon={<PixelIcon className="lu-progress-title-icon flex-none text-[0.75em]" name="chart" />}
+      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="chart" />}
     >
       {latest && (
         <div className="mb-3.5 flex flex-wrap items-center justify-between gap-3" data-testid="last-scan">
@@ -404,7 +404,7 @@ const Progress: React.FC = () => {
                 id="more-title"
                 className="lu-display m-0 flex items-center gap-2 text-[1.7rem] leading-none text-ink"
               >
-                <PixelIcon className="lu-progress-title-icon flex-none text-[0.8em]" name="chart" />
+                <PixelIcon className="lu-title-icon flex-none text-[0.8em]" name="chart" />
                 {t('progress.more')}
               </h2>
               <dl className="m-0 grid grid-cols-2 gap-2.5 md:grid-cols-3">

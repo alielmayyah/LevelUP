@@ -183,8 +183,7 @@
   }
 
   /* Calendar and title icons in the brand purple. */
-  .lu-tone-calendar,
-  .lu-progress-title-icon {
+  .lu-tone-calendar {
     --px-fill: var(--ion-color-primary);
     --px-hi: color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-splash-star));
     --px-core: var(--lu-splash-star);

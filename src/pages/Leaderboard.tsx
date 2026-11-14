@@ -9,6 +9,7 @@ import { LEADERBOARD_BOARDS, type LeaderboardBoard, type LeaderboardDto, type Le
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
 import Avatar from '../avatar/Avatar';
+import PixelIcon from '../components/PixelIcon';
 import '../avatar/avatar.scss';
 import { focusSibling, rovingTarget } from '../components/roving';
 import PixelToast from '../components/PixelToast';
@@ -146,6 +147,7 @@ const Leaderboard: React.FC = () => {
     <TabPage
       testId="page-leaderboard"
       title={t('tabs.leaderboard')}
+      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="trophy" />}
       subtitle={d ? t(`leaderboard.division.${d.division}`) : t('leaderboard.subtitle')}
       onRefresh={data.reload}
       actions={

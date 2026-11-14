@@ -20,6 +20,7 @@ import type { ProfileDto, SettingsDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import { clearToken } from '../auth/token';
 import Avatar from '../avatar/Avatar';
+import PixelIcon from '../components/PixelIcon';
 import { starterAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
 import { brand } from '../brand.config';
@@ -168,7 +169,13 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <TabPage testId="page-profile" title={t('tabs.profile')} subtitle={t('profile.subtitle')} onRefresh={me.reload}>
+    <TabPage
+      testId="page-profile"
+      title={t('tabs.profile')}
+      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="person" />}
+      subtitle={t('profile.subtitle')}
+      onRefresh={me.reload}
+    >
       {me.status === 'loading' && (
         <div className={GRID} aria-busy="true">
           <div className="lu-skeleton-card" />
