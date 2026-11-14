@@ -1,7 +1,8 @@
 /*
- * The pixel game dock: a dusk panel with stepped corners (the same in both
- * themes, like the splash and the podium), pixel-art icons, and a raised
- * bevel block that slides under the active tab.
+ * The navigation bar: a flat panel in the theme's surface color with one thin
+ * top line, pixel-art icons, and a compact purple indicator with stepped
+ * pixel corners that slides behind the active icon. The pixel identity lives
+ * in the icons and the indicator's corners, not in heavy frames.
  *
  * The tab-button rules stay outside any cascade layer on purpose: ion-label's
  * styles are injected unlayered by Ionic, and layered rules would lose to them.
@@ -14,65 +15,39 @@
   clip-path: inset(50%);
 }
 
-/* Corners cut in $s-pixel steps. */
-@function px-corners($s) {
-  @return polygon(
-    0 #{2 * $s},
-    #{$s} #{2 * $s},
-    #{$s} #{$s},
-    #{2 * $s} #{$s},
-    #{2 * $s} 0,
-    calc(100% - #{2 * $s}) 0,
-    calc(100% - #{2 * $s}) #{$s},
-    calc(100% - #{$s}) #{$s},
-    calc(100% - #{$s}) #{2 * $s},
-    100% #{2 * $s},
-    100% calc(100% - #{2 * $s}),
-    calc(100% - #{$s}) calc(100% - #{2 * $s}),
-    calc(100% - #{$s}) calc(100% - #{$s}),
-    calc(100% - #{2 * $s}) calc(100% - #{$s}),
-    calc(100% - #{2 * $s}) 100%,
-    #{2 * $s} 100%,
-    #{2 * $s} calc(100% - #{$s}),
-    #{$s} calc(100% - #{$s}),
-    #{$s} calc(100% - #{2 * $s}),
-    0 calc(100% - #{2 * $s})
-  );
-}
-
 @layer components {
-  /* Only the top corners are stepped: the dock sits flush on the bottom edge. */
-  .lu-dock {
-    clip-path: polygon(
-      0 8px,
-      4px 8px,
-      4px 4px,
-      8px 4px,
-      8px 0,
-      calc(100% - 8px) 0,
-      calc(100% - 8px) 4px,
-      calc(100% - 4px) 4px,
-      calc(100% - 4px) 8px,
-      100% 8px,
-      100% 100%,
-      0 100%
-    );
-    background: linear-gradient(var(--lu-splash-bg-2), var(--lu-splash-bg) 70%);
-    /* Hard pixel rim: a light top edge, a dark bottom edge, and a 2px frame. */
-    box-shadow:
-      inset 0 2px 0 color-mix(in srgb, var(--lu-splash-bg-2) 70%, var(--lu-splash-text) 30%),
-      inset 0 5px 0 color-mix(in srgb, var(--lu-splash-bg-2) 60%, var(--lu-splash-text) 20%);
+  .lu-navbar {
+    background: var(--lu-surface);
+    box-shadow: inset 0 1px 0 var(--lu-border);
   }
 
-  /* The active tab: a raised purple block, lit on top, shaded below. */
-  .lu-dock-pill {
-    clip-path: px-corners(3px);
+  /* Corners cut in 2px steps: just enough to read as pixel art. */
+  .lu-navbar-indicator {
+    clip-path: polygon(
+      0 4px,
+      2px 4px,
+      2px 2px,
+      4px 2px,
+      4px 0,
+      calc(100% - 4px) 0,
+      calc(100% - 4px) 2px,
+      calc(100% - 2px) 2px,
+      calc(100% - 2px) 4px,
+      100% 4px,
+      100% calc(100% - 4px),
+      calc(100% - 2px) calc(100% - 4px),
+      calc(100% - 2px) calc(100% - 2px),
+      calc(100% - 4px) calc(100% - 2px),
+      calc(100% - 4px) 100%,
+      4px 100%,
+      4px calc(100% - 2px),
+      2px calc(100% - 2px),
+      2px calc(100% - 4px),
+      0 calc(100% - 4px)
+    );
     background: var(--ion-color-primary);
-    box-shadow:
-      inset 0 3px 0 color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-splash-star)),
-      inset 3px 0 0 color-mix(in srgb, var(--ion-color-primary) 70%, var(--lu-splash-star)),
-      inset -3px 0 0 var(--ion-color-primary-shade),
-      inset 0 -5px 0 var(--ion-color-primary-shade);
+    /* One restrained pixel highlight along the top. */
+    box-shadow: inset 0 2px 0 color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-splash-star));
   }
 }
 
@@ -88,67 +63,76 @@
 
   /*
    * Ionic's own "selected" color is turned off: it switches the instant you tap,
-   * while the pill is still on its way. TabBar adds .is-lit when the pill is
-   * actually under the label. Muted text on the dusk panel and white on the
-   * purple block both clear 4.5:1.
+   * before the indicator arrives. TabBar adds .is-lit when it has.
    */
   ion-tab-button {
     --background: transparent;
-    --color: var(--lu-splash-text-muted);
-    --color-selected: var(--lu-splash-text-muted);
+    --color: var(--lu-text-muted);
+    --color-selected: var(--lu-text-muted);
     --ripple-color: transparent;
     /* Ionic's default side padding is what cut labels to "Progr…". */
     --padding-start: 0;
     --padding-end: 0;
+    --padding-top: 0;
     min-width: 44px;
     min-height: 44px;
+    justify-content: flex-start;
 
-    /* Resting icons: a light outline so they read on the dark panel, quiet fill. */
-    --px-line: var(--lu-splash-text-muted);
-    --px-fill: color-mix(in srgb, var(--lu-splash-text-muted) 30%, var(--lu-splash-bg-2));
-    --px-hi: color-mix(in srgb, var(--lu-splash-text-muted) 55%, var(--lu-splash-bg-2));
-    --px-core: var(--lu-splash-bg);
-  }
-
-  /* Active icon: full color, and it hops once when the block arrives. */
-  ion-tab-button.is-lit {
-    --color: var(--ion-color-primary-contrast);
-    --color-selected: var(--ion-color-primary-contrast);
-    --px-line: var(--lu-pixel-ink);
-    --px-fill: var(--lu-splash-star);
-    --px-hi: color-mix(in srgb, var(--ion-color-primary) 30%, var(--lu-splash-star));
-    --px-core: var(--ion-color-primary-shade);
+    /* Resting icons: muted lavender outlines with a quiet fill. */
+    --px-line: var(--lu-text-muted);
+    --px-fill: color-mix(in srgb, var(--lu-text-muted) 22%, var(--lu-surface));
+    --px-hi: color-mix(in srgb, var(--lu-text-muted) 45%, var(--lu-surface));
+    --px-core: var(--lu-surface);
 
     .lu-pixel-icon {
-      animation: lu-dock-hop 260ms steps(4, end) both;
+      transition: transform 120ms ease-out;
+    }
+
+    &:active .lu-pixel-icon {
+      transform: translateY(1px);
     }
   }
 
+  /* Active: a bright icon on the indicator, and the label in the brand color. */
+  ion-tab-button.is-lit {
+    --color: var(--ion-color-primary);
+    --color-selected: var(--ion-color-primary);
+    --px-line: var(--lu-splash-star);
+    --px-fill: color-mix(in srgb, var(--lu-splash-star) 55%, var(--ion-color-primary));
+    --px-hi: var(--lu-splash-star);
+    --px-core: var(--ion-color-primary);
+  }
+
   /*
-   * Keyboard focus: a two-tone ring (dark, then light) so it shows on the panel
-   * and on the purple block alike (WCAG 2.4.7, 1.4.11).
+   * Keyboard focus: a two-tone ring so it shows on the panel and the
+   * indicator alike, in both themes (WCAG 2.4.7, 1.4.11).
    */
   ion-tab-button.ion-focused {
     --background-focused: transparent;
     box-shadow:
-      inset 0 0 0 2px var(--lu-splash-bg),
-      inset 0 0 0 4px var(--lu-splash-text);
+      inset 0 0 0 2px var(--lu-surface),
+      inset 0 0 0 4px var(--lu-text);
   }
 
-  /* rem, not px, so the bar follows the member's text size (WCAG 1.4.4). */
+  /* rem, not px, so the bar follows the member's text size (WCAG 1.4.4). The icon sits centered on the 32px indicator. */
   .lu-pixel-icon {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
+    margin-top: 10px;
   }
 
   ion-label {
-    margin-top: 3px;
+    margin-top: 9px;
     max-width: 100%;
     overflow: visible;
-    font-size: 0.66rem;
-    font-weight: 800;
-    letter-spacing: -0.01em;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0;
     white-space: nowrap;
     text-overflow: clip;
+  }
+
+  ion-tab-button.is-lit ion-label {
+    font-weight: 800;
   }
 
   /*
@@ -166,27 +150,17 @@
     ion-label {
       @include visually-hidden;
     }
-
-    .lu-pixel-icon {
-      font-size: 1.25rem;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    ion-tab-button.is-lit .lu-pixel-icon {
-      animation: none;
+    ion-tab-button .lu-pixel-icon {
+      transition: none;
     }
   }
 }
 
-/* Stepped, like a sprite: up two pixels, back down. */
-@keyframes lu-dock-hop {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-3px);
-  }
+/* In dark mode the active label takes the lighter brand purple, for contrast on the deep panel. */
+:root.ion-palette-dark .lu-tabbar ion-tab-button.is-lit {
+  --color: var(--ion-color-secondary);
+  --color-selected: var(--ion-color-secondary);
 }

@@ -8,24 +8,26 @@ import { pillTransform, tabIndex, TABS } from './tabConfig';
 import './TabBar.scss';
 
 /*
- * The pixel dock: full width along the bottom of the screen, above the home
+ * The navigation bar: full width along the bottom of the screen, above the home
  * indicator. Page bodies reserve room for it (theme/layout.css).
  */
 const BAR = [
   // Full width, flush with the bottom edge; the home indicator sits inside its bottom padding.
   'lu-tabbar absolute inset-x-0 bottom-0 z-10 box-border w-full',
   'h-[calc(var(--lu-tabbar-height)+var(--ion-safe-area-bottom,0px))]',
-  'lu-dock pt-(--lu-tabbar-padding) pb-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-bottom,0px))] [--lu-tabbar-padding:6px]',
+  'lu-navbar pt-(--lu-tabbar-padding) pb-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-bottom,0px))] [--lu-tabbar-padding:4px]',
   'ps-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-left,0px))] pe-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-right,0px))]',
   'short-landscape:h-[calc(48px+var(--ion-safe-area-bottom,0px))] short-landscape:[--lu-tabbar-padding:4px]',
 ].join(' ');
 
 /*
- * Slides with a CSS transform transition (compositor only, no JS per frame).
+ * One tab-wide slot that slides with a CSS transform (compositor only, no JS
+ * per frame); the compact indicator sits centered in it, behind the icon.
  * Reduced motion: it jumps.
  */
 const PILL =
-  'absolute inset-y-0 start-0 w-1/5 lu-dock-pill transition-transform duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
+  'absolute inset-y-0 start-0 w-1/5 transition-transform duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
+const INDICATOR = 'lu-navbar-indicator absolute top-1 left-1/2 h-8 w-[min(56px,88%)] -translate-x-1/2';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 
@@ -33,7 +35,7 @@ const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 const LIT_FALLBACK_MS = 400;
 
 /**
- * Full-width 5-tab dock inside a <nav> landmark. IonTabBar only renders
+ * Full-width 5-tab navigation bar inside a <nav> landmark. IonTabBar only renders
  * IonTabButton children, so the sliding pill sits beside it.
  *
  * Each tab is named by its visible label (WCAG 2.5.3, label in name). Ionic
@@ -90,7 +92,9 @@ const TabBar: React.FC = () => {
     <nav className={BAR} slot="bottom" aria-label={t('tabs.navLabel')}>
       {/* The panel spans the screen; the five tabs stay in a centered row so wide screens don't get giant tabs. */}
       <div className="relative mx-auto h-full max-w-[560px]">
-        <div className={PILL} data-testid="tab-pill" ref={pill} aria-hidden="true" hidden={index < 0} />
+        <div className={PILL} data-testid="tab-pill" ref={pill} aria-hidden="true" hidden={index < 0}>
+          <span className={INDICATOR} />
+        </div>
         <IonTabBar>
           {TABS.map(({ tab, href, icon }, i) => (
             <IonTabButton
