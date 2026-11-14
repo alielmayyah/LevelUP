@@ -72,7 +72,8 @@
   .lu-tone-visceral {
     --tone: var(--lu-tier-1);
     --px-fill: var(--lu-tier-1);
-    --px-hi: var(--lu-fat-core);
+    --px-hi: color-mix(in srgb, var(--lu-tier-1) 35%, var(--lu-splash-star));
+    --px-core: color-mix(in srgb, var(--lu-tier-1) 62%, var(--lu-pixel-ink));
   }
 
   /*
