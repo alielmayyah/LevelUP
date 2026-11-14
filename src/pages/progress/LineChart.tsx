@@ -126,7 +126,8 @@ const LineChart: React.FC<Props> = ({
   };
 
   return (
-    <div className="lu-chart" data-testid={testId}>
+    // Chart points take taps, so a swipe that starts on the chart stays on this tab.
+    <div className="lu-chart" data-testid={testId} data-no-tab-swipe>
       <div className="relative">
         {/* A group, not an image, so the per-scan points inside stay reachable by screen readers. */}
         <svg

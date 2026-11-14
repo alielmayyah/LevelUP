@@ -55,6 +55,68 @@ test('Android back closes the sign-out dialog and stays on Profile', async ({ pa
   await expect(page).toHaveURL(/\/tabs\/profile$/);
 });
 
+/**
+ * A quick one-finger swipe from `fromX` to `toX` (fractions of the width) on the
+ * tab page on screen. WebKit won't construct Touch objects in a page, so the
+ * events carry plain touch points, which is all the swipe handler reads.
+ */
+const swipe = (page: import('@playwright/test').Page, fromX: number, toX: number) =>
+  page.evaluate(
+    ({ fromX, toX }) => {
+      const tab = location.pathname.split('/').pop();
+      const el = document.querySelector(`[data-testid="page-${tab}"] ion-content`)!;
+      const y = window.innerHeight / 2;
+      const point = (x: number) => ({ identifier: 1, target: el, clientX: x * window.innerWidth, clientY: y });
+      const fire = (type: string, touches: object[], changed: object[]) => {
+        const e = new Event(type, { bubbles: true });
+        Object.defineProperties(e, { touches: { value: touches }, changedTouches: { value: changed } });
+        el.dispatchEvent(e);
+      };
+      fire('touchstart', [point(fromX)], [point(fromX)]);
+      fire('touchend', [], [point(toX)]);
+    },
+    { fromX, toX },
+  );
+
+test.describe('tab gestures', () => {
+  test('swiping a tab page moves to the next and previous tab', async ({ page, loginAs, hasTouch }) => {
+    test.skip(!hasTouch, 'touch devices only');
+    await loginAs();
+    await page.goto('/tabs/home');
+    await expect(page.getByTestId('page-home')).toBeVisible();
+    await swipe(page, 0.8, 0.3);
+    await expect(page).toHaveURL(/\/tabs\/progress$/);
+    await expect(page.getByTestId('page-progress')).toBeVisible();
+    await swipe(page, 0.8, 0.3);
+    await expect(page).toHaveURL(/\/tabs\/goals$/);
+    await expect(page.getByTestId('page-goals')).toBeVisible();
+    await swipe(page, 0.3, 0.8);
+    await expect(page).toHaveURL(/\/tabs\/progress$/);
+    // A swipe from the very edge belongs to the system back gesture.
+    await swipe(page, 0.01, 0.6);
+    await expect(page).toHaveURL(/\/tabs\/progress$/);
+  });
+
+  test('swiping is mirrored in Arabic', async ({ page, loginAs, hasTouch }) => {
+    test.skip(!hasTouch, 'touch devices only');
+    await page.addInitScript(() => localStorage.setItem('CapacitorStorage.lu.lang', 'ar'));
+    await loginAs();
+    await page.goto('/tabs/home');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.getByTestId('page-home')).toBeVisible();
+    await swipe(page, 0.3, 0.8);
+    await expect(page).toHaveURL(/\/tabs\/progress$/);
+  });
+
+  test('Android back on another tab goes Home', async ({ page, loginAs }) => {
+    await loginAs();
+    await page.goto('/tabs/goals');
+    await expect(page.getByTestId('page-goals')).toBeVisible();
+    await pressHardwareBack(page);
+    await expect(page).toHaveURL(/\/tabs\/home$/);
+  });
+});
+
 test.describe('scrolling on a phone-height screen', () => {
   // Short enough that the Progress page always scrolls, on every device project.
   test.use({ viewport: { width: 390, height: 640 } });

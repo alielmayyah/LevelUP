@@ -5,7 +5,9 @@ Two gestures compete when they start the same way (same direction, same area). R
 | Conflict | Resolution |
 |---|---|
 | Pull-to-refresh vs. sheet swipe-down (notifications) | No refresher inside the sheet. It refetches each time it opens. |
-| iOS edge back-swipe vs. swipe-between-tabs | No tab swiping. |
+| System edge back-swipe vs. swipe-between-tabs | Tab swipes that start within 24 px of either edge are ignored, so the edge belongs to the system. |
+| Tab swipe vs. controls and charts | Swipes starting on inputs, radio groups, segments, sliders, charts (`data-no-tab-swipe`), or sideways-scrolling content are ignored. |
+| Tab swipe vs. sheets and dialogs | Ignored while any sheet or dialog is open. |
 | Pull-to-refresh vs. a vertical drag inside content | No vertical drag controls exist. If one is added, put it in its own `IonContent`-free area and disable the refresher while it is active (`refresher.disabled = true`). |
 | Chart interaction vs. page scroll | Chart points react to tap and keyboard only; no drag, so vertical scrolling over a chart scrolls the page. |
 | Tap on a card vs. scroll that starts on it | Actions fire on `click`, which the browser cancels when the finger moved. |

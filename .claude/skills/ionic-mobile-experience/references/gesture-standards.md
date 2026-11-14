@@ -12,13 +12,14 @@ Every gesture has a purpose, consistent behavior, immediate feedback, and an acc
 | Swipe back (iOS) | Ionic stack pages (none nested today) | Ionic's interactive transition | Tab bar / Android back |
 | Tap a chart point | Progress charts | Value tooltip | Tab to the chart, arrow keys between scans; text summary |
 | Re-tap active tab | Tab bar | Content scrolls to top | Home key / scroll |
+| Swipe left/right | Tab root pages (mirrored in Arabic) | The next or previous tab opens, pill slides | Tab bar |
+| Android back | Any tab but Home | Goes to Home (on Home, leaves the app) | Tab bar |
 | Arrow keys | Segmented choices, chart | Selection moves | (is the alternative) |
 
 ## Deliberately not used
 
 | Gesture | Why not |
 |---|---|
-| Swipe between tabs | Would fight the iOS edge back-swipe and any horizontal content; the tab bar is one thumb away |
 | Long press | No action needs it; hidden actions are undiscoverable |
 | Swipe to reveal actions | No list row has a contextual action yet; if one is added, also expose it as a visible button |
 | Pull to refresh in the notifications sheet | The sheet's own pull-down dismisses it; it refetches on every open instead |

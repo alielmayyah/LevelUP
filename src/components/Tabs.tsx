@@ -4,6 +4,7 @@ import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import TabBar from './TabBar';
 import { tabIndex } from './tabConfig';
+import { useTabBack, useTabSwipe } from './tabGestures';
 
 /** Each tab page is its own chunk, loaded the first time the tab opens. */
 const withSuspense = (Page: LazyExoticComponent<ComponentType>) => {
@@ -51,6 +52,8 @@ function usePrefetchTabs(): void {
 const Tabs: React.FC = () => {
   const { pathname } = useLocation();
   usePrefetchTabs();
+  useTabSwipe();
+  useTabBack();
   // An unknown tab address (old link, typo) lands on Home instead of an empty page.
   // Checked here, not as a catch-all <Route>: Ionic's outlet would prefer a
   // pattern like /tabs/:any over the exact tab routes.
