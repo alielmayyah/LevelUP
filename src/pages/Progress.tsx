@@ -178,7 +178,6 @@ const Progress: React.FC = () => {
   /** The scan every change on the page is measured against; null when comparing is off. */
   const before = compareChoice === 'none' ? null : (chosen ?? previous);
   const beforeIndex = before ? list.indexOf(before) : -1;
-  const latest = list[0] ?? null;
   const points = progress.status === 'ready' ? progress.data.assessments : [];
 
   const unit = (u?: Metric<string>['unit']) => (!u ? '' : u === '%' ? '%' : ` ${t(`units.${u}`)}`);
@@ -233,31 +232,22 @@ const Progress: React.FC = () => {
       subtitle={t('progress.journey')}
       onRefresh={reloadAll}
       titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="chart" />}
+      actions={
+        // The scan card names the scan on screen; the header only offers the full list.
+        list.length > 1 && (
+          <button
+            type="button"
+            className="lu-all-scans inline-flex min-h-11 min-w-11 flex-none cursor-pointer items-center justify-center gap-2 border-0 bg-surface px-3.5 font-inherit text-[0.9rem] font-extrabold text-primary max-[359px]:px-0 dark:text-secondary"
+            onClick={() => setShowAll(true)}
+            data-testid="view-all-scans"
+          >
+            <IonIcon className="text-[1.15rem]" icon={listOutline} aria-hidden="true" />
+            {/* Icon only on the narrowest phones, so the page title keeps its line; the name stays for screen readers. */}
+            <span className="max-[359px]:sr-only">{t('progress.viewAll', { n: formatNumber(list.length) })}</span>
+          </button>
+        )
+      }
     >
-      {latest && (
-        <div className="mb-3.5 flex flex-wrap items-center justify-between gap-3" data-testid="last-scan">
-          <p className="m-0 flex items-center gap-2.5">
-            <PixelIcon className="lu-tone-calendar flex-none text-[1.6rem]" name="calendar" />
-            <span className="grid leading-tight">
-              <span className="text-[0.8rem] font-bold text-muted">{t('progress.lastScanLabel')}</span>
-              <strong className="font-extrabold text-ink">{scanDate(latest.takenAt)}</strong>
-            </span>
-          </p>
-          {list.length > 1 && (
-            <button
-              type="button"
-              className="lu-all-scans inline-flex min-h-11 flex-none cursor-pointer items-center gap-2 border-0 bg-surface px-3.5 font-inherit text-[0.9rem] font-extrabold text-primary dark:text-secondary"
-              onClick={() => setShowAll(true)}
-              data-testid="view-all-scans"
-            >
-              <IonIcon className="text-[1.15rem]" icon={listOutline} aria-hidden="true" />
-              {t('progress.viewAll', { n: formatNumber(list.length) })}
-              <IonIcon className="text-[1rem] rtl:-scale-x-100" icon={chevronForward} aria-hidden="true" />
-            </button>
-          )}
-        </div>
-      )}
-
       {failed && !loading && (
         <div className="lu-state" role="alert">
           <p>{t('progress.error')}</p>
