@@ -64,13 +64,16 @@ const Splash: React.FC = () => {
       onClick={() => void begin()}
     >
       <div className="absolute inset-0 isolate ar:font-arabic" ref={stage}>
-        <div className="lu-splash-stars pointer-events-none absolute inset-x-0 top-[4%] bottom-[4%]" aria-hidden="true" />
+        <div
+          className="lu-splash-stars pointer-events-none absolute inset-x-0 top-[4%] bottom-[4%]"
+          aria-hidden="true"
+        />
         <div className={`lu-splash-sound ${CORNER_CONTROLS}`}>
           <LanguageToggle />
           <SoundToggle />
         </div>
-        <main className="relative box-border grid h-full grid-rows-[1fr_auto] justify-items-center pt-[calc(clamp(55px,11vh,96px)+var(--ion-safe-area-top,0px))] pr-[calc(20px+var(--ion-safe-area-right,0px))] pb-[calc(clamp(16px,3.5vh,32px)+var(--ion-safe-area-bottom,0px))] pl-[calc(20px+var(--ion-safe-area-left,0px))] text-center short-landscape:w-[58%] short-landscape:pt-[calc(22px+var(--ion-safe-area-top,0px))]">
-          <div className="lu-splash-brand relative w-[clamp(180px,min(73vw,37vh),308px)] max-w-full self-center short-landscape:w-[clamp(130px,56vh,228px)]">
+        <main className="relative box-border grid h-full content-center justify-items-center gap-[clamp(32px,7vh,64px)] pt-[calc(clamp(55px,11vh,96px)+var(--ion-safe-area-top,0px))] pr-[calc(20px+var(--ion-safe-area-right,0px))] pb-[calc(clamp(16px,3.5vh,32px)+var(--ion-safe-area-bottom,0px))] pl-[calc(20px+var(--ion-safe-area-left,0px))] text-center short-landscape:gap-5 short-landscape:pt-[calc(22px+var(--ion-safe-area-top,0px))]">
+          <div className="lu-splash-brand relative w-[clamp(180px,min(73vw,37vh),308px)] max-w-full short-landscape:w-[clamp(120px,46vh,200px)]">
             {/* A soft glow that breathes behind the logo. */}
             <span className="lu-splash-glow pointer-events-none absolute inset-[-30%]" aria-hidden="true" />
             <h1
@@ -90,9 +93,10 @@ const Splash: React.FC = () => {
               {t('splash.tagline')}
             </span>
           </div>
-          <CtaButton className="lu-splash-cta w-[min(86%,300px)] self-end short-landscape:w-[min(92%,270px)]">
-            {t('splash.cta')}
-          </CtaButton>
+          {/* Right under the logo, with a pulsing ring that invites the first tap. */}
+          <div className="lu-splash-cta-ring relative grid w-[min(86%,300px)] short-landscape:w-[min(60%,270px)]">
+            <CtaButton className="lu-splash-cta w-full">{t('splash.cta')}</CtaButton>
+          </div>
         </main>
       </div>
     </IonPage>

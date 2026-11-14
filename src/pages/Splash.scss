@@ -22,7 +22,22 @@
     opacity: 0.8;
   }
 
+  /* A ring around Tap to Begin that ripples outward, like a game's "press start". */
+  .lu-splash-cta-ring::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px solid var(--ion-color-primary);
+    border-radius: 26px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
+    .lu-splash-cta-ring::before {
+      animation: lu-splash-ring 1.8s ease-out 0.8s infinite;
+    }
+
     .lu-splash-glow {
       animation: lu-splash-glow 3.2s ease-in-out infinite alternate;
     }
@@ -133,5 +148,18 @@
   to {
     opacity: 1;
     transform: scale(1.06);
+  }
+}
+
+@keyframes lu-splash-ring {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.12, 1.45);
   }
 }
