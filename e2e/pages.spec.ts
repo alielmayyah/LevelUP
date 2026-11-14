@@ -105,7 +105,7 @@ test.describe('Goals', () => {
     const order = await g.locator('[data-testid^="section-"]').evaluateAll((els) => els.map((e) => e.dataset.testid));
     expect(order).toEqual(['section-active', 'section-upcoming', 'section-completed']);
     // Every detail is on the card: start, now, target. No dates, no coach note.
-    await expect(g.getByTestId('section-active').getByTestId('goal-stats')).toContainText(en.goals.now);
+    await expect(g.getByTestId('section-active').getByTestId('goal-stats')).toContainText(en.goals.target);
     await expect(g.getByTestId('section-completed').getByTestId('goal').first()).toContainText(en.goals.reached);
     await expect(g.getByText('Keep protein high on training days.')).toHaveCount(0);
   });
@@ -360,6 +360,61 @@ test.describe('Character', () => {
           await expect(color('socks', 'violet')).toHaveAttribute('aria-checked', 'true');
           await selectTab('hair');
           await expect(color('hair', 'silver')).toHaveAttribute('aria-checked', 'true');
+        });
+
+        test('keeps the women’s base, training kit and hair after reload', async ({ page, loginAs }) => {
+          const copy = lang === 'ar' ? ar : en;
+          await loginAs();
+          await page.goto('/tabs/profile');
+          await page.getByRole('link', { name: copy.profile.customize }).click();
+          const editor = page.locator(tab('character'));
+          const preview = editor.getByTestId('character-preview');
+          const selectTab = (key: keyof typeof copy.avatar.tab) =>
+            editor.getByRole('tab', { name: copy.avatar.tab[key], exact: true }).click();
+
+          await selectTab('body');
+          const bases = editor.getByRole('radiogroup', { name: copy.avatar.baseTitle });
+          const women = bases.getByRole('radio', { name: copy.avatar.base.women });
+          await women.click();
+          await expect(women).toBeChecked();
+          await expect(preview).toHaveAttribute('data-rig', 'women');
+          await expect(preview.locator('[data-style-layer="hair"]')).toHaveAttribute('data-variant', 'high-ponytail');
+          await editor.getByRole('radio', { name: copy.avatar.style.athletic, exact: true }).click();
+
+          await selectTab('outfits');
+          const violet = editor.getByRole('button', { name: copy.avatar.outfit['violet-training'] });
+          await violet.click();
+          await expect(violet).toHaveAttribute('aria-pressed', 'true');
+          await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'longline-tank');
+          await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute(
+            'data-variant',
+            'high-rise-leggings',
+          );
+          await selectTab('hair');
+          await editor.getByRole('radio', { name: copy.avatar.style['braided-ponytail'] }).click();
+          await editor
+            .getByRole('radiogroup', { name: copy.avatar.part.hair })
+            .getByRole('radio', { name: copy.avatar.color.copper, exact: true })
+            .click();
+          await expect
+            .poll(() =>
+              page.evaluate(() => JSON.parse(localStorage.getItem('CapacitorStorage.lu.mock.avatar.101') ?? 'null')),
+            )
+            .toMatchObject({
+              rig: 'women',
+              styles: { body: 'athletic', hair: 'braided-ponytail', top: 'longline-tank' },
+              colors: { hair: 'copper' },
+            });
+
+          await editor.getByTestId('character-back').click();
+          const portrait = page.getByTestId('profile-avatar');
+          await expect(portrait).toHaveAttribute('data-rig', 'women');
+          await expect(portrait.locator('[data-style-layer="hair"]')).toHaveAttribute(
+            'data-variant',
+            'braided-ponytail',
+          );
+          await page.reload();
+          await expect(portrait).toHaveAttribute('data-rig', 'women');
         });
       });
     }

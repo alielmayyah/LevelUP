@@ -83,15 +83,6 @@
     box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--lu-success) 65%, var(--lu-pixel-shadow));
   }
 
-  .lu-goal-stats {
-    border: 2px solid var(--lu-border);
-    background: var(--lu-surface-2);
-
-    > div + div {
-      border-inline-start: 2px dashed var(--lu-border);
-    }
-  }
-
   .lu-goal-target {
     color: var(--lu-text);
     text-decoration: underline 3px color-mix(in srgb, var(--metric) 70%, transparent);

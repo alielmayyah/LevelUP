@@ -132,7 +132,13 @@
     "compareOffShort": "مفيش قياس",
     "moreDetails": "شوف تفاصيل أكتر",
     "lessDetails": "اعرض أقل",
-    "scanPages": "صفحات القياسات"
+    "scanPages": "صفحات القياسات",
+    "calendarTitle": "قياساتك",
+    "calendarHint": "الأيام اللي فيها قياس متعلّم عليها. دوس على يوم تشوفه.",
+    "prevMonth": "الشهر اللي فات",
+    "nextMonth": "الشهر الجاي",
+    "scanOn": "قياس يوم {{date}}",
+    "scansInMonth": "قياسات الشهر ده: {{n}}"
   },
   "goals": {
     "subtitle": "مهماتك",
@@ -148,7 +154,6 @@
     },
     "new": "هدف جديد",
     "emptyCta": "حط أول هدف ليك",
-    "now": "دلوقتي",
     "reached": "وصلت للهدف",
     "doneOf": "خلّصت {{done}} من {{total}} كجم"
   },
@@ -330,7 +335,11 @@
       "treadmill-run": "جري على المشاية",
       "studio-flow": "تمرين استوديو",
       "warm-up": "إحماء",
-      "lifting-session": "تمرين أوزان"
+      "lifting-session": "تمرين أوزان",
+      "violet-training": "تمرين بنفسجي",
+      "pilates-studio": "استوديو بيلاتس",
+      "run-club": "نادي الجري",
+      "lift-club": "نادي الحديد"
     },
     "tab": {
       "outfits": "الأطقم",
@@ -415,7 +424,16 @@
       "fade-beard": "دقن متدرّجة",
       "chin-tuft": "دقن صغيرة عالدقن",
       "grip-socks": "شراب مانع للزحلقة",
-      "cushioned-socks": "شراب مبطّن"
+      "cushioned-socks": "شراب مبطّن",
+      "high-ponytail": "ديل حصان عالي",
+      "braided-ponytail": "ديل حصان بضفيرة",
+      "low-bun": "كعكة واطية",
+      "puff": "كيرلي مرفوع",
+      "longline-tank": "توب تمرين طويل",
+      "racerback-bra": "برا رياضية بظهر مفتوح",
+      "fitted-zip": "جاكيت تمرين ضيّق",
+      "high-rise-leggings": "ليقنز بوسط عالي",
+      "capris": "ليقنز قصير للتمرين"
     },
     "part": {
       "skin": "لون البشرة",
@@ -492,7 +510,12 @@
       "aubergine": "بتنجاني",
       "gum": "بني عسلي"
     },
-    "saved": "اتحفظت"
+    "saved": "اتحفظت",
+    "baseTitle": "شكل الشخصية الأساسي",
+    "base": {
+      "standard": "الأصلي",
+      "women": "نسائي"
+    }
   },
   "bodyComp": {
     "kicker": "من قياس الـ InBody بتاعك",

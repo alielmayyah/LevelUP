@@ -132,7 +132,13 @@
     "compareOffShort": "No scan",
     "moreDetails": "View more details",
     "lessDetails": "Show less",
-    "scanPages": "Scan pages"
+    "scanPages": "Scan pages",
+    "calendarTitle": "Your scans",
+    "calendarHint": "Days with a scan are highlighted. Tap one to see it.",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "scanOn": "Scan on {{date}}",
+    "scansInMonth": "Scans this month: {{n}}"
   },
   "goals": {
     "subtitle": "Your missions",
@@ -148,7 +154,6 @@
     },
     "new": "New goal",
     "emptyCta": "Set your first goal",
-    "now": "Now",
     "reached": "Goal reached",
     "doneOf": "{{done}} of {{total}} kg done"
   },
@@ -330,7 +335,11 @@
       "treadmill-run": "Treadmill Run",
       "studio-flow": "Studio Flow",
       "warm-up": "Warm-Up",
-      "lifting-session": "Lifting Session"
+      "lifting-session": "Lifting Session",
+      "violet-training": "Violet Training",
+      "pilates-studio": "Pilates Studio",
+      "run-club": "Run Club",
+      "lift-club": "Lift Club"
     },
     "tab": {
       "outfits": "Outfits",
@@ -415,7 +424,16 @@
       "fade-beard": "Faded beard",
       "chin-tuft": "Chin tuft",
       "grip-socks": "Grip socks",
-      "cushioned-socks": "Cushioned crew socks"
+      "cushioned-socks": "Cushioned crew socks",
+      "high-ponytail": "High ponytail",
+      "braided-ponytail": "Braided ponytail",
+      "low-bun": "Low bun",
+      "puff": "Curly puff",
+      "longline-tank": "Longline training tank",
+      "racerback-bra": "Racerback sports bra",
+      "fitted-zip": "Fitted training jacket",
+      "high-rise-leggings": "High-rise leggings",
+      "capris": "Training capris"
     },
     "part": {
       "skin": "Skin tone",
@@ -492,7 +510,12 @@
       "aubergine": "Aubergine",
       "gum": "Gum brown"
     },
-    "saved": "Saved"
+    "saved": "Saved",
+    "baseTitle": "Avatar base",
+    "base": {
+      "standard": "Original",
+      "women": "Women’s"
+    }
   },
   "bodyComp": {
     "kicker": "From your InBody scan",

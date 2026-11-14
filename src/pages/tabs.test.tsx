@@ -44,6 +44,23 @@ afterEach(async () => {
 });
 
 describe('Progress', () => {
+  it('tapping the scan date opens a calendar of scans; tapping a scan day shows that scan', async () => {
+    await renderAs('101', Progress);
+    await userEvent.click(await screen.findByTestId('scan-calendar-open'));
+    const cal = await screen.findByTestId('scan-calendar');
+    expect(within(cal).getByTestId('calendar-month')).toHaveTextContent('November 2026');
+    // The scan on screen is marked; later months can't be reached.
+    const days = within(cal).getAllByTestId('calendar-scan-day');
+    expect(days).toHaveLength(1);
+    expect(days[0]).toHaveAttribute('aria-current', 'date');
+    expect(days[0]).toHaveAccessibleName(/^Scan on .*November \d+, 2026$/);
+    expect(within(cal).getByTestId('calendar-next')).toBeDisabled();
+    await userEvent.click(within(cal).getByTestId('calendar-prev'));
+    expect(within(cal).getByTestId('calendar-month')).toHaveTextContent('October 2026');
+    await userEvent.click(within(cal).getByTestId('calendar-scan-day'));
+    expect(screen.getByTestId('scan-title')).toHaveTextContent('Oct 15, 2026');
+  });
+
   it('opens on the key numbers; body composition and trends wait behind View more details', async () => {
     await renderAs('101', Progress);
     const more = await screen.findByTestId('progress-more');
@@ -220,8 +237,8 @@ describe('Goals', () => {
     expect(within(goal).getByTestId('goal-percent')).toHaveTextContent('67%');
     expect(within(goal).getByTestId('goal-meta')).toHaveTextContent('2.0 of 3.0 kg done');
     expect(within(goal).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '67');
-    // Start, now, and target are on the card: nothing to open.
-    expect(within(goal).getByTestId('goal-stats')).toHaveTextContent(/Start.*Now.*Target/);
+    // Start at the bar's beginning, target at its end: nothing to open.
+    expect(within(goal).getByTestId('goal-stats')).toHaveTextContent(/Start 39\.3 kg.*Target 42\.3 kg/);
     expect(within(goal).queryByRole('button')).toBeNull();
   });
 

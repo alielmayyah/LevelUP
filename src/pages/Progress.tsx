@@ -11,6 +11,7 @@ import TabPage from '../components/TabPage';
 import { formatNumber, numberLocale } from '../i18n/format';
 import './progress/Progress.scss';
 import MetricInfo, { InfoButton, type InfoTopic } from './progress/MetricInfo';
+import ScanCalendar from './progress/ScanCalendar';
 import ScanHistory from './progress/ScanHistory';
 
 // The chart is the heaviest part of the page, so it loads after it, behind a skeleton.
@@ -151,6 +152,7 @@ const Progress: React.FC = () => {
   /** Index into the scans, newest first: 0 is the latest. */
   const [picked, setPicked] = useState(0);
   const [showAll, setShowAll] = useState(false);
+  const [calendar, setCalendar] = useState(false);
   const [picking, setPicking] = useState(false);
   const [compareChoice, setCompareChoice] = useState<CompareChoice>('previous');
   /** The page opens on the key numbers; body composition and trends wait behind View more. */
@@ -294,9 +296,18 @@ const Progress: React.FC = () => {
                   <IonIcon className="rtl:-scale-x-100" icon={chevronBack} aria-hidden="true" />
                 </button>
                 <div className="grid min-w-0 flex-1 justify-items-center text-center" aria-live="polite">
-                  {/* The scan's date is the title. */}
+                  {/* The scan's date is the title; tapping it opens the calendar of scans. */}
                   <h2 id="latest-scan" className="lu-card-title m-0" data-testid="scan-title">
-                    {scanDate(scan.takenAt)}
+                    <button
+                      type="button"
+                      className="lu-date-button inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-lg border-0 bg-transparent px-2 font-inherit text-inherit"
+                      onClick={() => setCalendar(true)}
+                      aria-haspopup="dialog"
+                      data-testid="scan-calendar-open"
+                    >
+                      {scanDate(scan.takenAt)}
+                      <PixelIcon className="lu-tone-calendar flex-none text-[1.05rem]" name="calendar" />
+                    </button>
                   </h2>
                   {/* Just the date on screen; screen readers also hear which scan it is. */}
                   <span className="sr-only" data-testid="scan-date">
@@ -480,6 +491,13 @@ const Progress: React.FC = () => {
       )}
       <MetricInfo topic={info} onClose={closeInfo} />
       <ScanHistory open={showAll} scans={list} current={index} onPick={setPicked} onClose={() => setShowAll(false)} />
+      <ScanCalendar
+        open={calendar}
+        scans={list}
+        current={index}
+        onPick={setPicked}
+        onClose={() => setCalendar(false)}
+      />
       <ScanHistory
         mode="compare"
         open={picking}

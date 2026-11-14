@@ -38,8 +38,6 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
   const percent = Math.min(100, Math.max(0, goal.percent));
   const total = Math.abs(goal.targetValue - goal.startValue);
   const done = (total * percent) / 100;
-  const direction = Math.sign(goal.targetValue - goal.startValue) || 1;
-  const current = goal.startValue + direction * done;
   const lit = Math.round((percent / 100) * BLOCKS);
   const amount = (n: number) => `${formatNumber(n, 1)} ${kg}`;
 
@@ -49,18 +47,6 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
       : kind === 'upcoming'
         ? t('goals.upcomingNote')
         : t('goals.doneOf', { done: formatNumber(done, 1), total: formatNumber(total, 1) });
-
-  const stats: { key: string; label: string; value: number }[] =
-    kind !== 'active'
-      ? [
-          { key: 'start', label: t('goals.start'), value: goal.startValue },
-          { key: 'target', label: t('goals.target'), value: goal.targetValue },
-        ]
-      : [
-          { key: 'start', label: t('goals.start'), value: goal.startValue },
-          { key: 'now', label: t('goals.now'), value: current },
-          { key: 'target', label: t('goals.target'), value: goal.targetValue },
-        ];
 
   return (
     <li className={`lu-px-card lu-goal grid gap-3 p-3.5 lu-goal-${tone} lu-goal-${kind}`} data-testid="goal">
@@ -92,37 +78,33 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
         )}
       </div>
 
-      {kind !== 'upcoming' && (
+      {/* One line: where the goal started, the bar, and the target at the end. */}
+      <div className="flex items-center gap-2.5" data-testid="goal-stats">
+        <span className="text-[0.85rem] font-extrabold whitespace-nowrap text-muted">
+          <span className="sr-only">{t('goals.start')} </span>
+          {amount(goal.startValue)}
+        </span>
         <div
-          className="lu-goal-blocks flex gap-[3px]"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={percent}
-          aria-label={goal.title}
+          className="lu-goal-blocks flex min-w-0 flex-1 gap-[3px]"
+          {...(kind === 'upcoming'
+            ? { 'aria-hidden': true }
+            : {
+                role: 'progressbar',
+                'aria-valuemin': 0,
+                'aria-valuemax': 100,
+                'aria-valuenow': percent,
+                'aria-label': goal.title,
+              })}
         >
           {Array.from({ length: BLOCKS }, (_, i) => (
             <span key={i} className={i < lit ? 'is-on' : undefined} />
           ))}
         </div>
-      )}
-
-      {/* Start, where the member is now, and the target, side by side. */}
-      <dl
-        className={`lu-goal-stats m-0 grid rounded-lg ${stats.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}
-        data-testid="goal-stats"
-      >
-        {stats.map((s) => (
-          <div key={s.key} className="grid justify-items-center gap-0.5 px-1 py-2 text-center">
-            <dt className="text-[0.72rem] font-bold text-muted">{s.label}</dt>
-            <dd
-              className={`m-0 text-[0.95rem] font-extrabold whitespace-nowrap ${s.key === 'target' ? 'lu-goal-target' : 'text-ink'}`}
-            >
-              {amount(s.value)}
-            </dd>
-          </div>
-        ))}
-      </dl>
+        <span className="lu-goal-target text-[0.85rem] font-extrabold whitespace-nowrap">
+          <span className="sr-only">{t('goals.target')} </span>
+          {amount(goal.targetValue)}
+        </span>
+      </div>
     </li>
   );
 };
