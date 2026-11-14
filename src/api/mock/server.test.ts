@@ -117,6 +117,21 @@ describe('dashboard', () => {
   });
 });
 
+describe('Sara (140): new, no scans, but on the leaderboard', () => {
+  it('signs in, has no scans or goals, and is opted in but not ranked yet', async () => {
+    expect((await login('140')).status).toBe(201);
+    const dash = (await get<DashboardDto>('/me/dashboard', '140')).body;
+    expect(dash.fitScore).toBeNull();
+    expect(dash.mission).toBeNull();
+    expect(dash.leaderboard).toEqual({ optedIn: true, standing: null });
+    expect((await get<AssessmentDto[]>('/me/assessments', '140')).body).toEqual([]);
+    const lb = (await get<LeaderboardDto>('/leaderboard?board=score', '140')).body;
+    expect(lb.optedIn).toBe(true);
+    expect(lb.division).toBe('FEMALE');
+    expect(lb.rows.some((r) => r.isMe)).toBe(false);
+  });
+});
+
 describe('dates are relative to today', () => {
   it('Mohamed has a scan this month and Omar’s membership ends in 10 days', async () => {
     const progress = (await get<ProgressDto>('/me/progress', '101')).body.assessments;

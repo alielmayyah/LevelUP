@@ -12,6 +12,7 @@ Only `src/api/client.ts` and test files may import from this folder. ESLint (`no
 | `102`       | Lina Haddad   | A brand-new member: no scans, no goals, no notifications, not on the leaderboard                                                                                                                                                       |
 | `103`       | Omar Aziz     | One scan only, FitScore hidden (`showFitScore=false`), membership ending in 10 days                                                                                                                                                    |
 | `104`–`139` | Fillers       | 36 opted-in members (18 men, 18 women) so both leaderboards have a podium and a second page. Every board ranks the latest scan.                                                                                                        |
+| `140`       | Sara Adel     | Another brand-new member (woman, 168 cm): no scans, no goals, no notifications, but opted in to the leaderboard before her first scan                                                                                                  |
 
 Mohamed's values: FitScore 91 (Elite, computed from the scan with the InBody Score method), +2 since the last scan, rank #1 of 19 on all three men's boards (Top Score, Muscle 41.3 kg, Body fat 8.0%), mission "Gain 3 kg of muscle" at 2.0 of 3.0 kg, and this month body fat −1.1% and muscle +0.9 kg.
 

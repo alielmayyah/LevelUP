@@ -5,6 +5,7 @@
  *   102 Lina Haddad  new member: no scans, no goals, opted out
  *   103 Omar Aziz    one scan, FitScore hidden, membership ends in 10 days
  *   104–139       36 opted-in fillers (18 men, 18 women) so both leaderboards have rows
+ *   140 Sara Adel    new member: no scans, no goals, but joined the leaderboard
  */
 import type { AssessmentDto, NotificationDto, SettingsDto, Sex } from '../types';
 import { bodyFatPctForScore } from './domain';
@@ -145,6 +146,27 @@ function lina(now: Date): MockMember {
   };
 }
 
+/** A second brand-new member: like Lina, but she joined the leaderboard before her first scan. */
+function sara(now: Date): MockMember {
+  return {
+    id: 40,
+    fitId: '140',
+    firstName: 'Sara',
+    lastName: 'Adel',
+    sex: 'FEMALE',
+    birthDate: new Date('2001-02-09T00:00:00Z'),
+    heightCm: 168,
+    membershipPlan: 'Standard · 6 months',
+    membershipStart: daysFrom(now, -1),
+    membershipEnd: daysFrom(now, 181),
+    coach: null,
+    settings: { showFitScore: true, fitScoreOnLeaderboard: true },
+    assessments: [],
+    goals: [],
+    notifications: [],
+  };
+}
+
 function omar(now: Date): MockMember {
   const heightCm = 182;
   const takenAt = thisMonthScan(now);
@@ -260,5 +282,5 @@ const round = (n: number) => Math.round(n * 10) / 10;
 
 export function buildMembers(now: Date): MockMember[] {
   resetIds();
-  return [mohamed(now), lina(now), omar(now), ...FILLERS.map((_, i) => filler(now, i))];
+  return [mohamed(now), lina(now), omar(now), ...FILLERS.map((_, i) => filler(now, i)), sara(now)];
 }
