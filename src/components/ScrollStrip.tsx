@@ -1,7 +1,6 @@
-import { IonIcon } from '@ionic/react';
-import { chevronBack, chevronForward } from 'ionicons/icons';
 import { useCallback, useEffect, useRef, useState, type HTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
+import PixelIcon from './PixelIcon';
 
 import './ScrollStrip.scss';
 
@@ -84,7 +83,7 @@ const ScrollStrip: React.FC<Props> = ({ outerClassName, className, children, ...
           aria-hidden="true"
           onClick={() => nudge(-1)}
         >
-          <IonIcon className="rtl:-scale-x-100" icon={chevronBack} />
+          <PixelIcon className="rtl:-scale-x-100" name="chevronBack" />
         </button>
       )}
       {edges.end && (
@@ -96,7 +95,7 @@ const ScrollStrip: React.FC<Props> = ({ outerClassName, className, children, ...
           onClick={() => nudge(1)}
           data-testid="strip-more"
         >
-          <IonIcon className="rtl:-scale-x-100" icon={chevronForward} />
+          <PixelIcon className="rtl:-scale-x-100" name="chevronForward" />
         </button>
       )}
     </div>

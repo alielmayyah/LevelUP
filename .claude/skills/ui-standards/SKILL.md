@@ -25,7 +25,7 @@ A UI task is done only when it passes every row of the checklist at the bottom.
 - Every key exists in both files. `npm run i18n:check` fails on missing keys.
 - When the language changes, set `<html lang dir>`: `dir="rtl"` for `ar` and `dir="ltr"` for `en`. Ionic mirrors its own components from `dir`.
 - **Logical CSS only:** `margin-inline-start`, `padding-inline-end`, `inset-inline-start`, `text-align: start`. Never `left`/`right` in layout CSS.
-- Mirror directional icons (back arrows, chevrons, progress direction) in RTL with `:dir(rtl) .icon-directional { transform: scaleX(-1); }`. Don't mirror logos, charts, or the ▲/▼ change indicators.
+- Mirror directional icons (back arrows, chevrons, progress direction) in RTL with `rtl:-scale-x-100`. Don't mirror logos, charts, or the ▲/▼ change indicators.
 - Format numbers, dates, and units with `Intl`, using locale `ar-u-nu-latn` for Arabic so digits stay Latin. Never concatenate strings around numbers. Use interpolation: `t('mission.progress', { done, total })`.
 - Language setting order: the user's choice in Settings, then the device language, then `en`. Store it in Preferences under `lu.lang`.
 - Arabic font: `IBM Plex Sans Arabic` in weights 400, 600 and 700 (self-hosted via `@fontsource`, loaded in `App.tsx`, `font-display: swap`). Load every weight the UI uses, or regular text renders from the bold file. Arabic text needs about 10% more line-height.
@@ -110,7 +110,7 @@ The look is pixel-art: build screens from the shared pieces, don't restyle per s
 | Segmented switch | `.lu-segment` | Tabs pattern with arrow keys (`src/components/roving.ts`) |
 | Choice | `.lu-choice` | Radio group pattern with arrow keys |
 | Switch | `.lu-switch` | `role="switch"`, `aria-describedby` its one-line hint |
-| Icons | `PixelIcon` for body metrics (flame = fat, muscle, calendar, trophy); ionicons for UI chrome | Every icon is `aria-hidden` unless it is the only label |
+| Icons | `PixelIcon` for everything: body metrics (flame = fat, muscle, scale, trophy) and interface icons (arrows, chevrons, close, settings…). Interface icons use `C` pixels, which take the text color. Don't add ionicons; draw a new 12×12 icon instead | Every icon is `aria-hidden` unless it is the only label (then pass `label`). Mirror directional icons in RTL with `rtl:-scale-x-100` |
 | Colors | `tokens.css` | One hue per metric (`--lu-fat`, `--lu-muscle`), tiers `--lu-tier-1..5`, medals `--lu-gold/silver/bronze` |
 
 Labels in small caps (`.lu-card-kicker`) use the normal font, never a pixel font: small pixel text is hard to read.

@@ -1,5 +1,4 @@
-import { IonContent, IonIcon, IonPage, useIonRouter, useIonViewWillEnter } from '@ionic/react';
-import { arrowBack, checkmark, diceOutline, refreshOutline } from 'ionicons/icons';
+import { IonContent, IonPage, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +27,7 @@ import PixelToast from '../components/PixelToast';
 import ScrollStrip from '../components/ScrollStrip';
 import { useSwipe } from '../components/useSwipe';
 import { focusSibling, rovingTarget } from '../components/roving';
+import PixelIcon from '../components/PixelIcon';
 import '../avatar/avatar.scss';
 
 const COLORS: Record<Exclude<CustomizerTab, 'outfits'>, readonly ColorPart[]> = {
@@ -93,14 +93,13 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
             >
               {preset.id === MATCH_HAIR && <CustomizerIcon tab="hair" />}
               {on && (
-                <IonIcon
+                <PixelIcon
                   className={
                     preset.id === MATCH_HAIR
                       ? 'absolute inset-e-0.5 inset-bs-0.5 text-[0.8rem]'
                       : 'lu-swatch-check text-[1.1rem]'
                   }
-                  icon={checkmark}
-                  aria-hidden="true"
+                  name="check"
                 />
               )}
             </button>
@@ -221,7 +220,7 @@ const Character: React.FC = () => {
               aria-label={t('avatar.back')}
               data-testid="character-back"
             >
-              <IonIcon className="rtl:-scale-x-100" icon={arrowBack} aria-hidden="true" />
+              <PixelIcon className="rtl:-scale-x-100" name="arrowBack" />
             </button>
             <h1 className="lu-display m-0 min-w-0 flex-1 truncate text-center text-[1.75rem] leading-none text-ink">
               {t('avatar.title')}
@@ -234,7 +233,7 @@ const Character: React.FC = () => {
               aria-label={t('avatar.randomize')}
               data-testid="character-random"
             >
-              <IonIcon icon={diceOutline} aria-hidden="true" />
+              <PixelIcon name="dice" />
             </button>
             <button
               type="button"
@@ -244,7 +243,7 @@ const Character: React.FC = () => {
               aria-label={t('avatar.reset')}
               data-testid="character-reset"
             >
-              <IonIcon icon={refreshOutline} aria-hidden="true" />
+              <PixelIcon name="refresh" />
             </button>
           </div>
 

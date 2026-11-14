@@ -1,5 +1,3 @@
-import { IonIcon } from '@ionic/react';
-import { chevronBack, chevronDown, chevronForward, listOutline } from 'ionicons/icons';
 import { lazy, Suspense, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -243,7 +241,7 @@ const Progress: React.FC = () => {
             onClick={() => setShowAll(true)}
             data-testid="view-all-scans"
           >
-            <IonIcon className="text-[1.15rem]" icon={listOutline} aria-hidden="true" />
+            <PixelIcon className="text-[1.15rem]" name="list" />
             {/* Icon only on the narrowest phones, so the page title keeps its line; the name stays for screen readers. */}
             <span className="max-[359px]:sr-only">{t('progress.viewAll', { n: formatNumber(list.length) })}</span>
           </button>
@@ -293,7 +291,7 @@ const Progress: React.FC = () => {
                   aria-label={t('progress.olderScan')}
                   data-testid="scan-older"
                 >
-                  <IonIcon className="rtl:-scale-x-100" icon={chevronBack} aria-hidden="true" />
+                  <PixelIcon className="rtl:-scale-x-100" name="chevronBack" />
                 </button>
                 <div className="grid min-w-0 flex-1 justify-items-center text-center" aria-live="polite">
                   {/* The scan's date is the title; tapping it opens the calendar of scans. */}
@@ -325,7 +323,7 @@ const Progress: React.FC = () => {
                   aria-label={t('progress.newerScan')}
                   data-testid="scan-newer"
                 >
-                  <IonIcon className="rtl:-scale-x-100" icon={chevronForward} aria-hidden="true" />
+                  <PixelIcon className="rtl:-scale-x-100" name="chevronForward" />
                 </button>
               </header>
 
@@ -461,10 +459,9 @@ const Progress: React.FC = () => {
               data-testid="progress-more"
             >
               {details ? t('progress.lessDetails') : t('progress.moreDetails')}
-              <IonIcon
+              <PixelIcon
                 className={`text-[1.1rem] transition-transform duration-150 motion-reduce:transition-none ${details ? 'rotate-180' : ''}`}
-                icon={chevronDown}
-                aria-hidden="true"
+                name="chevronDown"
               />
             </button>
           </div>

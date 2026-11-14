@@ -229,7 +229,7 @@
       text-wrap: balance;
     }
 
-    button ion-icon {
+    button .lu-pixel-icon {
       flex: none;
       font-size: 1.05rem;
     }
@@ -262,7 +262,7 @@
   }
 
   @media (max-width: 359.98px) {
-    .lu-board-tabs button ion-icon {
+    .lu-board-tabs button .lu-pixel-icon {
       display: none;
     }
   }

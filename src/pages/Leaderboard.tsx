@@ -1,6 +1,4 @@
 import { Preferences } from '@capacitor/preferences';
-import { IonIcon } from '@ionic/react';
-import { barbellOutline, eyeOffOutline, flameOutline, podiumOutline, trophyOutline } from 'ionicons/icons';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +7,7 @@ import { LEADERBOARD_BOARDS, type LeaderboardBoard, type LeaderboardDto, type Le
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
 import Avatar from '../avatar/Avatar';
-import PixelIcon from '../components/PixelIcon';
+import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
 import '../avatar/avatar.scss';
 import { focusSibling, rovingTarget } from '../components/roving';
 import PixelToast from '../components/PixelToast';
@@ -29,10 +27,10 @@ const BOARD_KEY = 'lu.board';
 /** Rows per page below the podium. The pager shows only when a board has more. */
 const PAGE_SIZE = 10;
 
-const BOARD_ICONS: Record<LeaderboardBoard, string> = {
-  score: trophyOutline,
-  muscle: barbellOutline,
-  bodyFat: flameOutline,
+const BOARD_ICONS: Record<LeaderboardBoard, PixelIconName> = {
+  score: 'trophy',
+  muscle: 'dumbbell',
+  bodyFat: 'flame',
 };
 
 const isBoard = (v: unknown): v is LeaderboardBoard => LEADERBOARD_BOARDS.includes(v as LeaderboardBoard);
@@ -173,7 +171,7 @@ const Leaderboard: React.FC = () => {
     >
       {d && !d.optedIn && (
         <div className="lu-px-card mb-4 grid justify-items-center gap-2.5 text-center" data-testid="join-banner">
-          <IonIcon className="text-[28px] text-muted" icon={eyeOffOutline} aria-hidden="true" />
+          <PixelIcon className="text-[28px] text-muted" name="eyeOff" />
           <p className="m-0 font-bold">{t('leaderboard.hidden')}</p>
           <CtaButton className="w-[min(100%,240px)]" onClick={() => void join()} disabled={joining} aria-busy={joining}>
             {t('leaderboard.join')}
@@ -202,7 +200,7 @@ const Leaderboard: React.FC = () => {
               focusSibling(e, to);
             }}
           >
-            <IonIcon icon={BOARD_ICONS[b]} aria-hidden="true" />
+            <PixelIcon name={BOARD_ICONS[b]} />
             {t(`leaderboard.board.${b}`)}
           </button>
         ))}
@@ -238,7 +236,7 @@ const Leaderboard: React.FC = () => {
         >
           {d && d.rows.length === 0 && (
             <div className="lu-px-card lu-state" data-testid="board-empty">
-              <IonIcon icon={podiumOutline} aria-hidden="true" />
+              <PixelIcon name="podium" />
               <p>{t('leaderboard.emptyBoard')}</p>
             </div>
           )}

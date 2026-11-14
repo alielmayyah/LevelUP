@@ -168,14 +168,14 @@
   .lu-notif-count {
     @include tint(var(--lu-accent), 60%, 16%);
 
-    ion-icon {
+    .lu-pixel-icon {
       color: var(--lu-accent);
     }
 
     &.is-clear {
       @include tint(var(--lu-success), 50%, 12%);
 
-      ion-icon {
+      .lu-pixel-icon {
         color: var(--lu-success);
       }
     }

@@ -1,5 +1,4 @@
-import { IonIcon, useIonRouter } from '@ionic/react';
-import { add, checkmark, flagOutline } from 'ionicons/icons';
+import { useIonRouter } from '@ionic/react';
 import { useTranslation } from 'react-i18next';
 
 import type { GoalMetric, GoalsDto, GoalView } from '../api/types';
@@ -71,7 +70,7 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
         )}
         {kind === 'completed' && (
           <span className="lu-goal-done grid size-9 flex-none place-items-center rounded-full" aria-hidden="true">
-            <IonIcon className="text-[1.2rem]" icon={checkmark} />
+            <PixelIcon className="text-[1.2rem]" name="check" />
           </span>
         )}
       </div>
@@ -127,7 +126,7 @@ const Goals: React.FC = () => {
           onClick={newGoal}
           data-testid="goal-new"
         >
-          <IonIcon className="text-[1.1rem]" icon={add} aria-hidden="true" />
+          <PixelIcon className="text-[1.1rem]" name="add" />
           {t('goals.new')}
         </CtaButton>
       }
@@ -148,7 +147,7 @@ const Goals: React.FC = () => {
 
       {data && total === 0 && (
         <div className="lu-px-card lu-state" data-testid="goals-empty">
-          <IonIcon icon={flagOutline} aria-hidden="true" />
+          <PixelIcon name="flag" />
           <p>{t('goals.empty')}</p>
           <CtaButton onClick={newGoal} data-testid="goal-new-empty">
             {t('goals.emptyCta')}

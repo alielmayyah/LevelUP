@@ -1,5 +1,3 @@
-import { IonIcon } from '@ionic/react';
-import { chevronForward, flagOutline } from 'ionicons/icons';
 import { useId, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -24,10 +22,10 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
   const head = (
     <span className="lu-card-head">
       <span className="lu-card-kicker">
-        <IonIcon icon={flagOutline} aria-hidden="true" />
+        <PixelIcon name="flag" />
         {t('home.mission.title')}
       </span>
-      {mission && <IonIcon className="lu-chevron" icon={chevronForward} aria-hidden="true" />}
+      {mission && <PixelIcon className="lu-chevron" name="chevronForward" />}
     </span>
   );
   // A heading for heading navigation. The visible label stays in the button so its name matches what is shown (WCAG 2.5.3).

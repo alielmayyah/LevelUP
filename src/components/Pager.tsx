@@ -1,8 +1,7 @@
-import { IonIcon } from '@ionic/react';
-import { chevronBack, chevronForward } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 
 import { formatNumber } from '../i18n/format';
+import PixelIcon from './PixelIcon';
 import './Pager.scss';
 
 interface Props {
@@ -32,7 +31,7 @@ const Pager: React.FC<Props> = ({ page, pages, onPage, label }) => {
         disabled={page === 0}
         aria-label={t('leaderboard.prevPage')}
       >
-        <IonIcon className="rtl:-scale-x-100" icon={chevronBack} aria-hidden="true" />
+        <PixelIcon className="rtl:-scale-x-100" name="chevronBack" />
       </button>
       <span className="min-w-[7ch] text-center text-[0.85rem] font-extrabold text-muted" aria-live="polite">
         {t('leaderboard.pageOf', { page: formatNumber(page + 1), pages: formatNumber(pages) })}
@@ -44,7 +43,7 @@ const Pager: React.FC<Props> = ({ page, pages, onPage, label }) => {
         disabled={page >= pages - 1}
         aria-label={t('leaderboard.nextPage')}
       >
-        <IonIcon className="rtl:-scale-x-100" icon={chevronForward} aria-hidden="true" />
+        <PixelIcon className="rtl:-scale-x-100" name="chevronForward" />
       </button>
     </nav>
   );

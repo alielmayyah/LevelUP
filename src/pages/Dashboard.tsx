@@ -1,5 +1,4 @@
-import { IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import { notificationsOutline } from 'ionicons/icons';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -18,6 +17,7 @@ import NotificationsSheet from './home/NotificationsSheet';
 import RankCard from './home/RankCard';
 import StatTiles from './home/StatTiles';
 import { HOME_GRID, HOME_SPAN, TILES } from './home/layout';
+import PixelIcon from '../components/PixelIcon';
 import './home/Dashboard.scss';
 
 /** Home tab. Everything on it comes from one request: GET /me/dashboard. */
@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
                 }
                 onClick={() => setNotifOpen(true)}
               >
-                <IonIcon icon={notificationsOutline} aria-hidden="true" />
+                <PixelIcon name="bell" />
                 {unread > 0 && (
                   <span
                     className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 border-page bg-danger px-[5px] text-[0.72rem] leading-none font-black text-surface dark:text-pixel-ink"

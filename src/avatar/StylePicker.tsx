@@ -1,5 +1,3 @@
-import { IonIcon } from '@ionic/react';
-import { checkmark } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 
 import { focusSibling, rovingTarget } from '../components/roving';
@@ -15,6 +13,7 @@ import {
   type ResolvedStyles,
   type StylePart,
 } from './catalog';
+import PixelIcon from '../components/PixelIcon';
 
 const ICONS: Record<CustomizerTab, string> = {
   outfits: 'M4 3h16v2H4z M3 6h18v2H3z M2 9h20v12H2z M7 12v2h10v-2z',
@@ -90,7 +89,7 @@ const TILE =
 function SelectedMark() {
   return (
     <span className="absolute inset-e-1 inset-bs-1 grid size-5 place-items-center rounded-full bg-primary text-primary-contrast">
-      <IonIcon icon={checkmark} className="text-[0.85rem]" />
+      <PixelIcon name="check" className="text-[0.85rem]" />
     </span>
   );
 }

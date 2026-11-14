@@ -77,8 +77,8 @@ button.lu-px-card:active {
   font-weight: 800;
 }
 
-.lu-card-title ion-icon,
-.lu-section-title ion-icon {
+.lu-card-title .lu-pixel-icon,
+.lu-section-title .lu-pixel-icon {
   color: var(--ion-color-primary);
   font-size: 1.15rem;
 }
@@ -95,7 +95,7 @@ button.lu-px-card:active {
   text-transform: uppercase;
 }
 
-.lu-card-kicker ion-icon {
+.lu-card-kicker .lu-pixel-icon {
   font-size: 1.05rem;
 }
 
@@ -104,7 +104,7 @@ button.lu-px-card:active {
   letter-spacing: 0;
 }
 
-:root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) ion-icon,
+:root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) .lu-pixel-icon,
 :root.ion-palette-dark .lu-card-kicker {
   color: var(--ion-color-secondary);
 }
@@ -186,7 +186,7 @@ button.lu-px-card:active {
   color: var(--lu-text);
 }
 
-.lu-chip-tier ion-icon {
+.lu-chip-tier .lu-pixel-icon {
   color: var(--tier);
 }
 
@@ -285,7 +285,7 @@ button.lu-px-card:active {
   cursor: pointer;
 }
 
-.lu-segment button ion-icon {
+.lu-segment button .lu-pixel-icon {
   font-size: 1.15rem;
 }
 
@@ -381,7 +381,6 @@ button.lu-px-card:active {
   text-align: center;
 }
 
-.lu-state ion-icon,
 .lu-state .lu-pixel-icon {
   font-size: 40px;
 }

@@ -1,11 +1,11 @@
-import { IonIcon, IonModal } from '@ionic/react';
-import { chevronBack, chevronForward, close } from 'ionicons/icons';
+import { IonModal } from '@ionic/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto } from '../../api/types';
 import { useSwipe } from '../../components/useSwipe';
 import { formatNumber, numberLocale } from '../../i18n/format';
+import PixelIcon from '../../components/PixelIcon';
 
 interface Props {
   open: boolean;
@@ -64,7 +64,7 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
           {t('progress.calendarTitle')}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
-          <IonIcon icon={close} aria-hidden="true" />
+          <PixelIcon name="close" />
         </button>
       </div>
       <p className="m-0 px-4 pb-3 text-[0.85rem] font-semibold text-muted">{t('progress.calendarHint')}</p>
@@ -79,7 +79,7 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
             aria-label={t('progress.prevMonth')}
             data-testid="calendar-prev"
           >
-            <IonIcon className="rtl:-scale-x-100" icon={chevronBack} aria-hidden="true" />
+            <PixelIcon className="rtl:-scale-x-100" name="chevronBack" />
           </button>
           <p className="m-0 grid flex-1 text-center" aria-live="polite">
             <strong className="text-[1.05rem] font-extrabold" data-testid="calendar-month">
@@ -97,7 +97,7 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
             aria-label={t('progress.nextMonth')}
             data-testid="calendar-next"
           >
-            <IonIcon className="rtl:-scale-x-100" icon={chevronForward} aria-hidden="true" />
+            <PixelIcon className="rtl:-scale-x-100" name="chevronForward" />
           </button>
         </div>
 

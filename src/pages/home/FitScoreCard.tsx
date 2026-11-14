@@ -1,13 +1,12 @@
 import { useGSAP } from '@gsap/react';
-import { IonIcon } from '@ionic/react';
 import { gsap } from 'gsap';
-import { flash, lockClosedOutline, pulseOutline, trendingDownOutline, trendingUpOutline } from 'ionicons/icons';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { FitScoreSummary, FitScoreTier } from '../../api/types';
 import { formatNumber, formatSigned } from '../../i18n/format';
 import { tierKey } from './homeText';
+import PixelIcon from '../../components/PixelIcon';
 
 gsap.registerPlugin(useGSAP);
 
@@ -52,11 +51,11 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
     >
       <header className="lu-card-head justify-between">
         <h2 id="fitscore-title" className="lu-card-title">
-          <IonIcon icon={pulseOutline} aria-hidden="true" />
+          <PixelIcon name="pulse" />
           {t('home.fitScore.title')}
         </h2>
         <span className="inline-flex items-center gap-1 text-[0.78rem] font-bold text-muted">
-          <IonIcon icon={lockClosedOutline} aria-hidden="true" />
+          <PixelIcon name="lock" />
           {t('home.fitScore.private')}
         </span>
       </header>
@@ -72,7 +71,7 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
           </span>
           <span className="grid justify-items-start gap-2">
             <span className={`lu-chip lu-chip-tier lu-tier-${TIERS.indexOf(fitScore.tier) + 1}`}>
-              <IonIcon icon={flash} aria-hidden="true" />
+              <PixelIcon name="bolt" />
               {t(tierKey(fitScore.tier))}
             </span>
             <span
@@ -82,7 +81,7 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
               {trend === 'up' || trend === 'down' ? (
                 <>
                   {/* Trend arrows are never mirrored: up means better in both languages. */}
-                  <IonIcon icon={trend === 'up' ? trendingUpOutline : trendingDownOutline} aria-hidden="true" />
+                  <PixelIcon name={trend === 'up' ? 'trendUp' : 'trendDown'} />
                   {formatSigned(change)} {t('home.fitScore.since')}
                 </>
               ) : (

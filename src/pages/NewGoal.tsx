@@ -1,5 +1,4 @@
-import { IonContent, IonIcon, IonPage, useIonRouter } from '@ionic/react';
-import { add, arrowBack, checkmark, remove } from 'ionicons/icons';
+import { IonContent, IonPage, useIonRouter } from '@ionic/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -134,7 +133,7 @@ const NewGoal: React.FC = () => {
         aria-label={t('newGoal.back')}
         data-testid="new-goal-back"
       >
-        <IonIcon className="rtl:-scale-x-100" icon={arrowBack} aria-hidden="true" />
+        <PixelIcon className="rtl:-scale-x-100" name="arrowBack" />
       </button>
       <div className="min-w-0 flex-1">
         <h1 className="lu-display m-0 text-[clamp(2rem,9vw,2.75rem)] leading-[1.05] wrap-anywhere text-ink">
@@ -221,10 +220,9 @@ const NewGoal: React.FC = () => {
                   </span>
                 </span>
                 {on && (
-                  <IonIcon
+                  <PixelIcon
                     className="flex-none text-[1.2rem] text-primary sm:hidden dark:text-secondary"
-                    icon={checkmark}
-                    aria-hidden="true"
+                    name="check"
                   />
                 )}
               </>
@@ -245,7 +243,7 @@ const NewGoal: React.FC = () => {
               aria-label={t('newGoal.less')}
               data-testid="goal-less"
             >
-              <IonIcon icon={remove} aria-hidden="true" />
+              <PixelIcon name="remove" />
             </button>
             <output
               className="lu-display min-w-[5ch] text-center text-[3rem] leading-none text-ink"
@@ -263,7 +261,7 @@ const NewGoal: React.FC = () => {
               aria-label={t('newGoal.more')}
               data-testid="goal-more"
             >
-              <IonIcon icon={add} aria-hidden="true" />
+              <PixelIcon name="add" />
             </button>
           </div>
           <p className="m-0 text-center text-[0.875rem] font-bold text-muted" data-testid="goal-change">

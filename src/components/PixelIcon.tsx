@@ -3,10 +3,98 @@ import './PixelIcon.scss';
 /*
  * Pixel-art icons drawn on a 12×12 grid, to match the app's pixel style.
  * Each character is one pixel:
- *   X outline   O fill   Y highlight   H hot spot   . empty
+ *   X outline   O fill   Y highlight   H hot spot   C text color   . empty
  * Colors come from CSS variables on the icon or an ancestor:
  *   --px-line, --px-fill, --px-hi, --px-core
+ * C pixels always take the text color (currentColor), so interface icons
+ * (arrows, close, settings…) follow the button or label they sit in.
  */
+
+/** Flips an icon left to right. */
+const mirror = (rows: readonly string[]) => rows.map((r) => [...r].reverse().join(''));
+/** Flips an icon top to bottom. */
+const flip = (rows: readonly string[]) => [...rows].reverse();
+/** Swaps rows and columns, turning a right-pointing shape into a down-pointing one. */
+const transpose = (rows: readonly string[]) => [...rows[0]].map((_, x) => rows.map((r) => r[x]).join(''));
+/** Draws a diagonal slash over an icon, with a clear pixel beside it so the slash reads on top. */
+const slashed = (rows: readonly string[]) =>
+  rows.map((r, y) => [...r].map((c, x) => (x === y ? 'C' : x === y + 1 ? '.' : c)).join(''));
+
+const CHEVRON_FORWARD = [
+  '............',
+  '...CC.......',
+  '....CC......',
+  '.....CC.....',
+  '......CC....',
+  '.......CC...',
+  '.......CC...',
+  '......CC....',
+  '.....CC.....',
+  '....CC......',
+  '...CC.......',
+  '............',
+];
+
+const ARROW_FORWARD = [
+  '............',
+  '............',
+  '......CC....',
+  '.......CC...',
+  '........CC..',
+  '.CCCCCCCCCC.',
+  '.CCCCCCCCCC.',
+  '........CC..',
+  '.......CC...',
+  '......CC....',
+  '............',
+  '............',
+];
+
+const BELL = [
+  '............',
+  '.....CC.....',
+  '...CCCCCC...',
+  '..C......C..',
+  '..C......C..',
+  '..C......C..',
+  '..C......C..',
+  '.C........C.',
+  'C..........C',
+  'CCCCCCCCCCCC',
+  '.....CC.....',
+  '............',
+];
+
+const EYE = [
+  '............',
+  '............',
+  '....CCCC....',
+  '..CC....CC..',
+  '.C...CC...C.',
+  'C...CCCC...C',
+  'C...CCCC...C',
+  '.C...CC...C.',
+  '..CC....CC..',
+  '....CCCC....',
+  '............',
+  '............',
+];
+
+const TREND_UP = [
+  '............',
+  '............',
+  '.......CCCC.',
+  '.........CC.',
+  '........C.C.',
+  '...C...C..C.',
+  '..C.C.C.....',
+  '.C...C......',
+  'C...........',
+  '............',
+  '............',
+  '............',
+];
+
 const ICONS = {
   flame: [
     '.....X......',
@@ -274,11 +362,389 @@ const ICONS = {
     '.XXXXXXXXXX.',
     '............',
   ],
+
+  /* ---------- Interface icons, drawn in the text color ---------- */
+
+  chevronForward: CHEVRON_FORWARD,
+  chevronBack: mirror(CHEVRON_FORWARD),
+  chevronDown: transpose(CHEVRON_FORWARD),
+  arrowForward: ARROW_FORWARD,
+  arrowBack: mirror(ARROW_FORWARD),
+  close: [
+    '............',
+    '.CC......CC.',
+    '.CCC....CCC.',
+    '..CCC..CCC..',
+    '...CCCCCC...',
+    '....CCCC....',
+    '....CCCC....',
+    '...CCCCCC...',
+    '..CCC..CCC..',
+    '.CCC....CCC.',
+    '.CC......CC.',
+    '............',
+  ],
+  add: [
+    '............',
+    '.....CC.....',
+    '.....CC.....',
+    '.....CC.....',
+    '.....CC.....',
+    '.CCCCCCCCCC.',
+    '.CCCCCCCCCC.',
+    '.....CC.....',
+    '.....CC.....',
+    '.....CC.....',
+    '.....CC.....',
+    '............',
+  ],
+  remove: [
+    '............',
+    '............',
+    '............',
+    '............',
+    '............',
+    '.CCCCCCCCCC.',
+    '.CCCCCCCCCC.',
+    '............',
+    '............',
+    '............',
+    '............',
+    '............',
+  ],
+  check: [
+    '............',
+    '............',
+    '.........CC.',
+    '........CCC.',
+    '.......CCC..',
+    '.CC...CCC...',
+    '.CCC.CCC....',
+    '..CCCCC.....',
+    '...CCC......',
+    '....C.......',
+    '............',
+    '............',
+  ],
+  checkDouble: [
+    '............',
+    '............',
+    '............',
+    '.......C...C',
+    '......C...C.',
+    '.....C...C..',
+    'C...C...C...',
+    '.C.C.C.C....',
+    '..C...C.....',
+    '............',
+    '............',
+    '............',
+  ],
+  checkCircle: [
+    '....CCCC....',
+    '..CC....CC..',
+    '.C........C.',
+    '.C........C.',
+    'C.......C..C',
+    'C......C...C',
+    'C.C...C....C',
+    'C..C.C.....C',
+    '.C..C.....C.',
+    '.C........C.',
+    '..CC....CC..',
+    '....CCCC....',
+  ],
+  info: [
+    '....CCCC....',
+    '..CC....CC..',
+    '.C........C.',
+    '.C...CC...C.',
+    'C..........C',
+    'C....CC....C',
+    'C....CC....C',
+    'C....CC....C',
+    '.C...CC...C.',
+    '.C........C.',
+    '..CC....CC..',
+    '....CCCC....',
+  ],
+  settings: [
+    '.....CC.....',
+    '.CC.CCCC.CC.',
+    '.CCCCCCCCCC.',
+    '..CCC..CCC..',
+    '.CCC....CCC.',
+    'CCCC....CCCC',
+    'CCCC....CCCC',
+    '.CCC....CCC.',
+    '..CCC..CCC..',
+    '.CCCCCCCCCC.',
+    '.CC.CCCC.CC.',
+    '.....CC.....',
+  ],
+  bell: BELL,
+  bellOff: slashed(BELL),
+  logout: [
+    '............',
+    'CCCCC.......',
+    'CC....CC....',
+    'CC.....CC...',
+    'CC......CC..',
+    'CC.CCCCCCCCC',
+    'CC.CCCCCCCCC',
+    'CC......CC..',
+    'CC.....CC...',
+    'CC....CC....',
+    'CCCCC.......',
+    '............',
+  ],
+  globe: [
+    '....CCCC....',
+    '..CC.CC.CC..',
+    '.C..C..C..C.',
+    '.C..C..C..C.',
+    'CCCCCCCCCCCC',
+    'C...C..C...C',
+    'C...C..C...C',
+    'CCCCCCCCCCCC',
+    '.C..C..C..C.',
+    '.C..C..C..C.',
+    '..CC.CC.CC..',
+    '....CCCC....',
+  ],
+  palette: [
+    '....CCCC....',
+    '..CC....CC..',
+    '.C.CC..CC.C.',
+    '.C.CC..CC.C.',
+    'C..........C',
+    'C.CC....CCC.',
+    'C.CC....C...',
+    'C.......CCC.',
+    '.C.........C',
+    '.C........C.',
+    '..CC....CC..',
+    '....CCCC....',
+  ],
+  volume: [
+    '............',
+    '.....C......',
+    '....CC....C.',
+    '...C.C..C..C',
+    'CCC..C...C.C',
+    'C....C.C.C.C',
+    'C....C.C.C.C',
+    'CCC..C...C.C',
+    '...C.C..C..C',
+    '....CC....C.',
+    '.....C......',
+    '............',
+  ],
+  mute: [
+    '............',
+    '.....C......',
+    '....CC......',
+    '...C.C......',
+    'CCC..C.C..C.',
+    'C....C..CC..',
+    'C....C..CC..',
+    'CCC..C.C..C.',
+    '...C.C......',
+    '....CC......',
+    '.....C......',
+    '............',
+  ],
+  eye: EYE,
+  eyeOff: slashed(EYE),
+  list: [
+    '............',
+    'CC.CCCCCCCCC',
+    'CC.CCCCCCCCC',
+    '............',
+    '............',
+    'CC.CCCCCCCCC',
+    'CC.CCCCCCCCC',
+    '............',
+    '............',
+    'CC.CCCCCCCCC',
+    'CC.CCCCCCCCC',
+    '............',
+  ],
+  dice: [
+    '.CCCCCCCCCC.',
+    'C..........C',
+    'C.CC....CC.C',
+    'C.CC....CC.C',
+    'C..........C',
+    'C....CC....C',
+    'C....CC....C',
+    'C..........C',
+    'C.CC....CC.C',
+    'C.CC....CC.C',
+    'C..........C',
+    '.CCCCCCCCCC.',
+  ],
+  refresh: [
+    '....CCCC....',
+    '..CC.....C..',
+    '.C......CCC.',
+    '.C.....CCCCC',
+    'C..........C',
+    'C..........C',
+    'C..........C',
+    'C..........C',
+    '.C........C.',
+    '.C........C.',
+    '..CC....CC..',
+    '....CCCC....',
+  ],
+  shuffle: [
+    '............',
+    '.........C..',
+    'CC.....CCCC.',
+    '..C...C..C..',
+    '...C.C......',
+    '....C.......',
+    '...C.C......',
+    '..C...C..C..',
+    'CC.....CCCC.',
+    '.........C..',
+    '............',
+    '............',
+  ],
+  brush: [
+    '..........CC',
+    '.........CCC',
+    '........CCC.',
+    '.......CCC..',
+    '......CCC...',
+    '....CCCC....',
+    '...CCCCC....',
+    '..CCCCC.....',
+    '..CCCC......',
+    '.CCC........',
+    'CC..........',
+    '............',
+  ],
+  podium: [
+    '............',
+    '....CCCC....',
+    '....C..C....',
+    '....C..C....',
+    'CCCCC..C....',
+    'C...C..CCCCC',
+    'C...C..C...C',
+    'C...C..C...C',
+    'C...C..C...C',
+    'C...C..C...C',
+    'CCCCCCCCCCCC',
+    '............',
+  ],
+  pulse: [
+    '............',
+    '............',
+    '....C.......',
+    '...C.C......',
+    '...C.C......',
+    '...C.C......',
+    'CCC...C..CCC',
+    '......C.C...',
+    '.......C....',
+    '............',
+    '............',
+    '............',
+  ],
+  trendUp: TREND_UP,
+  trendDown: flip(TREND_UP),
+  sparkles: [
+    '....C....C..',
+    '....C...CCC.',
+    '...CCC...C..',
+    '.CCCCCCC....',
+    '...CCC......',
+    '....C.......',
+    '....C.......',
+    '.........C..',
+    '........CCC.',
+    '.......CCCCC',
+    '........CCC.',
+    '.........C..',
+  ],
+  lock: [
+    '...CCCCCC...',
+    '..CC....CC..',
+    '..C......C..',
+    '..C......C..',
+    '.CCCCCCCCCC.',
+    '.C........C.',
+    '.C...CC...C.',
+    '.C...CC...C.',
+    '.C...CC...C.',
+    '.C........C.',
+    '.CCCCCCCCCC.',
+    '............',
+  ],
+  idCard: [
+    '............',
+    'CCCCCCCCCCCC',
+    'C..........C',
+    'C..CC......C',
+    'C..CC.CCCC.C',
+    'C..........C',
+    'C.CCCC.CCC.C',
+    'C.CCCC.....C',
+    'C..........C',
+    'CCCCCCCCCCCC',
+    '............',
+    '............',
+  ],
+  scan: [
+    'CCCC....CCCC',
+    'C..........C',
+    'C..........C',
+    'C..........C',
+    '............',
+    '............',
+    '............',
+    '............',
+    'C..........C',
+    'C..........C',
+    'C..........C',
+    'CCCC....CCCC',
+  ],
+  clock: [
+    '....CCCC....',
+    '..CC....CC..',
+    '.C...C....C.',
+    '.C...C....C.',
+    'C....C.....C',
+    'C....C.....C',
+    'C....CCCC..C',
+    'C..........C',
+    '.C........C.',
+    '.C........C.',
+    '..CC....CC..',
+    '....CCCC....',
+  ],
+  bulb: [
+    '....CCCC....',
+    '..CC....CC..',
+    '.C........C.',
+    '.C........C.',
+    '.C........C.',
+    '..C......C..',
+    '...C....C...',
+    '...CCCCCC...',
+    '............',
+    '...CCCCCC...',
+    '....CCCC....',
+    '............',
+  ],
 } as const;
 
 export type PixelIconName = keyof typeof ICONS;
 
-const LAYER: Record<string, string> = { X: 'px-line', O: 'px-fill', Y: 'px-hi', H: 'px-core' };
+const LAYER: Record<string, string> = { X: 'px-line', O: 'px-fill', Y: 'px-hi', H: 'px-core', C: 'px-text' };
 
 /** Merges each row's runs of the same color into one rect, so an icon is a few dozen nodes. */
 function rects(rows: readonly string[]) {
@@ -298,7 +764,18 @@ function rects(rows: readonly string[]) {
 
 const CACHE = new Map<PixelIconName, ReturnType<typeof rects>>();
 
-const PixelIcon: React.FC<{ name: PixelIconName; className?: string }> = ({ name, className }) => {
+/** The icon grids, exported for tests. */
+export const PIXEL_ICONS: Readonly<Record<PixelIconName, readonly string[]>> = ICONS;
+
+/**
+ * Decorative by default (hidden from screen readers). Pass `label` only when
+ * the icon is the only thing that names or explains its control.
+ */
+const PixelIcon: React.FC<{ name: PixelIconName; className?: string; label?: string }> = ({
+  name,
+  className,
+  label,
+}) => {
   let parts = CACHE.get(name);
   if (!parts) CACHE.set(name, (parts = rects(ICONS[name])));
   return (
@@ -306,7 +783,7 @@ const PixelIcon: React.FC<{ name: PixelIconName; className?: string }> = ({ name
       className={['lu-pixel-icon', className].filter(Boolean).join(' ')}
       viewBox="0 0 12 12"
       shapeRendering="crispEdges"
-      aria-hidden="true"
+      {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
       focusable="false"
     >
       {parts.map((r) => (

@@ -1,5 +1,4 @@
-import { IonIcon, IonModal } from '@ionic/react';
-import { close } from 'ionicons/icons';
+import { IonModal } from '@ionic/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -77,7 +76,7 @@ const SheetBody: React.FC<Props & { title: string }> = ({
           {title}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
-          <IonIcon icon={close} aria-hidden="true" />
+          <PixelIcon name="close" />
         </button>
       </div>
       {comparing && (

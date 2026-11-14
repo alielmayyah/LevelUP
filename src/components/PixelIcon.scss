@@ -21,5 +21,9 @@
     .px-core {
       fill: var(--px-core, var(--px-hi, currentColor));
     }
+
+    .px-text {
+      fill: currentColor;
+    }
   }
 }

@@ -1,13 +1,4 @@
-import { IonIcon, IonModal } from '@ionic/react';
-import {
-  checkmarkDoneOutline,
-  checkmarkOutline,
-  close,
-  notificationsOffOutline,
-  notificationsOutline,
-  scanOutline,
-  timeOutline,
-} from 'ionicons/icons';
+import { IonModal } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -97,7 +88,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
           {t('home.notifications.title')}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('home.notifications.close')} onClick={onClose}>
-          <IonIcon icon={close} aria-hidden="true" />
+          <PixelIcon name="close" />
         </button>
       </div>
 
@@ -107,11 +98,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
             className={`lu-notif-count inline-flex items-center gap-1.5 rounded-lg border-2 px-2.5 py-1 text-[0.85rem] font-extrabold text-ink ${unread === 0 ? 'is-clear' : ''}`}
             data-testid="unread-count"
           >
-            <IonIcon
-              className="text-[1.05rem]"
-              icon={unread === 0 ? checkmarkDoneOutline : notificationsOutline}
-              aria-hidden="true"
-            />
+            <PixelIcon className="text-[1.05rem]" name={unread === 0 ? 'checkDouble' : 'bell'} />
             {unread === 0
               ? t('home.notifications.empty')
               : t('home.notifications.unreadCount', { n: formatNumber(unread) })}
@@ -122,7 +109,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
             onClick={markAll}
             disabled={unread === 0}
           >
-            <IonIcon className="text-[1.1rem]" icon={checkmarkDoneOutline} aria-hidden="true" />
+            <PixelIcon className="text-[1.1rem]" name="checkDouble" />
             {t('home.notifications.markAll')}
           </button>
         </div>
@@ -153,7 +140,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
 
       {items && items.length === 0 && (
         <div className="lu-state">
-          <IonIcon icon={notificationsOffOutline} aria-hidden="true" />
+          <PixelIcon name="bellOff" />
           <p>{t('home.notifications.empty')}</p>
         </div>
       )}
@@ -185,7 +172,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                             className={`lu-notif-icon grid size-11 flex-none place-items-center rounded-lg border-2 ${mission ? 'is-mission text-[30px]' : 'text-[22px]'}`}
                             aria-hidden="true"
                           >
-                            {mission ? <PixelIcon name="trophy" /> : <IonIcon icon={scanOutline} />}
+                            {mission ? <PixelIcon name="trophy" /> : <PixelIcon name="scan" />}
                           </span>
                           <span className="grid min-w-0 flex-1 gap-0.5">
                             <span className={isUnread ? 'font-extrabold' : 'font-semibold'}>
@@ -193,7 +180,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                             </span>
                             <span className="text-[0.9rem] text-muted">{t(n.body.key, n.body.params ?? {})}</span>
                             <span className="inline-flex items-center gap-1 text-[0.78rem] font-semibold text-muted">
-                              <IonIcon className="text-[0.9rem]" icon={timeOutline} aria-hidden="true" />
+                              <PixelIcon className="text-[0.9rem]" name="clock" />
                               {formatTimeAgo(n.createdAt)}
                             </span>
                           </span>
@@ -203,10 +190,10 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                               <span className="sr-only">{t('home.notifications.unread')}</span>
                             </>
                           ) : (
-                            <IonIcon
+                            <PixelIcon
                               className="flex-none text-[1.1rem] text-success"
-                              icon={checkmarkOutline}
-                              aria-label={t('home.notifications.read')}
+                              name="check"
+                              label={t('home.notifications.read')}
                             />
                           )}
                         </button>

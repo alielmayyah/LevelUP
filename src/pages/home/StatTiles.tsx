@@ -1,5 +1,3 @@
-import { IonIcon } from '@ionic/react';
-import { sparklesOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 
 import type { MonthlyWins } from '../../api/types';
@@ -62,7 +60,7 @@ const StatTiles: React.FC<{ wins: MonthlyWins; today: Date }> = ({ wins, today }
   return (
     <section aria-labelledby="wins-title">
       <h2 id="wins-title" className="lu-section-title">
-        <IonIcon icon={sparklesOutline} aria-hidden="true" />
+        <PixelIcon name="sparkles" />
         {t('home.wins.title', { month: formatMonth(today) })}
       </h2>
       <div className={TILES}>
