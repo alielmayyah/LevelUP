@@ -1,0 +1,102 @@
+/*
+ * Goals' pixel details: each metric's hue, the journey blocks, metric icon
+ * tiles, striped progress bars, and the expand chevron. Layout and type are
+ * Tailwind classes in Goals.tsx.
+ */
+@mixin stripes($mix) {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--metric) 0 6px,
+    color-mix(in srgb, var(--metric) $mix, var(--lu-surface)) 6px 8px
+  );
+}
+
+@layer components {
+  /* Each metric's hue, as on Home and Progress. */
+  .lu-goal-fat {
+    --metric: var(--lu-fat);
+    --px-fill: var(--lu-fat);
+    --px-hi: var(--lu-fat-hi);
+    --px-core: var(--lu-fat-core);
+  }
+
+  .lu-goal-muscle {
+    --metric: var(--lu-muscle);
+    --px-fill: var(--lu-muscle);
+    --px-hi: var(--lu-muscle-hi);
+  }
+
+  .lu-goal-weight {
+    --metric: var(--ion-color-secondary);
+    --px-fill: var(--ion-color-primary);
+    --px-hi: var(--lu-surface);
+    --px-core: var(--lu-accent);
+  }
+
+  /* One chunky block per goal, in journey order (follows the reading direction). */
+  .lu-journey-step {
+    border: 2px solid var(--lu-border);
+    background:
+      linear-gradient(90deg, var(--step-fill) var(--lu-step), transparent var(--lu-step)) no-repeat,
+      var(--lu-surface-2);
+
+    &:dir(rtl) {
+      background:
+        linear-gradient(270deg, var(--step-fill) var(--lu-step), transparent var(--lu-step)) no-repeat,
+        var(--lu-surface-2);
+    }
+
+    &.is-completed {
+      --step-fill: var(--lu-success);
+      border-color: var(--lu-success);
+      box-shadow: 0 3px 0 color-mix(in srgb, var(--lu-success) 40%, var(--lu-pixel-shadow));
+    }
+
+    &.is-active {
+      --step-fill: var(--ion-color-primary);
+      border-color: var(--ion-color-primary);
+
+      :root.ion-palette-dark & {
+        --step-fill: var(--ion-color-secondary);
+        border-color: var(--ion-color-secondary);
+      }
+    }
+
+    &.is-upcoming {
+      --step-fill: transparent;
+      border-style: dashed;
+    }
+  }
+
+  .lu-goal-icon {
+    border: 2px solid color-mix(in srgb, var(--metric) 50%, var(--lu-border));
+    background: color-mix(in srgb, var(--metric) 16%, var(--lu-surface));
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--metric) 35%, var(--lu-pixel-shadow));
+  }
+
+  .lu-goal-chevron {
+    transition: transform 150ms steps(3);
+
+    .lu-goal-row[aria-expanded='true'] & {
+      transform: rotate(180deg);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  .lu-goal-bar > span {
+    @include stripes(75%);
+
+    :root.ion-palette-dark & {
+      @include stripes(70%);
+    }
+  }
+
+  /* A finished goal's bar is solid green in both themes, so done reads as done. */
+  :root .lu-goal-completed .lu-goal-bar > span,
+  :root.ion-palette-dark .lu-goal-completed .lu-goal-bar > span {
+    background: var(--lu-success);
+  }
+}

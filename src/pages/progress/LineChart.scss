@@ -1,0 +1,93 @@
+/*
+ * The SVG chart's strokes and fills, per-series colors, and the tooltip's
+ * direction-aware centering. Boxes and the legend are Tailwind classes in LineChart.tsx.
+ */
+@layer components {
+  .lu-chart {
+    svg {
+      display: block;
+      inline-size: 100%;
+      block-size: auto;
+      overflow: visible;
+    }
+  }
+
+  .lu-chart-grid {
+    stroke: var(--lu-border);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+  }
+
+  .lu-chart-axis {
+    fill: var(--lu-text-muted);
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .lu-chart-cursor {
+    stroke: var(--lu-text-muted);
+    stroke-width: 1;
+    stroke-dasharray: 2 2;
+  }
+
+  .lu-chart-series {
+    polyline {
+      fill: none;
+      stroke: var(--series);
+      stroke-width: 2.5;
+      stroke-linejoin: miter;
+    }
+
+    rect {
+      fill: var(--series);
+      stroke: var(--lu-surface);
+      stroke-width: 1.5;
+    }
+  }
+
+  .lu-chart-hit {
+    fill: transparent;
+    cursor: pointer;
+    outline: none;
+
+    &:focus-visible {
+      fill: color-mix(in srgb, var(--ion-color-primary) 10%, transparent);
+      stroke: var(--ion-color-primary);
+      stroke-width: 2;
+
+      :root.ion-palette-dark & {
+        stroke: var(--ion-color-secondary);
+      }
+    }
+  }
+
+  /* Line colors: one token per measurement, readable in both themes. */
+  .lu-series-weight {
+    --series: var(--ion-color-primary);
+
+    :root.ion-palette-dark & {
+      --series: var(--ion-color-secondary);
+    }
+  }
+
+  .lu-series-muscle {
+    --series: var(--lu-muscle);
+  }
+
+  .lu-series-fat {
+    --series: var(--lu-fat);
+  }
+
+  .lu-series-score {
+    --series: var(--lu-tier-4);
+  }
+
+  /* Centered over the point: its inline-start edge is set inline, then pulled back by half its width. */
+  .lu-chart-tip {
+    transform: translateX(-50%);
+
+    &:dir(rtl) {
+      transform: translateX(50%);
+    }
+  }
+}

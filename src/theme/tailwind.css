@@ -1,0 +1,122 @@
+/*
+ * Tailwind entry. Imported first (main.tsx) so it fixes the cascade-layer order
+ * for every stylesheet that loads after it:
+ *
+ *   theme < base < ionic < components < utilities
+ *
+ * Ionic's global CSS sits in its own layer so Tailwind utilities can override
+ * it (Ionic's typography would otherwise beat a utility on an h1). Custom Sass
+ * partials wrap their rules in @layer components, so a utility on the same
+ * element always wins. Tailwind's preflight is left out: Ionic's normalize.css
+ * already resets the page.
+ *
+ * Colors come only from tokens.css: the default palette is removed and every
+ * color below points at a --lu-* or --ion-* variable, so dark mode and brand
+ * colors keep working through the variables.
+ */
+@layer theme, base, ionic, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@import '@ionic/react/css/core.css' layer(ionic);
+@import '@ionic/react/css/normalize.css' layer(ionic);
+@import '@ionic/react/css/structure.css' layer(ionic);
+@import '@ionic/react/css/typography.css' layer(ionic);
+@import '@ionic/react/css/padding.css' layer(ionic);
+@import '@ionic/react/css/display.css' layer(ionic);
+/* Dark palette is toggled with the ion-palette-dark class on <html>. */
+@import '@ionic/react/css/palettes/dark.class.css' layer(ionic);
+
+/* The shared pixel kit (cards, chips, segments, switches) and page layout, as component classes. */
+@import './layout.css' layer(components);
+@import './pixel.css' layer(components);
+
+/* Dark mode follows Ionic's class on <html>, not the media query, so the in-app setting wins. */
+@custom-variant dark (&:where(.ion-palette-dark, .ion-palette-dark *));
+/* Arabic text (Jersey 10 has no Arabic glyphs; Arabic needs other sizes and spacing). */
+@custom-variant ar (&:lang(ar));
+/* A phone held sideways: little height to work with. */
+@custom-variant short-landscape {
+  @media (orientation: landscape) and (max-height: 480px) {
+    @slot;
+  }
+}
+
+/* Room for two columns: a phone held sideways, or a wide screen. */
+@custom-variant split {
+  @media (orientation: landscape) and (max-height: 480px), (min-width: 900px) {
+    @slot;
+  }
+}
+/* Wide screens only. Declared after split so it wins where both apply. */
+@custom-variant wide {
+  @media (min-width: 900px) {
+    @slot;
+  }
+}
+
+@theme inline {
+  --color-*: initial;
+
+  --color-page: var(--lu-bg);
+  --color-surface: var(--lu-surface);
+  --color-surface-2: var(--lu-surface-2);
+  --color-ink: var(--lu-text);
+  --color-muted: var(--lu-text-muted);
+  --color-line: var(--lu-border);
+  --color-success: var(--lu-success);
+  --color-danger: var(--lu-danger);
+  --color-pixel-shadow: var(--lu-pixel-shadow);
+  --color-pixel-ink: var(--lu-pixel-ink);
+
+  --color-primary: var(--ion-color-primary);
+  --color-primary-shade: var(--ion-color-primary-shade);
+  --color-primary-contrast: var(--ion-color-primary-contrast);
+  --color-secondary: var(--ion-color-secondary);
+  --color-accent: var(--lu-accent);
+  --color-accent-contrast: var(--lu-accent-contrast);
+
+  --color-fat: var(--lu-fat);
+  --color-fat-hi: var(--lu-fat-hi);
+  --color-fat-core: var(--lu-fat-core);
+  --color-muscle: var(--lu-muscle);
+  --color-muscle-hi: var(--lu-muscle-hi);
+  --color-tier: var(--tier);
+  --color-metric: var(--metric);
+  --color-gold: var(--lu-gold);
+  --color-silver: var(--lu-silver);
+  --color-bronze: var(--lu-bronze);
+
+  --color-splash-bg: var(--lu-splash-bg);
+  --color-splash-bg-2: var(--lu-splash-bg-2);
+  --color-splash-text: var(--lu-splash-text);
+  --color-splash-muted: var(--lu-splash-text-muted);
+  --color-splash-star: var(--lu-splash-star);
+  --color-splash-danger: var(--lu-splash-danger);
+
+  --font-display: 'Jersey 10', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  --font-arabic: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+
+  /* Hard, unblurred pixel drops under cards and buttons. */
+  --shadow-px: 0 4px 0 var(--lu-pixel-shadow);
+  --shadow-px-sm: 0 3px 0 var(--lu-pixel-shadow);
+  --shadow-px-pressed: 0 1px 0 var(--lu-pixel-shadow);
+  --shadow-raised: var(--lu-shadow-raised);
+
+  --ease-px: steps(2);
+}
+
+/*
+ * `font: inherit` for buttons and inputs (Ionic's normalize only inherits the
+ * family). Written as longhands: a multi-property utility sorts before the
+ * single ones, so text-*, font-* and leading-* on the same element still win.
+ */
+@utility font-inherit {
+  font-family: inherit;
+  font-style: inherit;
+  font-variant: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}

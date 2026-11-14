@@ -12,9 +12,10 @@ import { brand } from '../brand.config';
 import CtaButton from '../components/CtaButton';
 import LanguageToggle from '../components/LanguageToggle';
 import SoundToggle from '../components/SoundToggle';
+import { CORNER_CONTROLS } from '../components/cornerControl';
 import { useSound } from '../sound/useSound';
 import gymScene from './assets/splash-gym.webp';
-import './Login.css';
+import './Login.scss';
 
 const MIN_DIGITS = 3;
 const MAX_DIGITS = 8;
@@ -68,31 +69,55 @@ const Login: React.FC = () => {
   };
 
   return (
-    <IonPage className="lu-login" data-testid="page-login">
-      <IonContent className="lu-login-content" scrollY>
-        <div className="lu-login-layout">
+    <IonPage className="text-splash-text" data-testid="page-login">
+      <IonContent className="[--background:var(--lu-splash-bg)] [--color:var(--lu-splash-text)] ar:font-arabic" scrollY>
+        <div className="relative grid min-h-full grid-rows-[auto_1fr] split:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] split:grid-rows-[1fr] wide:grid-cols-[minmax(0,1fr)_minmax(400px,40%)]">
           {/* First in the page so keyboard focus follows the visual order: top corner, then the form (WCAG 2.4.3). */}
-          <div className="lu-corner-controls">
+          <div className={CORNER_CONTROLS}>
             <LanguageToggle />
             <SoundToggle />
           </div>
-          <div className="lu-login-hero" aria-hidden="true">
-            <img className="lu-login-scene" src={gymScene} alt="" width={1344} height={896} />
-            <div className="lu-login-lockup">
-              <img className="lu-login-logo" src={brand.logo} alt="" width={480} height={414} />
+          <div
+            className="lu-login-hero relative h-[calc(clamp(220px,44vh,420px)+var(--ion-safe-area-top,0px))] overflow-hidden split:h-auto split:min-h-full"
+            aria-hidden="true"
+          >
+            <img
+              className="absolute inset-0 size-full object-cover object-[68%_100%]"
+              src={gymScene}
+              alt=""
+              width={1344}
+              height={896}
+            />
+            <div className="absolute inset-x-0 top-0 z-1 grid justify-items-center gap-0.5 pt-[calc(clamp(14px,3vh,32px)+var(--ion-safe-area-top,0px))]">
+              <img
+                className="block h-auto w-[clamp(120px,22vh,210px)] drop-shadow-[0_2px_8px_var(--lu-splash-bg)] short-landscape:w-[clamp(110px,40vh,180px)]"
+                src={brand.logo}
+                alt=""
+                width={480}
+                height={414}
+              />
             </div>
           </div>
 
-          <form className="lu-login-form" onSubmit={(e) => void submit(e)} noValidate>
-            <h1 className="lu-login-title">{t('login.welcome', { name: brand.name })}</h1>
+          <form
+            className="box-border flex w-[min(100%,460px)] flex-col justify-self-center pt-1 pr-[calc(20px+var(--ion-safe-area-right,0px))] pb-[calc(24px+var(--ion-safe-area-bottom,0px))] pl-[calc(20px+var(--ion-safe-area-left,0px))] split:self-center split:pt-[calc(16px+var(--ion-safe-area-top,0px))] split:pb-[calc(16px+var(--ion-safe-area-bottom,0px))]"
+            onSubmit={(e) => void submit(e)}
+            noValidate
+          >
+            <h1 className="m-0 mb-5 text-start text-[clamp(1.5rem,6.5vw,2rem)] leading-[1.2] font-extrabold short-landscape:mb-2.5 short-landscape:text-[1.35rem]">
+              {t('login.welcome', { name: brand.name })}
+            </h1>
 
-            <label className="lu-login-label" htmlFor={inputId}>
-              <IonIcon icon={idCardOutline} aria-hidden="true" />
+            <label
+              className="mb-2 flex items-center gap-1.5 text-[0.9rem] font-bold text-splash-muted"
+              htmlFor={inputId}
+            >
+              <IonIcon className="text-[1.15rem]" icon={idCardOutline} aria-hidden="true" />
               {t('login.fitId')}
             </label>
             <input
               id={inputId}
-              className="lu-login-input"
+              className="lu-login-input box-border min-h-14 w-full rounded-xl px-4 py-0 text-[1.35rem] font-bold tracking-[0.14em] text-splash-text tabular-nums rtl:text-end short-landscape:min-h-12"
               data-testid="fit-id"
               dir="ltr"
               type="text"
@@ -112,47 +137,60 @@ const Login: React.FC = () => {
             />
 
             {/* The helper and the error share one slot so the button never jumps. */}
-            <div className="lu-login-hint-slot" id={hintId} aria-live="polite">
+            <div className="min-h-[3.2em] short-landscape:min-h-[2.6em]" id={hintId} aria-live="polite">
               <AnimatePresence mode="wait" initial={false}>
                 {failure ? (
                   <m.p
                     key={failure}
-                    className="lu-login-hint lu-login-error"
+                    className="mx-0 mt-2 mb-0 flex items-start gap-1.5 text-[0.875rem] leading-[1.4] font-semibold text-splash-danger"
                     role="alert"
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.16 }}
                   >
-                    <IonIcon icon={informationCircleOutline} aria-hidden="true" />
+                    <IonIcon
+                      className="mt-[0.1em] flex-none text-[1.05rem]"
+                      icon={informationCircleOutline}
+                      aria-hidden="true"
+                    />
                     {t(`login.${failure}`)}
                   </m.p>
                 ) : (
                   <m.p
                     key="help"
-                    className="lu-login-hint"
+                    className="mx-0 mt-2 mb-0 flex items-start gap-1.5 text-[0.875rem] leading-[1.4] text-splash-muted"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.16 }}
                   >
-                    <IonIcon icon={informationCircleOutline} aria-hidden="true" />
+                    <IonIcon
+                      className="mt-[0.1em] flex-none text-[1.05rem]"
+                      icon={informationCircleOutline}
+                      aria-hidden="true"
+                    />
                     {t('login.help')}
                   </m.p>
                 )}
               </AnimatePresence>
             </div>
 
-            <CtaButton type="submit" className="lu-login-submit" disabled={!ready || busy} aria-busy={busy}>
+            <CtaButton
+              type="submit"
+              className="mt-4 w-full short-landscape:mt-2 short-landscape:min-h-12"
+              disabled={!ready || busy}
+              aria-busy={busy}
+            >
               {busy ? (
                 <>
                   <IonSpinner name="crescent" aria-hidden="true" />
-                  <span className="lu-login-sr">{t('login.signingIn')}</span>
+                  <span className="sr-only">{t('login.signingIn')}</span>
                 </>
               ) : (
                 <>
                   {t('login.submit')}
-                  <IonIcon className="lu-login-submit-icon" icon={arrowForward} aria-hidden="true" />
+                  <IonIcon className="text-[1.2rem] rtl:-scale-x-100" icon={arrowForward} aria-hidden="true" />
                 </>
               )}
             </CtaButton>

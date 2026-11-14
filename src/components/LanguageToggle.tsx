@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { setLanguage } from '../i18n';
-import './SoundToggle.css';
+import { CORNER_BUTTON } from './cornerControl';
 
 interface LanguageToggleProps {
   className?: string;
@@ -19,7 +19,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({ className }) => {
   return (
     <button
       type="button"
-      className={['lu-sound-toggle', 'lu-lang-toggle', className].filter(Boolean).join(' ')}
+      className={[CORNER_BUTTON, 'text-base leading-none font-bold', className].filter(Boolean).join(' ')}
       data-testid="language-toggle"
       aria-label={t(next === 'ar' ? 'language.switchToAr' : 'language.switchToEn')}
       onClick={(e) => {
@@ -28,7 +28,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({ className }) => {
         void setLanguage(next);
       }}
     >
-      <span lang={next} aria-hidden="true">
+      <span lang={next} aria-hidden="true" className="ar:font-arabic ar:text-[1.3rem]">
         {next === 'ar' ? 'ع' : 'EN'}
       </span>
     </button>

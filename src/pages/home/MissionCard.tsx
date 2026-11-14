@@ -33,18 +33,18 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
   );
   // A heading for heading navigation. The visible label stays in the button so its name matches what is shown (WCAG 2.5.3).
   const heading = (
-    <h2 id={headingId} className="lu-visually-hidden">
+    <h2 id={headingId} className="sr-only">
       {t('home.mission.title')}
     </h2>
   );
 
   if (!mission)
     return (
-      <section className="lu-card-slot" aria-labelledby={headingId}>
+      <section className="grid" aria-labelledby={headingId}>
         {heading}
-        <div className="lu-px-card lu-mission" data-testid="mission-card">
+        <div className="lu-px-card relative grid gap-2.5 overflow-hidden pb-[30px]" data-testid="mission-card">
           {head}
-          <p className="lu-mission-empty">{t('home.mission.empty')}</p>
+          <p className="m-0 text-muted">{t('home.mission.empty')}</p>
         </div>
       </section>
     );
@@ -56,17 +56,17 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
   } as CSSProperties;
 
   return (
-    <section className="lu-card-slot" aria-labelledby={headingId}>
+    <section className="grid" aria-labelledby={headingId}>
       {heading}
       <button
         type="button"
-        className="lu-px-card lu-mission"
+        className="lu-px-card relative grid gap-2.5 overflow-hidden pb-[30px]"
         data-testid="mission-card"
         onClick={() => history.push('/tabs/goals')}
       >
         {head}
-        <span className="lu-mission-body">
-          <span className="lu-ring" aria-hidden="true">
+        <span className="flex items-center gap-3.5">
+          <span className="lu-ring relative size-[76px] flex-none" aria-hidden="true">
             {/* Fills clockwise in English; the svg is mirrored in Arabic so it fills counter-clockwise. */}
             <svg viewBox="0 0 64 64">
               <circle className="lu-ring-track" cx="32" cy="32" r={RADIUS} />
@@ -79,21 +79,26 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
                 style={ring}
               />
             </svg>
-            <span id={`${ids}-pct`} className="lu-ring-label">
+            <span
+              id={`${ids}-pct`}
+              className="absolute inset-0 grid place-items-center font-display text-[1.45rem] leading-none font-normal text-ink"
+            >
               {formatPercent(percent)}
             </span>
           </span>
-          <span className="lu-mission-text">
-            <strong id={`${ids}-title`}>{mission.title}</strong>
-            <span id={`${ids}-details`} className="lu-mission-details">
+          <span className="grid min-w-0 gap-1 text-[0.95rem] font-semibold text-ink">
+            <strong id={`${ids}-title`} className="text-[1.1rem] leading-[1.25] font-extrabold">
+              {mission.title}
+            </strong>
+            <span id={`${ids}-details`} className="grid gap-0.5">
               <span>
                 {t('home.mission.progress', {
                   done: formatNumber(mission.doneKg, 1),
                   total: formatNumber(mission.doneKg + mission.remainingKg, 1),
                 })}
               </span>
-              <span className="lu-mission-eta">
-                <IonIcon icon={calendarOutline} aria-hidden="true" />
+              <span className="inline-flex items-center gap-1.5 text-[0.875rem] text-muted">
+                <IonIcon className="flex-none text-[1rem]" icon={calendarOutline} aria-hidden="true" />
                 {mission.estimatedCompletion
                   ? t('home.mission.eta', { date: formatDay(mission.estimatedCompletion) })
                   : t('home.mission.noEta')}
@@ -101,7 +106,7 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
             </span>
           </span>
         </span>
-        {/* A grassy pixel ledge with a dumbbell, along the card's bottom edge. Decorative. */}
+        {/* A gym-floor strip with a dumbbell, along the card's bottom edge. Decorative. */}
         <span className="lu-mission-ground" aria-hidden="true">
           <span className="lu-mission-dumbbell">
             <PixelIcon name="dumbbell" />

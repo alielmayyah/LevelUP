@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
 
-import './PixelToast.css';
-
 /** A short message above the tab bar that hides itself. Announced politely to screen readers. */
 const PixelToast: React.FC<{ message: string | null; onDone: () => void; duration?: number }> = ({
   message,
@@ -15,9 +13,16 @@ const PixelToast: React.FC<{ message: string | null; onDone: () => void; duratio
   }, [message, onDone, duration]);
 
   return (
-    <div className="lu-toast-region" role="status" aria-live="polite">
+    <div
+      className="pointer-events-none fixed inset-x-0 bottom-[calc(var(--lu-tabbar-height)+var(--lu-tabbar-gap)*2+var(--ion-safe-area-bottom,0px))] z-20 grid justify-items-center px-(--lu-gutter)"
+      role="status"
+      aria-live="polite"
+    >
       {message && (
-        <p className="lu-toast" data-testid="toast">
+        <p
+          className="m-0 max-w-[420px] rounded-[10px] border-2 border-line bg-ink px-3.5 py-2.5 text-[0.9rem] font-extrabold text-page shadow-px-sm"
+          data-testid="toast"
+        >
           {message}
         </p>
       )}

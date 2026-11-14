@@ -4,7 +4,7 @@ import { AnimatePresence, m } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
 import { useSound } from '../sound/useSound';
-import './SoundToggle.css';
+import { CORNER_BUTTON } from './cornerControl';
 
 interface SoundToggleProps {
   className?: string;
@@ -18,7 +18,7 @@ const SoundToggle: React.FC<SoundToggleProps> = ({ className }) => {
   return (
     <button
       type="button"
-      className={['lu-sound-toggle', className].filter(Boolean).join(' ')}
+      className={[CORNER_BUTTON, 'text-[24px] leading-none', className].filter(Boolean).join(' ')}
       data-testid="sound-toggle"
       aria-label={t(enabled ? 'sound.mute' : 'sound.unmute')}
       aria-pressed={!enabled}
@@ -32,7 +32,7 @@ const SoundToggle: React.FC<SoundToggleProps> = ({ className }) => {
       <AnimatePresence mode="popLayout" initial={false}>
         <m.span
           key={enabled ? 'on' : 'off'}
-          className="lu-sound-icon"
+          className="lu-sound-icon col-start-1 row-start-1 grid place-items-center"
           initial={{ opacity: 0, scale: 0.5, rotate: -25 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           exit={{ opacity: 0, scale: 0.5, rotate: 25 }}

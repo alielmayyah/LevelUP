@@ -1,0 +1,227 @@
+/*
+ * Home's custom pixel art: the FitScore card's dotted glow, tier blocks, the
+ * mission's gym-floor strip and progress ring, metric tiles, and the
+ * notification rows' tints. Layout and type are Tailwind classes in the components.
+ * Shared building blocks (cards, chips, states) live in src/theme/pixel.css.
+ */
+@mixin tint($color, $border: 45%, $fill: 14%) {
+  border-color: color-mix(in srgb, #{$color} #{$border}, var(--lu-border));
+  background: color-mix(in srgb, #{$color} #{$fill}, var(--lu-surface));
+}
+
+@layer components {
+  /* ---------- FitScore ---------- */
+
+  .lu-fitscore {
+    border-color: color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-border));
+    background:
+      radial-gradient(color-mix(in srgb, var(--ion-color-primary) 22%, transparent) 1px, transparent 1.5px) 0 0 / 8px
+        8px,
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--ion-color-primary) 14%, var(--lu-surface)),
+        var(--lu-surface) 70%
+      );
+  }
+
+  /* Five chunky blocks; the ones up to the member's tier are lit in their tier's color. */
+  .lu-tier-block {
+    border: 2px solid color-mix(in srgb, var(--tier) 45%, var(--lu-border));
+    background: color-mix(in srgb, var(--tier) 10%, transparent);
+
+    &.is-on {
+      background: color-mix(in srgb, var(--tier) 70%, transparent);
+    }
+
+    &.is-current {
+      border-color: var(--tier);
+      background: var(--tier);
+      box-shadow: 0 3px 0 color-mix(in srgb, var(--tier) 45%, var(--lu-pixel-shadow));
+    }
+  }
+
+  /* ---------- Mission ---------- */
+
+  /*
+   * A strip of rubber gym-floor tiles: a lit top edge, dark mat squares split by
+   * seams every 28px, and a few lighter flecks, like the speckled rubber in a gym.
+   */
+  .lu-mission-ground {
+    position: absolute;
+    inset: auto 0 0;
+    block-size: 16px;
+    border-block-start: 2px solid var(--lu-floor-edge);
+    background:
+      repeating-linear-gradient(90deg, transparent 0 26px, var(--lu-floor-seam) 26px 28px),
+      repeating-linear-gradient(
+          90deg,
+          transparent 0 9px,
+          var(--lu-floor-fleck) 9px 11px,
+          transparent 11px 19px,
+          var(--lu-floor-fleck) 19px 21px,
+          transparent 21px 28px
+        )
+        0 4px / 100% 2px no-repeat,
+      repeating-linear-gradient(
+          90deg,
+          transparent 0 4px,
+          var(--lu-floor-fleck) 4px 6px,
+          transparent 6px 15px,
+          var(--lu-floor-fleck) 15px 17px,
+          transparent 17px 28px
+        )
+        0 10px / 100% 2px no-repeat,
+      var(--lu-floor);
+  }
+
+  /* The dumbbell rests on the floor. */
+  .lu-mission-dumbbell {
+    position: absolute;
+    inset-block-end: 16px;
+    inset-inline-end: 16px;
+    font-size: 34px;
+    --px-fill: var(--lu-metal);
+    --px-hi: var(--lu-metal-hi);
+  }
+
+  .lu-ring {
+    svg {
+      inline-size: 100%;
+      block-size: 100%;
+      transform: rotate(-90deg);
+    }
+
+    /* Mirrored in Arabic so the ring fills counter-clockwise. */
+    &:dir(rtl) svg {
+      transform: rotate(-90deg) scaleY(-1);
+    }
+
+    circle {
+      fill: none;
+      stroke-width: 7;
+    }
+  }
+
+  .lu-ring-track {
+    stroke: var(--lu-surface-2);
+  }
+
+  .lu-ring-fill {
+    stroke: var(--ion-color-primary);
+    stroke-dashoffset: var(--lu-ring-offset);
+    animation: lu-ring-fill 900ms ease-out both;
+
+    :root.ion-palette-dark & {
+      stroke: var(--ion-color-secondary);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  /* ---------- Tiles ---------- */
+
+  /*
+   * Each tile has its metric's hue (--metric) on the top bar and the icon badge.
+   * The value itself stays green or red, because that says good or bad.
+   */
+  .lu-tile {
+    border-color: color-mix(in srgb, var(--metric) 35%, var(--lu-border));
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--metric) 10%, var(--lu-surface)),
+      var(--lu-surface) 60%
+    );
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      block-size: 4px;
+      background: var(--metric);
+    }
+  }
+
+  .lu-tile-fat {
+    --metric: var(--lu-fat);
+    --px-fill: var(--lu-fat);
+    --px-hi: var(--lu-fat-hi);
+    --px-core: var(--lu-fat-core);
+  }
+
+  /* The tile keeps the cyan muscle hue; the flexed arm itself is skin-toned. */
+  .lu-tile-muscle {
+    --metric: var(--lu-muscle);
+    --px-fill: var(--lu-skin);
+    --px-hi: var(--lu-skin-hi);
+  }
+
+  .lu-tile-since {
+    --metric: var(--ion-color-secondary);
+    --px-fill: var(--ion-color-primary);
+    --px-hi: var(--lu-surface);
+    --px-core: var(--ion-color-secondary);
+  }
+
+  /* ---------- Notifications sheet ---------- */
+
+  .lu-notif-count {
+    @include tint(var(--lu-accent), 60%, 16%);
+
+    ion-icon {
+      color: var(--lu-accent);
+    }
+
+    &.is-clear {
+      @include tint(var(--lu-success), 50%, 12%);
+
+      ion-icon {
+        color: var(--lu-success);
+      }
+    }
+  }
+
+  .lu-notif-item {
+    border: 2px solid var(--lu-border);
+    background: var(--lu-surface);
+    box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 3px;
+    }
+
+    /* Unread rows carry a light brand tint, so new things stand out at a glance. */
+    &.is-unread {
+      @include tint(var(--ion-color-primary), 45%, 8%);
+    }
+  }
+
+  .lu-notif-icon {
+    @include tint(var(--ion-color-primary), 40%, 12%);
+    color: var(--ion-color-primary);
+
+    :root.ion-palette-dark & {
+      color: var(--ion-color-secondary);
+    }
+
+    &.is-mission {
+      --px-fill: var(--lu-gold);
+      --px-hi: var(--lu-fat-core);
+      @include tint(var(--lu-gold), 50%, 16%);
+    }
+  }
+
+  /* A square marker, like a lit pixel, for unread. */
+  .lu-notif-dot {
+    background: var(--lu-accent);
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--lu-accent) 40%, var(--lu-pixel-shadow));
+  }
+}
+
+@keyframes lu-ring-fill {
+  from {
+    stroke-dashoffset: var(--lu-ring-full);
+  }
+}

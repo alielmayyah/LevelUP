@@ -9,7 +9,9 @@ import CtaButton from '../components/CtaButton';
 import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
 import TabPage from '../components/TabPage';
 import { formatNumber, formatPercent, numberLocale } from '../i18n/format';
-import './goals/Goals.css';
+import './goals/Goals.scss';
+
+const LIST = 'm-0 grid list-none gap-3 p-0 md:grid-cols-[1fr_1fr] md:items-start';
 
 type GoalTab = 'active' | 'completed' | 'upcoming';
 /** Section order: what the member is working on, what comes next, then what is done. */
@@ -21,6 +23,10 @@ const METRIC: Record<GoalMetric, { icon: PixelIconName; tone: string }> = {
   MUSCLE_KG: { icon: 'muscle', tone: 'muscle' },
   WEIGHT_KG: { icon: 'scale', tone: 'weight' },
 };
+
+const RANGE_END =
+  'grid gap-0.5 rounded-lg border-2 border-line bg-surface-2 px-2.5 py-2 font-extrabold whitespace-nowrap';
+const RANGE_LABEL = 'text-[0.75rem] font-bold text-muted';
 
 const shortDate = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
@@ -48,26 +54,36 @@ const GoalRow: React.FC<{ goal: GoalView; kind: GoalTab; now: number }> = ({ goa
         : `${formatPercent(percent)} · ${formatNumber(done, 1)} / ${formatNumber(total, 1)} ${kg}`;
 
   return (
-    <li className={`lu-px-card lu-goal lu-goal-${tone} lu-goal-${kind}`} data-testid="goal">
+    <li className={`lu-px-card lu-goal grid gap-2.5 p-3 lu-goal-${tone} lu-goal-${kind}`} data-testid="goal">
       <button
         type="button"
-        className="lu-goal-row"
+        className="lu-goal-row flex min-h-12 w-full cursor-pointer items-center gap-3 border-0 bg-transparent p-0 text-start font-inherit text-ink focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
         aria-expanded={open}
         aria-controls={detailsId}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="lu-goal-icon" aria-hidden="true">
+        <span
+          className="lu-goal-icon grid size-12 flex-none place-items-center rounded-lg text-[32px]"
+          aria-hidden="true"
+        >
           <PixelIcon name={icon} />
         </span>
-        <span className="lu-goal-main">
-          <span className="lu-goal-title">{goal.title}</span>
-          <span className="lu-goal-meta" data-testid="goal-meta">
-            {kind === 'completed' && <IonIcon icon={checkmarkCircle} aria-hidden="true" />}
+        <span className="grid min-w-0 flex-1 gap-0.5">
+          <span className="text-[1.05rem] leading-[1.25] font-extrabold">{goal.title}</span>
+          <span
+            className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.875rem] font-bold ${kind === 'completed' ? 'text-success' : 'text-muted'}`}
+            data-testid="goal-meta"
+          >
+            {kind === 'completed' && <IonIcon className="text-[1.05rem]" icon={checkmarkCircle} aria-hidden="true" />}
             {meta}
             {overdue && <span className="lu-chip lu-chip-danger">{t('goals.overdue')}</span>}
           </span>
         </span>
-        <IonIcon className="lu-goal-chevron" icon={chevronDown} aria-hidden="true" />
+        <IonIcon
+          className="lu-goal-chevron flex-none text-[1.15rem] text-muted"
+          icon={chevronDown}
+          aria-hidden="true"
+        />
       </button>
 
       {/* Completed goals keep a full bar, so the member sees what they've already achieved. */}
@@ -84,23 +100,35 @@ const GoalRow: React.FC<{ goal: GoalView; kind: GoalTab; now: number }> = ({ goa
         </div>
       )}
 
-      <div id={detailsId} className="lu-goal-details" hidden={!open}>
-        <div className="lu-goal-range">
-          <span>
-            <small>{t('goals.start')}</small>
+      <div
+        id={detailsId}
+        className="grid gap-2.5 pt-2.5 [border-block-start:2px_dashed_var(--lu-border)] [&[hidden]]:hidden"
+        hidden={!open}
+      >
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+          <span className={RANGE_END}>
+            <small className={RANGE_LABEL}>{t('goals.start')}</small>
             {formatNumber(goal.startValue, 1)} {kg}
           </span>
           {/* Points from start to target in the reading direction. */}
-          <IonIcon className="lu-goal-arrow" icon={arrowForward} aria-hidden="true" />
-          <span>
-            <small>{t('goals.target')}</small>
+          <IonIcon className="text-[1.2rem] text-muted rtl:-scale-x-100" icon={arrowForward} aria-hidden="true" />
+          <span className={RANGE_END}>
+            <small className={RANGE_LABEL}>{t('goals.target')}</small>
             {formatNumber(goal.targetValue, 1)} {kg}
           </span>
         </div>
-        {kind !== 'completed' && <p className="lu-goal-due">{t('goals.due', { date: shortDate(goal.deadline) })}</p>}
+        {kind !== 'completed' && (
+          <p className="m-0 text-[0.875rem] font-bold text-muted">
+            {t('goals.due', { date: shortDate(goal.deadline) })}
+          </p>
+        )}
         {goal.coachNote && (
-          <p className="lu-goal-note">
-            <IonIcon icon={chatbubbleEllipsesOutline} aria-hidden="true" />
+          <p className="m-0 flex items-start gap-2.5 rounded-lg border-2 border-line bg-surface-2 px-3 py-2.5 text-[0.9rem] font-semibold">
+            <IonIcon
+              className="mt-0.5 flex-none text-[1.1rem] text-primary dark:text-secondary"
+              icon={chatbubbleEllipsesOutline}
+              aria-hidden="true"
+            />
             {goal.coachNote}
           </p>
         )}
@@ -124,24 +152,24 @@ const Journey: React.FC<{ goals: GoalsDto }> = ({ goals }) => {
     ...goals.upcoming.map((g) => ({ id: g.id, kind: 'upcoming' as const, percent: 0 })),
   ];
   return (
-    <section className="lu-px-card lu-journey" data-testid="journey" aria-labelledby="journey-title">
-      <div className="lu-journey-head">
+    <section className="lu-px-card grid gap-3" data-testid="journey" aria-labelledby="journey-title">
+      <div className="flex items-baseline justify-between gap-2">
         <h2 id="journey-title" className="lu-card-title">
           {t('goals.journey')}
         </h2>
-        <p className="lu-journey-count">
+        <p className="m-0 font-bold text-muted">
           {/* "2/4" is a fraction, so it stays left-to-right in Arabic too. */}
-          <strong className="lu-display" dir="ltr">
+          <strong className="lu-display text-[2rem] leading-none text-ink" dir="ltr">
             {formatNumber(done)}/{formatNumber(total)}
           </strong>{' '}
           {t('goals.done')}
         </p>
       </div>
-      <ol className="lu-journey-track" aria-hidden="true">
+      <ol className="m-0 grid list-none auto-cols-fr grid-flow-col gap-1.5 p-0" aria-hidden="true">
         {blocks.map((b) => (
           <li
             key={b.id}
-            className={`lu-journey-step is-${b.kind}`}
+            className={`lu-journey-step h-4 rounded-[3px] is-${b.kind}`}
             style={{ '--lu-step': `${b.percent}%` } as CSSProperties}
           />
         ))}
@@ -163,9 +191,9 @@ const Goals: React.FC = () => {
   return (
     <TabPage testId="page-goals" title={t('tabs.goals')} subtitle={t('goals.subtitle')} onRefresh={goals.reload}>
       {goals.status === 'loading' && (
-        <div className="lu-goal-list" aria-busy="true">
-          <div className="lu-skeleton-card lu-skeleton-goal" />
-          <div className="lu-skeleton-card lu-skeleton-goal" />
+        <div className={LIST} aria-busy="true">
+          <div className="lu-skeleton-card min-h-[92px]" />
+          <div className="lu-skeleton-card min-h-[92px]" />
         </div>
       )}
 
@@ -184,21 +212,18 @@ const Goals: React.FC = () => {
       )}
 
       {data && total > 0 && (
-        <div className="lu-goals">
+        <div className="grid gap-[18px]">
           <Journey goals={data} />
           {SECTIONS.map((kind) =>
             data[kind].length === 0 ? null : (
-              <section
-                key={kind}
-                className="lu-goal-section"
-                aria-labelledby={`goals-${kind}`}
-                data-testid={`section-${kind}`}
-              >
-                <h2 id={`goals-${kind}`} className="lu-section-title">
+              <section key={kind} aria-labelledby={`goals-${kind}`} data-testid={`section-${kind}`}>
+                <h2 id={`goals-${kind}`} className="lu-section-title mt-0">
                   {t(`goals.section.${kind}`)}{' '}
-                  <span className="lu-section-count">{formatNumber(data[kind].length)}</span>
+                  <span className="box-border inline-grid h-[22px] min-w-[22px] place-items-center rounded-md bg-surface-2 px-[5px] text-[0.78rem] text-muted">
+                    {formatNumber(data[kind].length)}
+                  </span>
                 </h2>
-                <ul className="lu-goal-list">
+                <ul className={LIST}>
                   {data[kind].map((g) => (
                     <GoalRow key={g.id} goal={g} kind={kind} now={now} />
                   ))}

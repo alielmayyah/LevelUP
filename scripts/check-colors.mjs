@@ -1,4 +1,4 @@
-// Fails when a color literal appears in src/**/*.{ts,tsx,css} outside src/theme/ and src/brand.config.ts.
+// Fails when a color literal appears in src/**/*.{ts,tsx,css,scss} (Tailwind arbitrary values included) outside src/theme/ and src/brand.config.ts.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -11,7 +11,7 @@ const walk = (dir) => {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) walk(full);
-    else if (/\.(tsx?|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name)) files.push(full);
+    else if (/\.(tsx?|s?css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name)) files.push(full);
   }
 };
 walk(root);

@@ -11,16 +11,7 @@ import MotionProvider from './motion/MotionProvider';
 import Login from './pages/Login';
 import Splash from './pages/Splash';
 
-/* Core CSS required for Ionic components to work properly */
-import '@ionic/react/css/core.css';
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/typography.css';
-import '@ionic/react/css/padding.css';
-import '@ionic/react/css/display.css';
-
-/* Dark palette is toggled with the ion-palette-dark class on <html> */
-import '@ionic/react/css/palettes/dark.class.css';
+/* Ionic's global CSS and Tailwind load from theme/tailwind.css (imported first in main.tsx). */
 
 /* LevelUP tokens (must load after Ionic's palettes) */
 import './theme/tokens.css';
@@ -31,8 +22,6 @@ import '@fontsource/jersey-10/latin-400.css';
 import '@fontsource/ibm-plex-sans-arabic/arabic-400.css';
 import '@fontsource/ibm-plex-sans-arabic/arabic-600.css';
 import '@fontsource/ibm-plex-sans-arabic/arabic-700.css';
-import './theme/layout.css';
-import './theme/pixel.css';
 
 setupIonicReact();
 

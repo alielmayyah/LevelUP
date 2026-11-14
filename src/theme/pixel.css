@@ -4,6 +4,10 @@
  * chunky cards with a hard unblurred drop shadow, chips, icon tiles, and
  * loading/empty states. Jersey 10 has no Arabic glyphs, so Arabic falls back
  * to IBM Plex Sans Arabic.
+ *
+ * Imported by tailwind.css into the `components` layer: Tailwind utilities on
+ * the same element override these (e.g. `lu-px-card p-3`), and page Sass
+ * partials, also in `components`, load later and so win ties.
  */
 
 .lu-tab-body:lang(ar),
@@ -24,43 +28,6 @@
 
 .lu-display:lang(ar) {
   font-weight: 700;
-}
-
-.lu-visually-hidden {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-/* ---------- Page header ---------- */
-
-.lu-tab-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-block-end: 16px;
-}
-
-.lu-tab-header > div {
-  flex: 1;
-  min-inline-size: 0;
-}
-
-.lu-tab-title {
-  margin: 0;
-  color: var(--lu-text);
-  font-size: clamp(2.25rem, 10vw, 3rem);
-  line-height: 1.05;
-  overflow-wrap: anywhere;
-}
-
-.lu-tab-subtitle {
-  margin: 6px 0 0;
-  color: var(--lu-text-muted);
-  font-size: 0.9rem;
 }
 
 /* ---------- Cards ---------- */

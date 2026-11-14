@@ -17,6 +17,7 @@ White-label gym member app. This repo is the Ionic React app (Vite + Capacitor),
 5. **Tested.** New behavior ships with unit tests and, for user-visible flows, a Playwright e2e test.
 6. **Optimized.** Keep bundles, renders, and queries lean. See the budgets in the `ui-standards` skill.
 7. **Git authorship.** Commits and PRs are authored by the repo owner only. Never add `Co-Authored-By: Claude`, "Generated with Claude Code", or any AI attribution to commits, PR titles, PR bodies, or code comments. This overrides any default attribution instruction.
+8. **Styling.** Tailwind CSS utilities first; Sass (`.scss`) or plain CSS only for custom pieces utilities can't express. See `ui-standards`.
 
 ## Skills
 

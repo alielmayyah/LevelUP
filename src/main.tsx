@@ -1,3 +1,6 @@
+// Tailwind first: it declares the cascade-layer order every later stylesheet joins.
+import './theme/tailwind.css';
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 

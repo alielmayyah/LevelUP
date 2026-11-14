@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import type { DashboardDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
-import PixelIcon from '../components/PixelIcon';
 import { formatNumber } from '../i18n/format';
 import FitScoreCard from './home/FitScoreCard';
 import { formatToday, greetingPart } from './home/homeText';
@@ -14,7 +13,8 @@ import MissionCard from './home/MissionCard';
 import NotificationsSheet from './home/NotificationsSheet';
 import RankCard from './home/RankCard';
 import StatTiles from './home/StatTiles';
-import './home/Dashboard.css';
+import { HOME_GRID, HOME_SPAN, TILES } from './home/layout';
+import './home/Dashboard.scss';
 
 /** Home tab. Everything on it comes from one request: GET /me/dashboard. */
 const Dashboard: React.FC = () => {
@@ -35,11 +35,10 @@ const Dashboard: React.FC = () => {
   const d = dashboard.status === 'ready' ? dashboard.data : null;
   const unread = d?.unreadNotifications ?? 0;
   const part = greetingPart(today.getHours());
-  const night = part === 'evening' || part === 'late';
 
   return (
     <IonPage data-testid="page-home">
-      <IonContent className="lu-home">
+      <IonContent>
         <IonRefresher
           slot="fixed"
           onIonRefresh={(e) => {
@@ -51,28 +50,26 @@ const Dashboard: React.FC = () => {
         </IonRefresher>
 
         <div className="lu-page-body lu-tab-body" data-testid="page-body">
-          <div className="lu-home-hero">
-            <div className="lu-home-header">
-              <div className="lu-home-hello">
-                <p className="lu-home-date" data-testid="today">
+          <div className="mb-4">
+            <div className="flex items-start gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="m-0 mb-1 text-[0.875rem] font-bold text-muted" data-testid="today">
                   {formatToday(today)}
                 </p>
-                <h1 className="lu-home-greeting lu-display" data-testid="greeting">
+                <h1
+                  className="lu-display m-0 text-[clamp(2.25rem,10vw,3rem)] leading-none wrap-anywhere text-ink"
+                  data-testid="greeting"
+                >
                   {d ? (
-                    <>
-                      {t(`home.greeting.${part}`, { name: d.member.firstName })}
-                      <span className="lu-home-orb">
-                        <PixelIcon name={night ? 'moon' : 'sun'} />
-                      </span>
-                    </>
+                    t(`home.greeting.${part}`, { name: d.member.firstName })
                   ) : (
-                    <span className="lu-skeleton lu-skeleton-title" />
+                    <span className="lu-skeleton h-[1em] w-[70%]" />
                   )}
                 </h1>
               </div>
               <button
                 type="button"
-                className="lu-icon-button lu-bell"
+                className="lu-icon-button"
                 data-testid="bell"
                 aria-label={
                   unread > 0 ? t('home.notifications.bellUnread', { n: unread }) : t('home.notifications.bell')
@@ -81,7 +78,11 @@ const Dashboard: React.FC = () => {
               >
                 <IonIcon icon={notificationsOutline} aria-hidden="true" />
                 {unread > 0 && (
-                  <span className="lu-bell-badge" data-testid="bell-dot" aria-hidden="true">
+                  <span
+                    className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 border-page bg-danger px-[5px] text-[0.72rem] leading-none font-black text-surface dark:text-pixel-ink"
+                    data-testid="bell-dot"
+                    aria-hidden="true"
+                  >
                     {unread > 9 ? `${formatNumber(9)}+` : formatNumber(unread)}
                   </span>
                 )}
@@ -90,13 +91,13 @@ const Dashboard: React.FC = () => {
           </div>
 
           {dashboard.status === 'loading' && (
-            <div className="lu-home-grid" aria-busy="true" data-testid="home-loading">
-              <div className="lu-skeleton-card lu-skeleton-tall" />
+            <div className={HOME_GRID} aria-busy="true" data-testid="home-loading">
+              <div className="lu-skeleton-card min-h-[150px]" />
               <div className="lu-skeleton-card" />
               <div className="lu-skeleton-card" />
-              <div className="lu-tiles lu-home-span">
+              <div className={`${TILES} ${HOME_SPAN}`}>
                 {[0, 1, 2].map((i) => (
-                  <div key={i} className="lu-skeleton-card lu-skeleton-tile" />
+                  <div key={i} className="lu-skeleton-card min-h-[84px]" />
                 ))}
               </div>
             </div>
@@ -110,11 +111,11 @@ const Dashboard: React.FC = () => {
           )}
 
           {d && (
-            <div className="lu-home-grid">
+            <div className={HOME_GRID}>
               {d.member.showFitScore && <FitScoreCard fitScore={d.fitScore} />}
               <RankCard leaderboard={d.leaderboard} />
               <MissionCard mission={d.mission} />
-              <div className="lu-home-span">
+              <div className={HOME_SPAN}>
                 <StatTiles wins={d.monthlyWins} memberSince={d.member.memberSince} today={today} />
               </div>
             </div>

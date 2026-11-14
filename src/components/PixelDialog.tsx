@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef } from 'react';
 
-import './PixelDialog.css';
+const BUTTON =
+  'min-h-[46px] cursor-pointer rounded-[10px] border-2 font-inherit font-extrabold shadow-px-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:translate-y-0.5 active:shadow-px-pressed';
 
 interface Props {
   open: boolean;
@@ -47,7 +48,7 @@ const PixelDialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, 
   return (
     <dialog
       ref={ref}
-      className="lu-dialog"
+      className="w-[min(calc(100%-32px),360px)] border-0 bg-transparent p-0 text-ink backdrop:bg-pixel-ink/55"
       aria-labelledby={titleId}
       onCancel={(e) => {
         e.preventDefault();
@@ -59,17 +60,17 @@ const PixelDialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, 
       }}
     >
       {open && (
-        <div className="lu-dialog-box">
-          <h2 id={titleId} className="lu-dialog-title">
+        <div className="grid gap-[18px] rounded-xl border-2 border-line bg-surface p-5 shadow-[0_5px_0_var(--lu-pixel-shadow)] ar:font-arabic">
+          <h2 id={titleId} className="m-0 text-[1.15rem] leading-[1.3] font-extrabold">
             {title}
           </h2>
-          <div className="lu-dialog-actions">
-            <button type="button" className="lu-dialog-button" onClick={onCancel}>
+          <div className="grid grid-cols-2 gap-2.5">
+            <button type="button" className={`${BUTTON} border-line bg-surface-2 text-ink`} onClick={onCancel}>
               {cancelLabel}
             </button>
             <button
               type="button"
-              className={`lu-dialog-button lu-dialog-confirm${destructive ? ' is-destructive' : ''}`}
+              className={`${BUTTON} ${destructive ? 'border-danger bg-danger text-surface' : 'border-primary bg-primary text-primary-contrast'}`}
               onClick={onConfirm}
             >
               {confirmLabel}

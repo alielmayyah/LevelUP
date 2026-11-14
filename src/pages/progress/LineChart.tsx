@@ -1,7 +1,7 @@
 import { useId, useMemo, useRef, useState } from 'react';
 
 import { formatNumber } from '../../i18n/format';
-import './LineChart.css';
+import './LineChart.scss';
 
 export interface Series {
   key: string;
@@ -127,7 +127,7 @@ const LineChart: React.FC<Props> = ({
 
   return (
     <div className="lu-chart" data-testid={testId}>
-      <div className="lu-chart-frame">
+      <div className="relative">
         {/* A group, not an image, so the per-scan points inside stay reachable by screen readers. */}
         <svg
           viewBox={`0 0 ${W} ${H}`}
@@ -211,7 +211,7 @@ const LineChart: React.FC<Props> = ({
 
         {active !== null && (
           <div
-            className="lu-chart-tip"
+            className="lu-chart-tip pointer-events-none absolute top-0 z-1 grid gap-0.5 rounded-lg border-2 border-line bg-surface px-2.5 py-2 text-[0.78rem] whitespace-nowrap shadow-px-sm"
             data-testid={`${testId}-tip`}
             role="status"
             style={{
@@ -220,8 +220,8 @@ const LineChart: React.FC<Props> = ({
           >
             <strong>{dates[active]}</strong>
             {visible.map((s) => (
-              <span key={s.key} className={s.colorClass}>
-                <i aria-hidden="true" />
+              <span key={s.key} className={`inline-flex items-center gap-1.5 ${s.colorClass}`}>
+                <i className="size-2 bg-(--series)" aria-hidden="true" />
                 {s.label} {withUnit(s, s.values[active])}
               </span>
             ))}
@@ -230,23 +230,23 @@ const LineChart: React.FC<Props> = ({
       </div>
 
       {legend && (
-        <div className="lu-chart-legend">
+        <div className="mt-2 flex flex-wrap gap-1.5">
           {series.map((s) => (
             <button
               key={s.key}
               type="button"
-              className={`lu-chart-key ${s.colorClass}`}
+              className={`lu-chart-key inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border-2 border-line bg-surface-2 px-2.5 py-1 font-inherit text-[0.78rem] font-bold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-[pressed=false]:text-muted aria-[pressed=false]:line-through aria-[pressed=false]:opacity-60 ${s.colorClass}`}
               aria-pressed={!hidden.has(s.key)}
               onClick={() => toggle(s.key)}
             >
-              <i aria-hidden="true" />
+              <i className="size-2 bg-(--series)" aria-hidden="true" />
               {s.label}
             </button>
           ))}
         </div>
       )}
 
-      <p id={`${id}-summary`} className="lu-visually-hidden">
+      <p id={`${id}-summary`} className="sr-only">
         {summary.join(' ')}
       </p>
     </div>

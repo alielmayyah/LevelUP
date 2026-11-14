@@ -21,7 +21,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
   const s = leaderboard.standing;
 
   const heading = (
-    <h2 id={headingId} className="lu-visually-hidden">
+    <h2 id={headingId} className="sr-only">
       {t('home.rank.title')}
     </h2>
   );
@@ -33,19 +33,19 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
         <span className="lu-icon-tile" aria-hidden="true">
           <IonIcon icon={podiumOutline} />
         </span>
-        <span className="lu-rank-text">
-          <strong>{t(joinable ? 'home.rank.join' : 'home.rank.title')}</strong>
+        <span className="grid min-w-0 gap-0.5 text-[0.85rem] text-muted">
+          <strong className="text-[1rem] text-ink">{t(joinable ? 'home.rank.join' : 'home.rank.title')}</strong>
           <span>{t(joinable ? 'home.rank.joinHint' : 'home.rank.noScan')}</span>
         </span>
       </>
     );
     return (
-      <section className="lu-card-slot" aria-labelledby={headingId}>
+      <section className="grid" aria-labelledby={headingId}>
         {heading}
         {joinable ? (
           <button
             type="button"
-            className="lu-px-card lu-rank"
+            className="lu-px-card flex items-center gap-3"
             data-testid="rank-card"
             onClick={() => history.push('/tabs/profile')}
           >
@@ -53,7 +53,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
             <IonIcon className="lu-chevron" icon={chevronForward} aria-hidden="true" />
           </button>
         ) : (
-          <div className="lu-px-card lu-rank" data-testid="rank-card">
+          <div className="lu-px-card flex items-center gap-3" data-testid="rank-card">
             {body}
           </div>
         )}
@@ -62,29 +62,33 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
   }
 
   return (
-    <section className="lu-card-slot" aria-labelledby={headingId}>
+    <section className="grid" aria-labelledby={headingId}>
       {heading}
       <button
         type="button"
-        className="lu-px-card lu-rank"
+        className="lu-px-card flex items-center gap-3"
         data-testid="rank-card"
         onClick={() => history.push('/tabs/leaderboard')}
       >
         <span className="lu-icon-tile lu-icon-tile-gold" aria-hidden="true">
           <PixelIcon name="trophy" />
         </span>
-        <span className="lu-rank-text">
-          <span className="lu-rank-line">
-            <strong id={`${ids}-num`} className="lu-rank-number" data-testid="rank-number">
+        <span className="grid min-w-0 gap-0.5 text-[0.85rem] text-muted">
+          <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <strong
+              id={`${ids}-num`}
+              className="font-display text-[1.75rem] leading-[1.1] font-normal text-ink ar:font-bold"
+              data-testid="rank-number"
+            >
               {t('home.rank.ofTotal', { rank: formatRank(s.rank), total: formatNumber(s.totalMembers) })}
             </strong>
             <span id={`${ids}-top`} className="lu-chip lu-chip-primary">
               {t('home.rank.top', { percent: formatPercent(s.topPercent) })}
             </span>
           </span>
-          <span id={`${ids}-more`} className="lu-rank-more">
+          <span id={`${ids}-more`} className="grid gap-0.5">
             <span>{t('home.rank.behind', { count: s.membersBehind })}</span>
-            <span className="lu-rank-nudge">
+            <span className="font-bold text-ink">
               {s.pointsToNextRank === null
                 ? t('home.rank.first')
                 : t('home.rank.toClimb', { count: s.pointsToNextRank, rank: formatRank(s.rank - 1) })}

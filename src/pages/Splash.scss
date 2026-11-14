@@ -1,0 +1,171 @@
+/*
+ * The splash's pixel-art scene: dusk backdrop, the gym picture fading into it,
+ * twinkling stars, and the CSS intro. Layout is Tailwind classes in Splash.tsx.
+ * The class names here are also the hooks the exit animation (splashMotion.ts) targets.
+ */
+@use 'sass:list';
+
+@layer components {
+  .lu-splash {
+    background: radial-gradient(ellipse at 50% 24%, var(--lu-splash-bg-2), var(--lu-splash-bg) 66%);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .lu-splash-scene {
+    mask-image: linear-gradient(to bottom, transparent, black 24%);
+
+    img {
+      object-position: 80% 69%;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        var(--lu-splash-bg),
+        color-mix(in srgb, var(--lu-splash-bg) 87%, transparent) 13%,
+        color-mix(in srgb, var(--lu-splash-bg) 48%, transparent) 29%,
+        transparent 58%,
+        color-mix(in srgb, var(--lu-splash-bg) 55%, transparent) 84%,
+        var(--lu-splash-bg) 100%
+      );
+    }
+
+    @media (min-width: 720px) {
+      img {
+        object-position: 65% 74%;
+      }
+    }
+
+    // A phone held sideways: the scene fills the screen and fades in from the text side.
+    @media (orientation: landscape) and (max-height: 480px) {
+      mask-image: none;
+
+      img {
+        object-position: 70% 76%;
+      }
+
+      &::after {
+        background: linear-gradient(
+          90deg,
+          var(--lu-splash-bg) 6%,
+          color-mix(in srgb, var(--lu-splash-bg) 92%, transparent) 30%,
+          color-mix(in srgb, var(--lu-splash-bg) 45%, transparent) 60%,
+          color-mix(in srgb, var(--lu-splash-bg) 16%, transparent)
+        );
+      }
+
+      &:dir(rtl) {
+        transform: scaleX(-1);
+      }
+    }
+  }
+
+  // Stars are 1-pixel gradients placed on two layers that drift out of step.
+  @function dots($colors...) {
+    $out: ();
+    @each $c in $colors {
+      $out: list.append($out, linear-gradient($c, $c), comma);
+    }
+    @return $out;
+  }
+
+  .lu-splash-stars {
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-repeat: no-repeat;
+      animation: lu-splash-drift 12s ease-in-out infinite alternate;
+    }
+
+    $sec: var(--ion-color-secondary);
+    $star: var(--lu-splash-star);
+    $accent: var(--lu-accent);
+
+    &::before {
+      background-image: dots($sec, $star, $sec, $sec, $star, $sec, $sec);
+      background-position:
+        7% 29%,
+        17% 58%,
+        29% 14%,
+        67% 22%,
+        84% 42%,
+        92% 65%,
+        72% 84%;
+      background-size:
+        4px 4px,
+        2px 2px,
+        3px 3px,
+        4px 4px,
+        2px 2px,
+        4px 4px,
+        3px 3px;
+    }
+
+    &::after {
+      background-image: dots($accent, $accent, $accent, $accent);
+      background-position:
+        11% 73%,
+        23% 37%,
+        77% 50%,
+        90% 24%;
+      background-size:
+        3px 3px,
+        2px 2px,
+        3px 3px,
+        2px 2px;
+      animation-delay: -4s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::before,
+      &::after {
+        animation: none;
+      }
+    }
+  }
+
+  /*
+   * Intro: the scene and logo settle into place. Plain CSS, so no animation
+   * library ships in the first download. "backwards" applies only before and
+   * during the run, so the exit animation's inline styles win afterwards.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    .lu-splash-scene {
+      animation: lu-splash-scene-in 700ms ease-out backwards;
+    }
+
+    .lu-splash-brand {
+      animation: lu-splash-brand-in 700ms ease-out backwards;
+    }
+  }
+}
+
+@keyframes lu-splash-drift {
+  from {
+    transform: translate(0, 0);
+    opacity: 0.65;
+  }
+
+  to {
+    transform: translate(6px, -9px);
+    opacity: 1;
+  }
+}
+
+@keyframes lu-splash-scene-in {
+  from {
+    opacity: 0.45;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes lu-splash-brand-in {
+  from {
+    transform: translateY(8px);
+  }
+}

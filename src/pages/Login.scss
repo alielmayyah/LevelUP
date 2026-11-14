@@ -1,0 +1,59 @@
+/*
+ * Login shares the splash's dusk palette in both themes: the pixel-art gym and
+ * the white wordmark only read on a dark backdrop. Layout is Tailwind classes
+ * in Login.tsx; the scene's fade and the field's look live here.
+ */
+@layer components {
+  .lu-login-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--lu-splash-bg) 80%, transparent),
+      color-mix(in srgb, var(--lu-splash-bg) 45%, transparent) 38%,
+      transparent 62%,
+      color-mix(in srgb, var(--lu-splash-bg) 40%, transparent) 84%,
+      var(--lu-splash-bg)
+    );
+
+    // Side by side (phone sideways or wide screen): the scene fades toward the form.
+    @media (orientation: landscape) and (max-height: 480px), (min-width: 900px) {
+      background: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--lu-splash-bg) 30%, transparent),
+        color-mix(in srgb, var(--lu-splash-bg) 15%, transparent) 60%,
+        var(--lu-splash-bg)
+      );
+    }
+  }
+
+  @media (orientation: landscape) and (max-height: 480px), (min-width: 900px) {
+    .lu-login-hero:dir(rtl)::after {
+      transform: scaleX(-1);
+    }
+  }
+
+  .lu-login-input {
+    border: 2px solid color-mix(in srgb, var(--ion-color-secondary) 40%, var(--lu-splash-bg));
+    background: color-mix(in srgb, var(--lu-splash-bg) 86%, var(--ion-color-primary));
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    outline: none;
+    transition:
+      border-color 120ms ease-out,
+      box-shadow 120ms ease-out;
+
+    &:focus-visible {
+      border-color: var(--ion-color-secondary);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--ion-color-primary) 40%, transparent);
+    }
+
+    &[aria-invalid='true'] {
+      border-color: var(--lu-splash-danger);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}
