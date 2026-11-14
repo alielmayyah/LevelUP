@@ -7,6 +7,17 @@ description: Use when building or changing any screen, component, style, copy te
 
 A UI task is done only when it passes every row of the checklist at the bottom.
 
+## Styling: Tailwind first, Sass for the custom parts
+
+- **Tailwind CSS v4** (`@tailwindcss/vite`) styles layout, spacing, type, and simple colors as utility classes in the JSX. Entry: `src/theme/tailwind.css`, imported first in `main.tsx`.
+- **Colors are theme tokens only.** Tailwind's default palette is removed; utilities like `bg-surface`, `text-muted`, `border-line`, `text-primary`, `bg-fat` point at `--lu-*` / `--ion-*` variables in `tokens.css`, so dark mode and brand colors keep working. `npm run check-colors` also scans `.scss` files and arbitrary values (`bg-[#fff]` fails).
+- **Variants:** `dark:` follows Ionic's `.ion-palette-dark` class, `ar:` targets Arabic text, `rtl:` the reading direction, `short-landscape:` a phone held sideways, `split:` / `wide:` the two-column layouts (≥ 900 px).
+- **Sass (`.scss` next to the component) for what utilities can't say cleanly:** gradients and `color-mix` art, pseudo-elements, keyframes, SVG strokes, and Ionic part/CSS-variable overrides. Wrap rules in `@layer components` so a utility on the same element still wins. Rules that style Ionic's scoped elements (`ion-label`) stay unlayered, or Ionic's own styles beat them (see `TabBar.scss`).
+- **Shared pixel kit** (`lu-px-card`, `lu-chip`, `lu-segment`, `lu-switch`, `lu-state`, …) lives in `src/theme/pixel.css` as component classes; add utilities beside them to adjust (`lu-px-card p-3`).
+- **Cascade layers:** `theme < base < ionic < components < utilities`. Ionic's global CSS sits in the `ionic` layer, so utilities override it. No Tailwind preflight (Ionic's normalize does that job), so set every border side you mean: `border-2` sets all four; for one side use `[border-block-start:2px_dashed_var(--lu-border)]`.
+- **Class strings:** use sized values that don't carry a line height (`text-[0.875rem]`, not `text-sm`) unless you want Tailwind's. Keep a space between a class and a `${…}` expression, or Tailwind won't see the class and Prettier's Tailwind plugin may glue them: `` `base ${on ? 'is-on' : ''}` ``.
+- `npm run format` sorts classes (prettier-plugin-tailwindcss).
+
 ## Languages: English and Arabic
 
 - **Arabic is Egyptian Arabic (عامية مصرية), not Modern Standard Arabic.** Write it the way a member in a Cairo gym talks: "دوس عشان تبدأ" not "اضغط للبدء", "جرّب تاني" not "إعادة المحاولة", "مفيش" not "لا يوجد", "عشان" not "لكي", "إنت" not "أنت". Use everyday loanwords Egyptians use ("الريسبشن", "الجيم"). Keep brand and product names in Latin script (LevelUP, FitScore). Every new Arabic string follows this, and so does any copy in the backlog or tickets.
@@ -24,7 +35,7 @@ A UI task is done only when it passes every row of the checklist at the bottom.
 
 - Use Ionic 8's dark palette with the class strategy (`@ionic/react/css/palettes/dark.class.css`), toggling `ion-palette-dark` on `<html>`.
 - Setting: System / Light / Dark, stored under `lu.theme`. System follows `prefers-color-scheme` live.
-- `brand.config.ts` defines `colors.light` and `colors.dark`. Components use only CSS variables (`--ion-color-*`, `--lu-*`). Never write a hex color in a component.
+- `brand.config.ts` defines `colors.light` and `colors.dark`. Components use only CSS variables (`--ion-color-*`, `--lu-*`) or the Tailwind color utilities mapped to them. Never write a hex color in a component.
 - Charts read their colors from CSS variables at render time and re-render when the theme changes.
 - Check contrast in both themes. Text needs ≥ 4.5:1 and large text or icons need ≥ 3:1.
 
@@ -93,7 +104,7 @@ The look is pixel-art: build screens from the shared pieces, don't restyle per s
 
 | Piece | Where | Rule |
 |---|---|---|
-| Card | `.lu-px-card` (`src/theme/pixel.css`) | 2px border, 10px corners, hard unblurred drop shadow `0 4px 0 var(--lu-pixel-shadow)` |
+| Card | `.lu-px-card` (`src/theme/pixel.css`, Tailwind `components` layer) | 2px border, 10px corners, hard unblurred drop shadow `0 4px 0 var(--lu-pixel-shadow)` |
 | Page | `TabPage` | Big display title (`.lu-display`, Jersey 10: one weight, 400; sized about 20% larger than a regular face) and subtitle; body clears the notch and the tab bar |
 | Primary action | `CtaButton` | One per screen. Secondary actions: `.lu-link-button` or the dialog's secondary button |
 | Segmented switch | `.lu-segment` | Tabs pattern with arrow keys (`src/components/roving.ts`) |
@@ -103,6 +114,22 @@ The look is pixel-art: build screens from the shared pieces, don't restyle per s
 | Colors | `tokens.css` | One hue per metric (`--lu-fat`, `--lu-muscle`), tiers `--lu-tier-1..5`, medals `--lu-gold/silver/bronze` |
 
 Labels in small caps (`.lu-card-kicker`) use the normal font, never a pixel font: small pixel text is hard to read.
+
+## Empty and partial data
+
+Every number on screen needs enough data behind it. Before showing a value, ask what it takes to exist, and design the screen for each stage a member can be in.
+
+| Stage | Example | Show |
+|---|---|---|
+| No data at all | A new member with no scans or goals | An empty state that says what is missing and the next step ("Book your first scan at the front desk"). Never a blank card, `0`, `—`, or `NaN`. |
+| Not enough data to compare | One scan: muscle gained, fat lost, FitScore change, trends, and charts all need at least two scans | The value that does exist (the first scan's numbers) plus a line saying when the comparison appears ("Your change shows after your second scan"). Never show a change of 0 when there is nothing to compare. |
+| Nothing in this period | No scan this month, so monthly wins are `null` | Say there is no scan this month yet. Keep earlier data visible. |
+| Hidden or opted out | FitScore hidden, off the leaderboard | Say it is hidden and where to turn it back on. Don't show it as missing or zero. |
+| Loading or failed | Request in flight or errored | Skeleton while loading; `lu-state` with Retry on error. Keep data already on screen when a refresh fails. |
+
+- The API returns `null` for any value it can't compute yet (see the DTO comments in `src/api/types.ts`). Treat `null` as "not known yet", never as 0, and branch on it in the component.
+- Each partial state has its own copy in both languages, written in Egyptian Arabic.
+- Mock members cover the stages: Lina (102) has no scans, Omar (103) has one scan. Unit-test each state and check new screens with both.
 
 ## Accessibility
 
@@ -126,4 +153,5 @@ Target WCAG 2.2 AA. `e2e/a11y.spec.ts` runs axe-core on every screen in both lan
 | Notch-safe | The iPhone project screenshot shows nothing under the notch or home indicator |
 | Bundle within budget | Build size report |
 | E2E test added or updated | See the `e2e-testing` skill |
+| Empty and partial data | The screen is checked as Lina (no scans) and Omar (one scan); every `null` has its own message |
 | Accessibility | `e2e/a11y.spec.ts` covers the screen and passes with zero violations |
