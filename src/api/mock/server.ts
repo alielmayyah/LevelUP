@@ -3,9 +3,10 @@
  * plan (Tasks 5, 7, 8, 9) with the same status codes and DTO shapes, so
  * switching VITE_USE_MOCKS off needs no component changes.
  *
- * State lives in memory and resets on page reload, except settings and the saved
- * character, which are also written to Preferences (lu.mock.settings.<fitId>,
- * lu.mock.avatar.<fitId>), so switching Fit IDs never leaks another member's data.
+ * State lives in memory and resets on page reload, except settings, the saved
+ * character, and goals the member created, which are also written to Preferences
+ * (lu.mock.settings.<fitId>, lu.mock.avatar.<fitId>, lu.mock.goals.<fitId>), so
+ * switching Fit IDs never leaks another member's data.
  *
  * Only src/api/client.ts and tests may import this module (ESLint enforces it).
  */
@@ -15,7 +16,9 @@ import { isValidAvatar } from '../../avatar/catalog';
 import {
   LEADERBOARD_BOARDS,
   type AvatarConfigDto,
+  type CreateGoalRequest,
   type DashboardDto,
+  type GoalMetric,
   type GoalView,
   type GoalsDto,
   type LeaderboardBoard,
@@ -44,6 +47,8 @@ let now = new Date();
 let members: MockMember[] = [];
 let loginAttempts: number[] = [];
 const settingsLoaded = new Set<number>();
+/** Members whose created goals were read from Preferences. */
+const goalsLoaded = new Set<number>();
 /** Saved characters by member id. Missing: not read from Preferences yet. */
 const avatars = new Map<number, AvatarConfigDto | null>();
 
@@ -53,6 +58,7 @@ export function resetMockServer(at: Date = new Date()): void {
   members = buildMembers(now);
   loginAttempts = [];
   settingsLoaded.clear();
+  goalsLoaded.clear();
   avatars.clear();
 }
 
@@ -109,10 +115,45 @@ async function saveAvatar(m: MockMember, body: unknown): Promise<MockResponse> {
   return ok(config);
 }
 
+const goalsKey = (m: MockMember) => `lu.mock.goals.${m.fitId}`;
+
+/** Stored form of a created goal: dates as ISO strings. */
+type StoredGoal = Omit<GoalRecord, 'startDate' | 'deadline' | 'completedAt'> & {
+  startDate: string;
+  deadline: string;
+  completedAt: string | null;
+};
+
+async function loadGoals(m: MockMember): Promise<void> {
+  if (goalsLoaded.has(m.id)) return;
+  goalsLoaded.add(m.id);
+  const { value } = await Preferences.get({ key: goalsKey(m) });
+  if (!value) return;
+  try {
+    const saved = JSON.parse(value) as StoredGoal[];
+    if (!Array.isArray(saved)) return;
+    for (const g of saved) {
+      if (m.goals.some((x) => x.id === g.id)) continue;
+      m.goals.push({
+        ...g,
+        startDate: new Date(g.startDate),
+        deadline: new Date(g.deadline),
+        completedAt: g.completedAt ? new Date(g.completedAt) : null,
+        createdByMember: true,
+      });
+    }
+  } catch {
+    // A corrupt entry reads as no created goals.
+  }
+}
+
 async function memberForToken(token: string | null): Promise<MockMember | null> {
   const fitId = token?.startsWith('mock.') ? token.slice(5) : null;
   const m = members.find((x) => x.fitId === fitId) ?? null;
-  if (m) await loadSettings(m);
+  if (m) {
+    await loadSettings(m);
+    await loadGoals(m);
+  }
   return m;
 }
 
@@ -313,6 +354,73 @@ function goals(m: MockMember): GoalsDto {
   return { active: by('ACTIVE'), completed: by('COMPLETED'), upcoming: by('UPCOMING') };
 }
 
+const GOAL_METRICS: readonly GoalMetric[] = ['BODY_FAT_KG', 'MUSCLE_KG', 'WEIGHT_KG'];
+/** The furthest ahead a goal may be due. */
+const MAX_GOAL_DAYS = 366;
+
+/** "3" for 3.0, "2.5" for 2.5, as the goal titles read. */
+const kgText = (n: number) => String(round1(n));
+
+function goalTitle(metric: GoalMetric, start: number, target: number): string {
+  const amount = kgText(Math.abs(target - start));
+  switch (metric) {
+    case 'BODY_FAT_KG':
+      return `Lose ${amount} kg of body fat`;
+    case 'MUSCLE_KG':
+      return `Gain ${amount} kg of muscle`;
+    case 'WEIGHT_KG':
+      return `Reach ${kgText(target)} kg`;
+  }
+}
+
+/**
+ * POST /me/goals: the member sets their own goal, no coach approval. It starts
+ * from the latest scan and goes live now, or after the current mission if one
+ * is in progress. A target that points the wrong way (gaining fat) is a 400.
+ */
+async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
+  const req = (body && typeof body === 'object' ? body : {}) as Partial<Record<keyof CreateGoalRequest, unknown>>;
+  const metric = req.metric as GoalMetric;
+  const target = typeof req.targetValue === 'number' ? round1(req.targetValue) : NaN;
+  const deadline = typeof req.deadline === 'string' ? new Date(req.deadline) : null;
+  if (!GOAL_METRICS.includes(metric)) return fail(400, 'Invalid metric');
+  if (!Number.isFinite(target) || target <= 0 || target > 400) return fail(400, 'Invalid target');
+  const days = deadline ? (deadline.getTime() - now.getTime()) / 86_400_000 : NaN;
+  if (!(days > 0 && days <= MAX_GOAL_DAYS)) return fail(400, 'Invalid deadline');
+
+  const scan = latest(m);
+  if (!scan) return fail(409, 'Take a scan before setting a goal');
+  const start = metricValue(scan, metric);
+  const wrongWay =
+    metric === 'BODY_FAT_KG' ? target >= start : metric === 'MUSCLE_KG' ? target <= start : target === start;
+  if (wrongWay) return fail(400, 'Target must move from your latest scan');
+
+  const goal: GoalRecord = {
+    id: Math.max(0, ...members.flatMap((x) => x.goals.map((g) => g.id))) + 1,
+    title: goalTitle(metric, start, target),
+    metric,
+    startValue: start,
+    targetValue: target,
+    startDate: now,
+    deadline: deadline!,
+    status: m.goals.some((g) => g.status === 'ACTIVE') ? 'UPCOMING' : 'ACTIVE',
+    coachNote: null,
+    completedAt: null,
+    createdByMember: true,
+  };
+  m.goals.push(goal);
+  const stored: StoredGoal[] = m.goals
+    .filter((g) => g.createdByMember)
+    .map(({ startDate, deadline: due, completedAt, ...rest }) => ({
+      ...rest,
+      startDate: startDate.toISOString(),
+      deadline: due.toISOString(),
+      completedAt: completedAt?.toISOString() ?? null,
+    }));
+  await Preferences.set({ key: goalsKey(m), value: JSON.stringify(stored) });
+  return ok(goalView(goal, m), 201);
+}
+
 function progress(m: MockMember): ProgressDto {
   return {
     assessments: m.assessments.map(({ takenAt, weightKg, skeletalMuscleKg, bodyFatPct, fitScore }) => ({
@@ -376,6 +484,8 @@ export const mockServer = {
         return ok([...me.assessments].reverse());
       case 'GET /me/goals':
         return ok(goals(me));
+      case 'POST /me/goals':
+        return createGoal(me, body);
       case 'PATCH /me/settings':
         return updateSettings(me, body);
       case 'GET /me/notifications':

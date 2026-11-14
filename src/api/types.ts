@@ -178,6 +178,14 @@ export interface GoalView {
   completedAt: string | null;
 }
 
+/** POST /me/goals: the member sets their own goal; it starts from their latest scan. */
+export interface CreateGoalRequest {
+  metric: GoalMetric;
+  targetValue: number;
+  /** ISO date the goal is due. */
+  deadline: string;
+}
+
 export interface GoalsDto {
   active: GoalView[];
   completed: GoalView[];
@@ -217,6 +225,7 @@ export interface AvatarStyles {
   shoes: 'trainers' | 'high-tops' | 'runners' | 'slip-ons';
   pants?: 'shorts' | 'joggers' | 'cargo' | 'track-pants';
   beard?: 'clean-shaven' | 'stubble' | 'mustache' | 'goatee' | 'short-beard' | 'full-beard';
+  socks?: 'no-socks' | 'ankle-socks' | 'crew-socks' | 'striped-socks';
 }
 
 /**
@@ -226,7 +235,7 @@ export interface AvatarStyles {
 export interface AvatarConfigDto {
   schemaVersion: 1;
   rig: 'standard';
-  colors: Record<AvatarPart, string> & { beard?: string };
+  colors: Record<AvatarPart, string> & { beard?: string; socks?: string };
   /** Optional for characters saved before styles were available. */
   styles?: AvatarStyles;
 }

@@ -117,6 +117,8 @@ export interface GoalRecord {
   status: GoalStatus;
   coachNote: string | null;
   completedAt: Date | null;
+  /** Set by the member in the app (POST /me/goals), not seeded; persisted in Preferences. */
+  createdByMember?: boolean;
 }
 
 export const scanNotification = (at: Date, score: number, read: boolean): NotificationDto => ({
