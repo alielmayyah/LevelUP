@@ -154,28 +154,142 @@ const Bar: React.FC<BarProps> = (p) => {
   );
 };
 
-/** Pixel figure, viewed from behind like the InBody sheet: the member's left side is on the left. */
-const SHAPES: Record<BodySegment, string> = {
-  leftArm: 'M3 8h3v14h-3z',
-  rightArm: 'M18 8h3v14h-3z',
-  trunk: 'M7 7h10v14h-10z',
-  leftLeg: 'M7 22h4v17h-4z',
-  rightLeg: 'M13 22h4v17h-4z',
+/*
+ * The hologram figure, viewed from behind like the InBody sheet: the member's
+ * left side is on the left. Drawn as the left half of a 20 × 41 pixel grid and
+ * mirrored, so both sides always match:
+ *   h head   t trunk   L arm   l leg   p projector base   . empty
+ */
+const HALF_BODY = [
+  '........hh',
+  '.......hhh',
+  '.......hhh',
+  '.......hhh',
+  '.......hhh',
+  '........hh',
+  '.........h',
+  '....LLtttt',
+  '...LLLtttt',
+  '...LLLtttt',
+  '..LLL.tttt',
+  '..LLL.tttt',
+  '..LLL.tttt',
+  '..LL..tttt',
+  '..LL...ttt',
+  '..LL...ttt',
+  '.LLL...ttt',
+  '.LLL..tttt',
+  '.LL...tttt',
+  '.LL...tttt',
+  '......llll',
+  '......llll',
+  '......lll.',
+  '......lll.',
+  '......lll.',
+  '......lll.',
+  '......lll.',
+  '......lll.',
+  '......lll.',
+  '.......ll.',
+  '.......ll.',
+  '.......ll.',
+  '.......ll.',
+  '.......ll.',
+  '.......ll.',
+  '.......ll.',
+  '......lll.',
+  '.....llll.',
+  '..........',
+  '...ppppppp',
+  '.....ppppp',
+];
+
+type FigurePart = BodySegment | 'head' | 'base';
+
+const PART: Record<string, FigurePart> = {
+  h: 'head',
+  t: 'trunk',
+  p: 'base',
+  L: 'leftArm',
+  l: 'leftLeg',
+  R: 'rightArm',
+  r: 'rightLeg',
 };
 
+/** The full grid: each row's left half, then the same half mirrored with the right-side parts. */
+const BODY_ROWS = HALF_BODY.map(
+  (half) =>
+    half +
+    [...half]
+      .reverse()
+      .map((c) => (c === 'L' ? 'R' : c === 'l' ? 'r' : c))
+      .join(''),
+);
+const FIGURE_W = BODY_ROWS[0].length;
+const FIGURE_H = BODY_ROWS.length;
+
+/** Each part as a few rects: one per run of pixels on a row, so the figure stays a couple hundred nodes. */
+const FIGURE_RUNS = (() => {
+  const out: Record<FigurePart, { x: number; y: number; w: number }[]> = {
+    head: [],
+    base: [],
+    leftArm: [],
+    rightArm: [],
+    trunk: [],
+    leftLeg: [],
+    rightLeg: [],
+  };
+  BODY_ROWS.forEach((row, y) => {
+    let x = 0;
+    while (x < row.length) {
+      let w = 1;
+      while (row[x + w] === row[x]) w++;
+      const part = PART[row[x]];
+      if (part) out[part].push({ x, y, w });
+      x += w;
+    }
+  });
+  return out;
+})();
+
+/**
+ * A glowing pixel hologram of the body on a faint grid. Each segment is tinted
+ * by its zone; every other row is dimmer, like scan lines. A light bar sweeps
+ * down it unless the device asks for reduced motion. Decorative: the callouts
+ * around it carry every value in text.
+ */
 const Figure: React.FC<{ statuses: Record<BodySegment, Status>; kind: 'lean' | 'fat' }> = ({ statuses, kind }) => (
-  <svg
-    className={`lu-figure lu-figure-${kind} h-[184px] w-auto`}
-    viewBox="0 0 24 40"
-    shapeRendering="crispEdges"
-    aria-hidden="true"
-    focusable="false"
-  >
-    <path className="lu-figure-head" d="M9 0h6v6h-6zM10 6h4v1h-4z" />
-    {(Object.keys(SHAPES) as BodySegment[]).map((s) => (
-      <path key={s} className={`lu-seg lu-seg-${statuses[s]}`} d={SHAPES[s]} />
-    ))}
-  </svg>
+  <div className="lu-holo relative grid place-items-center overflow-hidden rounded-[10px] px-2.5 pt-3 pb-1">
+    <svg
+      className={`lu-holo-figure lu-figure-${kind} h-[188px] w-auto`}
+      viewBox={`0 0 ${FIGURE_W} ${FIGURE_H}`}
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+      focusable="false"
+      data-testid="segments-figure"
+    >
+      {(Object.keys(FIGURE_RUNS) as FigurePart[]).map((part) => (
+        <g
+          key={part}
+          className={`lu-holo-${part} ${part === 'head' || part === 'base' ? '' : `lu-seg lu-seg-${statuses[part]}`}`}
+          data-part={part}
+          data-status={part === 'head' || part === 'base' ? undefined : statuses[part]}
+        >
+          {FIGURE_RUNS[part].map((r) => (
+            <rect
+              key={`${r.x}-${r.y}`}
+              className={r.y % 2 ? 'is-scan' : undefined}
+              x={r.x}
+              y={r.y}
+              width={r.w}
+              height={1}
+            />
+          ))}
+        </g>
+      ))}
+    </svg>
+    <span className="lu-holo-sweep" aria-hidden="true" />
+  </div>
 );
 
 const Callout: React.FC<{

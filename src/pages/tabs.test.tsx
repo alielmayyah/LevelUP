@@ -176,9 +176,14 @@ describe('Progress', () => {
     // Body parts: muscle by default, fat a tap away.
     const segs = within(bc).getByTestId('segments');
     expect(within(segs).getByTestId('seg-rightArm')).toHaveTextContent(/kg/);
+    // The hologram tints each part by its zone; it is decorative, the callouts carry the values.
+    const figure = within(segs).getByTestId('segments-figure');
+    expect(figure).toHaveAttribute('aria-hidden', 'true');
+    expect(figure.querySelector('[data-part="rightArm"]')).toHaveAttribute('data-status', 'over');
     await userEvent.click(within(segs).getByRole('radio', { name: 'Fat' }));
     expect(within(segs).getByRole('radio', { name: 'Fat' })).toHaveAttribute('aria-checked', 'true');
     expect(within(segs).getByTestId('seg-trunk')).toHaveTextContent('Under');
+    expect(figure.querySelector('[data-part="trunk"]')).toHaveAttribute('data-status', 'under');
   });
 
   it('compares the scan with any other scan, or with none', async () => {

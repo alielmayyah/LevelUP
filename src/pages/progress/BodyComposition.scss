@@ -107,18 +107,64 @@
     --status: var(--lu-tier-1);
   }
 
-  .lu-figure {
-    filter: drop-shadow(0 3px 0 var(--lu-pixel-shadow));
+  /* ---------- The body hologram ---------- */
+
+  .lu-holo {
+    --holo: var(--ion-color-primary);
+    --holo-grid: color-mix(in srgb, var(--holo) 14%, transparent);
+
+    background-color: color-mix(in srgb, var(--holo) 6%, transparent);
+    background-image:
+      linear-gradient(var(--holo-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--holo-grid) 1px, transparent 1px);
+    background-size: 9px 9px;
+    background-position: center;
+
+    :root.ion-palette-dark & {
+      --holo: var(--ion-color-secondary);
+      --holo-grid: color-mix(in srgb, var(--holo) 18%, transparent);
+    }
   }
 
-  .lu-figure path {
-    stroke: var(--lu-pixel-ink);
-    stroke-width: 0.5;
-    paint-order: stroke;
+  /* Two soft glows in the brand purple: a tight halo and a wide bloom. */
+  .lu-holo-figure {
+    filter: drop-shadow(0 0 1.5px color-mix(in srgb, var(--holo) 85%, transparent))
+      drop-shadow(0 0 7px color-mix(in srgb, var(--holo) 50%, transparent));
+
+    rect.is-scan {
+      opacity: 0.72;
+    }
   }
 
-  .lu-figure-head {
-    fill: var(--lu-surface-2);
+  .lu-holo-head {
+    fill: var(--holo);
+    opacity: 0.6;
+  }
+
+  .lu-holo-base {
+    fill: var(--holo);
+    opacity: 0.45;
+  }
+
+  /* A band of light that runs down the figure, like a scanner. */
+  .lu-holo-sweep {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 0;
+    block-size: 16%;
+    background: linear-gradient(transparent, color-mix(in srgb, var(--holo) 28%, transparent), transparent);
+    pointer-events: none;
+    animation: lu-holo-sweep 3.6s linear infinite;
+  }
+
+  @keyframes lu-holo-sweep {
+    from {
+      transform: translateY(-100%);
+    }
+
+    to {
+      transform: translateY(625%);
+    }
   }
 
   .lu-seg-normal {
@@ -140,6 +186,10 @@
   @media (prefers-reduced-motion: reduce) {
     .lu-scale-fill {
       transition: none;
+    }
+
+    .lu-holo-sweep {
+      display: none;
     }
   }
 }
