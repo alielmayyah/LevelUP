@@ -382,10 +382,10 @@ const Progress: React.FC = () => {
                 {MORE.map((m) => (
                   <div
                     key={m.key}
-                    className={`lu-more-card relative grid content-start gap-1 rounded-lg p-2.5 pe-9 ${m.tone}`}
+                    className={`lu-more-card relative grid grid-cols-[auto_1fr] content-start items-baseline gap-x-2 gap-y-1.5 rounded-lg p-2.5 pe-9 ${m.tone}`}
                     data-testid={`metric-${m.key}`}
                   >
-                    <dt className="grid gap-1">
+                    <dt className="col-span-full grid gap-1">
                       {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
                       <InfoButton
                         className="absolute -end-1 -top-1"
@@ -405,7 +405,10 @@ const Progress: React.FC = () => {
                       // The change since the scan before, with a sign; nothing on the first scan.
                       const c = change(m);
                       return c ? (
-                        <dd className={`m-0 text-[0.78rem] font-extrabold ${c.tone}`} data-testid={`change-${m.key}`}>
+                        <dd
+                          className={`m-0 text-[0.78rem] font-extrabold whitespace-nowrap ${c.tone}`}
+                          data-testid={`change-${m.key}`}
+                        >
                           <bdi aria-hidden="true">{c.signed}</bdi>
                           <span className="sr-only">{c.label}</span>
                         </dd>
