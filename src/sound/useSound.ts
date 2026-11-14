@@ -67,14 +67,25 @@ export function useSound(): { enabled: boolean; toggle(): void; play(name: Sound
  * Respects the sound setting. Browsers may block audio before the first tap
  * (the web, some web views); then it stays silent, which is fine for a splash.
  */
-export function playIntro(): void {
-  if (!enabled || typeof window === 'undefined') return;
+/** The shared Web Audio context, made on first use; null where there is no Web Audio. */
+function context(): AudioContext | null {
+  if (typeof window === 'undefined') return null;
   const Ctx =
     window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-  if (!Ctx) return;
+  if (!Ctx) return null;
   try {
     audioCtx ??= new Ctx();
-    const ctx = audioCtx;
+  } catch {
+    return null;
+  }
+  return audioCtx;
+}
+
+export function playIntro(): void {
+  if (!enabled) return;
+  const ctx = context();
+  if (!ctx) return;
+  try {
     void ctx.resume?.().catch(() => undefined);
     const start = ctx.currentTime + 0.05;
     const master = ctx.createGain();
@@ -103,4 +114,38 @@ export function playIntro(): void {
   } catch {
     // No audio available: the splash is silent.
   }
+}
+
+/**
+ * The splash's way to play the chime. The Android app plays it at once. A
+ * browser may hold audio until the first gesture: then the chime waits for the
+ * first tap or key press, or for the browser to allow it. Returns a cleanup
+ * that cancels the wait, so it never plays after the splash has gone.
+ */
+export function playIntroSoon(): () => void {
+  const ctx = enabled ? context() : null;
+  if (!ctx) return () => undefined;
+  if (ctx.state !== 'suspended') {
+    playIntro();
+    return () => undefined;
+  }
+  let done = false;
+  const events = ['pointerdown', 'keydown'] as const;
+  const stop = () => {
+    done = true;
+    events.forEach((e) => window.removeEventListener(e, go, true));
+  };
+  function go() {
+    if (done) return;
+    stop();
+    playIntro();
+  }
+  events.forEach((e) => window.addEventListener(e, go, true));
+  void ctx
+    .resume?.()
+    .then(() => {
+      if (ctx.state === 'running') go();
+    })
+    .catch(() => undefined);
+  return stop;
 }
