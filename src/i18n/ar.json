@@ -191,10 +191,7 @@
   "profile": {
     "subtitle": "إعدادات العضو",
     "fitId": "رقم العضوية {{id}}",
-    "personal": "بياناتك",
     "settings": "الإعدادات",
-    "age": "السن",
-    "height": "الطول",
     "sound": "الصوت",
     "soundHint": "أصوات الأبلكيشن",
     "showFitScore": "اظهر الـ FitScore",

@@ -6,7 +6,6 @@ import {
   eyeOutline,
   languageOutline,
   logOutOutline,
-  personOutline,
   podiumOutline,
   settingsOutline,
   volumeHighOutline,
@@ -30,10 +29,8 @@ import PixelToast from '../components/PixelToast';
 import { focusSibling, rovingTarget } from '../components/roving';
 import TabPage from '../components/TabPage';
 import { currentLanguage, setLanguage, type Lang } from '../i18n';
-import { formatNumber } from '../i18n/format';
 import { useSound } from '../sound/useSound';
 import { getThemeMode, setTheme, type ThemeMode } from '../theme/theme';
-import { ageOn } from './profile/age';
 
 const GRID = 'grid gap-3.5 wide:grid-cols-[1fr_1fr] wide:items-start';
 /** One settings line: label on one side, value or control on the other; wraps on narrow screens. */
@@ -68,7 +65,6 @@ const RowLabel: React.FC<{ icon: string; children: React.ReactNode; hint?: { id:
 
 const SECTION =
   'mx-0 mt-3 mb-1 flex items-center gap-2 text-[0.8rem] font-extrabold tracking-[0.08em] text-primary uppercase dark:text-secondary ar:text-[0.9rem] ar:tracking-normal';
-const VALUE = 'text-end font-extrabold text-ink';
 
 interface SwitchProps {
   checked: boolean;
@@ -145,7 +141,6 @@ const Profile: React.FC = () => {
   const [saveFailed, setSaveFailed] = useState(false);
   const clearSaveFailed = useCallback(() => setSaveFailed(false), []);
   const [confirmOut, setConfirmOut] = useState(false);
-  const [now] = useState(() => new Date());
   useRefreshOnEnter(me.reload);
 
   const p = me.status === 'ready' ? me.data : null;
@@ -215,25 +210,6 @@ const Profile: React.FC = () => {
                 <IonIcon icon={brushOutline} aria-hidden="true" />
                 {t('profile.customize')}
               </Link>
-            </div>
-          </section>
-
-          <section className="lu-px-card grid py-1.5" aria-labelledby="sec-personal">
-            <h3 id="sec-personal" className={SECTION}>
-              <IonIcon icon={personOutline} aria-hidden="true" />
-              {t('profile.personal')}
-            </h3>
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <span>{t('profile.age')}</span>
-              <strong className={VALUE} data-testid="profile-age">
-                {formatNumber(ageOn(p.birthDate, now))}
-              </strong>
-            </div>
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <span>{t('profile.height')}</span>
-              <strong className={VALUE}>
-                {formatNumber(p.heightCm)} {t('units.cm')}
-              </strong>
             </div>
           </section>
 

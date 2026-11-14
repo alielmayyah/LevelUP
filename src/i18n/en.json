@@ -191,10 +191,7 @@
   "profile": {
     "subtitle": "Member settings",
     "fitId": "Fit ID {{id}}",
-    "personal": "Personal",
     "settings": "Member settings",
-    "age": "Age",
-    "height": "Height",
     "sound": "Sound",
     "soundHint": "Play app sounds",
     "showFitScore": "Show FitScore",

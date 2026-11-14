@@ -18,7 +18,6 @@ import Goals from './Goals';
 import Leaderboard from './Leaderboard';
 import NewGoal from './NewGoal';
 import Profile from './Profile';
-import { ageOn } from './profile/age';
 import Progress from './Progress';
 
 const NOW = new Date('2026-11-13T10:00:00Z');
@@ -350,11 +349,11 @@ describe('Leaderboard', () => {
 });
 
 describe('Profile', () => {
-  it("shows Mohamed's name, Fit ID, and personal details only (no membership or coach)", async () => {
+  it("shows Mohamed's name and Fit ID, and no personal details, membership, or coach", async () => {
     await renderAs('101', Profile);
     expect(await screen.findByTestId('profile-name')).toHaveTextContent('Mohamed Omran');
     expect(screen.getByText('Fit ID 101')).toBeInTheDocument();
-    expect(screen.getByTestId('profile-age')).toHaveTextContent('23');
+    expect(screen.queryByTestId('profile-age')).toBeNull();
     expect(screen.queryByText('Rami Saad')).toBeNull();
     expect(screen.queryByText(/Premium/)).toBeNull();
   });
@@ -384,11 +383,6 @@ describe('Profile', () => {
     const lang = await screen.findByTestId('setting-language');
     await userEvent.click(within(lang).getByRole('radio', { name: 'عربي' }));
     await waitFor(() => expect(document.documentElement.dir).toBe('rtl'));
-    expect(screen.getByText('بياناتك')).toBeInTheDocument();
-  });
-
-  it('computes age from the birth date', () => {
-    expect(ageOn('1994-03-12T00:00:00Z', NOW)).toBe(32);
-    expect(ageOn('1994-12-01T00:00:00Z', NOW)).toBe(31);
+    expect(screen.getByText('الإعدادات')).toBeInTheDocument();
   });
 });
