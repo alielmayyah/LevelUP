@@ -157,11 +157,10 @@
     --px-hi: var(--lu-skin-hi);
   }
 
-  .lu-tile-since {
-    --metric: var(--ion-color-secondary);
-    --px-fill: var(--ion-color-primary);
-    --px-hi: var(--lu-surface);
-    --px-core: var(--ion-color-secondary);
+  .lu-tile-bmi {
+    --metric: var(--lu-tier-3);
+    --px-fill: var(--lu-tier-3);
+    --px-hi: var(--lu-fat-core);
   }
 
   /* ---------- Notifications sheet ---------- */

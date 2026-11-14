@@ -241,6 +241,10 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
     samples(m, (a) => a.skeletalMuscleKg),
     month,
   );
+  const bmi = monthDelta(
+    samples(m, (a) => a.bmi),
+    month,
+  );
 
   const active = m.goals
     .filter((g) => g.status === 'ACTIVE')
@@ -252,7 +256,6 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
       memberId: m.id,
       firstName: m.firstName,
       showFitScore: m.settings.showFitScore,
-      memberSince: m.membershipStart.toISOString(),
       avatar: await loadAvatar(m),
     },
     fitScore: last
@@ -278,6 +281,8 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
     monthlyWins: {
       bodyFatChangePct: fat === null ? null : round1(fat),
       muscleGainedKg: muscle === null ? null : round1(muscle),
+      bmiChange: bmi === null ? null : round1(bmi),
+      bmi: last?.bmi ?? null,
     },
     leaderboard: await leaderboardSummary(m),
     unreadNotifications: m.notifications.filter((n) => n.readAt === null).length,

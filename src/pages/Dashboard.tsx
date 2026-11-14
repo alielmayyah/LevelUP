@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
               <RankCard leaderboard={d.leaderboard} />
               <MissionCard mission={d.mission} />
               <div className={HOME_SPAN}>
-                <StatTiles wins={d.monthlyWins} memberSince={d.member.memberSince} today={today} />
+                <StatTiles wins={d.monthlyWins} today={today} />
               </div>
             </div>
           )}

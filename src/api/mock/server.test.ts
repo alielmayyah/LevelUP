@@ -73,19 +73,19 @@ describe('dashboard', () => {
   it('Mohamed (101) is the top member: Elite FitScore, #1 of 19', async () => {
     const { status, body: d } = await get<DashboardDto>('/me/dashboard', '101');
     expect(status).toBe(200);
-    const { body: me } = await get<ProfileDto>('/me', '101');
     expect(d.member).toEqual({
       memberId: 1,
       firstName: 'Mohamed',
       showFitScore: true,
-      memberSince: me.membershipStart,
       avatar: null,
     });
     // FitScore is computed from the scan with the InBody Score method (domain.ts).
     expect(d.fitScore).toEqual({ score: 91, tier: 'Elite', changeSinceLastScan: 2 });
     expect(d.mission).toMatchObject({ title: 'Gain 3 kg of muscle', percent: 67, doneKg: 2, remainingKg: 1 });
     expect(d.mission!.estimatedCompletion).not.toBeNull();
-    expect(d.monthlyWins).toEqual({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
+    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
+    expect(typeof d.monthlyWins.bmiChange).toBe('number');
+    expect(typeof d.monthlyWins.bmi).toBe('number');
     expect(d.leaderboard).toEqual({
       optedIn: true,
       standing: { rank: 1, totalMembers: 19, topPercent: 6, membersBehind: 18, pointsToNextRank: null },
@@ -97,7 +97,7 @@ describe('dashboard', () => {
     const d = (await get<DashboardDto>('/me/dashboard', '102')).body;
     expect(d.fitScore).toBeNull();
     expect(d.mission).toBeNull();
-    expect(d.monthlyWins).toEqual({ bodyFatChangePct: null, muscleGainedKg: null });
+    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: null, muscleGainedKg: null, bmiChange: null });
     expect(d.leaderboard).toEqual({ optedIn: false, standing: null });
     expect(JSON.stringify(d)).not.toContain('NaN');
   });
@@ -106,7 +106,7 @@ describe('dashboard', () => {
     const d = (await get<DashboardDto>('/me/dashboard', '103')).body;
     expect(d.member.showFitScore).toBe(false);
     expect(d.fitScore).toMatchObject({ changeSinceLastScan: null });
-    expect(d.monthlyWins).toEqual({ bodyFatChangePct: null, muscleGainedKg: null });
+    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: null, muscleGainedKg: null, bmiChange: null });
   });
 
   it('no response for any mock member contains NaN or undefined values', async () => {
@@ -133,7 +133,9 @@ describe('dates are relative to today', () => {
     const later = new Date('2027-03-02T08:00:00Z');
     resetMockServer(later);
     const d = (await get<DashboardDto>('/me/dashboard', '101')).body;
-    expect(d.monthlyWins).toEqual({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
+    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
+    expect(typeof d.monthlyWins.bmiChange).toBe('number');
+    expect(typeof d.monthlyWins.bmi).toBe('number');
     const progress = (await get<ProgressDto>('/me/progress', '101')).body.assessments;
     expect(new Date(progress.at(-1)!.takenAt).getUTCMonth()).toBe(later.getUTCMonth());
   });

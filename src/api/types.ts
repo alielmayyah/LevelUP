@@ -45,6 +45,10 @@ export interface MissionSummary {
 export interface MonthlyWins {
   bodyFatChangePct: number | null;
   muscleGainedKg: number | null;
+  /** BMI change this month; null without a scan this month. */
+  bmiChange: number | null;
+  /** BMI on the latest scan, so the app can tell whether down or up is good news. */
+  bmi: number | null;
 }
 
 export interface LeaderboardStanding {
@@ -63,13 +67,11 @@ export interface LeaderboardSummary {
 }
 
 export interface DashboardDto {
-  /** memberSince: the membership start date, for the "Member since" tile. */
   member: {
     /** Opaque member id; seeds the starter character when none is saved. */
     memberId: number;
     firstName: string;
     showFitScore: boolean;
-    memberSince: string;
     /** The member's saved character, so Home shows their picture without a second request. */
     avatar: AvatarConfigDto | null;
   };

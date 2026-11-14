@@ -74,13 +74,15 @@ describe('Home', () => {
     expect(screen.queryByText('Keep protein high on training days.')).toBeNull();
   });
 
-  it('colors the monthly tiles and shows the join date', async () => {
+  it('colors the monthly tiles and shows the BMI change', async () => {
     await renderHome();
     expect(screen.getByTestId('tile-body-fat')).toHaveClass('lu-tile-good');
     expect(screen.getByTestId('tile-body-fat')).toHaveTextContent('−1.1%');
     expect(screen.getByTestId('tile-muscle')).toHaveClass('lu-tile-good');
     expect(screen.getByTestId('tile-muscle')).toHaveTextContent('+0.9 kg');
-    expect(screen.getByTestId('tile-member-since')).toHaveTextContent('Mar 2026');
+    expect(screen.getByTestId('tile-bmi')).toHaveTextContent('BMI');
+    expect(screen.getByTestId('tile-bmi')).toHaveTextContent(/[+−±]?\d+\.\d/);
+    expect(screen.queryByTestId('tile-member-since')).toBeNull();
   });
 
   it('a new member sees the empty FitScore, the join prompt, and dashes', async () => {
