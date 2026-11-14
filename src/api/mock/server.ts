@@ -120,7 +120,7 @@ const goalsKey = (m: MockMember) => `lu.mock.goals.${m.fitId}`;
 /** Stored form of a created goal: dates as ISO strings. */
 type StoredGoal = Omit<GoalRecord, 'startDate' | 'deadline' | 'completedAt'> & {
   startDate: string;
-  deadline: string;
+  deadline: string | null;
   completedAt: string | null;
 };
 
@@ -137,7 +137,7 @@ async function loadGoals(m: MockMember): Promise<void> {
       m.goals.push({
         ...g,
         startDate: new Date(g.startDate),
-        deadline: new Date(g.deadline),
+        deadline: g.deadline ? new Date(g.deadline) : null,
         completedAt: g.completedAt ? new Date(g.completedAt) : null,
         createdByMember: true,
       });
@@ -262,7 +262,7 @@ function goalView(goal: GoalRecord, m: MockMember): GoalView {
     metric: goal.metric,
     startValue: goal.startValue,
     targetValue: goal.targetValue,
-    deadline: goal.deadline.toISOString(),
+    deadline: goal.deadline?.toISOString() ?? null,
     coachNote: goal.coachNote,
     percent,
     completedAt: goal.completedAt?.toISOString() ?? null,
@@ -289,7 +289,8 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
 
   const active = m.goals
     .filter((g) => g.status === 'ACTIVE')
-    .sort((a, b) => a.deadline.getTime() - b.deadline.getTime())[0];
+    // Soonest due first; goals without a due date after them.
+    .sort((a, b) => (a.deadline?.getTime() ?? Infinity) - (b.deadline?.getTime() ?? Infinity))[0];
   const p = active ? progressFor(active, m) : null;
 
   return {
@@ -316,7 +317,7 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
             remainingKg: p.remainingKg,
             estimatedCompletion: p.estimatedCompletion?.toISOString() ?? null,
             coachNote: active.coachNote,
-            deadline: active.deadline.toISOString(),
+            deadline: active.deadline?.toISOString() ?? null,
           }
         : null,
     monthlyWins: {
@@ -355,8 +356,6 @@ function goals(m: MockMember): GoalsDto {
 }
 
 const GOAL_METRICS: readonly GoalMetric[] = ['BODY_FAT_KG', 'MUSCLE_KG', 'WEIGHT_KG'];
-/** The furthest ahead a goal may be due. */
-const MAX_GOAL_DAYS = 366;
 
 /** "3" for 3.0, "2.5" for 2.5, as the goal titles read. */
 const kgText = (n: number) => String(round1(n));
@@ -374,19 +373,17 @@ function goalTitle(metric: GoalMetric, start: number, target: number): string {
 }
 
 /**
- * POST /me/goals: the member sets their own goal, no coach approval. It starts
- * from the latest scan and goes live now, or after the current mission if one
- * is in progress. A target that points the wrong way (gaining fat) is a 400.
+ * POST /me/goals: the member sets their own goal, no coach approval and no due
+ * date. It starts from the latest scan and goes live now, or after the current
+ * mission if one is in progress. A target that points the wrong way (gaining
+ * fat) is a 400.
  */
 async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
   const req = (body && typeof body === 'object' ? body : {}) as Partial<Record<keyof CreateGoalRequest, unknown>>;
   const metric = req.metric as GoalMetric;
   const target = typeof req.targetValue === 'number' ? round1(req.targetValue) : NaN;
-  const deadline = typeof req.deadline === 'string' ? new Date(req.deadline) : null;
   if (!GOAL_METRICS.includes(metric)) return fail(400, 'Invalid metric');
   if (!Number.isFinite(target) || target <= 0 || target > 400) return fail(400, 'Invalid target');
-  const days = deadline ? (deadline.getTime() - now.getTime()) / 86_400_000 : NaN;
-  if (!(days > 0 && days <= MAX_GOAL_DAYS)) return fail(400, 'Invalid deadline');
 
   const scan = latest(m);
   if (!scan) return fail(409, 'Take a scan before setting a goal');
@@ -402,7 +399,7 @@ async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
     startValue: start,
     targetValue: target,
     startDate: now,
-    deadline: deadline!,
+    deadline: null,
     status: m.goals.some((g) => g.status === 'ACTIVE') ? 'UPCOMING' : 'ACTIVE',
     coachNote: null,
     completedAt: null,
@@ -414,7 +411,7 @@ async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
     .map(({ startDate, deadline: due, completedAt, ...rest }) => ({
       ...rest,
       startDate: startDate.toISOString(),
-      deadline: due.toISOString(),
+      deadline: due?.toISOString() ?? null,
       completedAt: completedAt?.toISOString() ?? null,
     }));
   await Preferences.set({ key: goalsKey(m), value: JSON.stringify(stored) });

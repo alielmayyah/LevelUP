@@ -259,7 +259,7 @@ describe('New goal', () => {
   const mock = <T,>(path: string, fitId: string) =>
     mockServer.handle('GET', path, null, `mock.${fitId}`).then((r) => r.body as T);
 
-  it('Omar sets a muscle goal himself: amount, deadline, and it starts now', async () => {
+  it('Omar sets a muscle goal himself: what and how much, and it starts now', async () => {
     const [scan] = await mock<AssessmentDto[]>('/me/assessments', '103');
     await renderAs('103', NewGoal);
     await userEvent.click(await screen.findByTestId('goal-type-MUSCLE_KG'));
@@ -268,7 +268,7 @@ describe('New goal', () => {
     await userEvent.click(screen.getByTestId('goal-more'));
     expect(screen.getByTestId('goal-amount')).toHaveTextContent('2.5');
     expect(screen.getByTestId('goal-name')).toHaveTextContent('Gain 2.5 kg of muscle');
-    await userEvent.click(screen.getByTestId('goal-months-6'));
+    expect(screen.queryByText('By when?')).toBeNull();
     expect(await screen.findByTestId('goal-starts')).toHaveTextContent('Starts today');
 
     await userEvent.click(screen.getByTestId('goal-create'));

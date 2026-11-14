@@ -497,13 +497,6 @@
     "less": "Less",
     "more": "More",
     "fromScan": "{{change}} kg from your last scan",
-    "deadline": "By when?",
-    "months": {
-      "1": "1 month",
-      "2": "2 months",
-      "3": "3 months",
-      "6": "6 months"
-    },
     "name": {
       "BODY_FAT_KG": "Lose {{amount}} kg of body fat",
       "MUSCLE_KG": "Gain {{amount}} kg of muscle",

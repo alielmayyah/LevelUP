@@ -200,17 +200,17 @@ describe('progress, assessments, goals, profile', () => {
 
 const createGoal = (body: unknown, fitId: string) =>
   mockServer.handle('POST', '/me/goals', body, `mock.${fitId}`) as Promise<{ status: number; body: GoalView }>;
-const inDays = (d: number) => new Date(NOW.getTime() + d * 86_400_000).toISOString();
 
 describe('creating a goal', () => {
   it('Omar, with no goal yet, sets one that starts now from his latest scan', async () => {
     const [scan] = (await get<AssessmentDto[]>('/me/assessments', '103')).body;
-    const r = await createGoal({ metric: 'BODY_FAT_KG', targetValue: scan.bodyFatKg - 2, deadline: inDays(90) }, '103');
+    const r = await createGoal({ metric: 'BODY_FAT_KG', targetValue: scan.bodyFatKg - 2 }, '103');
     expect(r.status).toBe(201);
     expect(r.body).toMatchObject({
       title: 'Lose 2 kg of body fat',
       startValue: scan.bodyFatKg,
       coachNote: null,
+      deadline: null,
       percent: 0,
     });
     const goals = (await get<GoalsDto>('/me/goals', '103')).body;
@@ -220,10 +220,7 @@ describe('creating a goal', () => {
 
   it('Sam, mid-mission, gets the new goal queued up next, no approval needed', async () => {
     const [scan] = (await get<AssessmentDto[]>('/me/assessments', '101')).body;
-    const r = await createGoal(
-      { metric: 'MUSCLE_KG', targetValue: scan.skeletalMuscleKg + 1.5, deadline: inDays(60) },
-      '101',
-    );
+    const r = await createGoal({ metric: 'MUSCLE_KG', targetValue: scan.skeletalMuscleKg + 1.5 }, '101');
     expect(r.status).toBe(201);
     expect(r.body.title).toBe('Gain 1.5 kg of muscle');
     const goals = (await get<GoalsDto>('/me/goals', '101')).body;
@@ -232,26 +229,23 @@ describe('creating a goal', () => {
   });
 
   it('a weight goal is named by its target', async () => {
-    const r = await createGoal({ metric: 'WEIGHT_KG', targetValue: 70, deadline: inDays(30) }, '103');
+    const r = await createGoal({ metric: 'WEIGHT_KG', targetValue: 70 }, '103');
     expect(r.body.title).toBe('Reach 70 kg');
   });
 
   it('Lina, with no scan, is told to scan first (409)', async () => {
-    const r = await createGoal({ metric: 'MUSCLE_KG', targetValue: 40, deadline: inDays(30) }, '102');
+    const r = await createGoal({ metric: 'MUSCLE_KG', targetValue: 40 }, '102');
     expect(r.status).toBe(409);
   });
 
-  it('rejects bad metrics, targets, deadlines, and targets that point the wrong way', async () => {
+  it('rejects bad metrics, targets, and targets that point the wrong way', async () => {
     const [scan] = (await get<AssessmentDto[]>('/me/assessments', '103')).body;
-    const ok = { metric: 'MUSCLE_KG', targetValue: scan.skeletalMuscleKg + 1, deadline: inDays(30) };
+    const ok = { metric: 'MUSCLE_KG', targetValue: scan.skeletalMuscleKg + 1 };
     for (const bad of [
       null,
       { ...ok, metric: 'HEIGHT' },
       { ...ok, targetValue: 'x' },
       { ...ok, targetValue: -1 },
-      { ...ok, deadline: 'soon' },
-      { ...ok, deadline: inDays(-1) },
-      { ...ok, deadline: inDays(400) },
       { ...ok, targetValue: scan.skeletalMuscleKg - 1 },
       { ...ok, metric: 'BODY_FAT_KG', targetValue: scan.bodyFatKg + 1 },
       { ...ok, metric: 'WEIGHT_KG', targetValue: scan.weightKg },
@@ -261,7 +255,7 @@ describe('creating a goal', () => {
   });
 
   it('created goals survive a mock server restart, and stay with their member', async () => {
-    const r = await createGoal({ metric: 'WEIGHT_KG', targetValue: 70, deadline: inDays(30) }, '103');
+    const r = await createGoal({ metric: 'WEIGHT_KG', targetValue: 70 }, '103');
     resetMockServer(NOW);
     expect((await get<GoalsDto>('/me/goals', '103')).body.active.map((g) => g.id)).toEqual([r.body.id]);
     const sam = (await get<GoalsDto>('/me/goals', '101')).body;

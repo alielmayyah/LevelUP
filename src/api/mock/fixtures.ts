@@ -113,7 +113,8 @@ export interface GoalRecord {
   startValue: number;
   targetValue: number;
   startDate: Date;
-  deadline: Date;
+  /** Null for goals the member set themselves: they have no due date. */
+  deadline: Date | null;
   status: GoalStatus;
   coachNote: string | null;
   completedAt: Date | null;

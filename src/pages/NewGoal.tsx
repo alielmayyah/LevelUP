@@ -10,13 +10,11 @@ import CtaButton from '../components/CtaButton';
 import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
 import PixelToast from '../components/PixelToast';
 import { focusSibling, rovingTarget } from '../components/roving';
-import { formatNumber, formatSigned, numberLocale } from '../i18n/format';
+import { formatNumber, formatSigned } from '../i18n/format';
 import './goals/Goals.scss';
 
 const STEP = 0.5;
 const METRICS: readonly GoalMetric[] = ['BODY_FAT_KG', 'MUSCLE_KG', 'WEIGHT_KG'];
-const MONTHS = [1, 2, 3, 6] as const;
-type Months = (typeof MONTHS)[number];
 
 /** Same icon and hue as the goal rows, Home, and Progress. */
 const LOOK: Record<GoalMetric, { icon: PixelIconName; tone: string }> = {
@@ -48,15 +46,6 @@ function range(metric: GoalMetric, now: number) {
 
 const targetFor = (metric: GoalMetric, now: number, value: number) =>
   round1(metric === 'BODY_FAT_KG' ? now - value : metric === 'MUSCLE_KG' ? now + value : value);
-
-const dueDate = (from: number, months: Months) => {
-  const d = new Date(from);
-  d.setMonth(d.getMonth() + months);
-  return d;
-};
-
-const longDate = (d: Date) =>
-  new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(d);
 
 interface ChoiceProps<T> {
   options: readonly T[];
@@ -114,7 +103,7 @@ const SECTION = 'lu-px-card grid gap-3 p-3.5';
 const QUESTION = 'm-0 text-[1rem] font-extrabold text-ink';
 
 /**
- * The member sets their own goal: what to change, by how much, and by when.
+ * The member sets their own goal: what to change and by how much. No due date.
  * It goes live at once, or queues after the current mission. No coach approval.
  */
 const NewGoal: React.FC = () => {
@@ -122,12 +111,10 @@ const NewGoal: React.FC = () => {
   const router = useIonRouter();
   const scans = useApi<AssessmentDto[]>('/me/assessments');
   const goals = useApi<GoalsDto>('/me/goals');
-  const [now] = useState(() => Date.now());
 
   const [metric, setMetric] = useState<GoalMetric>('BODY_FAT_KG');
   /** The stepper value per metric, once the member has moved it. */
   const [picked, setPicked] = useState<Partial<Record<GoalMetric, number>>>({});
-  const [months, setMonths] = useState<Months>(3);
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
   const clearFailed = useCallback(() => setFailed(false), []);
@@ -189,7 +176,6 @@ const NewGoal: React.FC = () => {
       if (metric === 'WEIGHT_KG' && Math.abs(next - base) < 0.05) next = round1(next + dir * STEP);
       if (next >= r.min && next <= r.max) setPicked((p) => ({ ...p, [metric]: next }));
     };
-    const due = dueDate(now, months);
     const amount = metric === 'WEIGHT_KG' ? target : Math.abs(change);
     const { icon, tone } = LOOK[metric];
 
@@ -197,7 +183,7 @@ const NewGoal: React.FC = () => {
       if (saving) return;
       setSaving(true);
       try {
-        await createGoal({ metric, targetValue: target, deadline: due.toISOString() });
+        await createGoal({ metric, targetValue: target });
         leave();
       } catch {
         setFailed(true);
@@ -287,22 +273,6 @@ const NewGoal: React.FC = () => {
           </p>
         </section>
 
-        <section className={SECTION} aria-labelledby="new-goal-deadline">
-          <h2 id="new-goal-deadline" className={QUESTION}>
-            {t('newGoal.deadline')}
-          </h2>
-          <Choice
-            options={MONTHS}
-            value={months}
-            onChange={setMonths}
-            labelledBy="new-goal-deadline"
-            className="lu-segment m-0"
-            optionClass={() => ''}
-            testId={(m) => `goal-months-${m}`}
-            render={(m) => t(`newGoal.months.${m}`)}
-          />
-        </section>
-
         <section
           className={`lu-px-card lu-goal-${tone} grid gap-2 p-3.5`}
           aria-labelledby="new-goal-summary"
@@ -322,14 +292,13 @@ const NewGoal: React.FC = () => {
               <span className="text-[1.1rem] leading-tight font-extrabold text-ink" data-testid="goal-name">
                 {t(`newGoal.name.${metric}`, { amount: formatNumber(amount) })}
               </span>
-              <span className="text-[0.875rem] font-bold text-muted">{t('goals.due', { date: longDate(due) })}</span>
+              {goals.status === 'ready' && (
+                <span className="text-[0.875rem] font-bold text-muted" data-testid="goal-starts">
+                  {queued ? t('newGoal.startsNext') : t('newGoal.startsNow')}
+                </span>
+              )}
             </span>
           </div>
-          {goals.status === 'ready' && (
-            <p className="m-0 text-[0.875rem] font-semibold text-muted" data-testid="goal-starts">
-              {queued ? t('newGoal.startsNext') : t('newGoal.startsNow')}
-            </p>
-          )}
         </section>
 
         <CtaButton

@@ -39,7 +39,8 @@ export interface MissionSummary {
   remainingKg: number;
   estimatedCompletion: string | null;
   coachNote: string | null;
-  deadline: string;
+  /** Null for goals the member set without a due date. */
+  deadline: string | null;
 }
 
 export interface MonthlyWins {
@@ -172,18 +173,17 @@ export interface GoalView {
   metric: GoalMetric;
   startValue: number;
   targetValue: number;
-  deadline: string;
+  /** Null for goals the member set without a due date. */
+  deadline: string | null;
   coachNote: string | null;
   percent: number;
   completedAt: string | null;
 }
 
-/** POST /me/goals: the member sets their own goal; it starts from their latest scan. */
+/** POST /me/goals: the member sets their own goal, with no due date; it starts from their latest scan. */
 export interface CreateGoalRequest {
   metric: GoalMetric;
   targetValue: number;
-  /** ISO date the goal is due. */
-  deadline: string;
 }
 
 export interface GoalsDto {

@@ -51,7 +51,7 @@ const GoalRow: React.FC<{ goal: GoalView; kind: GoalTab; now: number }> = ({ goa
   const percent = Math.min(100, Math.max(0, goal.percent));
   const total = Math.abs(goal.targetValue - goal.startValue);
   const done = (total * percent) / 100;
-  const overdue = kind === 'active' && new Date(goal.deadline).getTime() < now;
+  const overdue = kind === 'active' && !!goal.deadline && new Date(goal.deadline).getTime() < now;
 
   const meta =
     kind === 'completed' && goal.completedAt
@@ -124,7 +124,7 @@ const GoalRow: React.FC<{ goal: GoalView; kind: GoalTab; now: number }> = ({ goa
             {formatNumber(goal.targetValue, 1)} {kg}
           </span>
         </div>
-        {kind !== 'completed' && (
+        {kind !== 'completed' && goal.deadline && (
           <p className="m-0 text-[0.875rem] font-bold text-muted">
             {t('goals.due', { date: shortDate(goal.deadline) })}
           </p>

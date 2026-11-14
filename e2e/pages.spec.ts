@@ -122,8 +122,8 @@ test.describe('Goals', () => {
     await n.getByTestId('goal-type-MUSCLE_KG').click();
     await n.getByTestId('goal-more').click();
     await expect(n.getByTestId('goal-name')).toHaveText('Gain 2.5 kg of muscle');
-    await n.getByTestId('goal-months-6').click();
-    await expect(n.getByTestId('goal-months-6')).toHaveAttribute('aria-checked', 'true');
+    // No due date to pick.
+    await expect(n.getByText(en.goals.due.replace(' {{date}}', ''), { exact: false })).toHaveCount(0);
     await n.getByTestId('goal-create').click();
 
     await expect(page).toHaveURL(/\/tabs\/goals$/);
