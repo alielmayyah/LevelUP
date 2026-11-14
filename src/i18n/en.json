@@ -133,7 +133,8 @@
     "comparedWith": "Compared with",
     "compareOffShort": "No scan",
     "moreDetails": "View more details",
-    "lessDetails": "Show less"
+    "lessDetails": "Show less",
+    "scanPages": "Scan pages"
   },
   "goals": {
     "subtitle": "Your missions",

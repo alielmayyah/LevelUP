@@ -17,7 +17,7 @@ import TabPage from '../components/TabPage';
 import { formatNumber, formatRank } from '../i18n/format';
 import './leaderboard/Leaderboard.scss';
 import MetricIcon from './leaderboard/MetricIcon';
-import Pager from './leaderboard/Pager';
+import Pager from '../components/Pager';
 import Podium from './leaderboard/Podium';
 import { rowAvatar } from './leaderboard/rowAvatar';
 

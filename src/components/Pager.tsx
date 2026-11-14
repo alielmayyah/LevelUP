@@ -2,24 +2,27 @@ import { IonIcon } from '@ionic/react';
 import { chevronBack, chevronForward } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 
-import { formatNumber } from '../../i18n/format';
+import { formatNumber } from '../i18n/format';
+import './Pager.scss';
 
 interface Props {
   page: number;
   pages: number;
   onPage: (page: number) => void;
+  /** Names the pager for screen readers; defaults to the leaderboard's. */
+  label?: string;
 }
 
 const BUTTON =
   'lu-pager-button grid size-11 cursor-pointer place-items-center border-0 bg-surface font-inherit text-[1.1rem] text-ink disabled:cursor-default disabled:text-muted disabled:opacity-50';
 
-/** Previous / page x of y / next. Rendered only when a board has more than one page. */
-const Pager: React.FC<Props> = ({ page, pages, onPage }) => {
+/** Previous / page x of y / next. Render it only when there is more than one page. */
+const Pager: React.FC<Props> = ({ page, pages, onPage, label }) => {
   const { t } = useTranslation();
   return (
     <nav
       className="mt-3 flex items-center justify-center gap-3"
-      aria-label={t('leaderboard.pages')}
+      aria-label={label ?? t('leaderboard.pages')}
       data-testid="pager"
     >
       <button

@@ -118,7 +118,9 @@ describe('Progress', () => {
     await screen.findByTestId('latest-scan');
     await userEvent.click(screen.getByRole('button', { name: 'All scans (6)' }));
     const rows = await screen.findAllByTestId('scan-row');
-    expect(rows).toHaveLength(6);
+    // Five to a page; the pager shows because there are six.
+    expect(rows).toHaveLength(5);
+    expect(screen.getByTestId('pager')).toHaveTextContent('Page 1 of 2');
     expect(rows[0]).toHaveAttribute('aria-current', 'true');
     await userEvent.click(rows[2]);
     expect(screen.getByTestId('scan-date')).toHaveTextContent('scan 4 of 6');
@@ -167,10 +169,13 @@ describe('Progress', () => {
     await userEvent.click(screen.getByTestId('compare-open'));
     const picker = await screen.findByTestId('compare-picker');
     const rows = within(picker).getAllByTestId('scan-row');
-    expect(rows).toHaveLength(6);
+    expect(rows).toHaveLength(5);
     expect(rows[0]).toBeDisabled(); // the scan on screen
     expect(rows[1]).toHaveAttribute('aria-current', 'true'); // the scan before, by default
-    await userEvent.click(rows[5]);
+    // The first scan is on page 2.
+    await userEvent.click(within(picker).getByRole('button', { name: 'Next page' }));
+    expect(within(picker).getAllByTestId('scan-row')).toHaveLength(1);
+    await userEvent.click(within(picker).getByTestId('scan-row'));
     // Now every change is since the first scan: 36.4 → 41.3 kg of muscle.
     expect(screen.getByTestId('change-muscle')).toHaveTextContent('▲ 4.9 kg');
     expect(screen.getByTestId('bar-smm-delta')).toHaveTextContent('+4.9 kg');

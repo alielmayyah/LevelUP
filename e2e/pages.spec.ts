@@ -32,8 +32,11 @@ test.describe('Progress', () => {
     // View all scans: pick any scan from the full list.
     await p.getByTestId('view-all-scans').click();
     const sheet = page.getByTestId('scan-history');
-    await expect(sheet.getByTestId('scan-row')).toHaveCount(6);
-    await sheet.getByTestId('scan-row').nth(5).click();
+    // Five to a page: the first scan is on page 2.
+    await expect(sheet.getByTestId('scan-row')).toHaveCount(5);
+    await sheet.getByRole('button', { name: en.leaderboard.nextPage }).click();
+    await expect(sheet.getByTestId('pager')).toContainText('2');
+    await sheet.getByTestId('scan-row').first().click();
     await expect(p.getByTestId('scan-date')).toContainText('1');
     await expect(p.getByTestId('change-weight')).toHaveText(en.progress.firstScan);
     // One line at a time; tapping a point shows its value.
@@ -67,6 +70,7 @@ test.describe('Progress', () => {
         await page.getByTestId('compare-open').click();
         const picker = page.getByTestId('compare-picker');
         await expect(picker.getByTestId('scan-row').first()).toBeDisabled();
+        await picker.getByRole('button', { name: s.leaderboard.nextPage }).click();
         await picker.getByTestId('scan-row').last().click();
         await expect(page.getByTestId('change-muscle')).toContainText('4.9');
         await expect(bc.getByTestId('bar-smm-delta')).toContainText('4.9');
