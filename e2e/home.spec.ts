@@ -16,9 +16,9 @@ for (const lang of LOCALES)
         const home = page.getByTestId('page-home');
         await expect(home.getByTestId('greeting')).toContainText('Sam');
         await expect(home.getByTestId('today')).not.toBeEmpty();
-        await expect(home.getByTestId('fitscore-value')).toHaveText('72');
+        await expect(home.getByTestId('fitscore-value')).toHaveText('79');
         await expect(home.getByText(s.tier.strong)).toBeVisible();
-        await expect(home.getByTestId('rank-number')).toContainText('#6');
+        await expect(home.getByTestId('rank-number')).toContainText('#4');
         await expect(home.getByTestId('tile-body-fat')).toContainText('1.2%');
         await expect(home.getByTestId('tile-muscle')).toContainText(`0.8 ${strings[lang].units.kg}`);
         await expect(home.getByTestId('tile-member-since')).toContainText('2026');

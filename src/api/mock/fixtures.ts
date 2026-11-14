@@ -3,7 +3,7 @@
  * server starts, so "this month", "renews soon", and goal ETAs always hold.
  */
 import type { AssessmentDto, GoalMetric, NotificationDto, Sex } from '../types';
-import { round1 } from './domain';
+import { round1, computeFitScore } from './domain';
 
 const DAY = 86_400_000;
 
@@ -33,7 +33,6 @@ export interface ScanInput {
   skeletalMuscleKg: number;
   bodyFatPct: number;
   visceralFatLevel: number;
-  fitScore: number;
 }
 
 let nextAssessmentId = 1;
@@ -61,7 +60,7 @@ export function assessment(s: ScanInput, heightCm: number, sex: Sex): Assessment
     proteinKg: round1(leanKg * 0.2),
     mineralsKg: round1(leanKg * 0.068),
     bmrKcal: Math.round(370 + 21.6 * leanKg + (sex === 'MALE' ? 0 : -50)),
-    fitScore: s.fitScore,
+    fitScore: computeFitScore({ weightKg: s.weightKg, bodyFatKg, heightCm, sex }),
   };
 }
 

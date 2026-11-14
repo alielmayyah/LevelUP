@@ -81,13 +81,14 @@ describe('dashboard', () => {
       memberSince: me.membershipStart,
       avatar: null,
     });
-    expect(d.fitScore).toEqual({ score: 72, tier: 'Strong', changeSinceLastScan: 3 });
+    // FitScore is computed from the scan with the InBody Score method (domain.ts).
+    expect(d.fitScore).toEqual({ score: 79, tier: 'Strong', changeSinceLastScan: 2 });
     expect(d.mission).toMatchObject({ title: 'Lose 5 kg of body fat', percent: 60, doneKg: 3, remainingKg: 2 });
     expect(d.mission!.estimatedCompletion).not.toBeNull();
     expect(d.monthlyWins).toEqual({ bodyFatChangePct: -1.2, muscleGainedKg: 0.8 });
     expect(d.leaderboard).toEqual({
       optedIn: true,
-      standing: { rank: 6, totalMembers: 19, topPercent: 32, membersBehind: 13, pointsToNextRank: 4 },
+      standing: { rank: 4, totalMembers: 19, topPercent: 22, membersBehind: 15, pointsToNextRank: 3 },
     });
     expect(d.unreadNotifications).toBe(2);
   });
@@ -209,13 +210,13 @@ describe('settings', () => {
 });
 
 describe('leaderboard', () => {
-  it("only opted-in men appear on Sam's board; Sam is #6 of 19 on Top Score", async () => {
+  it("only opted-in men appear on Sam's board; Sam is #4 of 19 on Top Score", async () => {
     const r = (await get<LeaderboardDto>('/leaderboard', '101')).body;
     expect(r.board).toBe('score');
     expect(r.division).toBe('MALE');
     expect(r.optedIn).toBe(true);
     expect(r.rows).toHaveLength(19);
-    expect(r.rows.find((x) => x.isMe)).toMatchObject({ rank: 6, name: 'Sam K.', value: 72 });
+    expect(r.rows.find((x) => x.isMe)).toMatchObject({ rank: 4, name: 'Sam K.', value: 79 });
     expect(r.rows.map((x) => x.name)).not.toContain('Nour S.');
     expect(r.rows.map((x) => x.name)).not.toContain('Lina H.');
     expect(r.rows.map((x) => x.name)).not.toContain('Omar A.');

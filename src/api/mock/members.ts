@@ -7,6 +7,7 @@
  *   104–139       36 opted-in fillers (18 men, 18 women) so both leaderboards have rows
  */
 import type { AssessmentDto, NotificationDto, SettingsDto, Sex } from '../types';
+import { bodyFatPctForScore } from './domain';
 import {
   assessment,
   daysFrom,
@@ -42,12 +43,12 @@ function sam(now: Date): MockMember {
   const heightCm = 178;
   const dates = monthlyScanDates(now, 6);
   const series = [
-    { weightKg: 86.0, bodyFatPct: 26.0, skeletalMuscleKg: 32.6, visceralFatLevel: 11, fitScore: 58 },
-    { weightKg: 85.2, bodyFatPct: 25.1, skeletalMuscleKg: 33.0, visceralFatLevel: 11, fitScore: 61 },
-    { weightKg: 84.5, bodyFatPct: 24.3, skeletalMuscleKg: 33.4, visceralFatLevel: 10, fitScore: 64 },
-    { weightKg: 83.9, bodyFatPct: 23.4, skeletalMuscleKg: 33.8, visceralFatLevel: 10, fitScore: 66 },
-    { weightKg: 83.3, bodyFatPct: 22.4, skeletalMuscleKg: 34.1, visceralFatLevel: 9, fitScore: 69 },
-    { weightKg: 82.6, bodyFatPct: 21.2, skeletalMuscleKg: 34.9, visceralFatLevel: 9, fitScore: 72 },
+    { weightKg: 86.0, bodyFatPct: 26.0, skeletalMuscleKg: 32.6, visceralFatLevel: 11 },
+    { weightKg: 85.2, bodyFatPct: 25.1, skeletalMuscleKg: 33.0, visceralFatLevel: 11 },
+    { weightKg: 84.5, bodyFatPct: 24.3, skeletalMuscleKg: 33.4, visceralFatLevel: 10 },
+    { weightKg: 83.9, bodyFatPct: 23.4, skeletalMuscleKg: 33.8, visceralFatLevel: 10 },
+    { weightKg: 83.3, bodyFatPct: 22.4, skeletalMuscleKg: 34.1, visceralFatLevel: 9 },
+    { weightKg: 82.6, bodyFatPct: 21.2, skeletalMuscleKg: 34.9, visceralFatLevel: 9 },
   ];
   const assessments = series.map((s, i) => assessment({ ...s, takenAt: dates[i] }, heightCm, 'MALE'));
   return {
@@ -115,10 +116,10 @@ function sam(now: Date): MockMember {
       },
     ],
     notifications: [
-      scanNotification(dates[2], 64, true),
+      scanNotification(dates[2], assessments[2].fitScore, true),
       missionNotification(dates[3], 'Gain 1 kg of muscle', true),
-      scanNotification(dates[4], 69, false),
-      scanNotification(dates[5], 72, false),
+      scanNotification(dates[4], assessments[4].fitScore, false),
+      scanNotification(dates[5], assessments[5].fitScore, false),
     ],
   };
 }
@@ -146,6 +147,11 @@ function lina(now: Date): MockMember {
 function omar(now: Date): MockMember {
   const heightCm = 182;
   const takenAt = thisMonthScan(now);
+  const scan = assessment(
+    { takenAt, weightKg: 91.4, bodyFatPct: 27.8, skeletalMuscleKg: 36.2, visceralFatLevel: 12 },
+    heightCm,
+    'MALE',
+  );
   return {
     id: 3,
     fitId: '103',
@@ -159,15 +165,9 @@ function omar(now: Date): MockMember {
     membershipEnd: daysFrom(now, 10),
     coach: 'Rami Saad',
     settings: { showFitScore: false, fitScoreOnLeaderboard: false },
-    assessments: [
-      assessment(
-        { takenAt, weightKg: 91.4, bodyFatPct: 27.8, skeletalMuscleKg: 36.2, visceralFatLevel: 12, fitScore: 51 },
-        heightCm,
-        'MALE',
-      ),
-    ],
+    assessments: [scan],
     goals: [],
-    notifications: [scanNotification(takenAt, 51, false)],
+    notifications: [scanNotification(takenAt, scan.fitScore, false)],
   };
 }
 
@@ -215,22 +215,24 @@ function filler(now: Date, i: number): MockMember {
   const f = FILLERS[i];
   const heightCm = f.sex === 'MALE' ? 176 + (i % 5) : 162 + (i % 5);
   const baseWeight = (f.sex === 'MALE' ? 80 : 63) + (i % 4) * 2;
-  const baseFat = (f.sex === 'MALE' ? 17 : 25) + (100 - f.score) / 10;
   const baseMuscle = (f.sex === 'MALE' ? 35 : 26) + (f.score - 60) / 20;
   // Two scans: last month + this month, or two and one months ago.
   const dates = f.scannedThisMonth ? [midMonth(now, 1), thisMonthScan(now)] : [midMonth(now, 2), midMonth(now, 1)];
   // Varied monthly changes so the monthly boards differ from Top Score.
-  const fatDrop = 0.3 + ((i * 7) % 10) / 10;
   const muscleGain = 0.2 + ((i * 3) % 8) / 10;
   const scoreGain = 1 + ((i * 5) % 6);
+  // Body fat is chosen so the InBody method gives the intended score (FitScore is computed, not set).
   const scans = [
     {
       weightKg: baseWeight + 0.8,
-      bodyFatPct: round(baseFat + fatDrop),
+      bodyFatPct: bodyFatPctForScore(f.score - scoreGain, baseWeight + 0.8, heightCm, f.sex),
       skeletalMuscleKg: round(baseMuscle - muscleGain),
-      fitScore: f.score - scoreGain,
     },
-    { weightKg: baseWeight, bodyFatPct: round(baseFat), skeletalMuscleKg: round(baseMuscle), fitScore: f.score },
+    {
+      weightKg: baseWeight,
+      bodyFatPct: bodyFatPctForScore(f.score, baseWeight, heightCm, f.sex),
+      skeletalMuscleKg: round(baseMuscle),
+    },
   ];
   return {
     id: 4 + i,

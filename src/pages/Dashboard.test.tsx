@@ -43,9 +43,9 @@ describe('Home', () => {
   it("shows Sam's FitScore, tier, and change", async () => {
     await renderHome();
     const card = screen.getByTestId('fitscore-card');
-    expect(within(card).getByTestId('fitscore-value')).toHaveTextContent('72');
+    expect(within(card).getByTestId('fitscore-value')).toHaveTextContent('79');
     expect(within(card).getByText('Strong')).toBeInTheDocument();
-    expect(within(card).getByTestId('fitscore-change')).toHaveTextContent(/\+3/);
+    expect(within(card).getByTestId('fitscore-change')).toHaveTextContent(/\+2/);
     expect(within(card).getByText('Private')).toBeInTheDocument();
     // Strong is the 4th of 5 tiers: 4 blocks lit, the 4th marked current.
     const blocks = within(card).getByTestId('tier-meter').children;
@@ -56,9 +56,9 @@ describe('Home', () => {
   it('shows rank, top percent, and the nudge; tapping opens the leaderboard', async () => {
     await renderHome();
     const card = screen.getByTestId('rank-card');
-    expect(within(card).getByTestId('rank-number')).toHaveTextContent(/#6⁩ of 19/);
+    expect(within(card).getByTestId('rank-number')).toHaveTextContent(/#4⁩ of 19/);
     expect(card).toHaveTextContent(/Top ⁦\d+%⁩/); // isolated so Arabic keeps the % in place
-    expect(card).toHaveTextContent('13 members behind you');
+    expect(card).toHaveTextContent('15 members behind you');
     expect(card).toHaveTextContent(/\d+ points to reach/);
     await userEvent.click(card);
     expect(await screen.findByText('leaderboard page')).toBeInTheDocument();

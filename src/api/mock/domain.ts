@@ -3,15 +3,62 @@
  * answers with the same numbers the real API will. Month boundaries use UTC,
  * which is the API's default GYM_TZ.
  */
-import type { FitScoreTier, GoalMetric, AssessmentDto } from '../types';
+import type { AssessmentDto, FitScoreTier, GoalMetric, Sex } from '../types';
 
 export const round1 = (n: number): number => Math.round(n * 10) / 10;
 
+/*
+ * FitScore, the InBody Score method (InBody's own description; the exact
+ * formula is proprietary):
+ *   - start at 80;
+ *   - standard weight = 22 × height² (men) or 21.5 × height² (women), in m;
+ *   - of that, the ideal fat share is 15% (men) or 23% (women), the rest lean;
+ *   - +1 point per kg of lean mass above standard (−1 per kg below), and
+ *     −1 point per kg of fat above standard (+1 per kg below).
+ * Matches a real InBody 270 sheet: Fat Control −10.0 kg and Muscle Control
+ * +3.8 kg give 80 − 10.0 − 3.8 = 66.2, printed as 66.
+ * Sources: lbwebfaq.inbodyusa.com "How is InBody Score calculated" and
+ * InBody's professional result-sheet guide.
+ */
+const STANDARD_BMI: Record<Sex, number> = { MALE: 22, FEMALE: 21.5 };
+const IDEAL_FAT_SHARE: Record<Sex, number> = { MALE: 0.15, FEMALE: 0.23 };
+
+export interface FitScoreInput {
+  weightKg: number;
+  bodyFatKg: number;
+  heightCm: number;
+  sex: Sex;
+}
+
+function standards(heightCm: number, sex: Sex) {
+  const m = heightCm / 100;
+  const weight = STANDARD_BMI[sex] * m * m;
+  const fat = weight * IDEAL_FAT_SHARE[sex];
+  return { fat, lean: weight - fat };
+}
+
+/** 0–100, rounded. Newer InBody models allow scores above 100; FitScore caps there. */
+export function computeFitScore({ weightKg, bodyFatKg, heightCm, sex }: FitScoreInput): number {
+  const std = standards(heightCm, sex);
+  const lean = weightKg - bodyFatKg;
+  const score = 80 + (lean - std.lean) - (bodyFatKg - std.fat);
+  return Math.min(100, Math.max(0, Math.round(score)));
+}
+
+/** The body-fat % that gives `score` at this weight and height (for building mock members). */
+export function bodyFatPctForScore(score: number, weightKg: number, heightCm: number, sex: Sex): number {
+  const std = standards(heightCm, sex);
+  // score = 80 + (W − F − stdLean) − (F − stdFat)  →  F = (80 + W − stdLean + stdFat − score) / 2
+  const fatKg = (80 + weightKg - std.lean + std.fat - score) / 2;
+  return round1((fatKg / weightKg) * 100);
+}
+
+/** Tiers follow InBody's score bands: 80+ excellent, 70–79 good, 60–69 average, 50–59 below average, under 50. */
 export function fitScoreTier(score: number): FitScoreTier {
-  if (score >= 85) return 'Elite';
+  if (score >= 80) return 'Elite';
   if (score >= 70) return 'Strong';
-  if (score >= 55) return 'On Track';
-  if (score >= 40) return 'Building';
+  if (score >= 60) return 'On Track';
+  if (score >= 50) return 'Building';
   return 'Needs Improvement';
 }
 
