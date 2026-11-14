@@ -14,6 +14,14 @@ interface Props {
   current: number;
   onPick: (index: number) => void;
   onClose: () => void;
+  /**
+   * compare: pick the scan to measure the one on screen against. `current` is
+   * then the compared scan (-1 for none), `showing` the scan on screen (it
+   * can't be picked), and a "Don't compare" row calls `onNone`.
+   */
+  mode?: 'show' | 'compare';
+  showing?: number;
+  onNone?: () => void;
 }
 
 const fullDate = (iso: string) =>
@@ -27,17 +35,20 @@ const STATS: { key: string; icon: PixelIconName; tone: string; value: (a: Assess
   { key: 'bodyFat', icon: 'flame', tone: 'lu-tone-fat', value: (a) => `${formatNumber(a.bodyFatPct, 1)}%` },
 ];
 
-/** Every scan in one list, newest first. Tapping one shows it on the Progress page. */
-const ScanHistory: React.FC<Props> = ({ open, scans, current, onPick, onClose }) => {
+/**
+ * Every scan in one list, newest first. Tapping one shows it on the Progress
+ * page, or, in compare mode, makes it the scan the page compares against.
+ */
+const ScanHistory: React.FC<Props> = ({ open, scans, current, onPick, onClose, mode = 'show', showing, onNone }) => {
   const { t } = useTranslation();
   const kg = t('units.kg');
+  const comparing = mode === 'compare';
+  const title = comparing ? t('progress.compareTitle') : t('progress.allScans');
   return (
     <IonModal
       // Name Ionic's inner role="dialog" directly (WCAG 4.1.2), as the notifications sheet does.
       onWillPresent={(e) =>
-        (e.target as HTMLElement).shadowRoot
-          ?.querySelector('[role="dialog"]')
-          ?.setAttribute('aria-label', t('progress.allScans'))
+        (e.target as HTMLElement).shadowRoot?.querySelector('[role="dialog"]')?.setAttribute('aria-label', title)
       }
       isOpen={open}
       onDidDismiss={onClose}
@@ -48,26 +59,31 @@ const ScanHistory: React.FC<Props> = ({ open, scans, current, onPick, onClose })
       {open && (
         <section
           className="flex h-full flex-col bg-page text-ink"
-          data-testid="scan-history"
+          data-testid={comparing ? 'compare-picker' : 'scan-history'}
           aria-labelledby="scans-title"
         >
           <div className="flex items-center gap-2 px-4 pt-[18px] pb-3">
             <h2 id="scans-title" className="lu-display m-0 flex-1 text-[2.1rem] leading-none">
-              {t('progress.allScans')}
+              {title}
             </h2>
             <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
               <IonIcon icon={close} aria-hidden="true" />
             </button>
           </div>
+          {comparing && (
+            <p className="m-0 px-4 pb-3 text-[0.85rem] font-semibold text-muted">{t('progress.compareHint')}</p>
+          )}
           <ol className="m-0 grid list-none gap-2 overflow-y-auto px-4 pt-0 pb-[calc(16px+var(--ion-safe-area-bottom,0px))]">
             {scans.map((s, i) => {
               const on = i === current;
+              const locked = comparing && i === showing;
               return (
                 <li key={s.id}>
                   <button
                     type="button"
+                    disabled={locked}
                     aria-current={on ? 'true' : undefined}
-                    className={`lu-scan-row grid w-full cursor-pointer gap-2 rounded-[10px] border-2 bg-surface p-3 text-start font-inherit text-ink ${on ? 'is-current border-primary' : 'border-line'}`}
+                    className={`lu-scan-row grid w-full cursor-pointer gap-2 rounded-[10px] border-2 bg-surface p-3 text-start font-inherit text-ink disabled:cursor-default disabled:opacity-55 ${on ? 'is-current border-primary' : 'border-line'}`}
                     onClick={() => {
                       onPick(i);
                       onClose();
@@ -77,7 +93,11 @@ const ScanHistory: React.FC<Props> = ({ open, scans, current, onPick, onClose })
                     <span className="flex flex-wrap items-center gap-2">
                       <strong className="font-extrabold">{fullDate(s.takenAt)}</strong>
                       {i === 0 && <span className="lu-chip lu-chip-primary">{t('progress.newest')}</span>}
-                      {on && <span className="lu-chip">{t('progress.showing')}</span>}
+                      {comparing
+                        ? (on || locked) && (
+                            <span className="lu-chip">{locked ? t('progress.showing') : t('progress.comparing')}</span>
+                          )
+                        : on && <span className="lu-chip">{t('progress.showing')}</span>}
                       <span className="ms-auto text-[0.78rem] font-bold text-muted">
                         {t('progress.scanNumber', { n: formatNumber(scans.length - i) })}
                       </span>
@@ -100,6 +120,22 @@ const ScanHistory: React.FC<Props> = ({ open, scans, current, onPick, onClose })
                 </li>
               );
             })}
+            {comparing && onNone && (
+              <li>
+                <button
+                  type="button"
+                  aria-current={current === -1 ? 'true' : undefined}
+                  className={`lu-scan-row w-full cursor-pointer rounded-[10px] border-2 border-dashed bg-surface p-3 text-start font-inherit font-extrabold text-ink ${current === -1 ? 'is-current border-primary' : 'border-line'}`}
+                  onClick={() => {
+                    onNone();
+                    onClose();
+                  }}
+                  data-testid="compare-none"
+                >
+                  {t('progress.compareNone')}
+                </button>
+              </li>
+            )}
           </ol>
         </section>
       )}

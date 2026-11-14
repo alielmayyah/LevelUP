@@ -122,7 +122,14 @@
     },
     "journey": "Your body journey",
     "lastScanLabel": "Last scan",
-    "infoYours": "in this scan"
+    "infoYours": "in this scan",
+    "compareChange": "Change",
+    "compareOff": "Not comparing with another scan",
+    "comparePick": "Compare",
+    "compareTitle": "Compare with",
+    "compareNone": "Don't compare",
+    "compareHint": "Pick an earlier or later scan to see what changed.",
+    "comparing": "Comparing"
   },
   "goals": {
     "subtitle": "Your missions",
@@ -423,5 +430,47 @@
       "dark-plum": "Dark plum",
       "warm-brown": "Warm brown"
     }
+  },
+  "bodyComp": {
+    "kicker": "From your InBody scan",
+    "muscleFat": "Muscle & fat analysis",
+    "obesity": "Obesity analysis",
+    "segmental": "Where your muscle and fat are",
+    "composition": "What your body is made of",
+    "zone": {
+      "under": "Under",
+      "normal": "Normal",
+      "over": "Over"
+    },
+    "normalRange": "Normal {{range}}",
+    "bar": {
+      "weight": "Weight",
+      "smm": "Skeletal muscle",
+      "fat": "Body fat mass",
+      "bmi": "BMI",
+      "pbf": "Body fat %"
+    },
+    "comp": {
+      "water": "Total body water",
+      "protein": "Protein",
+      "minerals": "Minerals"
+    },
+    "segmentView": "Show body parts by",
+    "lean": "Muscle",
+    "fatView": "Fat",
+    "segment": {
+      "leftArm": "Left arm",
+      "rightArm": "Right arm",
+      "trunk": "Trunk",
+      "leftLeg": "Left leg",
+      "rightLeg": "Right leg"
+    },
+    "leanNote": "Muscle in each part, as % of the normal for your height. Seen from behind: your left is on the left.",
+    "fatNote": "Fat in each part (estimated), as % of the normal for your height. Seen from behind: your left is on the left.",
+    "noSegments": "This scan has no body-part readings.",
+    "legendNow": "This scan ({{date}})",
+    "legendThen": "Compared scan ({{date}})",
+    "upSince": "Up {{amount}} since the compared scan",
+    "downSince": "Down {{amount}} since the compared scan"
   }
 }

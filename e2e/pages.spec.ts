@@ -37,10 +37,43 @@ test.describe('Progress', () => {
     await expect(p.getByTestId('chart-trend')).toBeVisible();
     await p.getByTestId('chart-trend-point-5').click();
     await expect(p.getByTestId('chart-trend-tip')).toContainText('80.0');
-    await p.getByRole('radio', { name: en.progress.metric.muscle }).click();
+    await p.getByTestId('trend').getByRole('radio', { name: en.progress.metric.muscle }).click();
     await p.getByTestId('chart-trend-point-5').click();
     await expect(p.getByTestId('chart-trend-tip')).toContainText('41.3');
   });
+
+  for (const lang of ['en', 'ar'] as const)
+    test.describe(lang, () => {
+      test.use({ lang });
+
+      test('body composition bars, body parts, and comparing with any scan', async ({ page, loginAs }) => {
+        const s = { en, ar }[lang];
+        await loginAs();
+        await page.goto('/tabs/progress');
+        const bc = page.getByTestId('body-comp');
+        await expect(bc.getByTestId('bar-weight')).toContainText(s.bodyComp.zone.normal);
+        await expect(bc.getByTestId('bar-pbf')).toContainText(s.bodyComp.zone.under);
+        await expect(bc.getByTestId('bar-smm-delta')).toContainText('0.9');
+        // The figure: muscle by default, fat on tap.
+        const segs = bc.getByTestId('segments');
+        await expect(segs.getByTestId('seg-trunk')).toBeVisible();
+        await segs.getByRole('radio', { name: s.bodyComp.fatView }).click();
+        await expect(segs.getByTestId('seg-trunk')).toContainText(s.bodyComp.zone.under);
+        // Compare with the first scan: 36.4 → 41.3 kg of muscle.
+        await page.getByTestId('compare-open').click();
+        const picker = page.getByTestId('compare-picker');
+        await expect(picker.getByTestId('scan-row').first()).toBeDisabled();
+        await picker.getByTestId('scan-row').last().click();
+        await expect(page.getByTestId('change-muscle')).toContainText('4.9');
+        await expect(bc.getByTestId('bar-smm-delta')).toContainText('4.9');
+        // Or compare with nothing.
+        await page.getByTestId('compare-open').click();
+        await page.getByTestId('compare-none').click();
+        await expect(page.getByTestId('change-caption')).toContainText(s.progress.compareOff);
+        await expect(bc.getByTestId('bar-smm-delta')).toHaveCount(0);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+      });
+    });
 
   test('Omar: one scan, so changes and trends wait for the second', async ({ page, loginAs }) => {
     await loginAs('103');

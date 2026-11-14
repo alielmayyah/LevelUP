@@ -142,6 +142,24 @@ export interface AssessmentDto {
   mineralsKg: number;
   bmrKcal: number;
   fitScore: number;
+  /** Lean and fat mass by body part, as the scanner reports them; null when the scanner doesn't measure segments. */
+  segments: SegmentalAnalysis | null;
+}
+
+/** Body parts an InBody scan reports separately. Left and right are the member's own sides. */
+export type BodySegment = 'leftArm' | 'rightArm' | 'trunk' | 'leftLeg' | 'rightLeg';
+
+export const BODY_SEGMENTS: readonly BodySegment[] = ['leftArm', 'rightArm', 'trunk', 'leftLeg', 'rightLeg'];
+
+export interface SegmentReading {
+  kg: number;
+  /** Percent of the standard for this body part at the member's height. */
+  pct: number;
+}
+
+export interface SegmentalAnalysis {
+  lean: Record<BodySegment, SegmentReading>;
+  fat: Record<BodySegment, SegmentReading>;
 }
 
 export type GoalMetric = 'BODY_FAT_KG' | 'MUSCLE_KG' | 'WEIGHT_KG';

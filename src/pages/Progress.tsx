@@ -1,5 +1,5 @@
 import { IonIcon } from '@ionic/react';
-import { chevronBack, chevronForward, informationCircleOutline, listOutline } from 'ionicons/icons';
+import { chevronBack, chevronForward, gitCompareOutline, informationCircleOutline, listOutline } from 'ionicons/icons';
 import { lazy, Suspense, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,6 +15,11 @@ import ScanHistory from './progress/ScanHistory';
 
 // The chart is the heaviest part of the page, so it loads after it, behind a skeleton.
 const TrendChart = lazy(() => import('./progress/ProgressCharts'));
+// The InBody-style analysis sits below the fold, so it loads in its own chunk too.
+const BodyComposition = lazy(() => import('./progress/BodyComposition'));
+
+/** What the scan on screen is compared with: the scan before it, a scan the member picked (by id), or nothing. */
+type CompareChoice = 'previous' | 'none' | number;
 
 type MainKey = 'weight' | 'muscle' | 'bodyFat';
 type MoreKey = 'bmi' | 'visceral' | 'water' | 'protein' | 'minerals' | 'bmr';
@@ -146,6 +151,8 @@ const Progress: React.FC = () => {
   /** Index into the scans, newest first: 0 is the latest. */
   const [picked, setPicked] = useState(0);
   const [showAll, setShowAll] = useState(false);
+  const [picking, setPicking] = useState(false);
+  const [compareChoice, setCompareChoice] = useState<CompareChoice>('previous');
   const [info, setInfo] = useState<InfoTopic | null>(null);
   const closeInfo = useCallback(() => setInfo(null), []);
 
@@ -163,7 +170,12 @@ const Progress: React.FC = () => {
   const list = scans.status === 'ready' ? scans.data : [];
   const index = Math.min(picked, Math.max(list.length - 1, 0));
   const scan = list[index] ?? null;
-  const before = list[index + 1] ?? null;
+  const previous = list[index + 1] ?? null;
+  const chosen =
+    typeof compareChoice === 'number' ? list.find((s) => s.id === compareChoice && s.id !== scan?.id) : null;
+  /** The scan every change on the page is measured against; null when comparing is off. */
+  const before = compareChoice === 'none' ? null : (chosen ?? previous);
+  const beforeIndex = before ? list.indexOf(before) : -1;
   const latest = list[0] ?? null;
   const points = progress.status === 'ready' ? progress.data.assessments : [];
 
@@ -351,7 +363,11 @@ const Progress: React.FC = () => {
                           </span>
                         ) : (
                           <span className="font-semibold text-muted">
-                            {list.length === 1 ? t('progress.changeLater') : t('progress.firstScan')}
+                            {list.length === 1
+                              ? t('progress.changeLater')
+                              : compareChoice === 'none'
+                                ? ''
+                                : t('progress.firstScan')}
                           </span>
                         )}
                       </dd>
@@ -359,14 +375,27 @@ const Progress: React.FC = () => {
                   );
                 })}
               </dl>
-              {before && (
-                <p
-                  className="lu-compare m-0 flex items-center justify-center gap-2 justify-self-center px-3.5 py-1.5 text-center text-[0.8rem] font-semibold text-muted"
+              {list.length > 1 && (
+                <div
+                  className="lu-compare m-0 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 justify-self-center px-3.5 py-1 text-center text-[0.8rem] font-semibold text-muted"
                   data-testid="change-caption"
                 >
                   <IonIcon className="flex-none text-[1rem]" icon={informationCircleOutline} aria-hidden="true" />
-                  {t('progress.changeCaption', { date: scanDate(before.takenAt) })}
-                </p>
+                  <span>
+                    {before
+                      ? t('progress.changeCaption', { date: scanDate(before.takenAt) })
+                      : t('progress.compareOff')}
+                  </span>
+                  <button
+                    type="button"
+                    className="inline-flex min-h-11 cursor-pointer items-center gap-1 border-0 bg-transparent px-1 font-inherit font-extrabold text-primary underline decoration-2 underline-offset-2 dark:text-secondary"
+                    onClick={() => setPicking(true)}
+                    data-testid="compare-open"
+                  >
+                    <IonIcon className="text-[1rem]" icon={gitCompareOutline} aria-hidden="true" />
+                    {before ? t('progress.compareChange') : t('progress.comparePick')}
+                  </button>
+                </div>
               )}
             </section>
 
@@ -418,6 +447,10 @@ const Progress: React.FC = () => {
                 ))}
               </dl>
             </section>
+
+            <Suspense fallback={<div className="lu-skeleton-card min-h-96" data-testid="body-comp-loading" />}>
+              <BodyComposition scan={scan} compare={before} heightCm={me.data.heightCm} sex={me.data.sex} />
+            </Suspense>
           </div>
 
           {points.length < 2 ? (
@@ -433,6 +466,16 @@ const Progress: React.FC = () => {
       )}
       <MetricInfo topic={info} onClose={closeInfo} />
       <ScanHistory open={showAll} scans={list} current={index} onPick={setPicked} onClose={() => setShowAll(false)} />
+      <ScanHistory
+        mode="compare"
+        open={picking}
+        scans={list}
+        current={beforeIndex}
+        showing={index}
+        onPick={(i) => setCompareChoice(list[i].id)}
+        onNone={() => setCompareChoice('none')}
+        onClose={() => setPicking(false)}
+      />
     </TabPage>
   );
 };

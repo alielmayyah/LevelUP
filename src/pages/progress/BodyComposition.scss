@@ -1,0 +1,145 @@
+/*
+ * Body composition cards (BodyComposition.tsx): InBody-style bars with a
+ * normal band, a pixel body figure colored by segment, and status chips.
+ * Status hues: under = tier 3 (amber), normal = tier 4 (green), over = tier 5
+ * (purple) for muscle, tier 1 (red) when over is bad news (fat).
+ */
+@layer components {
+  .lu-zone-head {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .lu-zone-cap {
+    padding-block: 2px;
+    color: var(--lu-text-muted);
+    border-block-end: 2px solid var(--lu-border);
+  }
+
+  .lu-zone-cap-normal {
+    border-block-end-color: color-mix(in srgb, var(--lu-tier-4) 70%, var(--lu-border));
+    background: color-mix(in srgb, var(--lu-tier-4) 12%, transparent);
+    color: var(--lu-text);
+  }
+
+  .lu-scale {
+    border-radius: 3px;
+    background: var(--lu-surface-2);
+    box-shadow: inset 0 0 0 1px var(--lu-border);
+  }
+
+  .lu-scale-band {
+    background: color-mix(in srgb, var(--lu-tier-4) 22%, transparent);
+    border-inline: 1px dashed color-mix(in srgb, var(--lu-tier-4) 80%, var(--lu-border));
+  }
+
+  /* Hard pixel stripes, in the measurement's own hue (--tone from Progress.scss). */
+  .lu-scale-fill {
+    border-radius: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--tone) 0 6px,
+      color-mix(in srgb, var(--tone) 78%, var(--lu-pixel-ink)) 6px 8px
+    );
+    box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--tone) 70%, var(--lu-pixel-ink));
+    transition: width 0.3s steps(6);
+  }
+
+  /* Where the compared scan was: a dark notch that stands above and below the bar. */
+  .lu-scale-then {
+    inline-size: 3px;
+    background: var(--lu-text);
+    border-radius: 1px;
+    box-shadow: 0 0 0 1px var(--lu-surface);
+  }
+
+  .lu-legend-now,
+  .lu-legend-then {
+    display: inline-block;
+    block-size: 10px;
+  }
+
+  .lu-legend-now {
+    inline-size: 18px;
+    border-radius: 2px;
+    background: var(--lu-text-muted);
+  }
+
+  .lu-legend-then {
+    inline-size: 3px;
+    block-size: 14px;
+    background: var(--lu-text);
+  }
+
+  .lu-status {
+    --status: var(--lu-tier-4);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px;
+    border: 1px solid color-mix(in srgb, var(--status) 60%, var(--lu-border));
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--status) 14%, var(--lu-surface));
+    color: var(--lu-text);
+    font-size: 0.7rem;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .lu-status::before {
+    content: '';
+    inline-size: 6px;
+    block-size: 6px;
+    background: var(--status);
+  }
+
+  .lu-status-under {
+    --status: var(--lu-tier-3);
+  }
+
+  .lu-status-over {
+    --status: var(--lu-tier-5);
+  }
+
+  .lu-status-over.is-bad {
+    --status: var(--lu-tier-1);
+  }
+
+  .lu-figure {
+    filter: drop-shadow(0 3px 0 var(--lu-pixel-shadow));
+  }
+
+  .lu-figure path {
+    stroke: var(--lu-pixel-ink);
+    stroke-width: 0.5;
+    paint-order: stroke;
+  }
+
+  .lu-figure-head {
+    fill: var(--lu-surface-2);
+  }
+
+  .lu-seg-normal {
+    fill: var(--lu-tier-4);
+  }
+
+  .lu-seg-under {
+    fill: var(--lu-tier-3);
+  }
+
+  .lu-figure-lean .lu-seg-over {
+    fill: var(--lu-tier-5);
+  }
+
+  .lu-figure-fat .lu-seg-over {
+    fill: var(--lu-tier-1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-scale-fill {
+      transition: none;
+    }
+  }
+}

@@ -120,6 +120,49 @@ describe('Progress', () => {
     expect(screen.getByTestId('metric-info')).not.toHaveTextContent('Fat stored deep');
   });
 
+  it('the body composition cards read the scan like an InBody sheet', async () => {
+    await renderAs('101', Progress);
+    const bc = await screen.findByTestId('body-comp');
+    const weight = within(bc).getByTestId('bar-weight');
+    expect(weight).toHaveTextContent(/80\.0\s?kg/);
+    expect(weight).toHaveTextContent('Normal');
+    // 41.3 kg of muscle is over the 31.6–38.6 kg band for 183 cm: good news, shown as Over.
+    expect(within(bc).getByTestId('bar-smm')).toHaveTextContent('Over');
+    // 8% body fat is under the men's 10–20% band.
+    expect(within(bc).getByTestId('bar-pbf')).toHaveTextContent(/8\.0%.*Under/);
+    // Compared with the scan before by default: muscle up is green.
+    expect(within(bc).getByTestId('bar-smm-delta')).toHaveTextContent('+0.9 kg');
+    expect(within(bc).getByTestId('bar-smm-delta')).toHaveClass('text-success');
+    expect(within(bc).getByTestId('compare-legend')).toBeInTheDocument();
+    // Body parts: muscle by default, fat a tap away.
+    const segs = within(bc).getByTestId('segments');
+    expect(within(segs).getByTestId('seg-rightArm')).toHaveTextContent(/kg/);
+    await userEvent.click(within(segs).getByRole('radio', { name: 'Fat' }));
+    expect(within(segs).getByRole('radio', { name: 'Fat' })).toHaveAttribute('aria-checked', 'true');
+    expect(within(segs).getByTestId('seg-trunk')).toHaveTextContent('Under');
+  });
+
+  it('compares the scan with any other scan, or with none', async () => {
+    await renderAs('101', Progress);
+    await screen.findByTestId('body-comp');
+    await userEvent.click(screen.getByTestId('compare-open'));
+    const picker = await screen.findByTestId('compare-picker');
+    const rows = within(picker).getAllByTestId('scan-row');
+    expect(rows).toHaveLength(6);
+    expect(rows[0]).toBeDisabled(); // the scan on screen
+    expect(rows[1]).toHaveAttribute('aria-current', 'true'); // the scan before, by default
+    await userEvent.click(rows[5]);
+    // Now every change is since the first scan: 36.4 → 41.3 kg of muscle.
+    expect(screen.getByTestId('change-muscle')).toHaveTextContent('▲ 4.9 kg');
+    expect(screen.getByTestId('bar-smm-delta')).toHaveTextContent('+4.9 kg');
+    await userEvent.click(screen.getByTestId('compare-open'));
+    await userEvent.click(await screen.findByTestId('compare-none'));
+    expect(screen.getByTestId('change-caption')).toHaveTextContent('Not comparing with another scan');
+    expect(screen.queryByTestId('bar-smm-delta')).toBeNull();
+    expect(screen.queryByTestId('compare-legend')).toBeNull();
+    expect(screen.getByTestId('change-muscle')).toHaveTextContent('');
+  });
+
   it('Lina sees the empty state', async () => {
     await renderAs('102', Progress);
     expect(await screen.findByText('No scans yet. Book one at the front desk.')).toBeInTheDocument();

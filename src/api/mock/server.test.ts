@@ -161,6 +161,7 @@ describe('progress, assessments, goals, profile', () => {
         'mineralsKg',
         'bmrKcal',
         'fitScore',
+        'segments',
       ].sort(),
     );
   });
