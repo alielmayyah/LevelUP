@@ -31,6 +31,7 @@
 /* The shared pixel kit (cards, chips, segments, switches) and page layout, as component classes. */
 @import './layout.css' layer(components);
 @import './pixel.css' layer(components);
+@import './pixel-icon.css' layer(components);
 
 /* Dark mode follows Ionic's class on <html>, not the media query, so the in-app setting wins. */
 @custom-variant dark (&:where(.ion-palette-dark, .ion-palette-dark *));

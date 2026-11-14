@@ -1,5 +1,3 @@
-import './PixelIcon.scss';
-
 /*
  * Pixel-art icons drawn on a 12×12 grid, to match the app's pixel style.
  * Each character is one pixel:
