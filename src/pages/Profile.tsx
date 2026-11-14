@@ -1,16 +1,3 @@
-import { IonIcon } from '@ionic/react';
-import {
-  brushOutline,
-  chevronForward,
-  colorPaletteOutline,
-  eyeOutline,
-  languageOutline,
-  logOutOutline,
-  personOutline,
-  podiumOutline,
-  settingsOutline,
-  volumeHighOutline,
-} from 'ionicons/icons';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
@@ -20,7 +7,8 @@ import type { ProfileDto, SettingsDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import { clearToken } from '../auth/token';
 import Avatar from '../avatar/Avatar';
-import { starterAvatar } from '../avatar/catalog';
+import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
+import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
 import { brand } from '../brand.config';
 import CtaButton from '../components/CtaButton';
@@ -29,10 +17,8 @@ import PixelToast from '../components/PixelToast';
 import { focusSibling, rovingTarget } from '../components/roving';
 import TabPage from '../components/TabPage';
 import { currentLanguage, setLanguage, type Lang } from '../i18n';
-import { formatNumber } from '../i18n/format';
 import { useSound } from '../sound/useSound';
 import { getThemeMode, setTheme, type ThemeMode } from '../theme/theme';
-import { ageOn } from './profile/age';
 
 const GRID = 'grid gap-3.5 wide:grid-cols-[1fr_1fr] wide:items-start';
 /** One settings line: label on one side, value or control on the other; wraps on narrow screens. */
@@ -44,14 +30,14 @@ const LABEL_ICON = 'flex-none text-[1.2rem]';
 const HINT = 'text-[0.8rem] font-semibold text-muted';
 
 /** A label with an icon, and optionally a one-line hint under it. */
-const RowLabel: React.FC<{ icon: string; children: React.ReactNode; hint?: { id: string; text: string } }> = ({
+const RowLabel: React.FC<{ icon: PixelIconName; children: React.ReactNode; hint?: { id: string; text: string } }> = ({
   icon,
   children,
   hint,
 }) => (
   // A row with a hint holds a switch: the label shrinks and wraps so the switch stays on the same line.
   <span className={`${LABEL} text-ink ${hint ? 'flex-1 basis-0' : ''}`}>
-    <IonIcon className={`${LABEL_ICON} text-muted`} icon={icon} aria-hidden="true" />
+    <PixelIcon className={`${LABEL_ICON} text-muted`} name={icon} />
     {hint ? (
       <span className="grid">
         {children}
@@ -67,7 +53,6 @@ const RowLabel: React.FC<{ icon: string; children: React.ReactNode; hint?: { id:
 
 const SECTION =
   'mx-0 mt-3 mb-1 flex items-center gap-2 text-[0.8rem] font-extrabold tracking-[0.08em] text-primary uppercase dark:text-secondary ar:text-[0.9rem] ar:tracking-normal';
-const VALUE = 'text-end font-extrabold text-ink';
 
 interface SwitchProps {
   checked: boolean;
@@ -144,7 +129,6 @@ const Profile: React.FC = () => {
   const [saveFailed, setSaveFailed] = useState(false);
   const clearSaveFailed = useCallback(() => setSaveFailed(false), []);
   const [confirmOut, setConfirmOut] = useState(false);
-  const [now] = useState(() => new Date());
   useRefreshOnEnter(me.reload);
 
   const p = me.status === 'ready' ? me.data : null;
@@ -168,7 +152,14 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <TabPage testId="page-profile" title={t('tabs.profile')} subtitle={t('profile.subtitle')} onRefresh={me.reload}>
+    <TabPage
+      fill
+      testId="page-profile"
+      title={t('tabs.profile')}
+      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="person" />}
+      subtitle={t('profile.subtitle')}
+      onRefresh={me.reload}
+    >
       {me.status === 'loading' && (
         <div className={GRID} aria-busy="true">
           <div className="lu-skeleton-card" />
@@ -184,14 +175,11 @@ const Profile: React.FC = () => {
       )}
 
       {p && (
-        <div className={GRID}>
+        // The settings card stretches to the tab bar, with Sign out at its foot.
+        <div className={`${GRID} flex-1 grid-rows-[auto_1fr_auto] wide:grid-rows-[auto_1fr_auto]`}>
           <section className="lu-px-card flex items-center gap-3.5 wide:col-span-full">
             <span className="lu-avatar-frame block size-[72px] flex-none overflow-hidden rounded-[12px]">
-              <Avatar
-                config={p.avatar ?? starterAvatar(String(p.memberId))}
-                className="block size-full"
-                testId="profile-avatar"
-              />
+              <Avatar config={memberAvatar(p)} className="block size-full" testId="profile-avatar" />
             </span>
             <div className="min-w-0">
               <h2 className="lu-display m-0 text-[2rem] leading-[1.1]" data-testid="profile-name">
@@ -205,39 +193,21 @@ const Profile: React.FC = () => {
                 className="lu-link-button -ms-2.5 mt-1 inline-flex items-center gap-1.5 no-underline"
                 data-testid="customize-character"
               >
-                <IonIcon icon={brushOutline} aria-hidden="true" />
+                <PixelIcon name="brush" />
                 {t('profile.customize')}
               </Link>
             </div>
           </section>
 
-          <section className="lu-px-card grid py-1.5" aria-labelledby="sec-personal">
-            <h3 id="sec-personal" className={SECTION}>
-              <IonIcon icon={personOutline} aria-hidden="true" />
-              {t('profile.personal')}
-            </h3>
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <span>{t('profile.age')}</span>
-              <strong className={VALUE} data-testid="profile-age">
-                {formatNumber(ageOn(p.birthDate, now))}
-              </strong>
-            </div>
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <span>{t('profile.height')}</span>
-              <strong className={VALUE}>
-                {formatNumber(p.heightCm)} {t('units.cm')}
-              </strong>
-            </div>
-          </section>
-
-          <section className="lu-px-card grid py-1.5" aria-labelledby="sec-settings">
+          {/* The rows spread out to fill the card, so the settings don't bunch up at the top. */}
+          <section className="lu-px-card flex flex-col justify-between py-1.5" aria-labelledby="sec-settings">
             <h3 id="sec-settings" className={SECTION}>
-              <IonIcon icon={settingsOutline} aria-hidden="true" />
+              <PixelIcon name="settings" />
               {t('profile.settings')}
             </h3>
 
             <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon={languageOutline}>{t('settings.language')}</RowLabel>
+              <RowLabel icon="globe">{t('settings.language')}</RowLabel>
               <Choice
                 testId="setting-language"
                 label={t('settings.language')}
@@ -254,7 +224,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon={colorPaletteOutline}>{t('settings.theme')}</RowLabel>
+              <RowLabel icon="palette">{t('settings.theme')}</RowLabel>
               <Choice
                 testId="setting-theme"
                 label={t('settings.theme')}
@@ -268,7 +238,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon={volumeHighOutline} hint={{ id: 'hint-sound', text: t('profile.soundHint') }}>
+              <RowLabel icon="volume" hint={{ id: 'hint-sound', text: t('profile.soundHint') }}>
                 {t('profile.sound')}
               </RowLabel>
               <Switch
@@ -281,7 +251,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon={eyeOutline} hint={{ id: 'hint-show-fitscore', text: t('profile.showFitScoreHint') }}>
+              <RowLabel icon="eye" hint={{ id: 'hint-show-fitscore', text: t('profile.showFitScoreHint') }}>
                 {t('profile.showFitScore')}
               </RowLabel>
               <Switch
@@ -294,7 +264,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon={podiumOutline} hint={{ id: 'hint-leaderboard', text: t('profile.leaderboardHint') }}>
+              <RowLabel icon="podium" hint={{ id: 'hint-leaderboard', text: t('profile.leaderboardHint') }}>
                 {t('profile.leaderboard')}
               </RowLabel>
               <Switch
@@ -305,19 +275,21 @@ const Profile: React.FC = () => {
                 onChange={() => void toggle('fitScoreOnLeaderboard')}
               />
             </div>
-
-            <button
-              type="button"
-              className={`lu-row-button lu-signout ${ROW} w-full cursor-pointer border-0 bg-transparent font-inherit text-danger`}
-              onClick={() => setConfirmOut(true)}
-            >
-              <span className={`${LABEL} text-danger`}>
-                <IonIcon className={`${LABEL_ICON} text-danger`} icon={logOutOutline} aria-hidden="true" />
-                {t('profile.signOut')}
-              </span>
-              <IonIcon className="lu-chevron text-danger" icon={chevronForward} aria-hidden="true" />
-            </button>
           </section>
+
+          {/* Sign out stands on its own, below the settings. */}
+          <button
+            type="button"
+            className="lu-px-card lu-signout flex min-h-[52px] w-full cursor-pointer items-center justify-between gap-3 px-4 py-2 font-inherit font-semibold text-danger"
+            onClick={() => setConfirmOut(true)}
+            data-testid="sign-out"
+          >
+            <span className={`${LABEL} text-danger`}>
+              <PixelIcon className={`${LABEL_ICON} text-danger`} name="logout" />
+              {t('profile.signOut')}
+            </span>
+            <PixelIcon className="lu-chevron text-danger" name="chevronForward" />
+          </button>
         </div>
       )}
 

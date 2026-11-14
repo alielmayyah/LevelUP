@@ -15,13 +15,13 @@
   .lu-chart-grid {
     stroke: var(--lu-border);
     stroke-width: 1;
-    stroke-dasharray: 3 3;
   }
 
+  /* Light axis labels: they orient, the line is what you read. */
   .lu-chart-axis {
     fill: var(--lu-text-muted);
     font-size: 9px;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   .lu-chart-cursor {
@@ -34,8 +34,8 @@
     polyline {
       fill: none;
       stroke: var(--series);
-      stroke-width: 2.5;
-      stroke-linejoin: miter;
+      stroke-width: 2;
+      stroke-linejoin: round;
     }
 
     rect {

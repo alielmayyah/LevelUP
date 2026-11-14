@@ -3,9 +3,10 @@
  * plan (Tasks 5, 7, 8, 9) with the same status codes and DTO shapes, so
  * switching VITE_USE_MOCKS off needs no component changes.
  *
- * State lives in memory and resets on page reload, except settings and the saved
- * character, which are also written to Preferences (lu.mock.settings.<fitId>,
- * lu.mock.avatar.<fitId>), so switching Fit IDs never leaks another member's data.
+ * State lives in memory and resets on page reload, except settings, the saved
+ * character, and goals the member created, which are also written to Preferences
+ * (lu.mock.settings.<fitId>, lu.mock.avatar.<fitId>, lu.mock.goals.<fitId>), so
+ * switching Fit IDs never leaks another member's data.
  *
  * Only src/api/client.ts and tests may import this module (ESLint enforces it).
  */
@@ -15,7 +16,9 @@ import { isValidAvatar } from '../../avatar/catalog';
 import {
   LEADERBOARD_BOARDS,
   type AvatarConfigDto,
+  type CreateGoalRequest,
   type DashboardDto,
+  type GoalMetric,
   type GoalView,
   type GoalsDto,
   type LeaderboardBoard,
@@ -44,6 +47,8 @@ let now = new Date();
 let members: MockMember[] = [];
 let loginAttempts: number[] = [];
 const settingsLoaded = new Set<number>();
+/** Members whose created goals were read from Preferences. */
+const goalsLoaded = new Set<number>();
 /** Saved characters by member id. Missing: not read from Preferences yet. */
 const avatars = new Map<number, AvatarConfigDto | null>();
 
@@ -53,6 +58,7 @@ export function resetMockServer(at: Date = new Date()): void {
   members = buildMembers(now);
   loginAttempts = [];
   settingsLoaded.clear();
+  goalsLoaded.clear();
   avatars.clear();
 }
 
@@ -109,10 +115,45 @@ async function saveAvatar(m: MockMember, body: unknown): Promise<MockResponse> {
   return ok(config);
 }
 
+const goalsKey = (m: MockMember) => `lu.mock.goals.${m.fitId}`;
+
+/** Stored form of a created goal: dates as ISO strings. */
+type StoredGoal = Omit<GoalRecord, 'startDate' | 'deadline' | 'completedAt'> & {
+  startDate: string;
+  deadline: string | null;
+  completedAt: string | null;
+};
+
+async function loadGoals(m: MockMember): Promise<void> {
+  if (goalsLoaded.has(m.id)) return;
+  goalsLoaded.add(m.id);
+  const { value } = await Preferences.get({ key: goalsKey(m) });
+  if (!value) return;
+  try {
+    const saved = JSON.parse(value) as StoredGoal[];
+    if (!Array.isArray(saved)) return;
+    for (const g of saved) {
+      if (m.goals.some((x) => x.id === g.id)) continue;
+      m.goals.push({
+        ...g,
+        startDate: new Date(g.startDate),
+        deadline: g.deadline ? new Date(g.deadline) : null,
+        completedAt: g.completedAt ? new Date(g.completedAt) : null,
+        createdByMember: true,
+      });
+    }
+  } catch {
+    // A corrupt entry reads as no created goals.
+  }
+}
+
 async function memberForToken(token: string | null): Promise<MockMember | null> {
   const fitId = token?.startsWith('mock.') ? token.slice(5) : null;
   const m = members.find((x) => x.fitId === fitId) ?? null;
-  if (m) await loadSettings(m);
+  if (m) {
+    await loadSettings(m);
+    await loadGoals(m);
+  }
   return m;
 }
 
@@ -213,15 +254,14 @@ function progressFor(goal: GoalRecord, m: MockMember) {
 }
 
 function goalView(goal: GoalRecord, m: MockMember): GoalView {
-  const percent =
-    goal.status === 'COMPLETED' ? 100 : goal.status === 'UPCOMING' ? 0 : (progressFor(goal, m)?.percent ?? 0);
+  const percent = goal.status === 'COMPLETED' ? 100 : (progressFor(goal, m)?.percent ?? 0);
   return {
     id: goal.id,
     title: goal.title,
     metric: goal.metric,
     startValue: goal.startValue,
     targetValue: goal.targetValue,
-    deadline: goal.deadline.toISOString(),
+    deadline: goal.deadline?.toISOString() ?? null,
     coachNote: goal.coachNote,
     percent,
     completedAt: goal.completedAt?.toISOString() ?? null,
@@ -241,18 +281,23 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
     samples(m, (a) => a.skeletalMuscleKg),
     month,
   );
+  const bmi = monthDelta(
+    samples(m, (a) => a.bmi),
+    month,
+  );
 
   const active = m.goals
     .filter((g) => g.status === 'ACTIVE')
-    .sort((a, b) => a.deadline.getTime() - b.deadline.getTime())[0];
+    // Soonest due first; goals without a due date after them.
+    .sort((a, b) => (a.deadline?.getTime() ?? Infinity) - (b.deadline?.getTime() ?? Infinity))[0];
   const p = active ? progressFor(active, m) : null;
 
   return {
     member: {
       memberId: m.id,
       firstName: m.firstName,
+      sex: m.sex,
       showFitScore: m.settings.showFitScore,
-      memberSince: m.membershipStart.toISOString(),
       avatar: await loadAvatar(m),
     },
     fitScore: last
@@ -272,12 +317,14 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
             remainingKg: p.remainingKg,
             estimatedCompletion: p.estimatedCompletion?.toISOString() ?? null,
             coachNote: active.coachNote,
-            deadline: active.deadline.toISOString(),
+            deadline: active.deadline?.toISOString() ?? null,
           }
         : null,
     monthlyWins: {
       bodyFatChangePct: fat === null ? null : round1(fat),
       muscleGainedKg: muscle === null ? null : round1(muscle),
+      bmiChange: bmi === null ? null : round1(bmi),
+      bmi: last?.bmi ?? null,
     },
     leaderboard: await leaderboardSummary(m),
     unreadNotifications: m.notifications.filter((n) => n.readAt === null).length,
@@ -305,7 +352,69 @@ async function profile(m: MockMember): Promise<ProfileDto> {
 
 function goals(m: MockMember): GoalsDto {
   const by = (status: GoalRecord['status']) => m.goals.filter((g) => g.status === status).map((g) => goalView(g, m));
-  return { active: by('ACTIVE'), completed: by('COMPLETED'), upcoming: by('UPCOMING') };
+  return { active: by('ACTIVE'), completed: by('COMPLETED') };
+}
+
+const GOAL_METRICS: readonly GoalMetric[] = ['BODY_FAT_KG', 'MUSCLE_KG', 'WEIGHT_KG'];
+
+/** "3" for 3.0, "2.5" for 2.5, as the goal titles read. */
+const kgText = (n: number) => String(round1(n));
+
+function goalTitle(metric: GoalMetric, start: number, target: number): string {
+  const amount = kgText(Math.abs(target - start));
+  switch (metric) {
+    case 'BODY_FAT_KG':
+      return `Lose ${amount} kg of body fat`;
+    case 'MUSCLE_KG':
+      return `Gain ${amount} kg of muscle`;
+    case 'WEIGHT_KG':
+      return `Reach ${kgText(target)} kg`;
+  }
+}
+
+/**
+ * POST /me/goals: the member sets their own goal, no coach approval and no due
+ * date. It starts from the latest scan and is in progress at once, alongside
+ * any others. A target that points the wrong way (gaining fat) is a 400.
+ */
+async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
+  const req = (body && typeof body === 'object' ? body : {}) as Partial<Record<keyof CreateGoalRequest, unknown>>;
+  const metric = req.metric as GoalMetric;
+  const target = typeof req.targetValue === 'number' ? round1(req.targetValue) : NaN;
+  if (!GOAL_METRICS.includes(metric)) return fail(400, 'Invalid metric');
+  if (!Number.isFinite(target) || target <= 0 || target > 400) return fail(400, 'Invalid target');
+
+  const scan = latest(m);
+  if (!scan) return fail(409, 'Take a scan before setting a goal');
+  const start = metricValue(scan, metric);
+  const wrongWay =
+    metric === 'BODY_FAT_KG' ? target >= start : metric === 'MUSCLE_KG' ? target <= start : target === start;
+  if (wrongWay) return fail(400, 'Target must move from your latest scan');
+
+  const goal: GoalRecord = {
+    id: Math.max(0, ...members.flatMap((x) => x.goals.map((g) => g.id))) + 1,
+    title: goalTitle(metric, start, target),
+    metric,
+    startValue: start,
+    targetValue: target,
+    startDate: now,
+    deadline: null,
+    status: 'ACTIVE',
+    coachNote: null,
+    completedAt: null,
+    createdByMember: true,
+  };
+  m.goals.push(goal);
+  const stored: StoredGoal[] = m.goals
+    .filter((g) => g.createdByMember)
+    .map(({ startDate, deadline: due, completedAt, ...rest }) => ({
+      ...rest,
+      startDate: startDate.toISOString(),
+      deadline: due?.toISOString() ?? null,
+      completedAt: completedAt?.toISOString() ?? null,
+    }));
+  await Preferences.set({ key: goalsKey(m), value: JSON.stringify(stored) });
+  return ok(goalView(goal, m), 201);
 }
 
 function progress(m: MockMember): ProgressDto {
@@ -371,6 +480,8 @@ export const mockServer = {
         return ok([...me.assessments].reverse());
       case 'GET /me/goals':
         return ok(goals(me));
+      case 'POST /me/goals':
+        return createGoal(me, body);
       case 'PATCH /me/settings':
         return updateSettings(me, body);
       case 'GET /me/notifications':

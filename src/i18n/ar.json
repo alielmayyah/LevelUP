@@ -58,8 +58,7 @@
     "sameSince": "زي {{date}} بالظبط",
     "olderScan": "القياس اللي قبله",
     "newerScan": "القياس اللي بعده",
-    "earlierScan": "قياس قديم",
-    "scanPosition": "{{date}} · قياس {{n}} من {{total}}",
+    "scanPosition": "قياس {{n}} من {{total}}",
     "firstScan": "أول قياس ليك",
     "viewAll": "كل القياسات ({{n}})",
     "allScans": "كل القياسات",
@@ -121,7 +120,6 @@
       }
     },
     "journey": "رحلة جسمك",
-    "lastScanLabel": "آخر قياس",
     "infoYours": "في القياس ده",
     "compareChange": "غيّر",
     "compareOff": "مش بتقارن بقياس تاني",
@@ -129,26 +127,33 @@
     "compareTitle": "قارن بـ",
     "compareNone": "متقارنش",
     "compareHint": "اختار قياس قبل أو بعد عشان تشوف إيه اللي اتغيّر.",
-    "comparing": "بتقارن بيه"
+    "comparing": "بتقارن بيه",
+    "comparedWith": "مقارنة بـ",
+    "compareOffShort": "مفيش قياس",
+    "moreDetails": "شوف تفاصيل أكتر",
+    "lessDetails": "اعرض أقل",
+    "scanPages": "صفحات القياسات",
+    "calendarTitle": "قياساتك",
+    "calendarHint": "الأيام اللي فيها قياس متعلّم عليها. دوس على يوم تشوفه.",
+    "prevMonth": "الشهر اللي فات",
+    "nextMonth": "الشهر الجاي",
+    "scanOn": "قياس يوم {{date}}",
+    "scansInMonth": "قياسات الشهر ده: {{n}}"
   },
   "goals": {
     "subtitle": "مهماتك",
     "start": "البداية",
     "target": "الهدف",
-    "progress": "التقدّم",
-    "due": "آخر ميعاد {{date}}",
-    "completedOn": "خلصت يوم {{date}}",
-    "upcomingNote": "هتبدأ بعد مهمتك الحالية",
-    "overdue": "متأخرة",
     "empty": "مفيش حاجة هنا لسه",
     "error": "مقدرناش نحمّل أهدافك.",
-    "journey": "رحلتك",
-    "done": "أهداف خلصت",
     "section": {
       "active": "شغّال عليها",
-      "upcoming": "الجاية",
       "completed": "اللي خلصت"
-    }
+    },
+    "new": "هدف جديد",
+    "emptyCta": "حط أول هدف ليك",
+    "reached": "وصلت للهدف",
+    "doneOf": "خلّصت {{done}} من {{total}} كجم"
   },
   "leaderboard": {
     "subtitle": "ترتيب الجيم",
@@ -186,10 +191,7 @@
   "profile": {
     "subtitle": "إعدادات العضو",
     "fitId": "رقم العضوية {{id}}",
-    "personal": "بياناتك",
     "settings": "الإعدادات",
-    "age": "السن",
-    "height": "الطول",
     "sound": "الصوت",
     "soundHint": "أصوات الأبلكيشن",
     "showFitScore": "اظهر الـ FitScore",
@@ -247,15 +249,15 @@
     "mission": {
       "title": "المهمة الحالية",
       "progress": "{{done}} من {{total}} كجم",
-      "eta": "متوقع توصل {{date}}",
-      "noEta": "كمّل عشان تعرف هتوصل إمتى",
-      "empty": "مفيش مهمة دلوقتي. الكوتش هيحددلك واحدة قريب."
+      "empty": "مفيش مهمة دلوقتي. حط هدف عشان تبدأ واحدة.",
+      "toGo": "فاضل {{left}} كجم",
+      "reached": "وصلت للهدف!"
     },
     "wins": {
       "title": "إنجازات {{month}}",
       "bodyFat": "دهون الجسم",
       "muscle": "العضلات",
-      "memberSince": "عضو من"
+      "bmi": "مؤشر كتلة الجسم"
     },
     "notifications": {
       "bell": "الإشعارات",
@@ -275,7 +277,6 @@
     "hello": "أهلاً يا {{name}}"
   },
   "login": {
-    "welcome": "أهلاً بيك في {{name}}",
     "fitId": "رقم العضوية",
     "help": "اسأل الريسبشن لو معندكش رقم.",
     "submit": "ادخل",
@@ -322,10 +323,22 @@
     "customize": "ظبّط شخصيتك",
     "outfitTitle": "أطقم جاهزة",
     "outfit": {
+      "hijab-training": "طقم تمرين بالحجاب",
       "dark-hoodie": "هودي غامق",
       "summer-fit": "طقم صيفي",
       "gym-ready": "طقم الجيم",
-      "track-fit": "طقم رياضي"
+      "track-fit": "طقم رياضي",
+      "spin-class": "طقم العجلة",
+      "strength-day": "يوم الحديد",
+      "circuit-training": "تمرين سيركت",
+      "treadmill-run": "جري على المشاية",
+      "studio-flow": "تمرين استوديو",
+      "warm-up": "إحماء",
+      "lifting-session": "تمرين أوزان",
+      "violet-training": "تمرين بنفسجي",
+      "pilates-studio": "استوديو بيلاتس",
+      "run-club": "نادي الجري",
+      "lift-club": "نادي الحديد"
     },
     "tab": {
       "outfits": "الأطقم",
@@ -334,6 +347,7 @@
       "top": "التوب",
       "pants": "البنطلون",
       "shoes": "الكوتشي",
+      "socks": "الشراب",
       "beard": "الدقن",
       "face": "الوش"
     },
@@ -343,6 +357,7 @@
       "top": "ستايل التوب",
       "pants": "ستايل البنطلون",
       "shoes": "ستايل الكوتشي",
+      "socks": "ستايل الشراب",
       "beard": "شكل الدقن"
     },
     "style": {
@@ -372,27 +387,71 @@
       "trainers": "كوتشي كلاسيك",
       "high-tops": "كوتشي برقبة",
       "runners": "كوتشي جري",
-      "slip-ons": "كوتشي من غير رباط"
+      "slip-ons": "كوتشي من غير رباط",
+      "no-socks": "من غير شراب",
+      "ankle-socks": "شراب لحد الكاحل",
+      "crew-socks": "شراب طويل",
+      "striped-socks": "شراب مخطط",
+      "buzz-cut": "شعر قصير جدًا",
+      "waves": "ويفز",
+      "shaved": "حلاقة زيرو",
+      "tall": "طويل",
+      "stocky": "مربوع",
+      "sweatshirt": "سويت شيرت",
+      "varsity": "جاكيت جامعي",
+      "jeans": "جينز",
+      "bike-shorts": "شورت عجلة",
+      "boots": "بوت برباط",
+      "canvas": "كوتشي قماش",
+      "chin-strap": "دقن على خط الفك",
+      "knee-highs": "شراب لحد الركبة",
+      "spikes": "شعر سبايكي",
+      "braids": "ضفاير",
+      "athletic": "رياضي",
+      "relaxed": "جسم مدوّر",
+      "mesh-tee": "تيشيرت تمرين شبك",
+      "compression-top": "توب ضاغط",
+      "quarter-zip": "توب بسوستة قصيرة",
+      "sleeveless-hoodie": "هودي من غير كم",
+      "lifters": "كوتشي رفع أوزان",
+      "cross-trainers": "كوتشي تمرين شامل",
+      "barefoot": "من غير كوتشي",
+      "liner-shorts": "شورت بطبقتين",
+      "training-tights": "ليقنز تمرين",
+      "split-shorts": "شورت جري بفتحات",
+      "warmup-pants": "بنطلون إحماء",
+      "fade-beard": "دقن متدرّجة",
+      "chin-tuft": "دقن صغيرة عالدقن",
+      "grip-socks": "شراب مانع للزحلقة",
+      "cushioned-socks": "شراب مبطّن",
+      "high-ponytail": "ديل حصان عالي",
+      "braided-ponytail": "ديل حصان بضفيرة",
+      "low-bun": "كعكة واطية",
+      "puff": "كيرلي مرفوع",
+      "sport-hijab": "حجاب رياضي",
+      "longline-tank": "توب تمرين طويل",
+      "racerback-bra": "برا رياضية بظهر مفتوح",
+      "fitted-zip": "جاكيت تمرين ضيّق",
+      "high-rise-leggings": "ليقنز بوسط عالي",
+      "capris": "ليقنز قصير للتمرين"
     },
     "part": {
       "skin": "لون البشرة",
       "hair": "لون الشعر",
+      "hijab": "لون الحجاب",
       "eyes": "العينين",
-      "smile": "الضحكة",
       "tank": "لون اللبس",
       "shorts": "لون البنطلون",
       "shoes": "لون الكوتشي",
+      "socks": "لون الشراب",
       "beard": "لون الدقن"
     },
+    "socksHint": "البنطلون الطويل ممكن يغطّي الشراب.",
     "randomize": "فاجئني",
     "reset": "رجّع اللي كان",
-    "save": "احفظ الشخصية",
     "saving": "بنحفظ…",
     "saveFailed": "مقدرناش نحفظ شخصيتك. جرّب تاني.",
     "error": "مقدرناش نحمّل شخصيتك.",
-    "leaveTitle": "هتخرج من غير ما تحفظ؟",
-    "keepEditing": "كمّل تعديل",
-    "discard": "الغي التعديلات",
     "color": {
       "match-hair": "زي لون الشعر",
       "fair": "فاتح أوي",
@@ -427,9 +486,33 @@
       "green": "أخضر",
       "blue": "أزرق",
       "gray": "رمادي",
-      "dark-plum": "برقوقي غامق",
-      "warm-brown": "بني دافي"
-    }
+      "peach": "خوخي",
+      "umber": "بني غامق جدًا",
+      "copper": "نحاسي",
+      "indigo": "نيلي",
+      "burgundy": "نبيتي",
+      "sage": "أخضر هادي",
+      "coral": "مرجاني",
+      "cloud-blue": "أزرق فاتح",
+      "denim": "أزرق جينز",
+      "sand": "رملي",
+      "forest": "أخضر غامق",
+      "chestnut": "بني كستنائي",
+      "amber-eyes": "عسلي دافي",
+      "violet-eyes": "بنفسجي غامق",
+      "neutral-brown": "بني متوسط",
+      "cool-brown": "بني رمادي",
+      "platinum": "بلاتيني",
+      "steel-blue": "أزرق رمادي",
+      "electric-blue": "أزرق كهربا",
+      "volt": "أخضر ليموني",
+      "plum": "برقوقي",
+      "graphite": "جرافيت",
+      "aubergine": "بتنجاني",
+      "gum": "بني عسلي"
+    },
+    "saved": "اتحفظت",
+    "hairAndHeadwear": "تسريحات وغطا الراس"
   },
   "bodyComp": {
     "kicker": "من قياس الـ InBody بتاعك",
@@ -472,5 +555,37 @@
     "legendThen": "القياس اللي بتقارن بيه ({{date}})",
     "upSince": "زاد {{amount}} عن القياس اللي بتقارن بيه",
     "downSince": "قلّ {{amount}} عن القياس اللي بتقارن بيه"
+  },
+  "newGoal": {
+    "title": "هدف جديد",
+    "subtitle": "اختار هتشتغل على إيه. الهدف بتاعك، من غير موافقة حد.",
+    "back": "ارجع للأهداف",
+    "type": "عايز تعمل إيه؟",
+    "metric": {
+      "BODY_FAT_KG": "تخسّ دهون",
+      "MUSCLE_KG": "تزوّد عضل",
+      "WEIGHT_KG": "توصل لوزن معيّن"
+    },
+    "now": "دلوقتي {{value}} كجم",
+    "amount": {
+      "BODY_FAT_KG": "عايز تخسّ كام كيلو دهون؟",
+      "MUSCLE_KG": "عايز تزوّد كام كيلو عضل؟",
+      "WEIGHT_KG": "الوزن اللي عايز توصله"
+    },
+    "less": "أقل",
+    "more": "أكتر",
+    "fromScan": "{{change}} كجم عن آخر قياس",
+    "name": {
+      "BODY_FAT_KG": "تخسّ {{amount}} كجم دهون",
+      "MUSCLE_KG": "تزوّد {{amount}} كجم عضل",
+      "WEIGHT_KG": "توصل لـ {{amount}} كجم"
+    },
+    "summary": "هدفك",
+    "startsNow": "هيبدأ النهارده من آخر قياس.",
+    "create": "اعمل الهدف",
+    "creating": "بنعمل الهدف…",
+    "failed": "مقدرناش نعمل الهدف. جرّب تاني.",
+    "noScan": "محتاج تعمل قياس الأول قبل ما تحط هدف. احجز واحد من الريسبشن.",
+    "error": "مقدرناش نحمّل آخر قياس."
   }
 }

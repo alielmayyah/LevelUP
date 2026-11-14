@@ -229,7 +229,7 @@
       text-wrap: balance;
     }
 
-    button ion-icon {
+    button .lu-pixel-icon {
       flex: none;
       font-size: 1.05rem;
     }
@@ -262,7 +262,7 @@
   }
 
   @media (max-width: 359.98px) {
-    .lu-board-tabs button ion-icon {
+    .lu-board-tabs button .lu-pixel-icon {
       display: none;
     }
   }
@@ -287,26 +287,6 @@
     .lu-board-tabs button {
       transition: none;
     }
-  }
-}
-
-@layer components {
-  .lu-pager-button {
-    clip-path: px-corners(3px);
-    box-shadow:
-      inset 0 0 0 2px var(--lu-border),
-      inset 0 -4px 0 var(--lu-surface-2);
-  }
-
-  .lu-pager-button:focus-visible {
-    outline: 0;
-    box-shadow:
-      inset 0 0 0 2px var(--lu-surface),
-      inset 0 0 0 4px var(--lu-text);
-  }
-
-  .lu-pager-button:not(:disabled):active {
-    transform: translateY(2px);
   }
 }
 

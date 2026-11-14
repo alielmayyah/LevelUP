@@ -16,6 +16,8 @@ const SCREENS: { name: string; url: string; fitId?: string; open?: 'notification
   { name: 'notifications', url: '/tabs/home', fitId: '101', open: 'notifications' },
   { name: 'progress', url: '/tabs/progress', fitId: '101' },
   { name: 'goals', url: '/tabs/goals', fitId: '101' },
+  { name: 'new goal', url: '/tabs/goals/new', fitId: '101' },
+  { name: 'new goal (no scan)', url: '/tabs/goals/new', fitId: '102' },
   { name: 'leaderboard', url: '/tabs/leaderboard', fitId: '101' },
   { name: 'leaderboard (not joined)', url: '/tabs/leaderboard', fitId: '102' },
   { name: 'profile', url: '/tabs/profile', fitId: '101' },

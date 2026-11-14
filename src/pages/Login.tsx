@@ -1,5 +1,4 @@
-import { IonContent, IonIcon, IonPage, IonSpinner } from '@ionic/react';
-import { arrowBack, arrowForward, idCardOutline, informationCircleOutline } from 'ionicons/icons';
+import { IonContent, IonPage, IonSpinner } from '@ionic/react';
 import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useId, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +13,7 @@ import LanguageToggle from '../components/LanguageToggle';
 import SoundToggle from '../components/SoundToggle';
 import { CORNER_BUTTON, CORNER_CONTROLS, CORNER_START } from '../components/cornerControl';
 import { useSound } from '../sound/useSound';
-import gymScene from './assets/splash-gym.webp';
+import PixelIcon from '../components/PixelIcon';
 import './Login.scss';
 
 const MIN_DIGITS = 3;
@@ -85,33 +84,24 @@ const Login: React.FC = () => {
               onClick={() => history.replace('/splash')}
               data-testid="login-back"
             >
-              <IonIcon className="text-[1.25rem] rtl:-scale-x-100" icon={arrowBack} aria-hidden="true" />
+              <PixelIcon className="text-[1.25rem] rtl:-scale-x-100" name="arrowBack" />
             </button>
           </div>
           <div className={CORNER_CONTROLS}>
             <LanguageToggle />
             <SoundToggle />
           </div>
-          <div
-            className="lu-login-hero relative h-[calc(clamp(220px,44vh,420px)+var(--ion-safe-area-top,0px))] overflow-hidden split:h-auto split:min-h-full"
-            aria-hidden="true"
-          >
-            <img
-              className="absolute inset-0 size-full object-cover object-[68%_100%]"
-              src={gymScene}
-              alt=""
-              width={1344}
-              height={896}
-            />
-            <div className="absolute inset-x-0 top-0 z-1 grid justify-items-center gap-0.5 pt-[calc(clamp(14px,3vh,32px)+var(--ion-safe-area-top,0px))]">
+          {/* Just the logo: it is the page's heading, named by its alt text. */}
+          <div className="grid place-items-center pt-[calc(72px+var(--ion-safe-area-top,0px))] pb-8 split:pt-[calc(16px+var(--ion-safe-area-top,0px))] split:pb-[calc(16px+var(--ion-safe-area-bottom,0px))]">
+            <h1 className="m-0">
               <img
-                className="block h-auto w-[clamp(120px,22vh,210px)] drop-shadow-[0_2px_8px_var(--lu-splash-bg)] short-landscape:w-[clamp(110px,40vh,180px)]"
+                className="block h-auto w-[clamp(140px,26vh,220px)] short-landscape:w-[clamp(110px,40vh,180px)]"
                 src={brand.logo}
-                alt=""
+                alt={brand.name}
                 width={480}
                 height={414}
               />
-            </div>
+            </h1>
           </div>
 
           <form
@@ -119,15 +109,11 @@ const Login: React.FC = () => {
             onSubmit={(e) => void submit(e)}
             noValidate
           >
-            <h1 className="m-0 mb-5 text-start text-[clamp(1.5rem,6.5vw,2rem)] leading-[1.2] font-extrabold short-landscape:mb-2.5 short-landscape:text-[1.35rem]">
-              {t('login.welcome', { name: brand.name })}
-            </h1>
-
             <label
               className="mb-2 flex items-center gap-1.5 text-[0.9rem] font-bold text-splash-muted"
               htmlFor={inputId}
             >
-              <IonIcon className="text-[1.15rem]" icon={idCardOutline} aria-hidden="true" />
+              <PixelIcon className="text-[1.15rem]" name="idCard" />
               {t('login.fitId')}
             </label>
             <input
@@ -164,11 +150,7 @@ const Login: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.16 }}
                   >
-                    <IonIcon
-                      className="mt-[0.1em] flex-none text-[1.05rem]"
-                      icon={informationCircleOutline}
-                      aria-hidden="true"
-                    />
+                    <PixelIcon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
                     {t(`login.${failure}`)}
                   </m.p>
                 ) : (
@@ -180,11 +162,7 @@ const Login: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.16 }}
                   >
-                    <IonIcon
-                      className="mt-[0.1em] flex-none text-[1.05rem]"
-                      icon={informationCircleOutline}
-                      aria-hidden="true"
-                    />
+                    <PixelIcon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
                     {t('login.help')}
                   </m.p>
                 )}
@@ -205,7 +183,7 @@ const Login: React.FC = () => {
               ) : (
                 <>
                   {t('login.submit')}
-                  <IonIcon className="text-[1.2rem] rtl:-scale-x-100" icon={arrowForward} aria-hidden="true" />
+                  <PixelIcon className="text-[1.2rem] rtl:-scale-x-100" name="arrowForward" />
                 </>
               )}
             </CtaButton>

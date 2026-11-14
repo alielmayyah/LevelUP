@@ -73,6 +73,7 @@ describe('playIntro', () => {
     class FakeCtx {
       currentTime = 0;
       destination = {};
+      state: AudioContextState = 'running';
       resume = vi.fn(() => Promise.resolve());
       createGain = vi.fn(node);
       createOscillator = vi.fn(() => {
@@ -112,6 +113,45 @@ describe('playIntro', () => {
     const { result } = renderHook(() => mod.useSound());
     act(() => result.current.toggle());
     mod.playIntro();
+    expect(oscillators).toHaveLength(0);
+  });
+
+  it('playIntroSoon plays at once when audio is allowed', async () => {
+    const { FakeCtx, oscillators } = makeCtx();
+    vi.stubGlobal('AudioContext', FakeCtx);
+    const { playIntroSoon } = await import('./useSound');
+    playIntroSoon();
+    expect(oscillators).toHaveLength(8);
+  });
+
+  it('playIntroSoon waits for the first tap when the browser holds audio, and can be cancelled', async () => {
+    const { FakeCtx, oscillators } = makeCtx();
+    class Blocked extends FakeCtx {
+      state: AudioContextState = 'suspended';
+      resume = vi.fn(() => new Promise<void>(() => undefined));
+    }
+    vi.stubGlobal('AudioContext', Blocked);
+    const { playIntroSoon } = await import('./useSound');
+    playIntroSoon();
+    expect(oscillators).toHaveLength(0);
+    window.dispatchEvent(new Event('pointerdown'));
+    expect(oscillators).toHaveLength(8);
+    // A second tap doesn't replay it.
+    window.dispatchEvent(new Event('pointerdown'));
+    expect(oscillators).toHaveLength(8);
+  });
+
+  it('a cancelled wait never plays', async () => {
+    const { FakeCtx, oscillators } = makeCtx();
+    class Blocked extends FakeCtx {
+      state: AudioContextState = 'suspended';
+      resume = vi.fn(() => new Promise<void>(() => undefined));
+    }
+    vi.stubGlobal('AudioContext', Blocked);
+    const { playIntroSoon } = await import('./useSound');
+    const cancel = playIntroSoon();
+    cancel();
+    window.dispatchEvent(new Event('keydown'));
     expect(oscillators).toHaveLength(0);
   });
 });

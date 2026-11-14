@@ -77,8 +77,8 @@ button.lu-px-card:active {
   font-weight: 800;
 }
 
-.lu-card-title ion-icon,
-.lu-section-title ion-icon {
+.lu-card-title .lu-pixel-icon,
+.lu-section-title .lu-pixel-icon {
   color: var(--ion-color-primary);
   font-size: 1.15rem;
 }
@@ -95,7 +95,7 @@ button.lu-px-card:active {
   text-transform: uppercase;
 }
 
-.lu-card-kicker ion-icon {
+.lu-card-kicker .lu-pixel-icon {
   font-size: 1.05rem;
 }
 
@@ -104,7 +104,7 @@ button.lu-px-card:active {
   letter-spacing: 0;
 }
 
-:root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) ion-icon,
+:root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) .lu-pixel-icon,
 :root.ion-palette-dark .lu-card-kicker {
   color: var(--ion-color-secondary);
 }
@@ -186,7 +186,7 @@ button.lu-px-card:active {
   color: var(--lu-text);
 }
 
-.lu-chip-tier ion-icon {
+.lu-chip-tier .lu-pixel-icon {
   color: var(--tier);
 }
 
@@ -285,11 +285,12 @@ button.lu-px-card:active {
   cursor: pointer;
 }
 
-.lu-segment button ion-icon {
+.lu-segment button .lu-pixel-icon {
   font-size: 1.15rem;
 }
 
-.lu-segment button[aria-selected='true'] {
+.lu-segment button[aria-selected='true'],
+.lu-segment button[aria-checked='true'] {
   background: var(--ion-color-primary);
   color: var(--ion-color-primary-contrast);
   box-shadow: 0 3px 0 var(--ion-color-primary-shade);
@@ -380,7 +381,6 @@ button.lu-px-card:active {
   text-align: center;
 }
 
-.lu-state ion-icon,
 .lu-state .lu-pixel-icon {
   font-size: 40px;
 }
@@ -488,4 +488,13 @@ button.lu-px-card:active {
   .lu-goal:has(.lu-goal-row:active) {
     transform: none;
   }
+}
+
+/* The pixel icon before each tab page's title: the same icon as its tab, in the brand purple. */
+.lu-title-icon {
+  /* A purple outline, not dark ink, so line-heavy icons (the flag pole) show in dark mode too. */
+  --px-line: color-mix(in srgb, var(--ion-color-primary) 65%, var(--lu-text));
+  --px-fill: var(--ion-color-primary);
+  --px-hi: color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-splash-star));
+  --px-core: var(--lu-splash-star);
 }

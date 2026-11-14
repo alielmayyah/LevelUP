@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { ProgressPoint } from '../../api/types';
+import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
 import { focusSibling, rovingTarget } from '../../components/roving';
 import { formatNumber, numberLocale } from '../../i18n/format';
 import LineChart, { type Series } from './LineChart';
@@ -11,6 +12,17 @@ const day = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
 
 type TrendKey = 'weight' | 'muscle' | 'bodyFat' | 'score';
+
+/** The same metric icons as the rest of the app: scale, muscle, flame, and the FitScore trophy. */
+const ICON: Record<TrendKey, { name: PixelIconName; colors: string }> = {
+  weight: { name: 'scale', colors: '[--px-hi:var(--lu-surface)]' },
+  muscle: { name: 'muscle', colors: '[--px-fill:var(--lu-muscle)] [--px-hi:var(--lu-muscle-hi)]' },
+  bodyFat: {
+    name: 'flame',
+    colors: '[--px-core:var(--lu-fat-core)] [--px-fill:var(--lu-fat)] [--px-hi:var(--lu-fat-hi)]',
+  },
+  score: { name: 'trophy', colors: '[--px-fill:var(--lu-gold)] [--px-hi:var(--lu-fat-core)]' },
+};
 
 /** Which way is good news on each trend. Weight has no right direction. */
 const BETTER: Record<TrendKey, 'up' | 'down' | null> = { weight: null, muscle: 'up', bodyFat: 'down', score: 'up' };
@@ -114,7 +126,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
             aria-checked={current === k}
             tabIndex={current === k ? 0 : -1}
             data-testid={`trend-${k}`}
-            className="min-h-11 cursor-pointer rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.78rem] leading-tight font-extrabold [overflow-wrap:normal] text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+            className="flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-0 bg-transparent px-1 py-1.5 font-inherit text-[0.78rem] leading-tight font-extrabold [overflow-wrap:normal] text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
             onClick={() => setPick(k)}
             onKeyDown={(e) => {
               const to = rovingTarget(e, i, keys.length, rtl);
@@ -123,6 +135,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
               focusSibling(e, to);
             }}
           >
+            <PixelIcon name={ICON[k].name} className={`text-[1.15rem] ${ICON[k].colors}`} />
             {all[k].label}
           </button>
         ))}

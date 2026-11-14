@@ -21,7 +21,7 @@ for (const lang of LOCALES)
         await expect(home.getByTestId('rank-number')).toContainText('#1');
         await expect(home.getByTestId('tile-body-fat')).toContainText('1.1%');
         await expect(home.getByTestId('tile-muscle')).toContainText(`0.9 ${strings[lang].units.kg}`);
-        await expect(home.getByTestId('tile-member-since')).toContainText('2026');
+        await expect(home.getByTestId('tile-bmi')).toContainText(strings[lang].home.wins.bmi);
         expect(await noHorizontalOverflow(page)).toBe(true);
       });
 
@@ -86,7 +86,7 @@ test('the header clears the notch and the last tile clears the tab bar', async (
   await page.evaluate(() => document.documentElement.style.setProperty('--ion-safe-area-top', '59px'));
   const bell = (await page.getByTestId('bell').boundingBox())!;
   expect(bell.y).toBeGreaterThanOrEqual(59);
-  const tile = page.getByTestId('tile-member-since');
+  const tile = page.getByTestId('tile-bmi');
   await expect(tile).toBeVisible();
   await page
     .getByTestId('page-home')

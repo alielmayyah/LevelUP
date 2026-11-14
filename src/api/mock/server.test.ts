@@ -5,6 +5,7 @@ import type {
   AssessmentDto,
   DashboardDto,
   GoalsDto,
+  GoalView,
   LeaderboardDto,
   NotificationDto,
   ProfileDto,
@@ -73,19 +74,20 @@ describe('dashboard', () => {
   it('Mohamed (101) is the top member: Elite FitScore, #1 of 19', async () => {
     const { status, body: d } = await get<DashboardDto>('/me/dashboard', '101');
     expect(status).toBe(200);
-    const { body: me } = await get<ProfileDto>('/me', '101');
     expect(d.member).toEqual({
       memberId: 1,
       firstName: 'Mohamed',
+      sex: 'MALE',
       showFitScore: true,
-      memberSince: me.membershipStart,
       avatar: null,
     });
     // FitScore is computed from the scan with the InBody Score method (domain.ts).
     expect(d.fitScore).toEqual({ score: 91, tier: 'Elite', changeSinceLastScan: 2 });
     expect(d.mission).toMatchObject({ title: 'Gain 3 kg of muscle', percent: 67, doneKg: 2, remainingKg: 1 });
     expect(d.mission!.estimatedCompletion).not.toBeNull();
-    expect(d.monthlyWins).toEqual({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
+    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
+    expect(typeof d.monthlyWins.bmiChange).toBe('number');
+    expect(typeof d.monthlyWins.bmi).toBe('number');
     expect(d.leaderboard).toEqual({
       optedIn: true,
       standing: { rank: 1, totalMembers: 19, topPercent: 6, membersBehind: 18, pointsToNextRank: null },
@@ -97,7 +99,7 @@ describe('dashboard', () => {
     const d = (await get<DashboardDto>('/me/dashboard', '102')).body;
     expect(d.fitScore).toBeNull();
     expect(d.mission).toBeNull();
-    expect(d.monthlyWins).toEqual({ bodyFatChangePct: null, muscleGainedKg: null });
+    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: null, muscleGainedKg: null, bmiChange: null });
     expect(d.leaderboard).toEqual({ optedIn: false, standing: null });
     expect(JSON.stringify(d)).not.toContain('NaN');
   });
@@ -106,13 +108,28 @@ describe('dashboard', () => {
     const d = (await get<DashboardDto>('/me/dashboard', '103')).body;
     expect(d.member.showFitScore).toBe(false);
     expect(d.fitScore).toMatchObject({ changeSinceLastScan: null });
-    expect(d.monthlyWins).toEqual({ bodyFatChangePct: null, muscleGainedKg: null });
+    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: null, muscleGainedKg: null, bmiChange: null });
   });
 
   it('no response for any mock member contains NaN or undefined values', async () => {
     for (const fitId of ['101', '102', '103'])
       for (const path of ['/me', '/me/dashboard', '/me/progress', '/me/assessments', '/me/goals', '/me/notifications'])
         expect(JSON.stringify((await get(path, fitId)).body)).not.toMatch(/NaN|undefined|Infinity/);
+  });
+});
+
+describe('Sara (140): new, no scans, but on the leaderboard', () => {
+  it('signs in, has no scans or goals, and is opted in but not ranked yet', async () => {
+    expect((await login('140')).status).toBe(201);
+    const dash = (await get<DashboardDto>('/me/dashboard', '140')).body;
+    expect(dash.fitScore).toBeNull();
+    expect(dash.mission).toBeNull();
+    expect(dash.leaderboard).toEqual({ optedIn: true, standing: null });
+    expect((await get<AssessmentDto[]>('/me/assessments', '140')).body).toEqual([]);
+    const lb = (await get<LeaderboardDto>('/leaderboard?board=score', '140')).body;
+    expect(lb.optedIn).toBe(true);
+    expect(lb.division).toBe('FEMALE');
+    expect(lb.rows.some((r) => r.isMe)).toBe(false);
   });
 });
 
@@ -133,7 +150,9 @@ describe('dates are relative to today', () => {
     const later = new Date('2027-03-02T08:00:00Z');
     resetMockServer(later);
     const d = (await get<DashboardDto>('/me/dashboard', '101')).body;
-    expect(d.monthlyWins).toEqual({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
+    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
+    expect(typeof d.monthlyWins.bmiChange).toBe('number');
+    expect(typeof d.monthlyWins.bmi).toBe('number');
     const progress = (await get<ProgressDto>('/me/progress', '101')).body.assessments;
     expect(new Date(progress.at(-1)!.takenAt).getUTCMonth()).toBe(later.getUTCMonth());
   });
@@ -170,15 +189,15 @@ describe('progress, assessments, goals, profile', () => {
     expect((await get<ProgressDto>('/me/progress', '102')).body.assessments).toEqual([]);
   });
 
-  it('Mohamed’s goals: 1 active, 2 completed, 1 upcoming', async () => {
+  it('Mohamed’s goals: 2 in progress, 2 completed, none waiting', async () => {
     const g = (await get<GoalsDto>('/me/goals', '101')).body;
-    expect([g.active.length, g.completed.length, g.upcoming.length]).toEqual([1, 2, 1]);
+    expect([g.active.length, g.completed.length]).toEqual([2, 2]);
+    expect(g).not.toHaveProperty('upcoming');
     expect(g.completed.every((x) => x.percent === 100 && x.completedAt)).toBe(true);
-    expect(g.upcoming[0]).toMatchObject({ percent: 0, completedAt: null });
   });
 
   it('Lina has no goals', async () => {
-    expect((await get<GoalsDto>('/me/goals', '102')).body).toEqual({ active: [], completed: [], upcoming: [] });
+    expect((await get<GoalsDto>('/me/goals', '102')).body).toEqual({ active: [], completed: [] });
   });
 
   it('profile reflects settings', async () => {
@@ -192,6 +211,70 @@ describe('progress, assessments, goals, profile', () => {
     });
     expect(p.coach).not.toBeNull();
     expect((await get<ProfileDto>('/me', '102')).body.coach).toBeNull();
+  });
+});
+
+const createGoal = (body: unknown, fitId: string) =>
+  mockServer.handle('POST', '/me/goals', body, `mock.${fitId}`) as Promise<{ status: number; body: GoalView }>;
+
+describe('creating a goal', () => {
+  it('Omar, with no goal yet, sets one that starts now from his latest scan', async () => {
+    const [scan] = (await get<AssessmentDto[]>('/me/assessments', '103')).body;
+    const r = await createGoal({ metric: 'BODY_FAT_KG', targetValue: scan.bodyFatKg - 2 }, '103');
+    expect(r.status).toBe(201);
+    expect(r.body).toMatchObject({
+      title: 'Lose 2 kg of body fat',
+      startValue: scan.bodyFatKg,
+      coachNote: null,
+      deadline: null,
+      percent: 0,
+    });
+    const goals = (await get<GoalsDto>('/me/goals', '103')).body;
+    expect(goals.active.map((g) => g.id)).toEqual([r.body.id]);
+    expect((await get<DashboardDto>('/me/dashboard', '103')).body.mission?.goalId).toBe(r.body.id);
+  });
+
+  it('Mohamed, with goals in progress, gets the new one in progress too, no approval needed', async () => {
+    const [scan] = (await get<AssessmentDto[]>('/me/assessments', '101')).body;
+    const r = await createGoal({ metric: 'MUSCLE_KG', targetValue: scan.skeletalMuscleKg + 1.5 }, '101');
+    expect(r.status).toBe(201);
+    expect(r.body.title).toBe('Gain 1.5 kg of muscle');
+    const goals = (await get<GoalsDto>('/me/goals', '101')).body;
+    expect(goals.active.map((g) => g.id)).toContain(r.body.id);
+  });
+
+  it('a weight goal is named by its target', async () => {
+    const r = await createGoal({ metric: 'WEIGHT_KG', targetValue: 70 }, '103');
+    expect(r.body.title).toBe('Reach 70 kg');
+  });
+
+  it('Lina, with no scan, is told to scan first (409)', async () => {
+    const r = await createGoal({ metric: 'MUSCLE_KG', targetValue: 40 }, '102');
+    expect(r.status).toBe(409);
+  });
+
+  it('rejects bad metrics, targets, and targets that point the wrong way', async () => {
+    const [scan] = (await get<AssessmentDto[]>('/me/assessments', '103')).body;
+    const ok = { metric: 'MUSCLE_KG', targetValue: scan.skeletalMuscleKg + 1 };
+    for (const bad of [
+      null,
+      { ...ok, metric: 'HEIGHT' },
+      { ...ok, targetValue: 'x' },
+      { ...ok, targetValue: -1 },
+      { ...ok, targetValue: scan.skeletalMuscleKg - 1 },
+      { ...ok, metric: 'BODY_FAT_KG', targetValue: scan.bodyFatKg + 1 },
+      { ...ok, metric: 'WEIGHT_KG', targetValue: scan.weightKg },
+    ])
+      expect((await createGoal(bad, '103')).status).toBe(400);
+    expect((await get<GoalsDto>('/me/goals', '103')).body.active).toEqual([]);
+  });
+
+  it('created goals survive a mock server restart, and stay with their member', async () => {
+    const r = await createGoal({ metric: 'WEIGHT_KG', targetValue: 70 }, '103');
+    resetMockServer(NOW);
+    expect((await get<GoalsDto>('/me/goals', '103')).body.active.map((g) => g.id)).toEqual([r.body.id]);
+    const sam = (await get<GoalsDto>('/me/goals', '101')).body;
+    expect([...sam.active, ...sam.completed].map((g) => g.title)).not.toContain('Reach 70 kg');
   });
 });
 
@@ -334,7 +417,6 @@ describe('avatar', () => {
       skin: 'deep-brown',
       hair: 'silver',
       eyes: 'hazel',
-      smile: 'brown',
       tank: 'teal',
       shorts: 'navy',
       shoes: 'amber',
@@ -353,11 +435,26 @@ describe('avatar', () => {
     expect((await get<ProfileDto>('/me', '102')).body.avatar).toBeNull();
   });
 
+  it('accepts the old smile field on a saved avatar', async () => {
+    const legacy = { ...look, colors: { ...look.colors, smile: 'brown' } };
+    expect((await put(legacy, '101')).status).toBe(200);
+    resetMockServer(NOW);
+    expect((await get<ProfileDto>('/me', '101')).body.avatar).toEqual(legacy);
+  });
+
   it('saves all styles and returns them after a reload', async () => {
     const styled = {
       ...look,
-      colors: { ...look.colors, beard: 'silver' },
-      styles: { hair: 'locs', body: 'broad', top: 'hoodie', shoes: 'high-tops', pants: 'cargo', beard: 'goatee' },
+      colors: { ...look.colors, beard: 'silver', socks: 'violet' },
+      styles: {
+        hair: 'locs',
+        body: 'broad',
+        top: 'hoodie',
+        shoes: 'high-tops',
+        pants: 'cargo',
+        beard: 'goatee',
+        socks: 'striped-socks',
+      },
     };
     expect(await put(styled, '101')).toEqual({ status: 200, body: styled });
     resetMockServer(NOW);

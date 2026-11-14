@@ -1,18 +1,15 @@
-import { IonIcon } from '@ionic/react';
-import { calendarOutline, chevronForward, flagOutline } from 'ionicons/icons';
 import { useId, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import type { MissionSummary } from '../../api/types';
 import PixelIcon from '../../components/PixelIcon';
-import { formatNumber, formatPercent, numberLocale } from '../../i18n/format';
+import { formatNumber, formatPercent } from '../../i18n/format';
 
 const RADIUS = 26;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-const formatDay = (iso: string) =>
-  new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric' }).format(new Date(iso));
+/** The pixel progress bar under the amount: one block per tenth of the goal. */
+const BLOCKS = 10;
 
 /** The active goal with a progress ring. Opens the Goals tab. */
 const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) => {
@@ -25,10 +22,10 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
   const head = (
     <span className="lu-card-head">
       <span className="lu-card-kicker">
-        <IonIcon icon={flagOutline} aria-hidden="true" />
+        <PixelIcon name="flag" />
         {t('home.mission.title')}
       </span>
-      {mission && <IonIcon className="lu-chevron" icon={chevronForward} aria-hidden="true" />}
+      {mission && <PixelIcon className="lu-chevron" name="chevronForward" />}
     </span>
   );
   // A heading for heading navigation. The visible label stays in the button so its name matches what is shown (WCAG 2.5.3).
@@ -90,18 +87,31 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
             <strong id={`${ids}-title`} className="text-[1.1rem] leading-[1.25] font-extrabold">
               {mission.title}
             </strong>
-            <span id={`${ids}-details`} className="grid gap-0.5">
-              <span>
+            <span id={`${ids}-details`} className="grid gap-1.5">
+              {/* Read out as one sentence; drawn as a big number, a pixel bar, and what's left. */}
+              <span className="sr-only">
                 {t('home.mission.progress', {
                   done: formatNumber(mission.doneKg, 1),
                   total: formatNumber(mission.doneKg + mission.remainingKg, 1),
                 })}
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[0.875rem] text-muted">
-                <IonIcon className="flex-none text-[1rem]" icon={calendarOutline} aria-hidden="true" />
-                {mission.estimatedCompletion
-                  ? t('home.mission.eta', { date: formatDay(mission.estimatedCompletion) })
-                  : t('home.mission.noEta')}
+              <span className="flex items-baseline gap-1.5" aria-hidden="true" data-testid="mission-amount">
+                <strong className="lu-display text-[1.75rem] leading-none font-normal text-ink">
+                  {formatNumber(mission.doneKg, 1)}
+                </strong>
+                <span className="text-[0.9rem] font-bold text-muted">
+                  / {formatNumber(mission.doneKg + mission.remainingKg, 1)} {t('units.kg')}
+                </span>
+              </span>
+              <span className="lu-mission-blocks flex gap-[3px]" aria-hidden="true">
+                {Array.from({ length: BLOCKS }, (_, i) => (
+                  <span key={i} className={i < Math.round((percent / 100) * BLOCKS) ? 'is-on' : undefined} />
+                ))}
+              </span>
+              <span className="text-[0.8rem] font-bold text-muted" data-testid="mission-left">
+                {mission.remainingKg > 0
+                  ? t('home.mission.toGo', { left: formatNumber(mission.remainingKg, 1) })
+                  : t('home.mission.reached')}
               </span>
             </span>
           </span>

@@ -1,0 +1,88 @@
+# Checks every push to dev and every pull request: lint, colors, unit tests, and the full e2e suite.
+# The e2e suite runs as ten parallel jobs (five device sizes, two shards each), each using every CPU core.
+name: CI
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run check-colors
+      - run: npm test
+
+  e2e:
+    name: e2e (${{ matrix.project }} ${{ matrix.shard }}/2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+        project: [iphone, android, small, tablet, desktop]
+        include:
+          - project: iphone
+            browser: webkit
+          - project: android
+            browser: chromium
+          - project: small
+            browser: chromium
+          - project: tablet
+            browser: webkit
+          - project: desktop
+            browser: chromium
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ steps.pw.outputs.version }}-${{ matrix.browser }}
+      # Only the browser this device size needs; system libraries are installed either way.
+      - name: Install Playwright browser
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Install browser system libraries
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps ${{ matrix.browser }}
+      # The production build, served by vite preview, is what the e2e suite checks.
+      - name: E2E (${{ matrix.project }} ${{ matrix.shard }}/2)
+        run: npx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}/2
+        env:
+          E2E_PROD: '1'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7

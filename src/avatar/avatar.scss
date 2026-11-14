@@ -17,14 +17,69 @@
     background: color-mix(in srgb, var(--lu-splash-text) 24%, var(--lu-splash-bg-2));
   }
 
+  /* Editor: the stage fills the top with no frame; a soft floor shadow grounds the character. */
+  .lu-editor .lu-avatar-stage {
+    border: 0;
+  }
+
+  .lu-stage-floor {
+    position: absolute;
+    inset-block-end: 14px;
+    inset-inline: 50%;
+    inline-size: min(46%, 220px);
+    block-size: 14px;
+    translate: -50% 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--lu-splash-bg) 70%, transparent);
+    filter: blur(2px);
+
+    &:dir(rtl) {
+      translate: 50% 0;
+    }
+  }
+
+  .lu-save-chip {
+    background: color-mix(in srgb, var(--lu-splash-bg) 75%, transparent);
+    color: var(--lu-splash-text);
+  }
+
+  /* The panel slides up over the stage like a sheet. */
+  .lu-editor-panel {
+    border-block-start: 2px solid var(--lu-border);
+    border-start-start-radius: 20px;
+    border-start-end-radius: 20px;
+    background: var(--lu-surface);
+    box-shadow: 0 -6px 18px color-mix(in srgb, var(--lu-splash-bg) 35%, transparent);
+    margin-block-start: -14px;
+  }
+
+  @media (orientation: landscape) and (max-height: 480px), (min-width: 900px) {
+    .lu-editor-panel {
+      border: 2px solid var(--lu-border);
+      border-radius: 20px;
+      margin-block-start: 0;
+    }
+  }
+
   .lu-customizer-tab {
-    background: var(--lu-surface-2);
+    background: transparent;
     color: var(--lu-text-muted);
   }
 
   .lu-customizer-tab[aria-selected='true'] {
-    background: color-mix(in srgb, var(--ion-color-primary) 12%, var(--lu-surface));
-    color: var(--lu-text);
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+    box-shadow: 0 3px 0 var(--ion-color-primary-shade);
+  }
+
+  .lu-style-card:active {
+    transform: scale(0.96);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-style-card:active {
+      transform: none;
+    }
   }
 
   .lu-swatch {
@@ -34,7 +89,7 @@
   }
 
   .lu-swatch[aria-checked='true'] {
-    outline: 2px solid var(--ion-color-primary);
+    outline: 3px solid var(--ion-color-primary);
     outline-offset: 2px;
   }
 

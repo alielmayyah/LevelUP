@@ -1,5 +1,3 @@
-import { IonIcon } from '@ionic/react';
-import { bulbOutline, checkmarkCircleOutline, close, heartOutline, informationCircleOutline } from 'ionicons/icons';
 import { useEffect, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,14 +25,14 @@ export const InfoButton: React.FC<{ label: string; onClick: () => void; testId: 
     onClick={onClick}
     data-testid={testId}
   >
-    <IonIcon icon={informationCircleOutline} aria-hidden="true" />
+    <PixelIcon name="info" />
   </button>
 );
 
 const PARTS = [
-  { part: 'what', icon: bulbOutline },
-  { part: 'why', icon: heartOutline },
-  { part: 'tip', icon: checkmarkCircleOutline },
+  { part: 'what', icon: 'bulb' },
+  { part: 'why', icon: 'heart' },
+  { part: 'tip', icon: 'checkCircle' },
 ] as const;
 
 interface Props {
@@ -115,7 +113,7 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
               aria-label={t('progress.closeScans')}
               onClick={onClose}
             >
-              <IonIcon icon={close} aria-hidden="true" />
+              <PixelIcon name="close" />
             </button>
           </header>
 
@@ -123,7 +121,7 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
             {PARTS.map(({ part, icon }) => (
               <li key={part} className="lu-info-row flex items-start gap-3 rounded-[10px] p-3">
                 <span className="lu-info-row-icon grid size-9 flex-none place-items-center rounded-lg text-[1.15rem]">
-                  <IonIcon icon={icon} aria-hidden="true" />
+                  <PixelIcon name={icon} />
                 </span>
                 <div className="grid min-w-0 gap-0.5">
                   <h3 className="m-0 text-[0.9rem] font-extrabold text-ink">{t(`progress.infoHead.${part}`)}</h3>

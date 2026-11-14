@@ -55,7 +55,7 @@ test('a brand-new member (102) sees empty states on every tab, never NaN or unde
     progress: en.progress.empty,
     goals: en.goals.empty,
     leaderboard: en.leaderboard.hidden,
-    profile: en.profile.personal,
+    profile: en.profile.settings,
   };
   for (const tab of TABS) {
     await page.goto(`/tabs/${tab}`);

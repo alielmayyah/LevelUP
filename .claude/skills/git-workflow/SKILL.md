@@ -11,15 +11,14 @@ description: Use when creating a branch, committing, pushing, merging, opening o
 |---|---|---|
 | `master` | Production | Production |
 | `staging` | Pre-release testing | GitHub Pages (for now) |
-| `dev` | Integration of finished work | Nothing (CI only) |
-| `feature/<short-name>` | One feature or fix | Nothing |
+| `dev` | **Where all work happens.** Commit here directly. | Nothing (CI only) |
+| `feature/<short-name>` | Only when the owner asks for one | Nothing |
 | `old/*` | Archived prototype. Read-only. | Nothing |
 
-Flow: `feature/*` → PR into `dev` → PR `dev` into `staging` → PR `staging` into `master`.
+Flow: work on `dev` → PR `dev` into `staging` → PR `staging` into `master`.
 
-- Branch features from `dev`, not from `master`.
-- Use kebab-case names that describe the change: `feature/fitscore-card`, `feature/leaderboard-boards`, `fix/login-rate-limit`.
-- Small changes can go straight to `dev` without a feature branch. Use a feature branch when the work spans more than one commit or needs review.
+- **Always work on `dev`.** Before the first edit of a session, run `git branch --show-current`; if it isn't `dev`, switch to it (`git switch dev`) and carry over any finished work there first. Commit every change, big or small, to `dev`, one topic per commit.
+- Don't create `feature/*` branches on your own. Make one only when the owner asks; then branch from `dev`, use a kebab-case name (`feature/fitscore-card`, `fix/login-rate-limit`), and merge it back into `dev`.
 - Never commit directly to `staging` or `master`. They change only through merges.
 - Never force-push `dev`, `staging`, or `master`.
 
@@ -70,7 +69,7 @@ One commit is one topic. Before committing, run `git status` and `git diff`, the
 
 - Title: same format as a commit subject.
 - Body: a **Summary** (what and why, in 1–3 bullets), a **Testing** section (commands run and results), and **Screenshots** for UI changes (light, dark, and Arabic).
-- Open PRs with `gh pr create --base dev`. Use `--base staging` or `--base master` only for promotion PRs.
+- Day-to-day work needs no PR: it is committed on `dev`. PRs are for promotion (`gh pr create --base staging` from `dev`, `--base master` from `staging`), or into `dev` from a feature branch the owner asked for.
 - **Changes that span both repos** (a new or changed DTO): open the `levelup-backend` PR first. Then open the app PR, which runs `npm run api:types` against that branch's `openapi.json`. Link each PR from the other, and merge the API PR first.
 
 ## Before pushing

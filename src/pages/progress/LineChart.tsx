@@ -45,8 +45,11 @@ function niceRange(values: number[]): [number, number] {
   return [Math.floor((lo - span * 0.15) / step) * step, Math.ceil((hi + span * 0.15) / step) * step];
 }
 
+/** At most this many date labels along the bottom; with more scans, every other one is skipped. */
+const MAX_X_LABELS = 6;
+
 /**
- * A small pixel-style line chart: square points, chunky lines, a tappable
+ * A small pixel-style line chart: square points, one quiet baseline, a tappable
  * column per scan that shows every visible value for that date, and a legend
  * that hides or shows each line.
  */
@@ -93,8 +96,11 @@ const LineChart: React.FC<Props> = ({
   const ticks = (axis: Series['axis']) => {
     const r = ranges[axis];
     if (!r) return [];
-    return [r[0], (r[0] + r[1]) / 2, r[1]];
+    // Just the bottom and top of the scale: the line and its points carry the detail.
+    return [r[0], r[1]];
   };
+  const labelEvery = Math.ceil(n / MAX_X_LABELS);
+  const showLabel = (i: number) => i === n - 1 || (i % labelEvery === 0 && n - 1 - i >= labelEvery);
 
   const toggle = (key: string) =>
     setHidden((prev) => {
@@ -138,9 +144,12 @@ const LineChart: React.FC<Props> = ({
           aria-describedby={`${id}-summary`}
           shapeRendering="crispEdges"
         >
-          {ticks('start').map((v) => (
+          {ticks('start').map((v, i) => (
             <g key={`s${v}`}>
-              <line className="lu-chart-grid" x1={PAD.side} x2={W - PAD.side} y1={y(v, 'start')} y2={y(v, 'start')} />
+              {/* One faint baseline; the top of the scale is only labelled. */}
+              {i === 0 && (
+                <line className="lu-chart-grid" x1={PAD.side} x2={W - PAD.side} y1={y(v, 'start')} y2={y(v, 'start')} />
+              )}
               <text className="lu-chart-axis" x={startX} y={y(v, 'start') + 3} textAnchor={rtl ? 'start' : 'end'}>
                 {formatNumber(v, 0)}
               </text>
@@ -157,11 +166,14 @@ const LineChart: React.FC<Props> = ({
               {formatNumber(v, 0)}
             </text>
           ))}
-          {labels.map((l, i) => (
-            <text key={`${l}-${i}`} className="lu-chart-axis" x={x(i)} y={H - 6} textAnchor="middle">
-              {l}
-            </text>
-          ))}
+          {labels.map(
+            (l, i) =>
+              showLabel(i) && (
+                <text key={`${l}-${i}`} className="lu-chart-axis" x={x(i)} y={H - 6} textAnchor="middle">
+                  {l}
+                </text>
+              ),
+          )}
 
           {active !== null && (
             <line className="lu-chart-cursor" x1={x(active)} x2={x(active)} y1={PAD.top} y2={H - PAD.bottom} />

@@ -11,11 +11,22 @@ interface TabPageProps {
   actions?: ReactNode;
   /** A small icon before the title. */
   titleIcon?: ReactNode;
+  /** Stretch the content to the bottom of the screen (its last child grows), instead of stopping where it ends. */
+  fill?: boolean;
   children: ReactNode;
 }
 
 /** A tab page in the pixel style: big display title, notch-safe body that clears the tab bar. */
-const TabPage: React.FC<TabPageProps> = ({ testId, title, subtitle, onRefresh, actions, titleIcon, children }) => (
+const TabPage: React.FC<TabPageProps> = ({
+  testId,
+  title,
+  subtitle,
+  onRefresh,
+  actions,
+  titleIcon,
+  fill,
+  children,
+}) => (
   <IonPage data-testid={testId}>
     <IonContent>
       {onRefresh && (
@@ -23,7 +34,7 @@ const TabPage: React.FC<TabPageProps> = ({ testId, title, subtitle, onRefresh, a
           <IonRefresherContent />
         </IonRefresher>
       )}
-      <div className="lu-page-body lu-tab-body" data-testid="page-body">
+      <div className={`lu-page-body lu-tab-body${fill ? ' flex flex-col' : ''}`} data-testid="page-body">
         <div className="mb-4 flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <h1 className="lu-display m-0 flex items-center gap-2.5 text-[clamp(2.25rem,10vw,3rem)] leading-[1.05] wrap-anywhere text-ink">

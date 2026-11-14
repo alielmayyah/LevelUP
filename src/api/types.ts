@@ -39,12 +39,17 @@ export interface MissionSummary {
   remainingKg: number;
   estimatedCompletion: string | null;
   coachNote: string | null;
-  deadline: string;
+  /** Null for goals the member set without a due date. */
+  deadline: string | null;
 }
 
 export interface MonthlyWins {
   bodyFatChangePct: number | null;
   muscleGainedKg: number | null;
+  /** BMI change this month; null without a scan this month. */
+  bmiChange: number | null;
+  /** BMI on the latest scan, so the app can tell whether down or up is good news. */
+  bmi: number | null;
 }
 
 export interface LeaderboardStanding {
@@ -63,13 +68,12 @@ export interface LeaderboardSummary {
 }
 
 export interface DashboardDto {
-  /** memberSince: the membership start date, for the "Member since" tile. */
   member: {
     /** Opaque member id; seeds the starter character when none is saved. */
     memberId: number;
     firstName: string;
+    sex?: Sex;
     showFitScore: boolean;
-    memberSince: string;
     /** The member's saved character, so Home shows their picture without a second request. */
     avatar: AvatarConfigDto | null;
   };
@@ -170,16 +174,22 @@ export interface GoalView {
   metric: GoalMetric;
   startValue: number;
   targetValue: number;
-  deadline: string;
+  /** Null for goals the member set without a due date. */
+  deadline: string | null;
   coachNote: string | null;
   percent: number;
   completedAt: string | null;
 }
 
+/** POST /me/goals: the member sets their own goal, with no due date; it starts from their latest scan. */
+export interface CreateGoalRequest {
+  metric: GoalMetric;
+  targetValue: number;
+}
+
 export interface GoalsDto {
   active: GoalView[];
   completed: GoalView[];
-  upcoming: GoalView[];
 }
 
 export type Sex = 'MALE' | 'FEMALE';
@@ -206,15 +216,67 @@ export interface ProfileDto {
 /* ---------- Character (character customization plan) ---------- */
 
 /** Parts of the standard character that take a color preset. */
-export type AvatarPart = 'skin' | 'hair' | 'eyes' | 'smile' | 'tank' | 'shorts' | 'shoes';
+export type AvatarPart = 'skin' | 'hair' | 'eyes' | 'tank' | 'shorts' | 'shoes';
+export type AvatarRig = 'standard' | 'women';
 
 export interface AvatarStyles {
-  hair: 'curls' | 'fade' | 'side-part' | 'locs' | 'top-knot';
-  body: 'balanced' | 'lean' | 'broad' | 'compact';
-  top: 'tank' | 'tee' | 'hoodie' | 'track-jacket';
-  shoes: 'trainers' | 'high-tops' | 'runners' | 'slip-ons';
-  pants?: 'shorts' | 'joggers' | 'cargo' | 'track-pants';
-  beard?: 'clean-shaven' | 'stubble' | 'mustache' | 'goatee' | 'short-beard' | 'full-beard';
+  hair:
+    | 'curls'
+    | 'fade'
+    | 'side-part'
+    | 'locs'
+    | 'top-knot'
+    | 'buzz-cut'
+    | 'waves'
+    | 'shaved'
+    | 'spikes'
+    | 'braids'
+    | 'high-ponytail'
+    | 'braided-ponytail'
+    | 'low-bun'
+    | 'puff'
+    | 'sport-hijab';
+  body: 'balanced' | 'lean' | 'broad' | 'compact' | 'tall' | 'stocky' | 'athletic' | 'relaxed';
+  top:
+    | 'tank'
+    | 'tee'
+    | 'hoodie'
+    | 'track-jacket'
+    | 'sweatshirt'
+    | 'varsity'
+    | 'mesh-tee'
+    | 'compression-top'
+    | 'quarter-zip'
+    | 'sleeveless-hoodie'
+    | 'longline-tank'
+    | 'racerback-bra'
+    | 'fitted-zip';
+  shoes:
+    'trainers' | 'high-tops' | 'runners' | 'slip-ons' | 'boots' | 'canvas' | 'lifters' | 'cross-trainers' | 'barefoot';
+  pants?:
+    | 'shorts'
+    | 'joggers'
+    | 'cargo'
+    | 'track-pants'
+    | 'jeans'
+    | 'bike-shorts'
+    | 'liner-shorts'
+    | 'training-tights'
+    | 'split-shorts'
+    | 'warmup-pants'
+    | 'high-rise-leggings'
+    | 'capris';
+  beard?:
+    | 'clean-shaven'
+    | 'stubble'
+    | 'mustache'
+    | 'goatee'
+    | 'short-beard'
+    | 'full-beard'
+    | 'chin-strap'
+    | 'fade-beard'
+    | 'chin-tuft';
+  socks?: 'no-socks' | 'ankle-socks' | 'crew-socks' | 'striped-socks' | 'knee-highs' | 'grip-socks' | 'cushioned-socks';
 }
 
 /**
@@ -223,8 +285,14 @@ export interface AvatarStyles {
  */
 export interface AvatarConfigDto {
   schemaVersion: 1;
-  rig: 'standard';
-  colors: Record<AvatarPart, string> & { beard?: string };
+  rig: AvatarRig;
+  colors: Record<AvatarPart, string> & {
+    beard?: string;
+    socks?: string;
+    hijab?: string;
+    /** Accepted when reading older saves. The mouth shade is derived from skin tone. */
+    smile?: 'dark-plum' | 'brown' | 'warm-brown';
+  };
   /** Optional for characters saved before styles were available. */
   styles?: AvatarStyles;
 }

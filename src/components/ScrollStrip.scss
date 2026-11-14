@@ -1,0 +1,88 @@
+/*
+ * Sideways rows that show they scroll: the side with more items fades into the
+ * panel behind it, with a small round arrow on top. The fade color is the
+ * surface the row sits on (--lu-strip-bg), so it works in both themes.
+ */
+@layer components {
+  .lu-strip {
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .lu-strip-wrap {
+    --lu-strip-bg: var(--lu-surface);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      inset-block: 0;
+      inline-size: 44px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 150ms;
+    }
+
+    &::before {
+      inset-inline-start: 0;
+      background: linear-gradient(to right, var(--lu-strip-bg) 20%, transparent);
+    }
+
+    &::after {
+      inset-inline-end: 0;
+      background: linear-gradient(to left, var(--lu-strip-bg) 20%, transparent);
+    }
+
+    &:dir(rtl)::before {
+      background: linear-gradient(to left, var(--lu-strip-bg) 20%, transparent);
+    }
+
+    &:dir(rtl)::after {
+      background: linear-gradient(to right, var(--lu-strip-bg) 20%, transparent);
+    }
+
+    &[data-more-start]::before,
+    &[data-more-end]::after {
+      opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::before,
+      &::after {
+        transition: none;
+      }
+    }
+  }
+
+  .lu-strip-arrow {
+    position: absolute;
+    z-index: 2;
+    inset-block-start: 50%;
+    display: grid;
+    place-items: center;
+    inline-size: 28px;
+    block-size: 28px;
+    padding: 0;
+    translate: 0 -50%;
+    border: 2px solid var(--lu-border);
+    border-radius: 999px;
+    background: var(--lu-surface-2);
+    box-shadow: 0 2px 0 var(--lu-pixel-shadow);
+    color: var(--lu-text);
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .lu-strip-arrow-start {
+    inset-inline-start: 2px;
+  }
+
+  .lu-strip-arrow-end {
+    inset-inline-end: 2px;
+  }
+}

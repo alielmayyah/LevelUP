@@ -58,8 +58,7 @@
     "sameSince": "same as {{date}}",
     "olderScan": "Older scan",
     "newerScan": "Newer scan",
-    "earlierScan": "Earlier scan",
-    "scanPosition": "{{date}} · scan {{n}} of {{total}}",
+    "scanPosition": "Scan {{n}} of {{total}}",
     "firstScan": "Your first scan",
     "viewAll": "All scans ({{n}})",
     "allScans": "All scans",
@@ -121,7 +120,6 @@
       }
     },
     "journey": "Your body journey",
-    "lastScanLabel": "Last scan",
     "infoYours": "in this scan",
     "compareChange": "Change",
     "compareOff": "Not comparing with another scan",
@@ -129,26 +127,33 @@
     "compareTitle": "Compare with",
     "compareNone": "Don't compare",
     "compareHint": "Pick an earlier or later scan to see what changed.",
-    "comparing": "Comparing"
+    "comparing": "Comparing",
+    "comparedWith": "Compared with",
+    "compareOffShort": "No scan",
+    "moreDetails": "View more details",
+    "lessDetails": "Show less",
+    "scanPages": "Scan pages",
+    "calendarTitle": "Your scans",
+    "calendarHint": "Days with a scan are highlighted. Tap one to see it.",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "scanOn": "Scan on {{date}}",
+    "scansInMonth": "Scans this month: {{n}}"
   },
   "goals": {
     "subtitle": "Your missions",
     "start": "Start",
     "target": "Target",
-    "progress": "Progress",
-    "due": "Due {{date}}",
-    "completedOn": "Completed {{date}}",
-    "upcomingNote": "Starts after your current mission",
-    "overdue": "Overdue",
     "empty": "Nothing here yet",
     "error": "Couldn't load your goals.",
-    "journey": "Your journey",
-    "done": "goals done",
     "section": {
       "active": "In progress",
-      "upcoming": "Up next",
       "completed": "Completed"
-    }
+    },
+    "new": "New goal",
+    "emptyCta": "Set your first goal",
+    "reached": "Goal reached",
+    "doneOf": "{{done}} of {{total}} kg done"
   },
   "leaderboard": {
     "subtitle": "Gym rankings",
@@ -186,10 +191,7 @@
   "profile": {
     "subtitle": "Member settings",
     "fitId": "Fit ID {{id}}",
-    "personal": "Personal",
     "settings": "Member settings",
-    "age": "Age",
-    "height": "Height",
     "sound": "Sound",
     "soundHint": "Play app sounds",
     "showFitScore": "Show FitScore",
@@ -247,15 +249,15 @@
     "mission": {
       "title": "Current mission",
       "progress": "{{done}} of {{total}} kg",
-      "eta": "Estimated {{date}}",
-      "noEta": "Keep going to see your ETA",
-      "empty": "No active mission. Your coach will set one soon."
+      "empty": "No active mission. Set a goal to start one.",
+      "toGo": "{{left}} kg to go",
+      "reached": "Goal reached!"
     },
     "wins": {
       "title": "{{month}} wins",
       "bodyFat": "Body fat",
       "muscle": "Muscle",
-      "memberSince": "Member since"
+      "bmi": "BMI"
     },
     "notifications": {
       "bell": "Notifications",
@@ -275,7 +277,6 @@
     "hello": "Hello, {{name}}"
   },
   "login": {
-    "welcome": "Welcome to {{name}}",
     "fitId": "Fit ID",
     "help": "Ask the front desk if you don't have one.",
     "submit": "Sign in",
@@ -322,10 +323,22 @@
     "customize": "Customize your character",
     "outfitTitle": "Ready-made outfits",
     "outfit": {
+      "hijab-training": "Hijab Training",
       "dark-hoodie": "Dark Hoodie",
       "summer-fit": "Summer Fit",
       "gym-ready": "Gym Ready",
-      "track-fit": "Track Fit"
+      "track-fit": "Track Fit",
+      "spin-class": "Spin Class",
+      "strength-day": "Strength Day",
+      "circuit-training": "Circuit Training",
+      "treadmill-run": "Treadmill Run",
+      "studio-flow": "Studio Flow",
+      "warm-up": "Warm-Up",
+      "lifting-session": "Lifting Session",
+      "violet-training": "Violet Training",
+      "pilates-studio": "Pilates Studio",
+      "run-club": "Run Club",
+      "lift-club": "Lift Club"
     },
     "tab": {
       "outfits": "Outfits",
@@ -334,6 +347,7 @@
       "top": "Tops",
       "pants": "Pants",
       "shoes": "Shoes",
+      "socks": "Socks",
       "beard": "Beard",
       "face": "Face"
     },
@@ -343,6 +357,7 @@
       "top": "Top style",
       "pants": "Pants style",
       "shoes": "Shoe style",
+      "socks": "Sock style",
       "beard": "Beard style"
     },
     "style": {
@@ -372,27 +387,71 @@
       "trainers": "Trainers",
       "high-tops": "High tops",
       "runners": "Running shoes",
-      "slip-ons": "Slip-ons"
+      "slip-ons": "Slip-ons",
+      "no-socks": "No socks",
+      "ankle-socks": "Ankle socks",
+      "crew-socks": "Crew socks",
+      "striped-socks": "Striped socks",
+      "buzz-cut": "Buzz cut",
+      "waves": "Waves",
+      "shaved": "Shaved head",
+      "tall": "Tall",
+      "stocky": "Stocky",
+      "sweatshirt": "Sweatshirt",
+      "varsity": "Varsity jacket",
+      "jeans": "Jeans",
+      "bike-shorts": "Bike shorts",
+      "boots": "Lace-up boots",
+      "canvas": "Canvas sneakers",
+      "chin-strap": "Chin strap",
+      "knee-highs": "Knee-high socks",
+      "spikes": "Spiked hair",
+      "braids": "Braids",
+      "athletic": "Athletic",
+      "relaxed": "Soft build",
+      "mesh-tee": "Mesh training tee",
+      "compression-top": "Compression top",
+      "quarter-zip": "Quarter-zip top",
+      "sleeveless-hoodie": "Sleeveless hoodie",
+      "lifters": "Lifting shoes",
+      "cross-trainers": "Cross-trainers",
+      "barefoot": "No shoes",
+      "liner-shorts": "2-in-1 shorts",
+      "training-tights": "Training tights",
+      "split-shorts": "Split running shorts",
+      "warmup-pants": "Warm-up pants",
+      "fade-beard": "Faded beard",
+      "chin-tuft": "Chin tuft",
+      "grip-socks": "Grip socks",
+      "cushioned-socks": "Cushioned crew socks",
+      "high-ponytail": "High ponytail",
+      "braided-ponytail": "Braided ponytail",
+      "low-bun": "Low bun",
+      "puff": "Curly puff",
+      "sport-hijab": "Sport hijab",
+      "longline-tank": "Longline training tank",
+      "racerback-bra": "Racerback sports bra",
+      "fitted-zip": "Fitted training jacket",
+      "high-rise-leggings": "High-rise leggings",
+      "capris": "Training capris"
     },
     "part": {
       "skin": "Skin tone",
       "hair": "Hair color",
+      "hijab": "Hijab color",
       "eyes": "Eyes",
-      "smile": "Smile",
       "tank": "Top color",
       "shorts": "Pants color",
       "shoes": "Shoe color",
+      "socks": "Sock color",
       "beard": "Beard color"
     },
+    "socksHint": "Long pants can cover your socks.",
     "randomize": "Surprise me",
     "reset": "Undo changes",
-    "save": "Save character",
     "saving": "Saving…",
     "saveFailed": "Couldn't save your character. Try again.",
     "error": "Couldn't load your character.",
-    "leaveTitle": "Leave without saving?",
-    "keepEditing": "Keep editing",
-    "discard": "Discard changes",
     "color": {
       "match-hair": "Match hair",
       "fair": "Fair",
@@ -427,9 +486,33 @@
       "green": "Green",
       "blue": "Blue",
       "gray": "Gray",
-      "dark-plum": "Dark plum",
-      "warm-brown": "Warm brown"
-    }
+      "peach": "Peach",
+      "umber": "Deep umber",
+      "copper": "Copper",
+      "indigo": "Indigo",
+      "burgundy": "Burgundy",
+      "sage": "Sage green",
+      "coral": "Coral",
+      "cloud-blue": "Cloud blue",
+      "denim": "Denim",
+      "sand": "Sand",
+      "forest": "Forest green",
+      "chestnut": "Chestnut",
+      "amber-eyes": "Warm amber",
+      "violet-eyes": "Deep purple",
+      "neutral-brown": "Neutral brown",
+      "cool-brown": "Cool brown",
+      "platinum": "Platinum",
+      "steel-blue": "Steel blue",
+      "electric-blue": "Electric blue",
+      "volt": "Volt green",
+      "plum": "Plum",
+      "graphite": "Graphite",
+      "aubergine": "Aubergine",
+      "gum": "Gum brown"
+    },
+    "saved": "Saved",
+    "hairAndHeadwear": "Hair and headwear"
   },
   "bodyComp": {
     "kicker": "From your InBody scan",
@@ -472,5 +555,37 @@
     "legendThen": "Compared scan ({{date}})",
     "upSince": "Up {{amount}} since the compared scan",
     "downSince": "Down {{amount}} since the compared scan"
+  },
+  "newGoal": {
+    "title": "New goal",
+    "subtitle": "Pick what to work on. It's your goal, no approval needed.",
+    "back": "Back to goals",
+    "type": "What do you want to do?",
+    "metric": {
+      "BODY_FAT_KG": "Lose body fat",
+      "MUSCLE_KG": "Gain muscle",
+      "WEIGHT_KG": "Reach a weight"
+    },
+    "now": "Now {{value}} kg",
+    "amount": {
+      "BODY_FAT_KG": "How much fat to lose?",
+      "MUSCLE_KG": "How much muscle to gain?",
+      "WEIGHT_KG": "Your target weight"
+    },
+    "less": "Less",
+    "more": "More",
+    "fromScan": "{{change}} kg from your last scan",
+    "name": {
+      "BODY_FAT_KG": "Lose {{amount}} kg of body fat",
+      "MUSCLE_KG": "Gain {{amount}} kg of muscle",
+      "WEIGHT_KG": "Reach {{amount}} kg"
+    },
+    "summary": "Your goal",
+    "startsNow": "Starts today, from your last scan.",
+    "create": "Create goal",
+    "creating": "Creating…",
+    "failed": "Couldn't create the goal. Try again.",
+    "noScan": "You need a body scan before you can set a goal. Book one at the front desk.",
+    "error": "Couldn't load your last scan."
   }
 }

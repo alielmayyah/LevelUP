@@ -1,14 +1,13 @@
 import { Preferences } from '@capacitor/preferences';
-import { IonIcon } from '@ionic/react';
-import { barbellOutline, eyeOffOutline, flameOutline, podiumOutline, trophyOutline } from 'ionicons/icons';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { saveSettings } from '../api/settings';
-import { LEADERBOARD_BOARDS, type LeaderboardBoard, type LeaderboardDto, type LeaderboardRow } from '../api/types';
+import { LEADERBOARD_BOARDS, type LeaderboardBoard, type LeaderboardDto, type LeaderboardRow, type Sex } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
 import Avatar from '../avatar/Avatar';
+import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
 import '../avatar/avatar.scss';
 import { focusSibling, rovingTarget } from '../components/roving';
 import PixelToast from '../components/PixelToast';
@@ -16,7 +15,7 @@ import TabPage from '../components/TabPage';
 import { formatNumber, formatRank } from '../i18n/format';
 import './leaderboard/Leaderboard.scss';
 import MetricIcon from './leaderboard/MetricIcon';
-import Pager from './leaderboard/Pager';
+import Pager from '../components/Pager';
 import Podium from './leaderboard/Podium';
 import { rowAvatar } from './leaderboard/rowAvatar';
 
@@ -28,16 +27,17 @@ const BOARD_KEY = 'lu.board';
 /** Rows per page below the podium. The pager shows only when a board has more. */
 const PAGE_SIZE = 10;
 
-const BOARD_ICONS: Record<LeaderboardBoard, string> = {
-  score: trophyOutline,
-  muscle: barbellOutline,
-  bodyFat: flameOutline,
+const BOARD_ICONS: Record<LeaderboardBoard, PixelIconName> = {
+  score: 'trophy',
+  muscle: 'dumbbell',
+  bodyFat: 'flame',
 };
 
 const isBoard = (v: unknown): v is LeaderboardBoard => LEADERBOARD_BOARDS.includes(v as LeaderboardBoard);
 
 interface RowProps {
   row: LeaderboardRow;
+  division: Sex;
   board: LeaderboardBoard;
   value: string;
   you: string;
@@ -45,7 +45,7 @@ interface RowProps {
 }
 
 /** Memoized so a long board re-renders only the rows that changed. */
-const Row = memo(function Row({ row, board, value, you, rowRef }: RowProps) {
+const Row = memo(function Row({ row, division, board, value, you, rowRef }: RowProps) {
   const medal = row.rank <= 3 ? `lu-medal-${row.rank}` : '';
   return (
     <li
@@ -59,7 +59,7 @@ const Row = memo(function Row({ row, board, value, you, rowRef }: RowProps) {
       </span>
       <span className="flex min-w-0 items-center gap-2 font-extrabold">
         <span className="lu-avatar-frame block size-9 flex-none overflow-hidden rounded-[8px]">
-          <Avatar config={rowAvatar(row)} className="block size-full" />
+          <Avatar config={rowAvatar(row, division)} className="block size-full" />
         </span>
         <span className="truncate" dir="auto">
           {row.name}
@@ -146,10 +146,11 @@ const Leaderboard: React.FC = () => {
     <TabPage
       testId="page-leaderboard"
       title={t('tabs.leaderboard')}
+      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="trophy" />}
       subtitle={d ? t(`leaderboard.division.${d.division}`) : t('leaderboard.subtitle')}
       onRefresh={data.reload}
       actions={
-        me && !stale ? (
+        me && d && !stale ? (
           <div
             className="lu-lb-me flex flex-none items-center gap-2 rounded-[10px] border-2 py-1 ps-1 pe-2.5"
             data-testid="my-rank"
@@ -157,12 +158,12 @@ const Leaderboard: React.FC = () => {
             aria-label={t('leaderboard.yourRank')}
           >
             <span className="lu-avatar-frame block size-10 flex-none overflow-hidden rounded-[8px]">
-              <Avatar config={rowAvatar(me)} className="block size-full" />
+              <Avatar config={rowAvatar(me, d.division)} className="block size-full" />
             </span>
             <span className="grid leading-none">
               <strong className="lu-display text-[1.6rem] text-ink">{formatRank(me.rank)}</strong>
               <span className="text-[0.7rem] font-bold text-muted">
-                {t('leaderboard.of', { total: formatNumber(d!.rows.length) })}
+                {t('leaderboard.of', { total: formatNumber(d.rows.length) })}
               </span>
             </span>
           </div>
@@ -171,7 +172,7 @@ const Leaderboard: React.FC = () => {
     >
       {d && !d.optedIn && (
         <div className="lu-px-card mb-4 grid justify-items-center gap-2.5 text-center" data-testid="join-banner">
-          <IonIcon className="text-[28px] text-muted" icon={eyeOffOutline} aria-hidden="true" />
+          <PixelIcon className="text-[28px] text-muted" name="eyeOff" />
           <p className="m-0 font-bold">{t('leaderboard.hidden')}</p>
           <CtaButton className="w-[min(100%,240px)]" onClick={() => void join()} disabled={joining} aria-busy={joining}>
             {t('leaderboard.join')}
@@ -200,7 +201,7 @@ const Leaderboard: React.FC = () => {
               focusSibling(e, to);
             }}
           >
-            <IonIcon icon={BOARD_ICONS[b]} aria-hidden="true" />
+            <PixelIcon name={BOARD_ICONS[b]} />
             {t(`leaderboard.board.${b}`)}
           </button>
         ))}
@@ -236,7 +237,7 @@ const Leaderboard: React.FC = () => {
         >
           {d && d.rows.length === 0 && (
             <div className="lu-px-card lu-state" data-testid="board-empty">
-              <IonIcon icon={podiumOutline} aria-hidden="true" />
+              <PixelIcon name="podium" />
               <p>{t('leaderboard.emptyBoard')}</p>
             </div>
           )}
@@ -244,6 +245,7 @@ const Leaderboard: React.FC = () => {
           {d && d.rows.length > 0 && (
             <Podium
               rows={d.rows.slice(0, 3)}
+              division={d.division}
               board={d.board}
               format={(v) => format(v, d.board)}
               you={t('leaderboard.you')}
@@ -270,6 +272,7 @@ const Leaderboard: React.FC = () => {
                   <Row
                     key={r.memberId}
                     row={r}
+                    division={d.division}
                     board={d.board}
                     value={format(r.value, d.board)}
                     you={t('leaderboard.you')}

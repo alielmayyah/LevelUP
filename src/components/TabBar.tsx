@@ -46,9 +46,13 @@ const LIT_FALLBACK_MS = 400;
  * A label turns white only once the pill has arrived under it, so text never
  * sits white-on-white mid-move.
  */
+/** Full-screen pages: the tab bar steps aside; they carry their own Back button. */
+const FULL_SCREEN = new Set(['/tabs/profile/character']);
+
 const TabBar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
+  const fullScreen = FULL_SCREEN.has(pathname);
   const index = tabIndex(pathname);
   const rtl = i18n.dir() === 'rtl';
 
@@ -89,7 +93,7 @@ const TabBar: React.FC = () => {
   }, [index, rtl]);
 
   return (
-    <nav className={BAR} slot="bottom" aria-label={t('tabs.navLabel')}>
+    <nav className={fullScreen ? `${BAR} hidden` : BAR} slot="bottom" aria-label={t('tabs.navLabel')}>
       {/* The panel spans the screen; the five tabs stay in a centered row so wide screens don't get giant tabs. */}
       <div className="relative mx-auto h-full max-w-[560px]">
         <div className={PILL} data-testid="tab-pill" ref={pill} aria-hidden="true" hidden={index < 0}>

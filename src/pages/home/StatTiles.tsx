@@ -1,11 +1,9 @@
-import { IonIcon } from '@ionic/react';
-import { sparklesOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 
 import type { MonthlyWins } from '../../api/types';
 import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
 import { formatSigned } from '../../i18n/format';
-import { formatMonth, formatMonthYear } from './homeText';
+import { formatMonth } from './homeText';
 import { TILES } from './layout';
 
 type Tone = 'good' | 'bad' | 'none';
@@ -20,7 +18,7 @@ const tone = (value: number | null, goodWhen: 'down' | 'up'): Tone => {
 };
 
 interface TileProps {
-  metric: 'fat' | 'muscle' | 'since';
+  metric: 'fat' | 'muscle' | 'bmi';
   icon: PixelIconName;
   label: string;
   value: string;
@@ -37,7 +35,7 @@ const Tile: React.FC<TileProps> = ({ metric, icon, label, value, tone: tileTone 
       <PixelIcon name={icon} />
     </span>
     <span
-      className={`lu-display text-[clamp(1.55rem,6.8vw,2.1rem)] leading-[1.1] whitespace-nowrap ${metric === 'since' ? 'text-ink' : VALUE_COLOR[tileTone]}`}
+      className={`lu-display text-[clamp(1.55rem,6.8vw,2.1rem)] leading-[1.1] whitespace-nowrap ${VALUE_COLOR[tileTone]}`}
     >
       {value}
     </span>
@@ -45,13 +43,24 @@ const Tile: React.FC<TileProps> = ({ metric, icon, label, value, tone: tileTone 
   </div>
 );
 
-/** This month's body-fat and muscle change, and the join date. */
-const StatTiles: React.FC<{ wins: MonthlyWins; memberSince: string; today: Date }> = ({ wins, memberSince, today }) => {
+/**
+ * BMI has no single good direction: above the 18.5–25 range, down is good
+ * news; below it, up is; inside it, any change stays neutral.
+ */
+const bmiTone = (change: number | null, bmi: number | null): Tone => {
+  if (bmi === null) return 'none';
+  if (bmi > 25) return tone(change, 'down');
+  if (bmi < 18.5) return tone(change, 'up');
+  return 'none';
+};
+
+/** This month's body-fat, muscle, and BMI change. */
+const StatTiles: React.FC<{ wins: MonthlyWins; today: Date }> = ({ wins, today }) => {
   const { t } = useTranslation();
   return (
     <section aria-labelledby="wins-title">
       <h2 id="wins-title" className="lu-section-title">
-        <IonIcon icon={sparklesOutline} aria-hidden="true" />
+        <PixelIcon name="sparkles" />
         {t('home.wins.title', { month: formatMonth(today) })}
       </h2>
       <div className={TILES}>
@@ -72,11 +81,12 @@ const StatTiles: React.FC<{ wins: MonthlyWins; memberSince: string; today: Date 
           testId="tile-muscle"
         />
         <Tile
-          metric="since"
-          icon="calendar"
-          label={t('home.wins.memberSince')}
-          value={formatMonthYear(memberSince)}
-          testId="tile-member-since"
+          metric="bmi"
+          icon="ruler"
+          label={t('home.wins.bmi')}
+          value={formatSigned(wins.bmiChange, '', { digits: 1 })}
+          tone={bmiTone(wins.bmiChange, wins.bmi)}
+          testId="tile-bmi"
         />
       </div>
     </section>

@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { getToken } from '../auth/token';
 import { brand } from '../brand.config';
-import { playIntro } from '../sound/useSound';
+import { playIntroSoon } from '../sound/useSound';
 import './Splash.scss';
 import BarbellLoader from './splash/BarbellLoader';
 
@@ -28,10 +28,15 @@ const Splash: React.FC = () => {
   const stage = useRef<HTMLDivElement>(null);
   const stay = new URLSearchParams(search).has('stay');
 
-  // The chime plays as the logo arrives (it stays silent if sound is off or the browser blocks it).
+  // The chime plays as the logo arrives. If the browser holds audio until a tap, it plays on the
+  // first tap while the splash is up; it stays silent when sound is off.
   useEffect(() => {
-    const t = window.setTimeout(playIntro, 180);
-    return () => window.clearTimeout(t);
+    let cancel = () => undefined as void;
+    const t = window.setTimeout(() => (cancel = playIntroSoon()), 180);
+    return () => {
+      window.clearTimeout(t);
+      cancel();
+    };
   }, []);
 
   useEffect(() => {

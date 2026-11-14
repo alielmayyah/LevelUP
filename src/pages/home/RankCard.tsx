@@ -1,5 +1,3 @@
-import { IonIcon } from '@ionic/react';
-import { chevronForward, podiumOutline } from 'ionicons/icons';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -31,7 +29,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
     const body = (
       <>
         <span className="lu-icon-tile" aria-hidden="true">
-          <IonIcon icon={podiumOutline} />
+          <PixelIcon name="podium" />
         </span>
         <span className="grid min-w-0 gap-0.5 text-[0.85rem] text-muted">
           <strong className="text-[1rem] text-ink">{t(joinable ? 'home.rank.join' : 'home.rank.title')}</strong>
@@ -50,7 +48,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
             onClick={() => history.push('/tabs/profile')}
           >
             {body}
-            <IonIcon className="lu-chevron" icon={chevronForward} aria-hidden="true" />
+            <PixelIcon className="lu-chevron" name="chevronForward" />
           </button>
         ) : (
           <div className="lu-px-card flex items-center gap-3" data-testid="rank-card">
@@ -95,7 +93,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
             </span>
           </span>
         </span>
-        <IonIcon className="lu-chevron" icon={chevronForward} aria-hidden="true" />
+        <PixelIcon className="lu-chevron" name="chevronForward" />
       </button>
     </section>
   );

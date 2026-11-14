@@ -42,6 +42,21 @@
         "id": "rich-brown",
         "color": "#583327",
         "name": "Rich brown"
+      },
+      {
+        "id": "peach",
+        "color": "#efbb99",
+        "name": "Peach"
+      },
+      {
+        "id": "umber",
+        "color": "#422821",
+        "name": "Deep umber"
+      },
+      {
+        "id": "neutral-brown",
+        "color": "#9c674f",
+        "name": "Neutral brown"
       }
     ]
   },
@@ -77,6 +92,26 @@
         "id": "silver",
         "color": "#9693a5",
         "name": "Silver"
+      },
+      {
+        "id": "copper",
+        "color": "#a35032",
+        "name": "Copper"
+      },
+      {
+        "id": "indigo",
+        "color": "#3f4271",
+        "name": "Indigo"
+      },
+      {
+        "id": "cool-brown",
+        "color": "#74635d",
+        "name": "Cool brown"
+      },
+      {
+        "id": "platinum",
+        "color": "#c7bdac",
+        "name": "Platinum"
       }
     ]
   },
@@ -122,6 +157,41 @@
         "id": "cream",
         "color": "#ded4c9",
         "name": "Cream"
+      },
+      {
+        "id": "burgundy",
+        "color": "#793345",
+        "name": "Burgundy"
+      },
+      {
+        "id": "sage",
+        "color": "#648875",
+        "name": "Sage green"
+      },
+      {
+        "id": "coral",
+        "color": "#d16a5f",
+        "name": "Coral"
+      },
+      {
+        "id": "cloud-blue",
+        "color": "#91accb",
+        "name": "Cloud blue"
+      },
+      {
+        "id": "electric-blue",
+        "color": "#386ed4",
+        "name": "Electric blue"
+      },
+      {
+        "id": "volt",
+        "color": "#a0b857",
+        "name": "Volt green"
+      },
+      {
+        "id": "plum",
+        "color": "#703e68",
+        "name": "Plum"
       }
     ]
   },
@@ -157,6 +227,31 @@
         "id": "olive",
         "color": "#626647",
         "name": "Olive"
+      },
+      {
+        "id": "denim",
+        "color": "#3e618a",
+        "name": "Denim"
+      },
+      {
+        "id": "sand",
+        "color": "#b39a76",
+        "name": "Sand"
+      },
+      {
+        "id": "forest",
+        "color": "#39584d",
+        "name": "Forest green"
+      },
+      {
+        "id": "graphite",
+        "color": "#4e4f5e",
+        "name": "Graphite"
+      },
+      {
+        "id": "aubergine",
+        "color": "#583a62",
+        "name": "Aubergine"
       }
     ]
   },
@@ -197,6 +292,36 @@
         "id": "orchid",
         "color": "#a6459c",
         "name": "Orchid"
+      },
+      {
+        "id": "chestnut",
+        "color": "#8e593c",
+        "name": "Chestnut"
+      },
+      {
+        "id": "burgundy",
+        "color": "#793345",
+        "name": "Burgundy"
+      },
+      {
+        "id": "sage",
+        "color": "#648875",
+        "name": "Sage green"
+      },
+      {
+        "id": "gum",
+        "color": "#a47751",
+        "name": "Gum brown"
+      },
+      {
+        "id": "electric-blue",
+        "color": "#386ed4",
+        "name": "Electric blue"
+      },
+      {
+        "id": "volt",
+        "color": "#a0b857",
+        "name": "Volt green"
       }
     ]
   },
@@ -232,26 +357,21 @@
         "id": "gray",
         "color": "#575465",
         "name": "Gray"
-      }
-    ]
-  },
-  "smile": {
-    "default": "dark-plum",
-    "presets": [
-      {
-        "id": "dark-plum",
-        "color": "#170817",
-        "name": "Dark plum"
       },
       {
-        "id": "brown",
-        "color": "#58332b",
-        "name": "Brown"
+        "id": "amber-eyes",
+        "color": "#975d34",
+        "name": "Warm amber"
       },
       {
-        "id": "warm-brown",
-        "color": "#754136",
-        "name": "Warm brown"
+        "id": "violet-eyes",
+        "color": "#695183",
+        "name": "Deep purple"
+      },
+      {
+        "id": "steel-blue",
+        "color": "#4a6875",
+        "name": "Steel blue"
       }
     ]
   }

@@ -7,8 +7,9 @@ android {
         applicationId "app.levelup.member"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "0.1.0-staging.3"
+        // CI passes -PversionCode / -PversionName for each staging release; local builds keep these.
+        versionCode((project.findProperty('versionCode') ?: '3') as Integer)
+        versionName(project.findProperty('versionName') ?: '0.1.0-staging.3')
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +17,22 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // The staging key comes from CI secrets (see .github/workflows/staging.yml), so every release
+    // is signed the same way and installs as an update. Without it, release builds stay unsigned.
+    signingConfigs {
+        staging {
+            def store = System.getenv('LU_KEYSTORE')
+            if (store) {
+                storeFile file(store)
+                storePassword System.getenv('LU_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('LU_KEY_ALIAS')
+                keyPassword System.getenv('LU_KEY_PASSWORD')
+            }
+        }
+    }
     buildTypes {
         release {
+            if (System.getenv('LU_KEYSTORE')) signingConfig signingConfigs.staging
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

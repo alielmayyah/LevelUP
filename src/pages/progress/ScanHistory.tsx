@@ -1,9 +1,11 @@
-import { IonIcon, IonModal } from '@ionic/react';
-import { close } from 'ionicons/icons';
+import { IonModal } from '@ionic/react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto } from '../../api/types';
+import Pager from '../../components/Pager';
 import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
+import { useSwipe } from '../../components/useSwipe';
 import { formatNumber, numberLocale } from '../../i18n/format';
 
 interface Props {
@@ -24,6 +26,11 @@ interface Props {
   onNone?: () => void;
 }
 
+/** Scans per page: as many as fit the screen without scrolling (at least three). The pager shows only when there are more. */
+const perPage = (comparing: boolean) =>
+  // About 100 px a row; the header and pager take about 200 px, and comparing adds a hint and a Don't compare row.
+  Math.max(3, Math.floor((window.innerHeight - (comparing ? 290 : 200)) / 100));
+
 const fullDate = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).format(
     new Date(iso),
@@ -35,15 +42,128 @@ const STATS: { key: string; icon: PixelIconName; tone: string; value: (a: Assess
   { key: 'bodyFat', icon: 'flame', tone: 'lu-tone-fat', value: (a) => `${formatNumber(a.bodyFatPct, 1)}%` },
 ];
 
-/**
- * Every scan in one list, newest first. Tapping one shows it on the Progress
- * page, or, in compare mode, makes it the scan the page compares against.
- */
-const ScanHistory: React.FC<Props> = ({ open, scans, current, onPick, onClose, mode = 'show', showing, onNone }) => {
-  const { t } = useTranslation();
+/** The open sheet's content. It mounts on each open, so it starts on the page with the scan in use. */
+const SheetBody: React.FC<Props & { title: string }> = ({
+  scans,
+  current,
+  onPick,
+  onClose,
+  mode = 'show',
+  showing,
+  onNone,
+  title,
+}) => {
+  const { t, i18n } = useTranslation();
   const kg = t('units.kg');
   const comparing = mode === 'compare';
-  const title = comparing ? t('progress.compareTitle') : t('progress.allScans');
+  const [size] = useState(() => perPage(comparing));
+  const pages = Math.max(1, Math.ceil(scans.length / size));
+  const anchor = current >= 0 ? current : (showing ?? 0);
+  const [page, setPage] = useState(() => Math.min(pages - 1, Math.floor(Math.max(0, anchor) / size)));
+  const first = page * size;
+  // Swipe sideways to turn pages; up and down still drags the sheet.
+  const next = useCallback(() => setPage((p) => Math.min(pages - 1, p + 1)), [pages]);
+  const prev = useCallback(() => setPage((p) => Math.max(0, p - 1)), []);
+  const swipe = useSwipe({ onNext: next, onPrev: prev, rtl: i18n.dir() === 'rtl' });
+  return (
+    <section
+      className="flex h-full flex-col bg-page text-ink"
+      data-testid={comparing ? 'compare-picker' : 'scan-history'}
+      aria-labelledby="scans-title"
+    >
+      <div className="flex items-center gap-2 px-4 pt-[18px] pb-3">
+        <h2 id="scans-title" className="lu-display m-0 flex-1 text-[2.1rem] leading-none">
+          {title}
+        </h2>
+        <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
+          <PixelIcon name="close" />
+        </button>
+      </div>
+      {comparing && (
+        <p className="m-0 px-4 pb-3 text-[0.85rem] font-semibold text-muted">{t('progress.compareHint')}</p>
+      )}
+      <ol ref={swipe} className="m-0 grid flex-1 list-none content-start gap-2 overflow-y-auto px-4 pt-0 pb-4">
+        {scans.slice(first, first + size).map((s, n) => {
+          const i = first + n;
+          const on = i === current;
+          const locked = comparing && i === showing;
+          return (
+            <li key={s.id}>
+              <button
+                type="button"
+                disabled={locked}
+                aria-current={on ? 'true' : undefined}
+                className={`lu-scan-row grid w-full cursor-pointer gap-2 rounded-[10px] border-2 bg-surface p-3 text-start font-inherit text-ink disabled:cursor-default disabled:opacity-55 ${on ? 'is-current border-primary' : 'border-line'}`}
+                onClick={() => {
+                  onPick(i);
+                  onClose();
+                }}
+                data-testid="scan-row"
+              >
+                <span className="flex flex-wrap items-center gap-2">
+                  <strong className="font-extrabold">{fullDate(s.takenAt)}</strong>
+                  {i === 0 && <span className="lu-chip lu-chip-primary">{t('progress.newest')}</span>}
+                  {comparing
+                    ? (on || locked) && (
+                        <span className="lu-chip">{locked ? t('progress.showing') : t('progress.comparing')}</span>
+                      )
+                    : on && <span className="lu-chip">{t('progress.showing')}</span>}
+                  <span className="ms-auto text-[0.78rem] font-bold text-muted">
+                    {t('progress.scanNumber', { n: formatNumber(scans.length - i) })}
+                  </span>
+                </span>
+                <span className="grid grid-cols-3 gap-2">
+                  {STATS.map((st) => (
+                    <span key={st.key} className={`flex items-center gap-1.5 ${st.tone}`}>
+                      <PixelIcon className="flex-none text-[1.1rem]" name={st.icon} />
+                      <span className="grid leading-tight">
+                        <span className="text-[0.7rem] font-bold text-muted">{t(`progress.metric.${st.key}`)}</span>
+                        <span className="lu-display text-[1.15rem] whitespace-nowrap">
+                          {st.value(s)}
+                          {st.key !== 'bodyFat' && <span className="text-[0.7em]"> {kg}</span>}
+                        </span>
+                      </span>
+                    </span>
+                  ))}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+        {comparing && onNone && (
+          <li>
+            <button
+              type="button"
+              aria-current={current === -1 ? 'true' : undefined}
+              className={`lu-scan-row w-full cursor-pointer rounded-[10px] border-2 border-dashed bg-surface p-3 text-start font-inherit font-extrabold text-ink ${current === -1 ? 'is-current border-primary' : 'border-line'}`}
+              onClick={() => {
+                onNone();
+                onClose();
+              }}
+              data-testid="compare-none"
+            >
+              {t('progress.compareNone')}
+            </button>
+          </li>
+        )}
+      </ol>
+      {pages > 1 && (
+        <div className="px-4 pb-[calc(12px+var(--ion-safe-area-bottom,0px))]">
+          <Pager page={page} pages={pages} onPage={setPage} label={t('progress.scanPages')} />
+        </div>
+      )}
+    </section>
+  );
+};
+
+/**
+ * Every scan in one list, newest first, five to a page when there are more. Tapping one shows it on the Progress
+ * page, or, in compare mode, makes it the scan the page compares against.
+ */
+const ScanHistory: React.FC<Props> = (props) => {
+  const { t } = useTranslation();
+  const { open, onClose, mode = 'show' } = props;
+  const title = mode === 'compare' ? t('progress.compareTitle') : t('progress.allScans');
   return (
     <IonModal
       // Name Ionic's inner role="dialog" directly (WCAG 4.1.2), as the notifications sheet does.
@@ -56,89 +176,7 @@ const ScanHistory: React.FC<Props> = ({ open, scans, current, onPick, onClose, m
       initialBreakpoint={1}
       breakpoints={[0, 1]}
     >
-      {open && (
-        <section
-          className="flex h-full flex-col bg-page text-ink"
-          data-testid={comparing ? 'compare-picker' : 'scan-history'}
-          aria-labelledby="scans-title"
-        >
-          <div className="flex items-center gap-2 px-4 pt-[18px] pb-3">
-            <h2 id="scans-title" className="lu-display m-0 flex-1 text-[2.1rem] leading-none">
-              {title}
-            </h2>
-            <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
-              <IonIcon icon={close} aria-hidden="true" />
-            </button>
-          </div>
-          {comparing && (
-            <p className="m-0 px-4 pb-3 text-[0.85rem] font-semibold text-muted">{t('progress.compareHint')}</p>
-          )}
-          <ol className="m-0 grid list-none gap-2 overflow-y-auto px-4 pt-0 pb-[calc(16px+var(--ion-safe-area-bottom,0px))]">
-            {scans.map((s, i) => {
-              const on = i === current;
-              const locked = comparing && i === showing;
-              return (
-                <li key={s.id}>
-                  <button
-                    type="button"
-                    disabled={locked}
-                    aria-current={on ? 'true' : undefined}
-                    className={`lu-scan-row grid w-full cursor-pointer gap-2 rounded-[10px] border-2 bg-surface p-3 text-start font-inherit text-ink disabled:cursor-default disabled:opacity-55 ${on ? 'is-current border-primary' : 'border-line'}`}
-                    onClick={() => {
-                      onPick(i);
-                      onClose();
-                    }}
-                    data-testid="scan-row"
-                  >
-                    <span className="flex flex-wrap items-center gap-2">
-                      <strong className="font-extrabold">{fullDate(s.takenAt)}</strong>
-                      {i === 0 && <span className="lu-chip lu-chip-primary">{t('progress.newest')}</span>}
-                      {comparing
-                        ? (on || locked) && (
-                            <span className="lu-chip">{locked ? t('progress.showing') : t('progress.comparing')}</span>
-                          )
-                        : on && <span className="lu-chip">{t('progress.showing')}</span>}
-                      <span className="ms-auto text-[0.78rem] font-bold text-muted">
-                        {t('progress.scanNumber', { n: formatNumber(scans.length - i) })}
-                      </span>
-                    </span>
-                    <span className="grid grid-cols-3 gap-2">
-                      {STATS.map((st) => (
-                        <span key={st.key} className={`flex items-center gap-1.5 ${st.tone}`}>
-                          <PixelIcon className="flex-none text-[1.1rem]" name={st.icon} />
-                          <span className="grid leading-tight">
-                            <span className="text-[0.7rem] font-bold text-muted">{t(`progress.metric.${st.key}`)}</span>
-                            <span className="lu-display text-[1.15rem] whitespace-nowrap">
-                              {st.value(s)}
-                              {st.key !== 'bodyFat' && <span className="text-[0.7em]"> {kg}</span>}
-                            </span>
-                          </span>
-                        </span>
-                      ))}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-            {comparing && onNone && (
-              <li>
-                <button
-                  type="button"
-                  aria-current={current === -1 ? 'true' : undefined}
-                  className={`lu-scan-row w-full cursor-pointer rounded-[10px] border-2 border-dashed bg-surface p-3 text-start font-inherit font-extrabold text-ink ${current === -1 ? 'is-current border-primary' : 'border-line'}`}
-                  onClick={() => {
-                    onNone();
-                    onClose();
-                  }}
-                  data-testid="compare-none"
-                >
-                  {t('progress.compareNone')}
-                </button>
-              </li>
-            )}
-          </ol>
-        </section>
-      )}
+      {open && <SheetBody {...props} title={title} />}
     </IonModal>
   );
 };

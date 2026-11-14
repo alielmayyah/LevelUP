@@ -1,11 +1,14 @@
-import type { AvatarPaint, ResolvedStyles } from './catalog';
+import type { AvatarPaint, ResolvedStyles, WOMEN_HAIR } from './catalog';
+import { Mirrored, PantDetails, ShoeDetails, TopDetails } from './ClothingDetails';
+import { StudioLeggings } from './WomenArt';
 
 interface VariantProps<K extends keyof ResolvedStyles> {
   style: ResolvedStyles[K];
   paint: AvatarPaint;
 }
 
-const HAIR: Record<Exclude<ResolvedStyles['hair'], 'curls'>, [string, string, string, string]> = {
+type AltHairStyle = Exclude<ResolvedStyles['hair'], 'curls' | 'sport-hijab' | (typeof WOMEN_HAIR)[number]>;
+const HAIR: Record<Exclude<AltHairStyle, 'shaved'>, [string, string, string, string]> = {
   fade: [
     'M1184 166H1205V131H1240V111H1282V99H1382V111H1424V131H1459V166H1480V251H1466V286H1450V307H1436V256H1412V238H1381V226H1282V238H1252V256H1220V307H1206V287H1193V251H1184Z',
     'M1201 170H1223V146H1258V127H1290V115H1374V127H1406V146H1441V170H1463V220H1438V236H1418V221H1388V209H1273V221H1246V236H1220V220H1201Z',
@@ -30,9 +33,42 @@ const HAIR: Record<Exclude<ResolvedStyles['hair'], 'curls'>, [string, string, st
     'M1282 48H1308V34H1352V48H1368V59H1313V70H1282Z M1220 150H1251V133H1290V115H1372V129H1316V144H1277V164H1220Z',
     'M1287 75H1326V62H1363V74H1400V78H1380V93H1287Z M1198 208H1230V193H1265V178H1399V194H1425V208H1466V232H1443V226H1416V209H1389V196H1274V210H1245V227H1218V232H1198Z',
   ],
+  'buzz-cut': [
+    'M1188 245v-40h18v-30h27v-24h39v-17h120v17h40v24h28v30h15v40h-24v24h-18v-22h-24v-11h-154v11h-24v22h-18v-24z',
+    'M1205 229v-20h17v-27h27v-20h34v-13h97v13h38v20h26v27h15v20h-17v13h-24v-18h-173v18h-24v-13z',
+    'M1248 180h35v-15h81v8h-74v14h-42z M1298 190h7v5h-7z M1323 184h7v5h-7z M1348 192h7v5h-7z M1375 184h7v5h-7z M1401 189h7v5h-7z',
+    'M1208 216h22v-10h28v-6h143v6h29v10h24v14h-14v11h-22v-17h-173v17h-22v-11h-15z',
+  ],
+  waves: [
+    'M1188 244v-48h18v-28h31v-23h39v-13h112v13h39v23h31v29h17v47h-20v20h-19v-21h-28v-12h-153v12h-28v21h-19v-20z',
+    'M1206 224v-24h18v-24h28v-18h34v-12h91v12h35v18h28v24h17v26h-19v11h-16v-17h-180v17h-17v-13z',
+    'M1226 198h21v-12h29v-13h35v-12h49v7h-44v13h-34v13h-30v12h-26z M1255 211h24v-10h36v-12h46v-9h26v6h-20v10h-46v12h-37v9h-29z M1342 213h31v-10h39v-10h20v7h-15v10h-38v10h-37z',
+    'M1206 222h18v-8h22v6h-5v17h-17v-13h-18z M1424 219h15v-8h11v15h-12v11h-14z',
+  ],
+  spikes: [
+    'M1184 256v-71h17v-31h-8v-52h27v14h25V75h30v18h28V55h30v23h30v19h28V69h30v31h25v31h28v85h-17v35h-18v-16h-30v-12h-32v-13h-84v13h-34v12h-29v21z',
+    'M1200 232v-43h19v-36h-8v-32h12v15h40v-39h19v14h38V78h9v19h24v22h53V92h10v28h21v31h21v53h-15v25h-20v-14h-38v-11h-32v-11h-104v11h-32v12h-32v16z',
+    'M1223 144h45v-34h12v20h44V97h9v42h-18v14h-43v15h-49z M1398 126h20v21h21v21h-18v-13h-23z',
+    'M1219 193h39v-16h51v-12h38v12h43v13h40v22h-28v-8h-49v-11h-104v11h-30z',
+  ],
+  braids: [
+    'M1185 220v-51h19v-34h31v-27h39V91h115v17h40v27h30v34h19v51h-13v34h-13v67h-11v60h-41v-32h10v-64h13v-51h-30v-12h-125v12h-29v51h13v64h11v32h-41v-60h-11v-67h-13v-34z',
+    'M1202 214v-39h18v-30h29v-24h37v-13h93v13h37v24h29v30h16v38h-12v57h-12v60h-10v37h-16v-18h8v-65h14v-56h-27v-19h-147v19h-26v56h13v65h8v18h-15v-37h-11v-60h-12v-57z',
+    'M1233 153h20v-18h28v-13h101v7h-69v18h-20v55h-8v-53h-13v16h-23v38h-9v-32h-7z M1344 132h8v70h-8z M1383 143h18v16h15v43h-8v-35h-18v-15h-7z M1214 222h15v8h-15z M1227 268h15v8h-15z M1236 316h15v8h-15z M1435 222h15v8h-15z M1422 268h15v8h-15z M1413 316h15v8h-15z',
+    'M1211 198h21v11h26v-13h147v13h27v-11h21v14h-17v15h-30v-8h-147v8h-30v-15h-18z',
+  ],
 };
 
-export function AltHair({ style, paint: p }: VariantProps<'hair'> & { style: keyof typeof HAIR }) {
+export function AltHair({ style, paint: p }: VariantProps<'hair'> & { style: AltHairStyle }) {
+  if (style === 'shaved') {
+    return (
+      <g data-style-layer="hair" data-variant={style}>
+        <path fill={p.outline} d="M1189 285v-66h14v-30h20v-21h29v-18h38v-12h84v12h38v18h29v21h20v30h13v66z" />
+        <path fill={p.skin} d="M1207 290v-66h15v-27h20v-18h24v-14h32v-10h69v10h31v14h25v18h20v27h14v66z" />
+        <path fill={p.skinLight} d="M1230 206h16v-16h24v-14h29v-10h52v7h-48v10h-28v14h-24v16h-21z" />
+      </g>
+    );
+  }
   const [outline, fill, light, shade] = HAIR[style];
   return (
     <g data-style-layer="hair" data-variant={style}>
@@ -48,7 +84,7 @@ export function SleeveTop({
   style,
   paint: p,
 }: VariantProps<'top'> & { style: Exclude<ResolvedStyles['top'], 'tank'> }) {
-  const tee = style === 'tee';
+  const tee = style === 'tee' || style === 'mesh-tee';
   const hoodie = style === 'hoodie';
   return (
     <g data-style-layer="top" data-variant={style}>
@@ -56,6 +92,11 @@ export function SleeveTop({
         <>
           <path fill={p.outline} d="M1232 399H1259V373H1292V357H1376V373H1411V399H1435V456H1406V473H1259V456H1232Z" />
           <path fill={p.topLight} d="M1249 407H1273V390H1300V374H1368V390H1393V407H1418V445H1394V456H1270V445H1249Z" />
+          <path fill={p.topShade} d="M1255 412h23v-16h24v-13h60v13h24v16h25v29h-23v11h-113v-11h-20z" />
+          <path
+            fill={p.topLight}
+            d="M1262 415h17v-13h23v-11h10v4h-9v12h-21v13h-20z M1401 415h-17v-13h-23v-11h-10v4h9v12h21v13h20z"
+          />
         </>
       )}
       <path
@@ -82,31 +123,7 @@ export function SleeveTop({
             : 'M1157 605H1230V617H1214V634H1184V622H1157Z M1434 605H1507V622H1480V634H1450V617H1434Z M1276 580H1388V599H1276Z'
         }
       />
-      {hoodie ? (
-        <>
-          <path
-            fill={p.topShade}
-            d="M1265 433H1399V449H1381V462H1361V475H1303V462H1283V449H1265Z M1297 528H1367V542H1383V570H1281V542H1297Z"
-          />
-          <path fill={p.topLight} d="M1294 454H1306V498H1294Z M1358 454H1370V506H1358Z M1297 528H1367V539H1297Z" />
-        </>
-      ) : tee ? (
-        <path
-          fill={p.topLight}
-          d="M1268 422H1281V443H1295V455H1369V443H1383V422H1396V448H1383V463H1369V470H1295V463H1281V448H1268Z M1360 487H1387V502H1379V510H1360Z"
-        />
-      ) : (
-        <>
-          <path
-            fill={p.topLight}
-            d="M1268 425H1280V441H1298V456H1365V441H1384V425H1396V455H1377V470H1339V599H1325V470H1287V455H1268Z M1200 474H1214V507H1201V550H1188V507H1200Z M1450 474H1464V507H1476V550H1463V507H1450Z"
-          />
-          <path
-            fill={p.topShade}
-            d="M1286 531H1305V546H1295V563H1282V546H1286Z M1359 531H1378V546H1382V563H1369V546H1359Z"
-          />
-        </>
-      )}
+      <TopDetails style={style} paint={p} />
     </g>
   );
 }
@@ -115,14 +132,14 @@ const SHOES: Record<ResolvedStyles['shoes'], [string, string, string, string]> =
   trainers: [
     'M1205 779H1303V811H1312V865H1300V877H1179V866H1165V820H1179V803H1205Z',
     'M1219 795H1273V820H1294V859H1183V822H1219Z',
-    '',
-    '',
+    'M1220 795H1273V808H1220Z M1274 824H1294V851H1274Z',
+    'M1183 846H1294V858H1183Z',
   ],
   'high-tops': [
     'M1204 750H1298V765H1312V863H1301V877H1176V864H1161V819H1175V803H1204Z',
     'M1220 768H1287V785H1295V851H1178V824H1192V816H1220Z',
     'M1220 768H1287V785H1220Z M1269 800H1295V851H1279V827H1269Z',
-    'M1178 850H1295V861H1178Z M1214 797H1257V808H1214Z M1201 814H1244V825H1201Z',
+    'M1178 850H1295V861H1178Z',
   ],
   runners: [
     'M1206 789H1224V777H1286V790H1303V818H1319V857H1309V871H1282V877H1162V866H1149V836H1163V824H1182V810H1206Z',
@@ -136,6 +153,36 @@ const SHOES: Record<ResolvedStyles['shoes'], [string, string, string, string]> =
     'M1187 836H1241V831H1267V840H1248V852H1176V842H1187Z',
     'M1176 852H1298V862H1176Z M1267 815H1280V828H1267Z',
   ],
+  boots: [
+    'M1206 721h86v13h15v88h11v42h-11v13h-130v-10h-20v-42h13v-12h23v-28h13z',
+    'M1220 736h68v12h7v79h9v22h-132v-19h12v-9h24v-28h12z',
+    'M1220 736h68v14h-68z M1280 754h15v69h9v26h-26v-28h2z M1175 836h39v13h-39z',
+    'M1172 851h132v9h-132z',
+  ],
+  canvas: [
+    'M1207 784h22v-9h50v9h19v23h11v24h10v32h-12v14h-137v-11h-15v-33h13v-15h21v-16h18z',
+    'M1222 795h15v-7h40v10h11v23h13v17h6v19h-139v-20h15v-10h19v-16h20z',
+    'M1248 794h26v14h13v19h12v15h-22v-16h-13v-14h-16z',
+    'M1168 846h139v15h-139z M1170 833h27v13h-27z',
+  ],
+  lifters: [
+    'M1202 784h24v-10h64v13h14v29h17v49h-12v12h-147v-11h-10v-32h13v-13h19v-16h18z',
+    'M1219 794h18v-7h45v16h13v24h11v26h-138v-16h15v-10h22v-16h14z',
+    'M1262 797h20v14h13v24h11v16h-32v-22h-12z',
+    'M1168 849h138v14h-138z M1262 840h44v9h-44z',
+  ],
+  'cross-trainers': [
+    'M1201 789h25v-15h58v10h17v28h16v15h9v35h-12v15h-147v-10h-15v-33h12v-15h21v-15h16z',
+    'M1214 798h22v-12h43v11h13v27h16v10h5v15h-145v-12h16v-10h23v-14h7z',
+    'M1214 824h25v-9h20v-14h25v12h-17v14h-24v10h-29z M1281 829h25v20h-29z',
+    'M1168 848h145v14h-145z',
+  ],
+  barefoot: [
+    'M1206 774h95v18h6v34h8v28h-8v12h-22v11h-106v-9h-15v-26h9v-15h14v-18h19z',
+    'M1223 787h64v19h7v23h7v19h-9v12h-20v7h-86v-10h-9v-11h12v-16h14v-17h20z',
+    'M1189 848h7v12h-7z M1209 853h6v14h-6z M1229 857h6v10h-6z M1251 857h6v10h-6z',
+    '',
+  ],
 };
 
 export function ShoePair({ style, paint: p }: VariantProps<'shoes'>) {
@@ -143,20 +190,155 @@ export function ShoePair({ style, paint: p }: VariantProps<'shoes'>) {
   const shoe = (
     <>
       <path fill={p.outline} d={outline} />
-      <path fill={p.shoes} d={fill} />
-      {shade && <path fill={p.shoeShade} d={shade} />}
+      <path fill={style === 'barefoot' ? p.skin : p.shoes} d={fill} />
+      {shade && <path fill={style === 'barefoot' ? p.skinShade : p.shoeShade} d={shade} />}
       {trim && <path fill={p.trim} d={trim} />}
+      {style !== 'barefoot' && <ShoeDetails style={style} paint={p} />}
     </>
   );
   return (
     <g data-style-layer="shoes" data-variant={style}>
-      {shoe}
-      <g transform="translate(2663 0) scale(-1 1)">{shoe}</g>
+      <Mirrored>{shoe}</Mirrored>
+    </g>
+  );
+}
+
+export function Socks({ style, shoes, paint: p }: VariantProps<'socks'> & { shoes: ResolvedStyles['shoes'] }) {
+  const grip = style === 'grip-socks';
+  const ankle = style === 'ankle-socks' || grip;
+  const tallShoe = shoes === 'high-tops' || shoes === 'boots';
+  const knee = style === 'knee-highs';
+  const y = ankle ? (tallShoe ? (shoes === 'boots' ? 711 : 739) : 767) : knee ? 695 : 719;
+  return (
+    <g data-style-layer="socks" data-variant={style}>
+      {style !== 'no-socks' && (
+        <Mirrored>
+          <g transform={knee ? `translate(0 ${y}) scale(1 1.3)` : `translate(0 ${y})`}>
+            <path fill={p.outline} d={ankle ? 'M1210 0h98v70h-98z' : 'M1219 0h94v29h-7v25h-10v36h-87V30h10z'} />
+            <path
+              data-paint="sock-fabric"
+              fill={p.socks}
+              d={ankle ? 'M1220 3h77v61h-77z' : 'M1230 4h72v23h-7v26h-11v31h-65V32h11z'}
+            />
+            <path
+              fill={p.sockShade}
+              d={ankle ? 'M1220 3h77v5h-77z' : 'M1230 4h72v7h-72z M1297 13h5v14h-5z M1290 27h5v24h-5z'}
+            />
+            {(style === 'striped-socks' || knee) && (
+              <path fill={p.sockTrim} d="M1230 12h72v5h-72z M1230 22h72v5h-72z" />
+            )}
+            {(style === 'crew-socks' || style === 'cushioned-socks') && (
+              <path fill={p.sockShade} d="M1240 14h4v18h-4z M1253 14h4v18h-4z M1266 14h4v18h-4z M1279 14h4v18h-4z" />
+            )}
+            {style === 'cushioned-socks' && <path fill={p.sockTrim} d="M1230 10h72v5h-72z M1219 54h65v14h-65z" />}
+            {grip && (
+              <path fill={p.sockTrim} d="M1220 10h77v4h-77z M1224 28h7v7h-7z M1237 35h7v7h-7z M1284 28h7v7h-7z" />
+            )}
+          </g>
+          {shoes === 'barefoot' && (
+            <>
+              <path fill={p.socks} d={SHOES.barefoot[1]} />
+              <path fill={p.sockShade} d="M1187 850h106v10h-21v7h-87v-10h2z" />
+              {grip && (
+                <path
+                  fill={p.sockTrim}
+                  d="M1190 844h8v4h-8z M1206 849h8v4h-8z M1222 851h8v4h-8z M1238 851h8v4h-8z M1254 849h8v4h-8z"
+                />
+              )}
+            </>
+          )}
+        </Mirrored>
+      )}
     </g>
   );
 }
 
 export function Pants({ style, paint: p }: VariantProps<'pants'>) {
+  if (style === 'high-rise-leggings' || style === 'capris') return <StudioLeggings style={style} paint={p} />;
+  if (style === 'liner-shorts' || style === 'split-shorts') {
+    const lined = style === 'liner-shorts';
+    return (
+      <g data-style-layer="pants" data-variant={style}>
+        {lined && (
+          <>
+            <path fill={p.outline} d="M1240 636h184v72h-11v16h-68v-50h-26v50h-68v-16h-11z" />
+            <path fill={p.pantsShade} d="M1253 649h158v56h-9v8h-47v-48h-46v48h-47v-8h-9z" />
+          </>
+        )}
+        <path
+          fill={p.outline}
+          d="M1252 578h160v18h14v26h13v23h9v24h-16v17h-80v-14h-8v-23h-24v23h-8v14h-80v-17h-16v-24h9v-23h13v-26h14z"
+        />
+        <path
+          fill={p.shorts}
+          d="M1262 591h140v20h14v22h12v14h8v13h-16v15h-60v-11h-8v-28h-40v28h-8v11h-60v-15h-16v-13h8v-14h12v-22h14z"
+        />
+        <Mirrored>
+          <path fill={p.pantsTrim} d="M1234 650h10v12h8v8h51v4h-54v-8h-9v-12h-6z" />
+          <path fill={p.pantsShade} d="M1258 616h26v4h-12v9h-14z M1261 650h26v5h-26z" />
+        </Mirrored>
+        <path fill={p.pantsTrim} d="M1327 599h10v5h7v12h-5v-9h-5v19h-5v-19h-5v10h-5v-13h8z" />
+      </g>
+    );
+  }
+  if (style === 'training-tights' || style === 'warmup-pants') {
+    const tights = style === 'training-tights';
+    return (
+      <g data-style-layer="pants" data-variant={style}>
+        <path
+          fill={p.outline}
+          d={
+            tights
+              ? 'M1250 575h164v27h13v30h10v47h7v67h10v56h-11v13h-72v-17h-12v-48h-12v-52h-8v-37h-14v37h-8v52h-12v48h-12v17h-72v-13h-11v-56h10v-67h7v-47h10v-30h13z'
+              : 'M1250 572h164v27h17v33h15v35h10v60h-4v65h-12v21h-85v-21h-11v-56h-7v-53h-10v53h-7v56h-11v21h-85v-21h-12v-65h-4v-60h10v-35h15v-33h17z'
+          }
+        />
+        <path
+          fill={p.shorts}
+          d={
+            tights
+              ? 'M1262 590h140v24h12v30h11v43h7v65h9v45h-58v-12h-12v-45h-11v-53h-9v-36h-38v36h-9v53h-11v45h-12v12h-58v-45h9v-65h7v-43h11v-30h12z'
+              : 'M1263 587h138v25h17v29h14v32h10v54h-4v59h-13v13h-57v-13h-11v-57h-9v-55h-32v55h-9v57h-11v13h-57v-13h-13v-59h-4v-54h10v-32h14v-29h17z'
+          }
+        />
+        <Mirrored>
+          {tights ? (
+            <>
+              <path
+                fill={p.pantsShade}
+                d="M1245 676h54v12h-10v24h-16v19h-40v-20h12z M1231 771h45v16h-8v10h-45v-18h8z"
+              />
+              <path fill={p.pantsLight} d="M1254 647h6v31h-5v26h-5v21h-6v-25h5v-26h5z M1243 732h5v31h-5z" />
+            </>
+          ) : (
+            <>
+              <path
+                fill={p.pantsShade}
+                d="M1253 608h30v7h-15v9h-15z M1236 677h39v8h-14v15h-25z M1240 740h39v7h-15v13h-24z M1239 785h55v13h-55z"
+              />
+              <path
+                fill={p.pantsLight}
+                d="M1240 748h6v33h-6z M1241 754h21v5h-21z M1260 751h6v11h-6z M1239 785h55v4h-55z"
+              />
+            </>
+          )}
+        </Mirrored>
+        <path fill={p.pantsShade} d="M1265 591h134v10h-134z" />
+      </g>
+    );
+  }
+  if (style === 'bike-shorts') {
+    return (
+      <g data-style-layer="pants" data-variant={style}>
+        <path fill={p.outline} d="M1253 580h158v23h17v24h15v94h-101v-58h-20v58h-101v-94h15v-24h17z" />
+        <path fill={p.shorts} d="M1260 594h144v24h14v18h11v70h-74v-56h-46v56h-74v-70h11v-18h14z" />
+        <Mirrored>
+          <path fill={p.pantsTrim} d="M1253 630h5v65h-5z M1244 693h63v5h-63z" />
+          <path fill={p.pantsShade} d="M1260 600h59v9h-59z M1240 680h12v12h-12z M1287 657h14v34h-14z" />
+        </Mirrored>
+      </g>
+    );
+  }
   const shorts = style === 'shorts';
   const joggers = style === 'joggers';
   return (
@@ -200,37 +382,93 @@ export function Pants({ style, paint: p }: VariantProps<'pants'>) {
           d="M1249 611H1261V649H1246V717H1239V794H1227V717H1234V640H1249Z M1403 611H1415V640H1430V717H1437V794H1425V717H1418V649H1403Z"
         />
       )}
+      <PantDetails style={style} paint={p} />
     </g>
   );
 }
 
-const MUSTACHE = 'M1288 344H1301V337H1325V341H1335V337H1359V344H1372V352H1351V348H1309V352H1288Z';
+// Leave space for the smile at y=351–368. The boxed and full beards have
+// different necklines and both open around the lips instead of painting them.
+const LIP_OPENING = ' M1294 351h13v-3h44v3h14v12h-7v8h-14v4h-31v-4h-12v-7h-7z';
+const MUSTACHE = 'M1283 351h9v-6h11v-6h13v-3h10v5h8v-5h10v3h13v6h11v6h9v6h-13v-4h-12v-5h-15v-3h-14v3h-15v5h-12v4h-13z';
 
-const BEARDS: Record<Exclude<ResolvedStyles['beard'], 'clean-shaven'>, [string, string]> = {
-  stubble: [
-    'M1241 346h7v8h-7z M1256 355h8v7h-8z M1271 368h8v8h-8z M1288 376h8v7h-8z M1302 386h8v7h-8z M1319 379h7v8h-7z M1336 389h8v7h-8z M1354 377h8v8h-8z M1370 381h8v7h-8z M1384 367h8v8h-8z M1401 354h8v7h-8z M1418 346h7v8h-7z',
-    '',
-  ],
-  mustache: [MUSTACHE, 'M1302 337H1325V341H1302Z M1335 337H1358V341H1335Z'],
-  goatee: [MUSTACHE + ' M1304 375H1316V379H1344V375H1356V393H1345V406H1315V393H1304Z', 'M1315 393H1345V401H1315Z'],
-  'short-beard': [
-    MUSTACHE +
-      ' M1234 329H1249V351H1263V366H1282V377H1304V383H1358V377H1380V366H1399V351H1413V329H1428V366H1415V383H1392V399H1376V406H1285V399H1269V383H1248V366H1234Z',
-    'M1269 383H1295V392H1369V383H1392V399H1376V406H1285V399H1269Z',
-  ],
-  'full-beard': [
-    MUSTACHE +
-      ' M1224 318H1247V342H1261V360H1278V373H1299V380H1363V373H1381V360H1403V342H1417V318H1439V368H1428V388H1412V405H1394V421H1374V436H1290V421H1270V405H1252V388H1235V368H1224Z',
-    'M1235 351H1248V377H1266V394H1286V409H1306V420H1358V409H1378V394H1398V377H1418V351H1428V388H1412V405H1394V421H1374V436H1290V421H1270V405H1252V388H1235Z',
-  ],
+interface BeardArt {
+  base: string;
+  shade?: string;
+  texture?: string;
+  opening?: boolean;
+}
+
+const BEARDS: Record<Exclude<ResolvedStyles['beard'], 'clean-shaven'>, BeardArt> = {
+  stubble: {
+    base: 'M1234 334h7v12h7v10h16v9h13v7h17v8h23v4h24v-4h24v-8h18v-7h13v-9h16v-10h7v-12h7v28h-9v13h-14v12h-14v9h-11v8h-102v-8h-11v-9h-14v-12h-14v-13h-8z',
+    texture:
+      'M1242 349h3v4h-3z M1251 361h4v3h-4z M1259 371h3v3h-3z M1269 370h4v4h-4z M1278 382h3v4h-3z M1288 380h4v4h-4z M1297 390h3v4h-3z M1307 385h4v3h-4z M1319 392h4v3h-4z M1329 387h4v4h-4z M1338 396h4v3h-4z M1348 387h3v4h-3z M1356 394h4v4h-4z M1365 381h4v3h-4z M1375 386h4v4h-4z M1386 376h3v4h-3z M1395 371h4v4h-4z M1406 363h4v3h-4z M1416 352h3v4h-3z',
+  },
+  mustache: {
+    base: MUSTACHE,
+    shade: 'M1292 350h12v-4h12v-3h9v3h-9v3h-12v4h-12z M1335 343h9v3h13v4h11v3h-11v-4h-13v-3h-9z',
+    texture: 'M1306 341h8v3h-8z M1318 338h5v3h-5z M1338 338h5v3h-5z M1347 342h8v3h-8z',
+  },
+  goatee: {
+    base: MUSTACHE + ' M1306 375h9v5h9v3h15v-3h9v-5h8v18h-5v10h-10v6h-24v-6h-8v-10h-3z',
+    shade: 'M1311 391h6v7h11v5h13v-5h9v5h-9v6h-24v-6h-6z',
+    texture: 'M1316 384h5v7h4v4h-5v-4h-4z M1329 386h5v12h-5z M1342 384h5v9h-5z',
+  },
+  'short-beard': {
+    base: 'M1228 322h10v13h7v12h12v8h15v5h9v-10h12v-6h11v-6h16v4h20v-4h16v6h11v6h12v10h9v-5h15v-8h12v-12h7v-13h10v44h-8v16h-13v10h-14v9h-16v7h-19v6h-64v-6h-19v-7h-16v-9h-14v-10h-13v-16h-8z',
+    shade:
+      'M1230 343h8v22h9v14h14v8h18v10h21v7h59v-7h21v-10h17v-8h14v-14h10v-22h8v23h-8v16h-13v10h-14v9h-16v7h-19v5h-62v-5h-19v-7h-16v-9h-14v-10h-13v-16h-8z',
+    texture:
+      'M1250 356h7v9h-7z M1261 364h8v7h7v6h-8v-6h-7z M1284 376h8v8h-8z M1302 382h6v12h-6z M1321 383h6v8h3v6h-6v-7h-3z M1342 380h5v12h-5z M1362 377h8v6h-8z M1381 367h8v6h-8z M1400 360h8v10h-8z',
+    opening: true,
+  },
+  'full-beard': {
+    base: 'M1222 315h12v13h8v11h10v10h17v5h12v-7h12v-6h12v-7h16v5h17v-5h16v7h12v6h12v7h12v-5h17v-10h10v-11h8v-13h12v51h-6v19h-10v16h-13v13h-16v11h-16v7h-17v8h-21v5h-22v-5h-21v-8h-17v-7h-16v-11h-16v-13h-13v-16h-10v-19h-6z',
+    shade:
+      'M1226 339h8v24h9v19h11v14h14v12h16v9h19v7h20v7h16v-7h20v-7h19v-9h16v-12h14v-14h11v-19h9v-24h8v27h-6v19h-10v16h-13v13h-16v11h-16v7h-17v8h-21v5h-22v-5h-21v-8h-17v-7h-16v-11h-16v-13h-13v-16h-10v-19h-6z',
+    texture:
+      'M1240 348h6v14h7v10h-7v-7h-6z M1258 359h8v10h7v8h-7v-5h-8z M1267 384h7v8h8v8h-7v-5h-8z M1281 367h7v9h7v7h-7v-5h-7z M1297 386h8v10h5v8h-7v-5h-6z M1313 378h6v13h4v6h-7v-6h-3z M1313 406h7v9h7v7h-7v-5h-7z M1330 390h7v16h-7z M1340 410h8v10h-8z M1350 380h7v11h-7z M1356 397h8v11h-8z M1371 370h7v10h-7z M1374 388h7v9h-7z M1390 361h8v11h-8z M1390 380h8v9h-8z M1410 349h7v14h-7z',
+    opening: true,
+  },
+  'chin-strap': {
+    base: 'M1232 319h10v39h8v15h13v11h17v9h25v8h54v-8h25v-9h17v-11h13v-15h8v-39h10v48h-8v16h-14v12h-17v9h-23v9h-76v-9h-23v-9h-17v-12h-14v-16h-8z',
+    shade:
+      'M1243 370h7v10h14v12h17v9h25v7h52v-7h25v-9h17v-12h14v-10h7v13h-11v12h-17v9h-23v9h-76v-9h-23v-9h-17v-12h-11z',
+    texture: 'M1269 388h10v4h-10z M1296 399h9v4h-9z M1318 403h17v4h-17z M1348 403h9v4h-9z M1384 389h11v4h-11z',
+  },
+  'fade-beard': {
+    base: 'M1239 349h8v13h10v12h14v7h15v-6h22v-4h48v4h22v6h15v-7h14v-12h10v-13h8v24h-8v16h-14v10h-19v13h-22v8h-60v-8h-22v-13h-19v-10h-14v-16h-8z',
+    shade: 'M1257 382h9v9h14v7h20v9h64v-9h20v-7h14v-9h9v15h-19v14h-22v8h-68v-8h-22v-14h-19z',
+    texture:
+      'M1270 383h5v6h-5z M1284 379h6v7h-6z M1301 382h5v12h-5z M1317 387h5v12h-5z M1333 384h6v14h-6z M1349 386h5v11h-5z M1367 380h5v9h-5z M1384 384h5v6h-5z',
+  },
+  'chin-tuft': {
+    base: 'M1310 380h12v5h20v-5h12v13h-6v12h-6v9h-17v-9h-9v-12h-6z',
+    shade: 'M1316 394h7v6h8v7h8v-7h8v5h-5v9h-17v-9h-9z',
+    texture: 'M1324 387h5v9h-5z M1336 389h5v10h-5z',
+  },
 };
 
 export function Beard({ style, paint: p }: VariantProps<'beard'>) {
   const art = style === 'clean-shaven' ? null : BEARDS[style];
+  const stubble = style === 'stubble';
   return (
     <g data-style-layer="beard" data-variant={style}>
-      {art && <path fill={style === 'stubble' ? p.stubble : p.beard} d={art[0]} />}
-      {art?.[1] && <path fill={p.beardShade} d={art[1]} />}
+      {art && (
+        <>
+          <path
+            data-paint="beard-hair"
+            fill={stubble ? p.stubble : p.beard}
+            fillRule={art.opening ? 'evenodd' : undefined}
+            d={art.base + (art.opening ? LIP_OPENING : '')}
+          />
+          {art.shade && <path fill={p.beardShade} d={art.shade} />}
+          {art.texture && (
+            <path fill={stubble ? p.beard : p.beardLight} fillOpacity={stubble ? 0.48 : 0.72} d={art.texture} />
+          )}
+        </>
+      )}
     </g>
   );
 }

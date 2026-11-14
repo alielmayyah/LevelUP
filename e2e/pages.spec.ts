@@ -12,6 +12,9 @@ test.describe('Progress', () => {
     const p = page.locator(tab('progress'));
     await expect(p.getByTestId('metric-weight')).toContainText(/80\.0\s?kg/);
     await expect(p.getByTestId('change-muscle')).toContainText('▲ 0.9 kg');
+    // Trends sit behind View more details.
+    await expect(p.getByTestId('trend-headline')).toHaveCount(0);
+    await p.getByTestId('progress-more').click();
     await expect(p.getByTestId('trend-headline')).toContainText(/80\.0\s?kg/);
     // All nine measurements show; the six smaller cards keep just a name and value.
     await expect(p.getByTestId('metric-visceral')).toContainText(en.progress.metric.visceral);
@@ -29,8 +32,13 @@ test.describe('Progress', () => {
     // View all scans: pick any scan from the full list.
     await p.getByTestId('view-all-scans').click();
     const sheet = page.getByTestId('scan-history');
-    await expect(sheet.getByTestId('scan-row')).toHaveCount(6);
-    await sheet.getByTestId('scan-row').nth(5).click();
+    // As many scans as fit the screen; the first scan is the last row of the last page.
+    await expect(sheet.getByTestId('scan-row').first()).toBeVisible();
+    if (await sheet.getByTestId('pager').count()) {
+      await sheet.getByRole('button', { name: en.leaderboard.nextPage }).click();
+      await expect(sheet.getByTestId('pager')).toContainText('2');
+    }
+    await sheet.getByTestId('scan-row').last().click();
     await expect(p.getByTestId('scan-date')).toContainText('1');
     await expect(p.getByTestId('change-weight')).toHaveText(en.progress.firstScan);
     // One line at a time; tapping a point shows its value.
@@ -50,6 +58,7 @@ test.describe('Progress', () => {
         const s = { en, ar }[lang];
         await loginAs();
         await page.goto('/tabs/progress');
+        await page.getByTestId('progress-more').click();
         const bc = page.getByTestId('body-comp');
         await expect(bc.getByTestId('bar-weight')).toContainText(s.bodyComp.zone.normal);
         await expect(bc.getByTestId('bar-pbf')).toContainText(s.bodyComp.zone.under);
@@ -63,13 +72,16 @@ test.describe('Progress', () => {
         await page.getByTestId('compare-open').click();
         const picker = page.getByTestId('compare-picker');
         await expect(picker.getByTestId('scan-row').first()).toBeDisabled();
+        await expect(picker.getByTestId('scan-row').first()).toBeVisible();
+        if (await picker.getByTestId('pager').count())
+          await picker.getByRole('button', { name: s.leaderboard.nextPage }).click();
         await picker.getByTestId('scan-row').last().click();
         await expect(page.getByTestId('change-muscle')).toContainText('4.9');
         await expect(bc.getByTestId('bar-smm-delta')).toContainText('4.9');
         // Or compare with nothing.
         await page.getByTestId('compare-open').click();
         await page.getByTestId('compare-none').click();
-        await expect(page.getByTestId('change-caption')).toContainText(s.progress.compareOff);
+        await expect(page.getByTestId('change-caption')).toContainText(s.progress.compareOffShort);
         await expect(bc.getByTestId('bar-smm-delta')).toHaveCount(0);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       });
@@ -78,6 +90,7 @@ test.describe('Progress', () => {
   test('Omar: one scan, so changes and trends wait for the second', async ({ page, loginAs }) => {
     await loginAs('103');
     await page.goto('/tabs/progress');
+    await page.getByTestId('progress-more').click();
     await expect(page.getByText(en.progress.secondScan)).toBeVisible();
     await expect(page.getByTestId('change-muscle')).toHaveText(en.progress.changeLater);
     await expect(page.getByTestId('trend-score')).toHaveCount(0);
@@ -85,22 +98,55 @@ test.describe('Progress', () => {
 });
 
 test.describe('Goals', () => {
-  test('every goal is on one page, with the journey on top', async ({ page, loginAs }) => {
+  test('every goal is on one page', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/goals');
     const g = page.locator(tab('goals'));
-    await expect(g.getByTestId('journey')).toContainText(`2/4 ${en.goals.done}`);
-    await expect(g.getByTestId('section-active').getByTestId('goal')).toHaveCount(1);
-    await expect(g.getByTestId('section-upcoming').getByTestId('goal')).toContainText(en.goals.upcomingNote);
+    await expect(g.getByTestId('section-active').getByTestId('goal')).toHaveCount(2);
     await expect(g.getByTestId('section-completed').getByTestId('goal')).toHaveCount(2);
-    // Sections in order: in progress, up next, completed.
+    // Two sections: in progress, then completed. No time factor, so nothing is up next.
     const order = await g.locator('[data-testid^="section-"]').evaluateAll((els) => els.map((e) => e.dataset.testid));
-    expect(order).toEqual(['section-active', 'section-upcoming', 'section-completed']);
-    // A goal's details open on tap.
-    const first = g.getByTestId('section-active').getByRole('button');
-    await first.click();
-    await expect(first).toHaveAttribute('aria-expanded', 'true');
-    await expect(g.getByText(en.goals.due.replace(' {{date}}', ''), { exact: false }).first()).toBeVisible();
+    expect(order).toEqual(['section-active', 'section-completed']);
+    // Every detail is on the card: start, now, target. No dates, no coach note.
+    await expect(g.getByTestId('section-active').getByTestId('goal-stats').first()).toContainText(en.goals.target);
+    await expect(g.getByTestId('section-completed').getByTestId('goal').first()).toContainText(en.goals.reached);
+    await expect(g.getByText('Keep protein high on training days.')).toHaveCount(0);
+  });
+
+  test('a member creates their own goal and it goes live at once', async ({ page, loginAs }) => {
+    await loginAs('103');
+    await page.goto('/tabs/goals');
+    const g = page.locator(tab('goals'));
+    await g.getByTestId('goal-new-empty').click();
+
+    const n = page.locator(tab('new-goal'));
+    await expect(n.getByRole('heading', { level: 1 })).toHaveText(en.newGoal.title);
+    await n.getByTestId('goal-type-MUSCLE_KG').click();
+    await n.getByTestId('goal-more').click();
+    await expect(n.getByTestId('goal-name')).toHaveText('Gain 2.5 kg of muscle');
+    // No due date to pick.
+    await expect(n.getByText(/^Due /)).toHaveCount(0);
+    await n.getByTestId('goal-create').click();
+
+    await expect(page).toHaveURL(/\/tabs\/goals$/);
+    await expect(g.getByTestId('section-active').getByTestId('goal')).toContainText('Gain 2.5 kg of muscle');
+    // It is also today's mission on Home.
+    await page.goto('/tabs/home');
+    await expect(page.getByTestId('mission-card')).toContainText('Gain 2.5 kg of muscle');
+  });
+
+  test('the new goal page has a way back and keyboard choices', async ({ page, loginAs }) => {
+    await loginAs();
+    await page.goto('/tabs/goals');
+    await page.locator(tab('goals')).getByTestId('goal-new').click();
+    const n = page.locator(tab('new-goal'));
+    await expect(n.getByTestId('goal-starts')).toHaveText(en.newGoal.startsNow);
+    await n.getByTestId('goal-type-BODY_FAT_KG').focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(n.getByTestId('goal-type-MUSCLE_KG')).toBeFocused();
+    await expect(n.getByTestId('goal-type-MUSCLE_KG')).toHaveAttribute('aria-checked', 'true');
+    await n.getByTestId('new-goal-back').click();
+    await expect(page).toHaveURL(/\/tabs\/goals$/);
   });
 });
 
@@ -162,6 +208,7 @@ test.describe('Profile', () => {
     await bar.getByRole('tab', { name: en.tabs.short.home, exact: true }).click();
     await expect(page.locator(tab('home')).getByTestId('fitscore-card')).toHaveCount(0);
     await bar.getByRole('tab', { name: en.tabs.short.progress, exact: true }).click();
+    await page.locator(tab('progress')).getByTestId('progress-more').click();
     await expect(page.locator(tab('progress')).getByTestId('chart-trend')).toBeVisible();
     await expect(page.locator(tab('progress')).getByTestId('trend-score')).toHaveCount(0);
   });
@@ -225,26 +272,45 @@ test.describe('Character', () => {
             'true',
           );
           const outfits = editor.getByRole('group', { name: copy.avatar.outfitTitle });
+          await expect(preview).toHaveAttribute('data-rig', 'standard');
+          await expect(outfits.getByRole('button', { name: copy.avatar.outfit['hijab-training'] })).toHaveCount(0);
+          await expect(outfits.getByRole('button', { name: copy.avatar.outfit['violet-training'] })).toHaveCount(0);
+          const studio = outfits.getByRole('button', { name: copy.avatar.outfit['studio-flow'] });
+          await studio.click();
+          await expect(studio).toHaveAttribute('aria-pressed', 'true');
+          await expect(preview.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'barefoot');
+          await expect(preview.locator('[data-style-layer="socks"]')).toHaveAttribute('data-variant', 'grip-socks');
+          const strength = outfits.getByRole('button', { name: copy.avatar.outfit['strength-day'] });
+          await strength.click();
+          await expect(strength).toHaveAttribute('aria-pressed', 'true');
+          await expect(preview.locator('[data-art-detail="sleeveless-hoodie"]')).toHaveCount(1);
+          await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'liner-shorts');
           const summer = outfits.getByRole('button', { name: copy.avatar.outfit['summer-fit'] });
           await summer.click();
           await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'shorts');
-          await expect(preview.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'slip-ons');
+          await expect(preview.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'cross-trainers');
           const darkHoodie = outfits.getByRole('button', { name: copy.avatar.outfit['dark-hoodie'] });
           await darkHoodie.click();
           await expect(darkHoodie).toHaveAttribute('aria-pressed', 'true');
           await expect(summer).toHaveAttribute('aria-pressed', 'false');
           await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'hoodie');
+          await expect(preview.locator('[data-art-detail="stitched-hoodie"]')).toHaveCount(1);
           await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'joggers');
+          await expect(preview.locator('image')).toHaveCount(0);
           const choices = [
-            ['hair', 'locs'],
-            ['body', 'broad'],
-            ['top', 'hoodie'],
-            ['shoes', 'high-tops'],
-            ['pants', 'cargo'],
-            ['beard', 'goatee'],
+            ['hair', 'braids'],
+            ['body', 'athletic'],
+            ['top', 'quarter-zip'],
+            ['shoes', 'lifters'],
+            ['pants', 'liner-shorts'],
+            ['beard', 'chin-tuft'],
+            ['socks', 'cushioned-socks'],
           ] as const;
           for (const [part, id] of choices) {
             await selectTab(part);
+            if (part === 'hair') {
+              await expect(editor.getByRole('radio', { name: copy.avatar.style['sport-hijab'] })).toHaveCount(0);
+            }
             const option = editor
               .getByRole('radiogroup', { name: copy.avatar.styleLabel[part] })
               .getByRole('radio', { name: copy.avatar.style[id] });
@@ -253,22 +319,43 @@ test.describe('Character', () => {
             await expect(preview.locator(`[data-style-layer="${part}"]`)).toHaveAttribute('data-variant', id);
             if (part === 'hair') await color('hair', 'silver').click();
             if (part === 'body') await color('skin', 'rich-brown').click();
-            if (part === 'top') await color('tank', 'teal').click();
-            if (part === 'pants') await color('shorts', 'olive').click();
-            if (part === 'beard') await color('beard', 'auburn').click();
+            if (part === 'top') await color('tank', 'sage').click();
+            if (part === 'pants') await color('shorts', 'graphite').click();
+            if (part === 'shoes') await color('shoes', 'gum').click();
+            if (part === 'beard') {
+              const beard = preview.locator('[data-paint="beard-hair"]');
+              await color('beard', 'silver').click();
+              const silver = await beard.getAttribute('fill');
+              await color('beard', 'auburn').click();
+              await expect(beard).not.toHaveAttribute('fill', silver!);
+            }
+            if (part === 'socks') {
+              const sock = preview.locator('[data-paint="sock-fabric"]').first();
+              const before = await sock.getAttribute('fill');
+              await color('socks', 'violet').click();
+              await expect(sock).not.toHaveAttribute('fill', before!);
+            }
           }
           await selectTab('face');
+          const face = editor.getByRole('tabpanel', { name: copy.avatar.tab.face });
+          await expect(face.getByRole('radiogroup')).toHaveCount(1);
           await color('eyes', 'brown').click();
           const eyes = preview.locator('[data-feature="eyes"] path');
           await expect(eyes).toHaveCount(2);
           expect(await eyes.first().getAttribute('fill')).not.toBe(await eyes.last().getAttribute('fill'));
           await expect(preview.locator('[data-feature="smile"]')).toHaveCount(1);
           expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-          await editor.getByTestId('character-save').click();
+          // No Save button: every change saves on its own.
+          await expect(editor.getByTestId('character-status')).toHaveText(copy.avatar.saved);
+          const savedColors = await page.evaluate(
+            () => JSON.parse(localStorage.getItem('CapacitorStorage.lu.mock.avatar.101')!).colors,
+          );
+          expect(savedColors).not.toHaveProperty('smile');
+          await editor.getByTestId('character-back').click();
           await expect(page).toHaveURL(/\/tabs\/profile$/);
           await expect(page.getByTestId('profile-avatar').locator('[data-style-layer="hair"]')).toHaveAttribute(
             'data-variant',
-            'locs',
+            'braids',
           );
 
           await page.reload();
@@ -278,8 +365,70 @@ test.describe('Character', () => {
           }
           await selectTab('beard');
           await expect(color('beard', 'auburn')).toHaveAttribute('aria-checked', 'true');
+          await selectTab('socks');
+          await expect(color('socks', 'violet')).toHaveAttribute('aria-checked', 'true');
           await selectTab('hair');
           await expect(color('hair', 'silver')).toHaveAttribute('aria-checked', 'true');
+        });
+
+        test('shows the women’s catalog and keeps a customized hijab after reload', async ({ page, loginAs }) => {
+          const copy = lang === 'ar' ? ar : en;
+          await loginAs('102');
+          await page.goto('/tabs/profile');
+          await page.getByRole('link', { name: copy.profile.customize }).click();
+          const editor = page.locator(tab('character'));
+          const preview = editor.getByTestId('character-preview');
+          const selectTab = (key: keyof typeof copy.avatar.tab) =>
+            editor.getByRole('tab', { name: copy.avatar.tab[key], exact: true }).click();
+
+          await expect(preview).toHaveAttribute('data-rig', 'women');
+          await expect(preview.locator('[data-style-layer="hair"]')).toHaveAttribute('data-variant', 'high-ponytail');
+          await expect(editor.getByRole('tab', { name: copy.avatar.tab.beard })).toHaveCount(0);
+          await selectTab('body');
+          await expect(editor.getByRole('radiogroup')).toHaveCount(2);
+          await editor.getByRole('radio', { name: copy.avatar.style.athletic, exact: true }).click();
+
+          await selectTab('outfits');
+          const preset = editor.getByRole('button', { name: copy.avatar.outfit['hijab-training'] });
+          await preset.click();
+          await expect(preset).toHaveAttribute('aria-pressed', 'true');
+          await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'fitted-zip');
+          await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'track-pants');
+          await selectTab('hair');
+          await expect(editor.getByRole('radio', { name: copy.avatar.style.fade, exact: true })).toHaveCount(0);
+          const hijab = editor.getByRole('radio', { name: copy.avatar.style['sport-hijab'] });
+          await expect(hijab).toBeChecked();
+          await editor.getByRole('radio', { name: copy.avatar.style['braided-ponytail'] }).click();
+          await hijab.click();
+          const fabric = preview.locator('[data-paint="hijab-fabric"]');
+          const originalColor = await fabric.getAttribute('fill');
+          const sage = editor
+            .getByRole('radiogroup', { name: copy.avatar.part.hijab })
+            .getByRole('radio', { name: copy.avatar.color.sage, exact: true });
+          await sage.click();
+          await expect(fabric).not.toHaveAttribute('fill', originalColor!);
+          await expect
+            .poll(() =>
+              page.evaluate(() => JSON.parse(localStorage.getItem('CapacitorStorage.lu.mock.avatar.102') ?? 'null')),
+            )
+            .toMatchObject({
+              rig: 'women',
+              styles: { body: 'athletic', hair: 'sport-hijab', top: 'fitted-zip' },
+              colors: { hijab: 'sage' },
+            });
+
+          await editor.getByTestId('character-back').click();
+          const portrait = page.getByTestId('profile-avatar');
+          await expect(portrait).toHaveAttribute('data-rig', 'women');
+          await expect(portrait.locator('[data-style-layer="hair"]')).toHaveAttribute(
+            'data-variant',
+            'sport-hijab',
+          );
+          await page.reload();
+          await expect(portrait.locator('[data-paint="hijab-fabric"]')).toHaveCount(1);
+          await page.goto('/tabs/profile/character');
+          await selectTab('hair');
+          await expect(sage).toBeChecked();
         });
       });
     }
@@ -304,18 +453,19 @@ test.describe('Character', () => {
     await expect(skin.getByRole('radio', { checked: true })).toBeFocused();
   });
 
-  test('leaving with unsaved changes asks first, and Keep editing stays', async ({ page, loginAs }) => {
+  test('a change saves on its own, even when leaving right away', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/profile/character');
     const editor = page.locator(tab('character'));
+    await expect(editor.getByTestId('character-save')).toHaveCount(0);
     await editor.getByTestId('character-random').click();
+    // Leave before the half-second autosave: the pending save is still sent, no dialog.
     await editor.getByTestId('character-back').click();
-    const dialog = page.getByRole('dialog', { name: en.avatar.leaveTitle });
-    await dialog.getByRole('button', { name: en.avatar.keepEditing }).click();
-    await expect(page).toHaveURL(/\/tabs\/profile\/character$/);
-    await editor.getByTestId('character-back').click();
-    await dialog.getByRole('button', { name: en.avatar.discard }).click();
     await expect(page).toHaveURL(/\/tabs\/profile$/);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect
+      .poll(() => page.evaluate(() => localStorage.getItem('CapacitorStorage.lu.mock.avatar.101')))
+      .not.toBeNull();
   });
 
   test('the editor works in Arabic without horizontal scroll', async ({ page, loginAs }) => {

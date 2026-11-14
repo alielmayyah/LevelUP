@@ -1,5 +1,5 @@
 /*
- * Goals' pixel details: each metric's hue, the journey blocks, metric icon
+ * Goals' pixel details: each metric's hue, metric icon
  * tiles, striped progress bars, and the expand chevron. Layout and type are
  * Tailwind classes in Goals.tsx.
  */
@@ -33,45 +33,65 @@
     --px-core: var(--lu-accent);
   }
 
-  /* One chunky block per goal, in journey order (follows the reading direction). */
-  .lu-journey-step {
-    border: 2px solid var(--lu-border);
-    background:
-      linear-gradient(90deg, var(--step-fill) var(--lu-step), transparent var(--lu-step)) no-repeat,
-      var(--lu-surface-2);
-
-    &:dir(rtl) {
-      background:
-        linear-gradient(270deg, var(--step-fill) var(--lu-step), transparent var(--lu-step)) no-repeat,
-        var(--lu-surface-2);
-    }
-
-    &.is-completed {
-      --step-fill: var(--lu-success);
-      border-color: var(--lu-success);
-      box-shadow: 0 3px 0 color-mix(in srgb, var(--lu-success) 40%, var(--lu-pixel-shadow));
-    }
-
-    &.is-active {
-      --step-fill: var(--ion-color-primary);
-      border-color: var(--ion-color-primary);
-
-      :root.ion-palette-dark & {
-        --step-fill: var(--ion-color-secondary);
-        border-color: var(--ion-color-secondary);
-      }
-    }
-
-    &.is-upcoming {
-      --step-fill: transparent;
-      border-style: dashed;
-    }
-  }
-
   .lu-goal-icon {
     border: 2px solid color-mix(in srgb, var(--metric) 50%, var(--lu-border));
     background: color-mix(in srgb, var(--metric) 16%, var(--lu-surface));
     box-shadow: 0 3px 0 color-mix(in srgb, var(--metric) 35%, var(--lu-pixel-shadow));
+  }
+
+  /* New goal: the picked kind takes its metric's hue. */
+  .lu-goal-choice {
+    box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+    transition: transform 90ms steps(2);
+
+    &:active {
+      transform: translateY(2px);
+    }
+
+    &[aria-checked='true'] {
+      border-color: var(--metric);
+      background: color-mix(in srgb, var(--metric) 12%, var(--lu-surface));
+      box-shadow: 0 3px 0 color-mix(in srgb, var(--metric) 45%, var(--lu-pixel-shadow));
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  /* Ten blocks, lit in the goal's hue; a finished goal's are green. */
+  .lu-goal-blocks > span {
+    flex: 1;
+    block-size: 12px;
+    border-radius: 2px;
+    background: var(--lu-surface-2);
+    box-shadow: inset 0 0 0 1px var(--lu-border);
+
+    &.is-on {
+      background: var(--metric);
+      box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--metric) 65%, var(--lu-pixel-shadow));
+    }
+  }
+
+  .lu-goal-completed .lu-goal-blocks > span.is-on {
+    background: var(--lu-success);
+    box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--lu-success) 65%, var(--lu-pixel-shadow));
+  }
+
+  .lu-goal-target {
+    color: var(--lu-text);
+    text-decoration: underline 3px color-mix(in srgb, var(--metric) 70%, transparent);
+    text-underline-offset: 4px;
+  }
+
+  .lu-goal-done {
+    background: var(--lu-success);
+    color: var(--lu-surface);
   }
 
   .lu-goal-chevron {

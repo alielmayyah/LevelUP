@@ -1,5 +1,4 @@
-import { IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import { notificationsOutline } from 'ionicons/icons';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -7,7 +6,7 @@ import { Link } from 'react-router-dom';
 import type { DashboardDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import Avatar from '../avatar/Avatar';
-import { starterAvatar } from '../avatar/catalog';
+import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
@@ -18,6 +17,7 @@ import NotificationsSheet from './home/NotificationsSheet';
 import RankCard from './home/RankCard';
 import StatTiles from './home/StatTiles';
 import { HOME_GRID, HOME_SPAN, TILES } from './home/layout';
+import PixelIcon from '../components/PixelIcon';
 import './home/Dashboard.scss';
 
 /** Home tab. Everything on it comes from one request: GET /me/dashboard. */
@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
                   data-testid="home-avatar"
                 >
                   <Avatar
-                    config={d.member.avatar ?? starterAvatar(String(d.member.memberId))}
+                    config={memberAvatar(d.member)}
                     className="block size-full"
                   />
                 </Link>
@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
                 }
                 onClick={() => setNotifOpen(true)}
               >
-                <IonIcon icon={notificationsOutline} aria-hidden="true" />
+                <PixelIcon name="bell" />
                 {unread > 0 && (
                   <span
                     className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 border-page bg-danger px-[5px] text-[0.72rem] leading-none font-black text-surface dark:text-pixel-ink"
@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
               <RankCard leaderboard={d.leaderboard} />
               <MissionCard mission={d.mission} />
               <div className={HOME_SPAN}>
-                <StatTiles wins={d.monthlyWins} memberSince={d.member.memberSince} today={today} />
+                <StatTiles wins={d.monthlyWins} today={today} />
               </div>
             </div>
           )}

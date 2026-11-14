@@ -7,7 +7,7 @@
   .lu-more-card {
     --tone: var(--ion-color-primary);
     border: 2px solid color-mix(in srgb, var(--tone) 40%, var(--lu-border));
-    background: color-mix(in srgb, var(--tone) 8%, var(--lu-surface-2));
+    background: color-mix(in srgb, var(--tone) 8%, var(--lu-surface));
     box-shadow: 0 3px 0 color-mix(in srgb, var(--tone) 25%, var(--lu-pixel-shadow));
   }
 
@@ -183,8 +183,7 @@
   }
 
   /* Calendar and title icons in the brand purple. */
-  .lu-tone-calendar,
-  .lu-progress-title-icon {
+  .lu-tone-calendar {
     --px-fill: var(--ion-color-primary);
     --px-hi: color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-splash-star));
     --px-core: var(--lu-splash-star);
@@ -224,10 +223,75 @@
       inset 0 -4px 0 color-mix(in srgb, var(--ion-color-primary) 18%, transparent);
   }
 
+  /* The scan date doubles as a button: a dashed underline says it opens something. */
+  .lu-date-button {
+    text-decoration: underline 2px dashed color-mix(in srgb, var(--ion-color-primary) 55%, transparent);
+    text-underline-offset: 5px;
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  /* Calendar: scan days are filled tiles; the scan on screen is the brand color. */
+  .lu-cal-day {
+    border-color: color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border));
+    background: color-mix(in srgb, var(--ion-color-primary) 16%, var(--lu-surface));
+    color: var(--lu-text);
+    box-shadow: 0 2px 0 var(--lu-pixel-shadow);
+
+    &.is-current {
+      border-color: var(--ion-color-primary-shade);
+      background: var(--ion-color-primary);
+      color: var(--ion-color-primary-contrast);
+    }
+
+    &:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &:active {
+        transform: none;
+      }
+    }
+  }
+
+  /* One flat row under the tiles: which scan the changes are against, and a small pixel button to switch. */
   .lu-compare {
-    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 35%, var(--lu-border));
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--ion-color-primary) 6%, var(--lu-surface));
+    border: 2px solid var(--lu-border);
+    background: var(--lu-surface-2);
+  }
+
+  .lu-compare-button {
+    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 60%, var(--lu-border));
+    background: var(--lu-surface);
+    color: var(--lu-text);
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-pixel-shadow));
+    transition:
+      transform 90ms steps(2),
+      box-shadow 90ms steps(2);
+
+    &:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-pixel-shadow));
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
   }
 
   .lu-grass-dark {
