@@ -45,6 +45,19 @@ afterEach(async () => {
 });
 
 describe('Progress', () => {
+  it('opens on the key numbers; body composition and trends wait behind View more details', async () => {
+    await renderAs('101', Progress);
+    const more = await screen.findByTestId('progress-more');
+    expect(more).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByTestId('body-comp')).toBeNull();
+    await userEvent.click(more);
+    expect(more).toHaveAttribute('aria-expanded', 'true');
+    expect(more).toHaveTextContent('Show less');
+    expect(await screen.findByTestId('body-comp')).toBeInTheDocument();
+    await userEvent.click(more);
+    expect(screen.queryByTestId('body-comp')).toBeNull();
+  });
+
   it("shows Mohamed's 3 key numbers with their change, and the other 6 under More", async () => {
     await renderAs('101', Progress);
     const scan = await screen.findByTestId('latest-scan');
@@ -66,6 +79,7 @@ describe('Progress', () => {
 
   it('draws one trend at a time, with a screen-reader summary, and switches metric', async () => {
     await renderAs('101', Progress);
+    await userEvent.click(await screen.findByTestId('progress-more'));
     expect(await screen.findByTestId('chart-trend')).toBeInTheDocument();
     expect(screen.getByText(/Weight went from 76\.2 kg to 80\.0 kg/)).toBeInTheDocument();
     await userEvent.click(screen.getByRole('radio', { name: 'Body fat' }));
@@ -75,6 +89,7 @@ describe('Progress', () => {
 
   it('the chart points work from the keyboard: arrow keys move between scans', async () => {
     await renderAs('101', Progress);
+    await userEvent.click(await screen.findByTestId('progress-more'));
     await screen.findByTestId('chart-trend');
     const last = screen.getByTestId('chart-trend-point-5');
     expect(last).toHaveAttribute('tabindex', '0');
@@ -124,6 +139,7 @@ describe('Progress', () => {
 
   it('the body composition cards read the scan like an InBody sheet', async () => {
     await renderAs('101', Progress);
+    await userEvent.click(await screen.findByTestId('progress-more'));
     const bc = await screen.findByTestId('body-comp');
     const weight = within(bc).getByTestId('bar-weight');
     expect(weight).toHaveTextContent(/80\.0\s?kg/);
@@ -146,6 +162,7 @@ describe('Progress', () => {
 
   it('compares the scan with any other scan, or with none', async () => {
     await renderAs('101', Progress);
+    await userEvent.click(await screen.findByTestId('progress-more'));
     await screen.findByTestId('body-comp');
     await userEvent.click(screen.getByTestId('compare-open'));
     const picker = await screen.findByTestId('compare-picker');
@@ -159,7 +176,7 @@ describe('Progress', () => {
     expect(screen.getByTestId('bar-smm-delta')).toHaveTextContent('+4.9 kg');
     await userEvent.click(screen.getByTestId('compare-open'));
     await userEvent.click(await screen.findByTestId('compare-none'));
-    expect(screen.getByTestId('change-caption')).toHaveTextContent('Not comparing with another scan');
+    expect(screen.getByTestId('change-caption')).toHaveTextContent('No scan');
     expect(screen.queryByTestId('bar-smm-delta')).toBeNull();
     expect(screen.queryByTestId('compare-legend')).toBeNull();
     expect(screen.getByTestId('change-muscle')).toHaveTextContent('');
@@ -172,6 +189,7 @@ describe('Progress', () => {
 
   it('Omar (one scan, FitScore hidden) sees when changes and trends will appear, and no FitScore trend', async () => {
     await renderAs('103', Progress);
+    await userEvent.click(await screen.findByTestId('progress-more'));
     expect(await screen.findByText('Your trends appear after your second scan.')).toBeInTheDocument();
     expect(screen.getByTestId('change-weight')).toHaveTextContent('After 2nd scan');
     expect(screen.queryByTestId('trend-score')).toBeNull();

@@ -129,7 +129,11 @@
     "compareTitle": "قارن بـ",
     "compareNone": "متقارنش",
     "compareHint": "اختار قياس قبل أو بعد عشان تشوف إيه اللي اتغيّر.",
-    "comparing": "بتقارن بيه"
+    "comparing": "بتقارن بيه",
+    "comparedWith": "مقارنة بـ",
+    "compareOffShort": "مفيش قياس",
+    "moreDetails": "شوف تفاصيل أكتر",
+    "lessDetails": "اعرض أقل"
   },
   "goals": {
     "subtitle": "مهماتك",

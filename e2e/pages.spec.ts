@@ -12,6 +12,9 @@ test.describe('Progress', () => {
     const p = page.locator(tab('progress'));
     await expect(p.getByTestId('metric-weight')).toContainText(/80\.0\s?kg/);
     await expect(p.getByTestId('change-muscle')).toContainText('▲ 0.9 kg');
+    // Trends sit behind View more details.
+    await expect(p.getByTestId('trend-headline')).toHaveCount(0);
+    await p.getByTestId('progress-more').click();
     await expect(p.getByTestId('trend-headline')).toContainText(/80\.0\s?kg/);
     // All nine measurements show; the six smaller cards keep just a name and value.
     await expect(p.getByTestId('metric-visceral')).toContainText(en.progress.metric.visceral);
@@ -50,6 +53,7 @@ test.describe('Progress', () => {
         const s = { en, ar }[lang];
         await loginAs();
         await page.goto('/tabs/progress');
+        await page.getByTestId('progress-more').click();
         const bc = page.getByTestId('body-comp');
         await expect(bc.getByTestId('bar-weight')).toContainText(s.bodyComp.zone.normal);
         await expect(bc.getByTestId('bar-pbf')).toContainText(s.bodyComp.zone.under);
@@ -69,7 +73,7 @@ test.describe('Progress', () => {
         // Or compare with nothing.
         await page.getByTestId('compare-open').click();
         await page.getByTestId('compare-none').click();
-        await expect(page.getByTestId('change-caption')).toContainText(s.progress.compareOff);
+        await expect(page.getByTestId('change-caption')).toContainText(s.progress.compareOffShort);
         await expect(bc.getByTestId('bar-smm-delta')).toHaveCount(0);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       });
@@ -78,6 +82,7 @@ test.describe('Progress', () => {
   test('Omar: one scan, so changes and trends wait for the second', async ({ page, loginAs }) => {
     await loginAs('103');
     await page.goto('/tabs/progress');
+    await page.getByTestId('progress-more').click();
     await expect(page.getByText(en.progress.secondScan)).toBeVisible();
     await expect(page.getByTestId('change-muscle')).toHaveText(en.progress.changeLater);
     await expect(page.getByTestId('trend-score')).toHaveCount(0);
@@ -197,6 +202,7 @@ test.describe('Profile', () => {
     await bar.getByRole('tab', { name: en.tabs.short.home, exact: true }).click();
     await expect(page.locator(tab('home')).getByTestId('fitscore-card')).toHaveCount(0);
     await bar.getByRole('tab', { name: en.tabs.short.progress, exact: true }).click();
+    await page.locator(tab('progress')).getByTestId('progress-more').click();
     await expect(page.locator(tab('progress')).getByTestId('chart-trend')).toBeVisible();
     await expect(page.locator(tab('progress')).getByTestId('trend-score')).toHaveCount(0);
   });

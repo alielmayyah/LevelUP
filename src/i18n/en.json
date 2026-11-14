@@ -129,7 +129,11 @@
     "compareTitle": "Compare with",
     "compareNone": "Don't compare",
     "compareHint": "Pick an earlier or later scan to see what changed.",
-    "comparing": "Comparing"
+    "comparing": "Comparing",
+    "comparedWith": "Compared with",
+    "compareOffShort": "No scan",
+    "moreDetails": "View more details",
+    "lessDetails": "Show less"
   },
   "goals": {
     "subtitle": "Your missions",

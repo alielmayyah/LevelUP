@@ -1,5 +1,5 @@
 import { IonIcon } from '@ionic/react';
-import { chevronBack, chevronForward, gitCompareOutline, informationCircleOutline, listOutline } from 'ionicons/icons';
+import { chevronBack, chevronDown, chevronForward, listOutline } from 'ionicons/icons';
 import { lazy, Suspense, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -153,6 +153,8 @@ const Progress: React.FC = () => {
   const [showAll, setShowAll] = useState(false);
   const [picking, setPicking] = useState(false);
   const [compareChoice, setCompareChoice] = useState<CompareChoice>('previous');
+  /** The page opens on the key numbers; body composition and trends wait behind View more. */
+  const [details, setDetails] = useState(false);
   const [info, setInfo] = useState<InfoTopic | null>(null);
   const closeInfo = useCallback(() => setInfo(null), []);
 
@@ -377,22 +379,22 @@ const Progress: React.FC = () => {
               </dl>
               {list.length > 1 && (
                 <div
-                  className="lu-compare m-0 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 justify-self-center px-3.5 py-1 text-center text-[0.8rem] font-semibold text-muted"
+                  className="lu-compare flex items-center gap-2.5 rounded-lg py-1.5 ps-2.5 pe-1.5"
                   data-testid="change-caption"
                 >
-                  <IonIcon className="flex-none text-[1rem]" icon={informationCircleOutline} aria-hidden="true" />
-                  <span>
-                    {before
-                      ? t('progress.changeCaption', { date: scanDate(before.takenAt) })
-                      : t('progress.compareOff')}
-                  </span>
+                  <PixelIcon className="lu-tone-calendar flex-none text-[1.4rem]" name="calendar" />
+                  <p className="m-0 grid min-w-0 flex-1 leading-tight">
+                    <span className="text-[0.72rem] font-bold text-muted">{t('progress.comparedWith')}</span>
+                    <span className="text-[0.9rem] font-extrabold text-ink">
+                      {before ? scanDate(before.takenAt) : t('progress.compareOffShort')}
+                    </span>
+                  </p>
                   <button
                     type="button"
-                    className="inline-flex min-h-11 cursor-pointer items-center gap-1 border-0 bg-transparent px-1 font-inherit font-extrabold text-primary underline decoration-2 underline-offset-2 dark:text-secondary"
+                    className="lu-compare-button min-h-11 flex-none cursor-pointer rounded-md px-3.5 font-inherit text-[0.85rem] font-extrabold"
                     onClick={() => setPicking(true)}
                     data-testid="compare-open"
                   >
-                    <IonIcon className="text-[1rem]" icon={gitCompareOutline} aria-hidden="true" />
                     {before ? t('progress.compareChange') : t('progress.comparePick')}
                   </button>
                 </div>
@@ -448,20 +450,41 @@ const Progress: React.FC = () => {
               </dl>
             </section>
 
-            <Suspense fallback={<div className="lu-skeleton-card min-h-96" data-testid="body-comp-loading" />}>
-              <BodyComposition scan={scan} compare={before} heightCm={me.data.heightCm} sex={me.data.sex} />
-            </Suspense>
+            <button
+              type="button"
+              className="lu-compare-button flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 font-inherit text-[0.95rem] font-extrabold"
+              aria-expanded={details}
+              aria-controls="progress-details"
+              onClick={() => setDetails((d) => !d)}
+              data-testid="progress-more"
+            >
+              {details ? t('progress.lessDetails') : t('progress.moreDetails')}
+              <IonIcon
+                className={`text-[1.1rem] transition-transform duration-150 motion-reduce:transition-none ${details ? 'rotate-180' : ''}`}
+                icon={chevronDown}
+                aria-hidden="true"
+              />
+            </button>
           </div>
 
-          {points.length < 2 ? (
-            <p className="lu-px-card lu-state" data-testid="second-scan">
-              {t('progress.secondScan')}
-            </p>
-          ) : (
-            <Suspense fallback={<div className="lu-skeleton-card min-h-60" data-testid="charts-loading" />}>
-              <TrendChart points={points} showFitScore={me.data.showFitScore} />
-            </Suspense>
-          )}
+          <div id="progress-details" className="grid gap-[18px] [&[hidden]]:hidden" hidden={!details}>
+            {details && (
+              <>
+                <Suspense fallback={<div className="lu-skeleton-card min-h-96" data-testid="body-comp-loading" />}>
+                  <BodyComposition scan={scan} compare={before} heightCm={me.data.heightCm} sex={me.data.sex} />
+                </Suspense>
+                {points.length < 2 ? (
+                  <p className="lu-px-card lu-state" data-testid="second-scan">
+                    {t('progress.secondScan')}
+                  </p>
+                ) : (
+                  <Suspense fallback={<div className="lu-skeleton-card min-h-60" data-testid="charts-loading" />}>
+                    <TrendChart points={points} showFitScore={me.data.showFitScore} />
+                  </Suspense>
+                )}
+              </>
+            )}
+          </div>
         </div>
       )}
       <MetricInfo topic={info} onClose={closeInfo} />

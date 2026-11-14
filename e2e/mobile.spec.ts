@@ -125,7 +125,8 @@ test.describe('scrolling on a phone-height screen', () => {
     await loginAs();
     await page.goto('/tabs/progress');
     const content = page.getByTestId('page-progress').locator('ion-content');
-    // Wait for the lazy charts so the page is at full height before scrolling.
+    // Open the details and wait for the lazy charts so the page is at full height before scrolling.
+    await page.getByTestId('progress-more').click();
     await expect(page.getByTestId('chart-trend')).toBeVisible();
     await content.evaluate((el) => (el as IonContentEl).scrollToPoint(0, 300, 0));
     const scrollTop = () => content.evaluate(async (el) => (await (el as IonContentEl).getScrollElement()).scrollTop);
@@ -139,7 +140,8 @@ test.describe('scrolling on a phone-height screen', () => {
     await page.goto('/tabs/progress');
     const content = page.getByTestId('page-progress').locator('ion-content');
     const scrollTop = () => content.evaluate(async (el) => (await (el as IonContentEl).getScrollElement()).scrollTop);
-    // The charts load after the page; wait so the page is at its full height before scrolling.
+    // Open the details; the charts load after, so wait until the page is at its full height.
+    await page.getByTestId('progress-more').click();
     await expect(page.getByTestId('chart-trend')).toBeVisible();
     await content.evaluate((el) => (el as IonContentEl).scrollToPoint(0, 250, 0));
     await expect.poll(scrollTop).toBeGreaterThan(200);
