@@ -29,7 +29,7 @@
 
 | Topic | Decision |
 |---|---|
-| FitScore formula | InBody Score method: `80 + (lean − standardLean) − (fat − standardFat)` in kg, rounded and clamped to 0–100. Standard weight = 22·h² (men) / 21.5·h² (women), h in m; ideal fat = 15% (men) / 23% (women) of it, the rest lean. Lean = weight − body-fat kg. Mirrors `computeFitScore` in the app's `src/api/mock/domain.ts` (Task 3) |
+| FitScore formula | InBody Score method: `80 + (lean − standardLean) − max(0, fat − standardFat)` in kg (fat below standard earns nothing; checked against two real InBody sheets), rounded and clamped to 0–100. Standard weight = 22·h² (men) / 21.5·h² (women), h in m; ideal fat = 15% (men) / 23% (women) of it, the rest lean. Lean = weight − body-fat kg. Mirrors `computeFitScore` in the app's `src/api/mock/domain.ts` (Task 3) |
 | FitScore tiers | InBody's bands: Elite ≥80, Strong 70–79, On Track 60–69, Building 50–59, Needs Improvement <50 |
 | FitScore "daily change" | Difference from the previous assessment, labelled "since last scan" |
 | Leaderboard ranking | Opt-in only (`fitScoreOnLeaderboard`, default `false`). There are 4 boards: `score` (latest fitScore), `progress` (FitScore points gained this month), `muscle` (kg of skeletal muscle gained this month), and `fatLoss` (body-fat % points lost this month). All rank descending, and ties go to the lower member id. Monthly boards include only members with a non-null monthly delta. The dashboard summary uses `score`. |

@@ -8,6 +8,22 @@ const STD_FAT = STD_WEIGHT * 0.15;
 const STD_LEAN = STD_WEIGHT - STD_FAT;
 
 describe('FitScore (InBody Score method)', () => {
+  it('matches a real InBody sheet: 180 cm man, 78.4 kg, 8.7 kg fat → 89', () => {
+    expect(computeFitScore({ weightKg: 78.4, bodyFatKg: 8.7, heightCm: 180, sex: 'MALE' })).toBe(89);
+  });
+
+  it('fat below the standard earns no extra points', () => {
+    const lean = STD_LEAN;
+    const atStandard = computeFitScore({ weightKg: lean + STD_FAT, bodyFatKg: STD_FAT, heightCm: 178, sex: 'MALE' });
+    const leaner = computeFitScore({
+      weightKg: lean + STD_FAT - 3,
+      bodyFatKg: STD_FAT - 3,
+      heightCm: 178,
+      sex: 'MALE',
+    });
+    expect(leaner).toBe(atStandard);
+  });
+
   it('a body exactly at the standard scores the 80 baseline', () => {
     expect(computeFitScore({ weightKg: STD_WEIGHT, bodyFatKg: STD_FAT, heightCm: 178, sex: 'MALE' })).toBe(80);
   });
@@ -33,7 +49,7 @@ describe('FitScore (InBody Score method)', () => {
   });
 
   it('stays within 0–100', () => {
-    expect(computeFitScore({ weightKg: 140, bodyFatKg: 0, heightCm: 170, sex: 'MALE' })).toBe(100);
+    expect(computeFitScore({ weightKg: 140, bodyFatKg: 10, heightCm: 170, sex: 'MALE' })).toBe(100);
     expect(computeFitScore({ weightKg: 160, bodyFatKg: 110, heightCm: 170, sex: 'MALE' })).toBe(0);
   });
 

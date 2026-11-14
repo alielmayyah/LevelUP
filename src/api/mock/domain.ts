@@ -13,10 +13,12 @@ export const round1 = (n: number): number => Math.round(n * 10) / 10;
  *   - start at 80;
  *   - standard weight = 22 × height² (men) or 21.5 × height² (women), in m;
  *   - of that, the ideal fat share is 15% (men) or 23% (women), the rest lean;
- *   - +1 point per kg of lean mass above standard (−1 per kg below), and
- *     −1 point per kg of fat above standard (+1 per kg below).
- * Matches a real InBody 270 sheet: Fat Control −10.0 kg and Muscle Control
- * +3.8 kg give 80 − 10.0 − 3.8 = 66.2, printed as 66.
+ *   - +1 point per kg of lean mass above standard, −1 per kg below;
+ *   - −1 point per kg of fat above standard. Fat below standard adds nothing.
+ * Checked against two real InBody sheets:
+ *   - 180 cm man, 78.4 kg, 8.7 kg fat: 80 + (69.7 − 60.59) = 89.1, printed 89
+ *     (crediting his 2 kg of fat below standard too would give 91);
+ *   - Fat Control −10.0 kg, Muscle Control +3.8 kg: 80 − 10.0 − 3.8 = 66.2, printed 66.
  * Sources: lbwebfaq.inbodyusa.com "How is InBody Score calculated" and
  * InBody's professional result-sheet guide.
  */
@@ -41,16 +43,18 @@ function standards(heightCm: number, sex: Sex) {
 export function computeFitScore({ weightKg, bodyFatKg, heightCm, sex }: FitScoreInput): number {
   const std = standards(heightCm, sex);
   const lean = weightKg - bodyFatKg;
-  const score = 80 + (lean - std.lean) - (bodyFatKg - std.fat);
+  const score = 80 + (lean - std.lean) - Math.max(0, bodyFatKg - std.fat);
   return Math.min(100, Math.max(0, Math.round(score)));
 }
 
 /** The body-fat % that gives `score` at this weight and height (for building mock members). */
 export function bodyFatPctForScore(score: number, weightKg: number, heightCm: number, sex: Sex): number {
   const std = standards(heightCm, sex);
-  // score = 80 + (W − F − stdLean) − (F − stdFat)  →  F = (80 + W − stdLean + stdFat − score) / 2
-  const fatKg = (80 + weightKg - std.lean + std.fat - score) / 2;
-  return round1((fatKg / weightKg) * 100);
+  // Fat above standard: score = 80 + (W − F − stdLean) − (F − stdFat)  →  F = (80 + W − stdLean + stdFat − score) / 2
+  const above = (80 + weightKg - std.lean + std.fat - score) / 2;
+  // Fat at or below standard costs nothing: score = 80 + (W − F − stdLean)  →  F = 80 + W − stdLean − score
+  const fatKg = above >= std.fat ? above : 80 + weightKg - std.lean - score;
+  return round1((Math.max(fatKg, 0) / weightKg) * 100);
 }
 
 /** Tiers follow InBody's score bands: 80+ excellent, 70–79 good, 60–69 average, 50–59 below average, under 50. */
