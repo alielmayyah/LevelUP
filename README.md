@@ -2,6 +2,8 @@
 
 The LevelUP gym member app: a member signs in with the Fit ID the front desk gives them and follows their body-composition scans, goals, and gym ranking. Built with Ionic React, Vite, and Capacitor. English and Egyptian Arabic (right-to-left), light and dark themes, phones to desktop.
 
+Try it: **[alielmayyah.github.io/LevelUP](https://alielmayyah.github.io/LevelUP/)** (the `staging` branch, on mock data; sign in with `101`).
+
 The backend (NestJS, Prisma, PostgreSQL) lives in [levelup-backend](https://github.com/alielmayyah/levelup-backend). Sprint 1 runs entirely on an in-memory mock of its API, so you don't need the backend to try the app.
 
 ## Run it
@@ -29,14 +31,26 @@ With mock data on (the default), sign in with any of these Fit IDs:
 
 | Fit ID | Member | Shows |
 |---|---|---|
-| `101` | Sam Khalil | Everything: 6 scans, FitScore 72, rank #4, an active mission, 2 unread notifications |
+| `101` | Mohamed Omran | Everything, as the gym's top member: 183 cm, 80 kg, 8% body fat, 6 scans with body-part readings, FitScore 91, #1 on every board, an active mission, 2 unread notifications |
 | `102` | Lina Haddad | A brand-new member: empty states everywhere, not on the leaderboard |
 | `103` | Omar Aziz | One scan only, FitScore hidden |
-| `104`–`115` | Filler members | Fill out the leaderboard |
+| `104`–`139` | Filler members | Fill out both leaderboards |
 
 `999` shows "not found". Six quick wrong tries show "too many tries". The mock data resets when you reload the page; settings are kept.
 
 Demo path: tap the splash → sign in as `101` → Home → switch to Arabic in Profile → switch to dark mode → visit every tab → turn off Show FitScore and go back to Home → sign out → sign in as `102` to see the empty states.
+
+## Android test build
+
+`npm run build:demo` builds the app on mock data (there is no hosted API yet). Then, with Android Studio's SDK installed and JDK 17 or 21 as `JAVA_HOME` (Gradle 8.11 can't run on JDK 25):
+
+```bash
+npm run build:demo
+npx cap sync android
+cd android && ./gradlew assembleDebug
+```
+
+The APK is `android/app/build/outputs/apk/debug/app-debug.apk`. Copy it to the phone and open it (allow installs from unknown sources).
 
 ## Turn the mock data off
 
