@@ -1,5 +1,5 @@
 import { IonRouterOutlet, IonTabs } from '@ionic/react';
-import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react';
+import { lazy, Suspense, useEffect, type ComponentType, type LazyExoticComponent } from 'react';
 import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import TabBar from './TabBar';
@@ -15,15 +15,42 @@ const withSuspense = (Page: LazyExoticComponent<ComponentType>) => {
   return Lazy;
 };
 
-const Home = withSuspense(lazy(() => import('../pages/Dashboard')));
-const Progress = withSuspense(lazy(() => import('../pages/Progress')));
-const Goals = withSuspense(lazy(() => import('../pages/Goals')));
-const Character = withSuspense(lazy(() => import('../pages/Character')));
-const Leaderboard = withSuspense(lazy(() => import('../pages/Leaderboard')));
-const Profile = withSuspense(lazy(() => import('../pages/Profile')));
+const LOADERS = {
+  home: () => import('../pages/Dashboard'),
+  progress: () => import('../pages/Progress'),
+  goals: () => import('../pages/Goals'),
+  character: () => import('../pages/Character'),
+  leaderboard: () => import('../pages/Leaderboard'),
+  profile: () => import('../pages/Profile'),
+};
+
+const Home = withSuspense(lazy(LOADERS.home));
+const Progress = withSuspense(lazy(LOADERS.progress));
+const Goals = withSuspense(lazy(LOADERS.goals));
+const Character = withSuspense(lazy(LOADERS.character));
+const Leaderboard = withSuspense(lazy(LOADERS.leaderboard));
+const Profile = withSuspense(lazy(LOADERS.profile));
+
+/**
+ * Once the first tab has rendered and the browser is idle, fetch every other
+ * tab's chunk in the background, so the first visit to a tab doesn't wait on
+ * a download. The initial bundle is unchanged.
+ */
+function usePrefetchTabs(): void {
+  useEffect(() => {
+    const prefetch = () => Object.values(LOADERS).forEach((load) => void load().catch(() => undefined));
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(prefetch, { timeout: 2000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = setTimeout(prefetch, 800);
+    return () => clearTimeout(id);
+  }, []);
+}
 
 const Tabs: React.FC = () => {
   const { pathname } = useLocation();
+  usePrefetchTabs();
   // An unknown tab address (old link, typo) lands on Home instead of an empty page.
   // Checked here, not as a catch-all <Route>: Ionic's outlet would prefer a
   // pattern like /tabs/:any over the exact tab routes.

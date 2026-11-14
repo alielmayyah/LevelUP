@@ -6,14 +6,14 @@ Only `src/api/client.ts` and test files may import from this folder. ESLint (`no
 
 ## Mock members
 
-| Fit ID | Name | Use it to test |
-|---|---|---|
-| `101` | Sam Khalil | The full experience: 6 monthly scans, 1 active / 2 completed / 1 upcoming goal, 4 notifications (2 unread), opted in to the leaderboard, coach assigned |
-| `102` | Lina Haddad | A brand-new member: no scans, no goals, no notifications, not on the leaderboard |
-| `103` | Omar Aziz | One scan only, FitScore hidden (`showFitScore=false`), membership ending in 10 days |
-| `104`–`115` | Fillers | 12 opted-in members so the leaderboard has rows. The last 4 have no scan this month, so they appear only on Top Score. |
+| Fit ID      | Name        | Use it to test                                                                                                                                          |
+| ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `101`       | Sam Khalil  | The full experience: 6 monthly scans, 1 active / 2 completed / 1 upcoming goal, 4 notifications (2 unread), opted in to the leaderboard, coach assigned |
+| `102`       | Lina Haddad | A brand-new member: no scans, no goals, no notifications, not on the leaderboard                                                                        |
+| `103`       | Omar Aziz   | One scan only, FitScore hidden (`showFitScore=false`), membership ending in 10 days                                                                     |
+| `104`–`115` | Fillers     | 12 opted-in members (6 men, 6 women) so both leaderboards have rows. Every board ranks the latest scan.                                  |
 
-Sam's values match the backlog screenshots: FitScore 72 (Strong), +3 since the last scan, rank #4 of 13 on Top Score, mission "Lose 5 kg of body fat" at 3.0 of 5.0 kg, and this month body fat −1.2% and muscle +0.8 kg.
+Sam's values match the backlog screenshots: FitScore 72 (Strong), +3 since the last scan, rank #2 of 7 on the men's Top Score board (men and women are ranked separately), mission "Lose 5 kg of body fat" at 3.0 of 5.0 kg, and this month body fat −1.2% and muscle +0.8 kg.
 
 ## Behavior
 
@@ -21,5 +21,5 @@ Sam's values match the backlog screenshots: FitScore 72 (Strong), +3 since the l
 - **Auth:** every other route needs a `mock.<fitId>` token, or it returns 401 and the client calls the `onUnauthorized` handler.
 - **Dates:** fixtures are built relative to the time the mock server starts, so "this month", "renews soon", and goal ETAs always hold. Months use UTC (the API's default `GYM_TZ`).
 - **State:** read notifications and other changes live in memory and reset on page reload. Settings are also saved to Preferences (`lu.mock.settings.<fitId>`), so they survive a reload.
-- **Latency:** each response waits `VITE_MOCK_LATENCY_MS` (300 ms by default, 0 in unit tests).
+- **Latency:** each response waits `VITE_MOCK_LATENCY_MS` (120 ms in `.env.development`, enough to see loading states without feeling slow; 300 ms if unset; 0 in unit tests).
 - **Tests:** call `resetMockServer(new Date(...))` in `beforeEach` to pin "today".
