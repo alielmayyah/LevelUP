@@ -186,13 +186,15 @@ describe('Progress', () => {
     await userEvent.click(screen.getByTestId('compare-open'));
     const picker = await screen.findByTestId('compare-picker');
     const rows = within(picker).getAllByTestId('scan-row');
-    expect(rows).toHaveLength(5);
+    // The compare sheet fits fewer rows than the list (it has a hint and a Don't compare row): 4 at this height.
+    expect(rows).toHaveLength(4);
     expect(rows[0]).toBeDisabled(); // the scan on screen
     expect(rows[1]).toHaveAttribute('aria-current', 'true'); // the scan before, by default
-    // The first scan is on page 2.
+    // The first scan is the last row of page 2.
     await userEvent.click(within(picker).getByRole('button', { name: 'Next page' }));
-    expect(within(picker).getAllByTestId('scan-row')).toHaveLength(1);
-    await userEvent.click(within(picker).getByTestId('scan-row'));
+    const page2 = within(picker).getAllByTestId('scan-row');
+    expect(page2).toHaveLength(2);
+    await userEvent.click(page2[1]);
     // Now every change is since the first scan: 36.4 → 41.3 kg of muscle.
     expect(screen.getByTestId('change-muscle')).toHaveTextContent('▲ 4.9 kg');
     expect(screen.getByTestId('bar-smm-delta')).toHaveTextContent('+4.9 kg');

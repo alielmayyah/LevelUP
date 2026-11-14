@@ -1,11 +1,12 @@
 import { IonIcon, IonModal } from '@ionic/react';
 import { close } from 'ionicons/icons';
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto } from '../../api/types';
 import Pager from '../../components/Pager';
 import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
+import { useSwipe } from '../../components/useSwipe';
 import { formatNumber, numberLocale } from '../../i18n/format';
 
 interface Props {
@@ -26,8 +27,10 @@ interface Props {
   onNone?: () => void;
 }
 
-/** Scans per page: fits a phone screen without scrolling. The pager shows only when there are more. */
-export const SCANS_PER_PAGE = 5;
+/** Scans per page: as many as fit the screen without scrolling (at least three). The pager shows only when there are more. */
+const perPage = (comparing: boolean) =>
+  // About 100 px a row; the header and pager take about 200 px, and comparing adds a hint and a Don't compare row.
+  Math.max(3, Math.floor((window.innerHeight - (comparing ? 290 : 200)) / 100));
 
 const fullDate = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).format(
@@ -51,13 +54,19 @@ const SheetBody: React.FC<Props & { title: string }> = ({
   onNone,
   title,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const kg = t('units.kg');
   const comparing = mode === 'compare';
-  const pages = Math.max(1, Math.ceil(scans.length / SCANS_PER_PAGE));
+  const [size] = useState(() => perPage(comparing));
+  const pages = Math.max(1, Math.ceil(scans.length / size));
   const anchor = current >= 0 ? current : (showing ?? 0);
-  const [page, setPage] = useState(() => Math.min(pages - 1, Math.floor(Math.max(0, anchor) / SCANS_PER_PAGE)));
-  const first = page * SCANS_PER_PAGE;
+  const [page, setPage] = useState(() => Math.min(pages - 1, Math.floor(Math.max(0, anchor) / size)));
+  const first = page * size;
+  // Swipe sideways to turn pages; up and down still drags the sheet.
+  const list = useRef<HTMLOListElement>(null);
+  const next = useCallback(() => setPage((p) => Math.min(pages - 1, p + 1)), [pages]);
+  const prev = useCallback(() => setPage((p) => Math.max(0, p - 1)), []);
+  useSwipe(list, { onNext: next, onPrev: prev, rtl: i18n.dir() === 'rtl' });
   return (
     <section
       className="flex h-full flex-col bg-page text-ink"
@@ -75,8 +84,8 @@ const SheetBody: React.FC<Props & { title: string }> = ({
       {comparing && (
         <p className="m-0 px-4 pb-3 text-[0.85rem] font-semibold text-muted">{t('progress.compareHint')}</p>
       )}
-      <ol className="m-0 grid list-none gap-2 overflow-y-auto px-4 pt-0 pb-4">
-        {scans.slice(first, first + SCANS_PER_PAGE).map((s, n) => {
+      <ol ref={list} className="m-0 grid flex-1 list-none content-start gap-2 overflow-y-auto px-4 pt-0 pb-4">
+        {scans.slice(first, first + size).map((s, n) => {
           const i = first + n;
           const on = i === current;
           const locked = comparing && i === showing;
