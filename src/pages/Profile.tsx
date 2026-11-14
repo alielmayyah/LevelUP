@@ -188,7 +188,7 @@ const Profile: React.FC = () => {
 
       {p && (
         // The settings card stretches to the tab bar, with Sign out at its foot.
-        <div className={`${GRID} flex-1 grid-rows-[auto_1fr] wide:grid-rows-[auto_1fr]`}>
+        <div className={`${GRID} flex-1 grid-rows-[auto_1fr_auto] wide:grid-rows-[auto_1fr_auto]`}>
           <section className="lu-px-card flex items-center gap-3.5 wide:col-span-full">
             <span className="lu-avatar-frame block size-[72px] flex-none overflow-hidden rounded-[12px]">
               <Avatar
@@ -215,7 +215,8 @@ const Profile: React.FC = () => {
             </div>
           </section>
 
-          <section className="lu-px-card flex flex-col py-1.5" aria-labelledby="sec-settings">
+          {/* The rows spread out to fill the card, so the settings don't bunch up at the top. */}
+          <section className="lu-px-card flex flex-col justify-between py-1.5" aria-labelledby="sec-settings">
             <h3 id="sec-settings" className={SECTION}>
               <IonIcon icon={settingsOutline} aria-hidden="true" />
               {t('profile.settings')}
@@ -290,19 +291,21 @@ const Profile: React.FC = () => {
                 onChange={() => void toggle('fitScoreOnLeaderboard')}
               />
             </div>
-
-            <button
-              type="button"
-              className={`lu-row-button lu-signout ${ROW} mt-auto w-full cursor-pointer border-0 bg-transparent font-inherit text-danger`}
-              onClick={() => setConfirmOut(true)}
-            >
-              <span className={`${LABEL} text-danger`}>
-                <IonIcon className={`${LABEL_ICON} text-danger`} icon={logOutOutline} aria-hidden="true" />
-                {t('profile.signOut')}
-              </span>
-              <IonIcon className="lu-chevron text-danger" icon={chevronForward} aria-hidden="true" />
-            </button>
           </section>
+
+          {/* Sign out stands on its own, below the settings. */}
+          <button
+            type="button"
+            className="lu-px-card lu-signout flex min-h-[52px] w-full cursor-pointer items-center justify-between gap-3 px-4 py-2 font-inherit font-semibold text-danger"
+            onClick={() => setConfirmOut(true)}
+            data-testid="sign-out"
+          >
+            <span className={`${LABEL} text-danger`}>
+              <IonIcon className={`${LABEL_ICON} text-danger`} icon={logOutOutline} aria-hidden="true" />
+              {t('profile.signOut')}
+            </span>
+            <IonIcon className="lu-chevron text-danger" icon={chevronForward} aria-hidden="true" />
+          </button>
         </div>
       )}
 
