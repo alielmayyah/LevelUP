@@ -7,6 +7,7 @@ import { getToken } from '../auth/token';
 import { brand } from '../brand.config';
 import { playIntro } from '../sound/useSound';
 import './Splash.scss';
+import BarbellLoader from './splash/BarbellLoader';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 /** How long the logo shows before the app moves on by itself. */
@@ -91,15 +92,8 @@ const Splash: React.FC = () => {
               {t('splash.tagline')}
             </span>
           </div>
-          {/* A slim pixel bar that fills in step with the splash's timer. */}
-          <div
-            className="lu-splash-loading relative h-1.5 w-[clamp(120px,36vw,168px)] overflow-hidden"
-            role="status"
-            aria-label={t('splash.loading')}
-            style={{ '--lu-splash-ms': `${SPLASH_MS}ms` } as React.CSSProperties}
-          >
-            <span className="lu-splash-loading-fill absolute inset-0" />
-          </div>
+          {/* "Loading the bar": plates slide onto a pixel barbell in step with the splash's timer. */}
+          <BarbellLoader label={t('splash.loading')} durationMs={SPLASH_MS} />
         </main>
       </div>
     </IonPage>
