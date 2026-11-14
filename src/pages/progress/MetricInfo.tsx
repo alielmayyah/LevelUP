@@ -1,15 +1,23 @@
 import { IonIcon } from '@ionic/react';
-import { close, informationCircleOutline } from 'ionicons/icons';
+import {
+  bulbOutline,
+  checkmarkCircleOutline,
+  close,
+  heartOutline,
+  informationCircleOutline,
+  personOutline,
+} from 'ionicons/icons';
 import { useEffect, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CtaButton from '../../components/CtaButton';
 import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
 
 export interface InfoTopic {
   key: string;
   icon: PixelIconName;
   tone: string;
+  /** The member's value for this measurement in the scan on screen, already formatted ("47.5 kg"). */
+  value?: string;
 }
 
 /** The small ⓘ button on a measurement. 44px to tap, drawn small so it doesn't crowd the number. */
@@ -30,15 +38,22 @@ export const InfoButton: React.FC<{ label: string; onClick: () => void; testId: 
   </button>
 );
 
+const PARTS = [
+  { part: 'what', icon: bulbOutline },
+  { part: 'why', icon: heartOutline },
+  { part: 'tip', icon: checkmarkCircleOutline },
+] as const;
+
 interface Props {
   topic: InfoTopic | null;
   onClose: () => void;
 }
 
 /**
- * Explains one measurement in plain words: what it is, why it matters, and
- * what to do. Built on the native <dialog> (focus trap, Escape, backdrop tap,
- * Android back), like PixelDialog, so no Ionic overlay lands in the bundle.
+ * Explains one measurement: the member's own value up top, then what it is,
+ * why it matters, and what to do, as three short rows. Opens as a bottom sheet
+ * on the native <dialog> (focus trap, Escape, backdrop tap, Android back), so
+ * no Ionic overlay lands in the bundle. The ✕ is the visible way out.
  */
 const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
   const { t } = useTranslation();
@@ -66,20 +81,10 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
     }
   }, [open]);
 
-  const section = (part: 'what' | 'why' | 'tip') =>
-    topic && (
-      <section className="grid gap-1">
-        <h3 className="m-0 text-[0.78rem] font-extrabold tracking-[0.06em] text-muted uppercase ar:tracking-normal">
-          {t(`progress.infoHead.${part}`)}
-        </h3>
-        <p className="m-0 text-[0.95rem] leading-relaxed text-ink">{t(`progress.info.${topic.key}.${part}`)}</p>
-      </section>
-    );
-
   return (
     <dialog
       ref={ref}
-      className="w-[min(calc(100%-32px),400px)] border-0 bg-transparent p-0 text-ink backdrop:bg-pixel-ink/55"
+      className="lu-info-sheet m-0 mx-auto mt-auto w-full max-w-[480px] border-0 bg-transparent p-0 text-ink backdrop:bg-pixel-ink/55"
       aria-labelledby={titleId}
       data-testid="metric-info"
       onCancel={(e) => {
@@ -91,27 +96,56 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
       }}
     >
       {topic && (
-        <div className="grid max-h-[calc(100dvh-48px)] gap-4 overflow-y-auto rounded-xl border-2 border-line bg-surface p-5 shadow-[0_5px_0_var(--lu-pixel-shadow)] ar:font-arabic">
-          <header className="flex items-center gap-2.5">
-            <span className={`lu-more-card grid size-11 flex-none place-items-center rounded-lg ${topic.tone}`}>
-              <PixelIcon className="text-[1.6rem]" name={topic.icon} />
+        <div
+          className={`lu-info-panel grid max-h-[85dvh] gap-4 overflow-y-auto bg-surface px-5 pt-5 pb-[calc(20px+var(--ion-safe-area-bottom,0px))] ar:font-arabic ${topic.tone}`}
+        >
+          <header className="flex items-start gap-3.5">
+            <span className="lu-info-icon grid size-14 flex-none place-items-center">
+              <PixelIcon className="text-[2rem]" name={topic.icon} />
             </span>
-            <h2 id={titleId} className="lu-display m-0 flex-1 text-[1.8rem] leading-none">
-              {t(`progress.metric.${topic.key}`)}
-            </h2>
-            <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
+            <div className="grid min-w-0 flex-1 gap-1">
+              <h2 id={titleId} className="lu-display m-0 text-[1.9rem] leading-none text-ink">
+                {t(`progress.metric.${topic.key}`)}
+              </h2>
+              {topic.value && (
+                <p className="m-0 flex flex-wrap items-baseline gap-x-2 text-[0.85rem] font-semibold text-muted">
+                  <strong className="lu-display text-[1.6rem] font-normal text-ink" data-testid="metric-info-value">
+                    {topic.value}
+                  </strong>
+                  {t('progress.infoYours')}
+                </p>
+              )}
+            </div>
+            <button
+              type="button"
+              className="lu-icon-button -me-1"
+              aria-label={t('progress.closeScans')}
+              onClick={onClose}
+            >
               <IonIcon icon={close} aria-hidden="true" />
             </button>
           </header>
-          {section('what')}
-          {section('why')}
-          {section('tip')}
-          <p className="m-0 rounded-lg bg-surface-2 px-3 py-2 text-[0.8rem] font-semibold text-muted">
+
+          <ul className="m-0 grid list-none gap-2.5 p-0">
+            {PARTS.map(({ part, icon }) => (
+              <li key={part} className="lu-info-row flex items-start gap-3 rounded-[10px] p-3">
+                <span className="lu-info-row-icon grid size-9 flex-none place-items-center rounded-lg text-[1.15rem]">
+                  <IonIcon icon={icon} aria-hidden="true" />
+                </span>
+                <div className="grid min-w-0 gap-0.5">
+                  <h3 className="m-0 text-[0.9rem] font-extrabold text-ink">{t(`progress.infoHead.${part}`)}</h3>
+                  <p className="m-0 text-[0.9rem] leading-relaxed text-muted">
+                    {t(`progress.info.${topic.key}.${part}`)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <p className="m-0 flex items-center gap-2 text-[0.8rem] font-semibold text-muted">
+            <IonIcon className="flex-none text-[1rem]" icon={personOutline} aria-hidden="true" />
             {t('progress.infoCoach')}
           </p>
-          <CtaButton className="w-full" onClick={onClose}>
-            {t('progress.gotIt')}
-          </CtaButton>
         </div>
       )}
     </dialog>

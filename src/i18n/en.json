@@ -76,7 +76,6 @@
     "showing": "Showing",
     "scanNumber": "Scan {{n}}",
     "about": "About {{metric}}",
-    "gotIt": "Got it",
     "infoCoach": "Your coach can turn this into a plan made for you.",
     "infoHead": {
       "what": "What it is",
@@ -131,7 +130,8 @@
       }
     },
     "journey": "Your body journey",
-    "lastScanLabel": "Last scan"
+    "lastScanLabel": "Last scan",
+    "infoYours": "in this scan"
   },
   "goals": {
     "subtitle": "Your missions",

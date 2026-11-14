@@ -5,14 +5,12 @@ import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto, ProfileDto, ProgressDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
-import { starterAvatar } from '../avatar/catalog';
 import CtaButton from '../components/CtaButton';
 import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
 import TabPage from '../components/TabPage';
 import { formatNumber, numberLocale } from '../i18n/format';
 import './progress/Progress.scss';
 import MetricInfo, { InfoButton, type InfoTopic } from './progress/MetricInfo';
-import JourneyArt from './progress/JourneyArt';
 import ScanHistory from './progress/ScanHistory';
 
 // The chart is the heaviest part of the page, so it loads after it, behind a skeleton.
@@ -133,6 +131,11 @@ const Progress: React.FC = () => {
   const points = progress.status === 'ready' ? progress.data.assessments : [];
 
   const unit = (u?: Metric<string>['unit']) => (!u ? '' : u === '%' ? '%' : ` ${t(`units.${u}`)}`);
+  /** The same, as plain text (for the info sheet). */
+  const valueText = (m: Metric<string>, of: AssessmentDto) => {
+    const v = m.value(of);
+    return Number.isFinite(v) ? `${formatNumber(v, m.digits)}${unit(m.unit)}` : '—';
+  };
   /** A measurement and its unit, or a lone dash when the scan has no value for it. */
   const value = (m: Metric<string>, of: AssessmentDto) => {
     const v = m.value(of);
@@ -171,11 +174,6 @@ const Progress: React.FC = () => {
       subtitle={t('progress.journey')}
       onRefresh={reloadAll}
       titleIcon={<PixelIcon className="lu-progress-title-icon flex-none text-[0.75em]" name="chart" />}
-      art={
-        me.status === 'ready' ? (
-          <JourneyArt avatar={me.data.avatar ?? starterAvatar(String(me.data.memberId))} />
-        ) : undefined
-      }
     >
       {latest && (
         <div className="mb-3.5 flex flex-wrap items-center justify-between gap-3" data-testid="last-scan">
@@ -284,7 +282,7 @@ const Progress: React.FC = () => {
                         <InfoButton
                           className="absolute -end-1 -top-1"
                           label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
-                          onClick={() => setInfo(m)}
+                          onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
                           testId={`info-${m.key}`}
                         />
                         <PixelIcon className="text-[1.6rem]" name={m.icon} />
@@ -347,7 +345,7 @@ const Progress: React.FC = () => {
                       <InfoButton
                         className="absolute -end-1 -top-1"
                         label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
-                        onClick={() => setInfo(m)}
+                        onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
                         testId={`info-${m.key}`}
                       />
                       <span className="flex items-center gap-1.5 text-[0.85rem] font-extrabold text-ink">

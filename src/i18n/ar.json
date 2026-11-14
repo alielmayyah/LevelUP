@@ -76,7 +76,6 @@
     "showing": "معروض دلوقتي",
     "scanNumber": "قياس {{n}}",
     "about": "عن {{metric}}",
-    "gotIt": "تمام",
     "infoCoach": "الكوتش بتاعك يقدر يعملك خطة على مقاسك.",
     "infoHead": {
       "what": "ده إيه",
@@ -131,7 +130,8 @@
       }
     },
     "journey": "رحلة جسمك",
-    "lastScanLabel": "آخر قياس"
+    "lastScanLabel": "آخر قياس",
+    "infoYours": "في القياس ده"
   },
   "goals": {
     "subtitle": "مهماتك",

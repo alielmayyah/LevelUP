@@ -112,7 +112,8 @@ describe('Progress', () => {
     const dialog = screen.getByTestId('metric-info');
     expect(dialog).toHaveTextContent('Fat stored deep in your belly');
     expect(dialog).toHaveTextContent('What to do');
-    await userEvent.click(screen.getByRole('button', { name: 'Got it' }));
+    expect(screen.getByTestId('metric-info-value')).toHaveTextContent('9');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
     expect(screen.getByTestId('metric-info')).not.toHaveTextContent('Fat stored deep');
   });
 
