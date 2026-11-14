@@ -1,5 +1,5 @@
 import { IonContent, IonIcon, IonPage, IonSpinner } from '@ionic/react';
-import { arrowForward, idCardOutline, informationCircleOutline } from 'ionicons/icons';
+import { arrowBack, arrowForward, idCardOutline, informationCircleOutline } from 'ionicons/icons';
 import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useId, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { brand } from '../brand.config';
 import CtaButton from '../components/CtaButton';
 import LanguageToggle from '../components/LanguageToggle';
 import SoundToggle from '../components/SoundToggle';
-import { CORNER_CONTROLS } from '../components/cornerControl';
+import { CORNER_BUTTON, CORNER_CONTROLS, CORNER_START } from '../components/cornerControl';
 import { useSound } from '../sound/useSound';
 import gymScene from './assets/splash-gym.webp';
 import './Login.scss';
@@ -72,7 +72,22 @@ const Login: React.FC = () => {
     <IonPage className="text-splash-text" data-testid="page-login">
       <IonContent className="[--background:var(--lu-splash-bg)] [--color:var(--lu-splash-text)] ar:font-arabic" scrollY>
         <div className="relative grid min-h-full grid-rows-[auto_1fr] split:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] split:grid-rows-[1fr] wide:grid-cols-[minmax(0,1fr)_minmax(400px,40%)]">
-          {/* First in the page so keyboard focus follows the visual order: top corner, then the form (WCAG 2.4.3). */}
+          {/*
+           * Back to the splash. iPhones have no hardware back button, so every
+           * screen that isn't a tab carries its own way out. First in the page so
+           * keyboard focus follows the visual order (WCAG 2.4.3).
+           */}
+          <div className={CORNER_START}>
+            <button
+              type="button"
+              className={CORNER_BUTTON}
+              aria-label={t('login.back')}
+              onClick={() => history.replace('/splash')}
+              data-testid="login-back"
+            >
+              <IonIcon className="text-[1.25rem] rtl:-scale-x-100" icon={arrowBack} aria-hidden="true" />
+            </button>
+          </div>
           <div className={CORNER_CONTROLS}>
             <LanguageToggle />
             <SoundToggle />

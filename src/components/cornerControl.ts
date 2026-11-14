@@ -12,3 +12,7 @@ export const CORNER_BUTTON = [
 /** The corner that holds them, clear of the notch and rounded corners. */
 export const CORNER_CONTROLS =
   'absolute end-[calc(12px+max(var(--ion-safe-area-left,0px),var(--ion-safe-area-right,0px)))] top-[calc(10px+var(--ion-safe-area-top,0px))] z-2 flex gap-2';
+
+/** The opposite corner, for a back button: top inline-start, clear of the notch. */
+export const CORNER_START =
+  'absolute start-[calc(12px+max(var(--ion-safe-area-left,0px),var(--ion-safe-area-right,0px)))] top-[calc(10px+var(--ion-safe-area-top,0px))] z-2 flex gap-2';
