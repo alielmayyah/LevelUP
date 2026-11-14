@@ -10,8 +10,8 @@ import LanguageToggle from '../components/LanguageToggle';
 import SoundToggle from '../components/SoundToggle';
 import { CORNER_CONTROLS } from '../components/cornerControl';
 import { useSound } from '../sound/useSound';
-import gymScene from './assets/splash-gym.webp';
 import './Splash.scss';
+import PressScene from './splash/PressScene';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 /** Navigation still finishes if animation frames stall. */
@@ -65,18 +65,12 @@ const Splash: React.FC = () => {
       onClick={() => void begin()}
     >
       <div className="absolute inset-0 isolate ar:font-arabic" ref={stage}>
+        {/* The lifter stands between the logo and the button; on a sideways phone, beside the text. */}
         <div
-          className="lu-splash-scene pointer-events-none absolute inset-x-0 bottom-0 h-[67%] short-landscape:top-0 short-landscape:h-full"
+          className="lu-splash-scene pointer-events-none absolute inset-x-0 bottom-[calc(clamp(84px,13vh,120px)+var(--ion-safe-area-bottom,0px))] h-[min(44%,420px)] short-landscape:inset-y-[12%] short-landscape:start-auto short-landscape:end-[4%] short-landscape:h-auto short-landscape:w-[38%]"
           aria-hidden="true"
         >
-          <img
-            className="block size-full object-cover"
-            src={gymScene}
-            alt=""
-            width={1344}
-            height={896}
-            data-testid="splash-scene"
-          />
+          <PressScene />
         </div>
         <div className="lu-splash-stars pointer-events-none absolute inset-x-0 top-[4%] h-[42%]" aria-hidden="true" />
         <div className={`lu-splash-sound ${CORNER_CONTROLS}`}>

@@ -16,7 +16,6 @@ for (const lang of LOCALES)
         const splash = page.getByTestId('page-splash');
         const scene = splash.getByTestId('splash-scene');
         await expect(scene).toBeVisible();
-        await expect.poll(() => scene.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
         const logo = splash.getByRole('img', { name: brand.name });
         await expect(logo).toBeVisible();
         await expect(logo).toHaveAttribute('src', brand.logo);
@@ -113,7 +112,7 @@ test.describe('landscape phone', () => {
   });
 });
 
-test('the artwork is full bleed while controls clear the safe areas', async ({ page }) => {
+test('the lifter stands centered above the button while controls clear the safe areas', async ({ page }) => {
   await page.goto('/splash');
   await page.evaluate(() => {
     const { style } = document.documentElement;
@@ -127,8 +126,9 @@ test('the artwork is full bleed while controls clear the safe areas', async ({ p
   const logo = (await splash.getByTestId('splash-logo').boundingBox())!;
   const cta = (await splash.getByRole('button', { name: en.splash.cta }).boundingBox())!;
 
-  expect(scene.x).toBeCloseTo(bounds.x);
-  expect(scene.width).toBeCloseTo(bounds.width);
+  const portrait = bounds.width < bounds.height;
+  if (portrait) expect(Math.abs(scene.x + scene.width / 2 - (bounds.x + bounds.width / 2))).toBeLessThan(2);
+  expect(scene.y + scene.height).toBeLessThanOrEqual(cta.y);
   expect(sound.y).toBeGreaterThanOrEqual(bounds.y + 59);
   expect(logo.y).toBeGreaterThanOrEqual(bounds.y + 59);
   expect(cta.y + cta.height).toBeLessThanOrEqual(bounds.y + bounds.height - 34);
@@ -136,6 +136,22 @@ test('the artwork is full bleed while controls clear the safe areas', async ({ p
 
 test.describe('reduced motion', () => {
   test.use({ reducedMotion: 'reduce' });
+
+  test('the lifter holds a still lockout pose', async ({ page }) => {
+    await page.goto('/splash');
+    const scene = page.getByTestId('splash-scene');
+    await expect(scene.locator('.lu-press-lock')).toHaveCSS('opacity', '1');
+    await expect(scene.locator('.lu-press-rack')).toHaveCSS('opacity', '0');
+    expect(
+      await page.evaluate(
+        () =>
+          document
+            .getAnimations()
+            .filter((a) => 'animationName' in a && String((a as CSSAnimation).animationName).startsWith('lu-press'))
+            .length,
+      ),
+    ).toBe(0);
+  });
 
   test('starfield stands still', async ({ page }) => {
     await page.goto('/splash');

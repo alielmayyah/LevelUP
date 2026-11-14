@@ -1,5 +1,5 @@
 /*
- * The splash's pixel-art scene: dusk backdrop, the gym picture fading into it,
+ * The splash's pixel-art scene: dusk backdrop, the lifter pressing a barbell,
  * twinkling stars, and the CSS intro. Layout is Tailwind classes in Splash.tsx.
  * The class names here are also the hooks the exit animation (splashMotion.ts) targets.
  */
@@ -11,54 +11,114 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* The lifter stands in a soft spotlight so the dark outline reads on the dusk sky. */
   .lu-splash-scene {
-    mask-image: linear-gradient(to bottom, transparent, black 24%);
+    display: grid;
+    justify-items: center;
+    align-items: end;
 
-    img {
-      object-position: 80% 69%;
-    }
-
-    &::after {
+    &::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        var(--lu-splash-bg),
-        color-mix(in srgb, var(--lu-splash-bg) 87%, transparent) 13%,
-        color-mix(in srgb, var(--lu-splash-bg) 48%, transparent) 29%,
-        transparent 58%,
-        color-mix(in srgb, var(--lu-splash-bg) 55%, transparent) 84%,
-        var(--lu-splash-bg) 100%
+      inset: 10% 10% 0;
+      background: radial-gradient(
+        ellipse at 50% 70%,
+        color-mix(in srgb, var(--lu-press-glow) 55%, transparent),
+        transparent 65%
       );
     }
+  }
 
-    @media (min-width: 720px) {
-      img {
-        object-position: 65% 74%;
-      }
+  .lu-press {
+    position: relative;
+
+    .lu-px-ink {
+      fill: var(--lu-press-ink);
+    }
+    .lu-px-skin {
+      fill: var(--lu-press-skin);
+    }
+    .lu-px-shade {
+      fill: var(--lu-press-shade);
+    }
+    .lu-px-hair {
+      fill: var(--lu-press-hair);
+    }
+    .lu-px-tank {
+      fill: var(--lu-press-tank);
+    }
+    .lu-px-shorts {
+      fill: var(--lu-press-shorts);
+    }
+    .lu-px-shoe {
+      fill: var(--lu-press-shoe);
+    }
+    .lu-px-metal {
+      fill: var(--lu-metal);
+    }
+    .lu-px-metalHi {
+      fill: var(--lu-metal-hi);
+    }
+    .lu-px-plate {
+      fill: var(--lu-press-plate);
+    }
+    .lu-px-plateHi {
+      fill: var(--lu-press-plate-hi);
+    }
+    .lu-px-floor {
+      fill: var(--lu-floor);
+    }
+    .lu-px-floorEdge {
+      fill: var(--lu-floor-edge);
+    }
+    .lu-px-floorSeam {
+      fill: var(--lu-floor-seam);
     }
 
-    // A phone held sideways: the scene fills the screen and fades in from the text side.
-    @media (orientation: landscape) and (max-height: 480px) {
-      mask-image: none;
+    .lu-press-sparks {
+      fill: var(--lu-gold);
+    }
 
-      img {
-        object-position: 70% 76%;
+    /* Still image (reduced motion, or before CSS animation runs): the lockout pose. */
+    .lu-press-rack,
+    .lu-press-mid,
+    .lu-press-spark {
+      opacity: 0;
+    }
+  }
+
+  /*
+   * One rep every 2.6 s: hold the rack, press through the middle, hold the
+   * lockout while the sparkles pop, lower through the middle, back to the rack.
+   * step-end holds each pose until the next keyframe, like sprite frames.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    .lu-press {
+      .lu-press-frame {
+        animation: 2.6s step-end infinite;
+      }
+      .lu-press-rack {
+        animation-name: lu-press-rack;
+      }
+      .lu-press-mid {
+        animation-name: lu-press-mid;
+      }
+      .lu-press-lock {
+        animation-name: lu-press-lock;
       }
 
-      &::after {
-        background: linear-gradient(
-          90deg,
-          var(--lu-splash-bg) 6%,
-          color-mix(in srgb, var(--lu-splash-bg) 92%, transparent) 30%,
-          color-mix(in srgb, var(--lu-splash-bg) 45%, transparent) 60%,
-          color-mix(in srgb, var(--lu-splash-bg) 16%, transparent)
-        );
+      .lu-press-spark {
+        animation: lu-press-spark 2.6s linear infinite;
+      }
+      .lu-press-spark:nth-child(2n) {
+        animation-delay: 0.08s;
       }
 
-      &:dir(rtl) {
-        transform: scaleX(-1);
+      /* The shadow tightens as the bar goes up. */
+      .lu-press-shadow {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: lu-press-shadow 2.6s step-end infinite;
       }
     }
   }
@@ -167,5 +227,80 @@
 @keyframes lu-splash-brand-in {
   from {
     transform: translateY(8px);
+  }
+}
+
+@keyframes lu-press-rack {
+  0% {
+    opacity: 1;
+  }
+  28% {
+    opacity: 0;
+  }
+  86% {
+    opacity: 1;
+  }
+}
+
+@keyframes lu-press-mid {
+  0% {
+    opacity: 0;
+  }
+  28% {
+    opacity: 1;
+  }
+  38% {
+    opacity: 0;
+  }
+  76% {
+    opacity: 1;
+  }
+  86% {
+    opacity: 0;
+  }
+}
+
+@keyframes lu-press-lock {
+  0% {
+    opacity: 0;
+  }
+  38% {
+    opacity: 1;
+  }
+  76% {
+    opacity: 0;
+  }
+}
+
+@keyframes lu-press-spark {
+  0%,
+  38% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  44% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  58% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+  66%,
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+@keyframes lu-press-shadow {
+  0% {
+    transform: scaleX(1);
+  }
+  38% {
+    transform: scaleX(0.8);
+  }
+  76% {
+    transform: scaleX(1);
   }
 }
