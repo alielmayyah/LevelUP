@@ -49,7 +49,8 @@ const RowLabel: React.FC<{ icon: string; children: React.ReactNode; hint?: { id:
   children,
   hint,
 }) => (
-  <span className={`${LABEL} text-ink`}>
+  // A row with a hint holds a switch: the label shrinks and wraps so the switch stays on the same line.
+  <span className={`${LABEL} text-ink ${hint ? 'flex-1 basis-0' : ''}`}>
     <IonIcon className={`${LABEL_ICON} text-muted`} icon={icon} aria-hidden="true" />
     {hint ? (
       <span className="grid">
@@ -81,7 +82,7 @@ const Switch: React.FC<SwitchProps> = ({ checked, label, hintId, onChange, testI
   <button
     type="button"
     role="switch"
-    className="lu-switch"
+    className="lu-switch flex-none"
     aria-checked={checked}
     aria-label={label}
     aria-describedby={hintId}
@@ -186,7 +187,11 @@ const Profile: React.FC = () => {
         <div className={GRID}>
           <section className="lu-px-card flex items-center gap-3.5 wide:col-span-full">
             <span className="lu-avatar-frame block size-[72px] flex-none overflow-hidden rounded-[12px]">
-              <Avatar config={p.avatar ?? starterAvatar(String(p.memberId))} className="block size-full" testId="profile-avatar" />
+              <Avatar
+                config={p.avatar ?? starterAvatar(String(p.memberId))}
+                className="block size-full"
+                testId="profile-avatar"
+              />
             </span>
             <div className="min-w-0">
               <h2 className="lu-display m-0 text-[2rem] leading-[1.1]" data-testid="profile-name">
