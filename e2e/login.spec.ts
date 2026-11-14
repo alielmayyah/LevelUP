@@ -81,19 +81,12 @@ test('the language button switches to Arabic and back', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
 });
 
-test('switching language on the splash saves it and stays on the splash', async ({ page }) => {
-  // The fixture re-seeds lu.lang on every load, so check the saved value instead of reloading.
+test('splash leads to login by itself, and Back on login returns to the splash', async ({ page }) => {
   await page.goto('/splash');
-  await page.getByRole('button', { name: en.language.switchToAr }).click();
-  await expect(page.getByRole('button', { name: ar.splash.cta })).toBeVisible();
+  await expect(page.getByLabel(en.login.fitId)).toBeVisible({ timeout: 5000 });
+  // iPhones have no back button: Login carries its own.
+  await page.getByRole('button', { name: en.login.back }).click();
   await expect(page).toHaveURL(/\/splash$/);
-  expect(await page.evaluate(() => localStorage.getItem('CapacitorStorage.lu.lang'))).toBe('ar');
-});
-
-test('splash leads to login', async ({ page }) => {
-  await page.goto('/splash');
-  await page.getByTestId('page-splash').click();
-  await expect(page.getByLabel(en.login.fitId)).toBeVisible();
 });
 
 test('content clears the notch and the home indicator', async ({ page }) => {

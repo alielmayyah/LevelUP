@@ -38,9 +38,9 @@ test.describe('navigation has no dead ends', () => {
 
   test('any other unknown address goes to the start', async ({ page }) => {
     await page.goto('/no-such-page');
-    await expect(page).toHaveURL(/\/splash$/);
-    // During the route change Ionic keeps the leaving page in the DOM (hidden), so look for the visible one.
-    await expect(page.getByTestId('page-splash').filter({ visible: true })).toBeVisible();
+    // It lands on the splash, which then moves on to login: never a blank page.
+    await expect(page).toHaveURL(/\/(splash|login)$/);
+    await expect(page.getByTestId('page-login').filter({ visible: true })).toBeVisible({ timeout: 5000 });
   });
 });
 

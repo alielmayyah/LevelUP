@@ -22,14 +22,26 @@
     opacity: 0.8;
   }
 
-  .lu-splash-arrow {
-    display: inline-block;
-    font-size: 0.8em;
+  /* Loading dots: three square pixels that light up one after another. */
+  .lu-splash-loading span {
+    display: block;
+    inline-size: 8px;
+    block-size: 8px;
+    background: var(--ion-color-secondary);
+    opacity: 0.35;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .lu-splash-arrow {
-      animation: lu-splash-blink 1s steps(1, end) infinite;
+    .lu-splash-loading span {
+      animation: lu-splash-dot 0.9s steps(1, end) infinite;
+    }
+
+    .lu-splash-loading span:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .lu-splash-loading span:nth-child(3) {
+      animation-delay: 0.6s;
     }
 
     .lu-splash-glow {
@@ -145,8 +157,12 @@
   }
 }
 
-@keyframes lu-splash-blink {
-  50% {
-    opacity: 0;
+@keyframes lu-splash-dot {
+  0% {
+    opacity: 1;
+  }
+
+  33% {
+    opacity: 0.35;
   }
 }

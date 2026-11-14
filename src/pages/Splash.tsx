@@ -1,78 +1,63 @@
 import { IonPage } from '@ionic/react';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { getToken } from '../auth/token';
 import { brand } from '../brand.config';
-import CtaButton from '../components/CtaButton';
-import LanguageToggle from '../components/LanguageToggle';
-import SoundToggle from '../components/SoundToggle';
-import { CORNER_CONTROLS } from '../components/cornerControl';
-import { useSound } from '../sound/useSound';
 import './Splash.scss';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
+/** How long the logo shows before the app moves on by itself. */
+export const SPLASH_MS = 1600;
 /** Navigation still finishes if animation frames stall. */
 const EXIT_MAX_MS = 600;
 
 /**
- * First screen. Tapping anywhere moves on: to Login when signed out, straight
- * to Home when a session exists. The "Tap to Begin" button is the keyboard and
- * screen-reader way in; a tap on it bubbles up to the same handler.
+ * Launch screen only: the logo on the dusk sky, then the app moves on by
+ * itself, to Login when signed out or straight to Home with a session.
+ * Nothing to tap, so there is no way to get stuck here.
+ * `?stay` keeps it on screen (screenshots and accessibility checks).
  */
 const Splash: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { play } = useSound();
+  const { search } = useLocation();
   const stage = useRef<HTMLDivElement>(null);
-  const leaving = useRef(false);
-  /** The exit animation module, once loaded; stays null under reduced motion. */
-  const motion = useRef<typeof import('./splash/splashMotion') | null>(null);
-  const undoExit = useRef<(() => void) | null>(null);
+  const stay = new URLSearchParams(search).has('stay');
 
-  // The intro is plain CSS (Splash.scss). GSAP, for the exit, loads in the
-  // background so it is out of the initial bundle but ready before a tap.
   useEffect(() => {
-    if (!window.matchMedia(MOTION_OK).matches) return;
+    if (stay) return;
     let live = true;
-    void import('./splash/splashMotion').then((m) => {
-      if (live) motion.current = m;
-    });
+    let undoExit: (() => void) | null = null;
+    const motionOk = window.matchMedia(MOTION_OK).matches;
+    // GSAP, for the exit, loads while the logo shows, so it stays out of the initial bundle.
+    const motion = motionOk ? import('./splash/splashMotion') : null;
+
+    const timer = window.setTimeout(async () => {
+      const to = (await getToken()) ? '/tabs/home' : '/login';
+      if (!live) return;
+      const go = () => live && history.replace(to);
+      const m = motion ? await motion.catch(() => null) : null;
+      if (live && m && stage.current) undoExit = m.warpOut(stage.current, go, EXIT_MAX_MS);
+      else go();
+    }, SPLASH_MS);
+
     return () => {
       live = false;
-      undoExit.current?.();
+      window.clearTimeout(timer);
+      undoExit?.();
     };
-  }, []);
-
-  const begin = async () => {
-    if (leaving.current) return;
-    leaving.current = true;
-    play('tap');
-    const to = (await getToken()) ? '/tabs/home' : '/login';
-    const go = () => history.replace(to);
-    const m = motion.current;
-    if (m && stage.current && window.matchMedia(MOTION_OK).matches)
-      undoExit.current = m.warpOut(stage.current, go, EXIT_MAX_MS);
-    else go();
-  };
+  }, [history, stay]);
 
   return (
-    <IonPage
-      className="lu-splash cursor-pointer overflow-hidden text-splash-text select-none"
-      data-testid="page-splash"
-      onClick={() => void begin()}
-    >
+    <IonPage className="lu-splash overflow-hidden text-splash-text select-none" data-testid="page-splash">
       <div className="absolute inset-0 isolate ar:font-arabic" ref={stage}>
         <div
           className="lu-splash-stars pointer-events-none absolute inset-x-0 top-[4%] bottom-[4%]"
           aria-hidden="true"
         />
-        <div className={`lu-splash-sound ${CORNER_CONTROLS}`}>
-          <LanguageToggle />
-          <SoundToggle />
-        </div>
-        <main className="relative box-border grid h-full content-center justify-items-center gap-[clamp(32px,7vh,64px)] pt-[calc(clamp(55px,11vh,96px)+var(--ion-safe-area-top,0px))] pr-[calc(20px+var(--ion-safe-area-right,0px))] pb-[calc(clamp(16px,3.5vh,32px)+var(--ion-safe-area-bottom,0px))] pl-[calc(20px+var(--ion-safe-area-left,0px))] text-center short-landscape:gap-5 short-landscape:pt-[calc(22px+var(--ion-safe-area-top,0px))]">
+        <main className="relative box-border grid h-full content-center justify-items-center gap-8 pt-(--ion-safe-area-top,0px) pr-[calc(20px+var(--ion-safe-area-right,0px))] pb-(--ion-safe-area-bottom,0px) pl-[calc(20px+var(--ion-safe-area-left,0px))] text-center short-landscape:gap-5">
           <div className="lu-splash-brand relative w-[clamp(180px,min(73vw,37vh),308px)] max-w-full short-landscape:w-[clamp(120px,46vh,200px)]">
             {/* A soft glow that breathes behind the logo. */}
             <span className="lu-splash-glow pointer-events-none absolute inset-[-30%]" aria-hidden="true" />
@@ -93,19 +78,12 @@ const Splash: React.FC = () => {
               {t('splash.tagline')}
             </span>
           </div>
-          {/* Right under the logo. The blinking arrow invites the first tap, like a game's "press start". */}
-          <CtaButton className="lu-splash-cta w-[min(86%,300px)] short-landscape:w-[min(60%,270px)]">
-            <svg
-              className="lu-splash-arrow h-[0.8em] w-auto rtl:-scale-x-100"
-              viewBox="0 0 4 7"
-              shapeRendering="crispEdges"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path fill="currentColor" d="M0 0h1v1h1v1h1v1h1v1H3v1H2v1H1v1H0z" />
-            </svg>
-            {t('splash.cta')}
-          </CtaButton>
+          {/* Three pixel dots that light up in turn while the app gets ready. */}
+          <div className="lu-splash-loading flex gap-2" role="status" aria-label={t('splash.loading')}>
+            <span />
+            <span />
+            <span />
+          </div>
         </main>
       </div>
     </IonPage>

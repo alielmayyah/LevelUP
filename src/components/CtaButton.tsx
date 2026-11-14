@@ -13,8 +13,7 @@ const CTA = [
 
 /**
  * The app's main call-to-action button: a chunky pixel-art block with stepped
- * corners and a bevel, first seen as "Tap to Begin" on the splash. Use it for
- * the one primary action on a screen.
+ * corners and a bevel. Use it for the one primary action on a screen.
  */
 const CtaButton: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({ className, type = 'button', ...rest }) => (
   <button type={type} className={className ? `${CTA} ${className}` : CTA} {...rest} />

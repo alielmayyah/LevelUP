@@ -202,7 +202,7 @@
   },
   "splash": {
     "tagline": "Track. Improve. Transform.",
-    "cta": "Tap to Begin"
+    "loading": "Loading"
   },
   "home": {
     "greeting": {
@@ -284,7 +284,8 @@
     "signingIn": "Signing in…",
     "notFound": "We couldn't find that Fit ID. Check with the front desk.",
     "tooMany": "Too many tries. Wait a minute and try again.",
-    "failed": "Couldn't sign in. Check your connection and try again."
+    "failed": "Couldn't sign in. Check your connection and try again.",
+    "back": "Back"
   },
   "sound": {
     "mute": "Mute sound",

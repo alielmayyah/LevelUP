@@ -1,75 +1,64 @@
 import { Preferences } from '@capacitor/preferences';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route } from 'react-router-dom';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { setToken } from '../auth/token';
 import { brand } from '../brand.config';
 import { setLanguage } from '../i18n';
-import { resetSound } from '../sound/useSound';
-import Splash from './Splash';
+import Splash, { SPLASH_MS } from './Splash';
 
-const renderSplash = () =>
+const renderSplash = (path = '/splash') =>
   render(
-    <MemoryRouter initialEntries={['/splash']}>
+    <MemoryRouter initialEntries={[path]}>
       <Route exact path="/splash" component={Splash} />
       <Route exact path="/login" render={() => <p>login page</p>} />
       <Route path="/tabs/home" render={() => <p>home page</p>} />
     </MemoryRouter>,
   );
 
-describe('Splash', () => {
-  let audioPlay: ReturnType<typeof vi.spyOn>;
+/** Long enough for the splash to time out and navigate. */
+const WAIT = { timeout: SPLASH_MS + 1500 };
 
+describe('Splash', () => {
   beforeEach(async () => {
     await Preferences.clear();
-    resetSound();
-    audioPlay = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
   });
 
   afterEach(async () => {
-    audioPlay.mockRestore();
     await setLanguage('en');
   });
 
-  it('shows the app name, tagline, and call to action', () => {
+  it('shows the app name and tagline, with nothing to tap', () => {
     renderSplash();
     expect(screen.getByRole('heading', { name: 'LevelUP' })).toHaveAccessibleDescription('Track. Improve. Transform.');
     expect(screen.getByRole('img', { name: 'LevelUP' })).toHaveAttribute('src', brand.logo);
-    expect(screen.getByRole('button', { name: 'Tap to Begin' })).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'Loading' })).toBeInTheDocument();
+    expect(screen.queryAllByRole('button')).toHaveLength(0);
   });
 
-  it('tapping anywhere goes to login when signed out, with the tap sound', async () => {
+  it('moves on to login by itself when signed out', async () => {
     renderSplash();
-    await userEvent.click(screen.getByTestId('page-splash'));
-    expect(await screen.findByText('login page')).toBeInTheDocument();
-    expect(audioPlay).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('login page')).toBeNull();
+    expect(await screen.findByText('login page', {}, WAIT)).toBeInTheDocument();
   });
 
-  it('goes straight to home when already signed in', async () => {
+  it('moves on to home by itself when already signed in', async () => {
     await setToken('mock.101');
     renderSplash();
-    await userEvent.click(screen.getByRole('button', { name: 'Tap to Begin' }));
-    expect(await screen.findByText('home page')).toBeInTheDocument();
+    expect(await screen.findByText('home page', {}, WAIT)).toBeInTheDocument();
   });
 
-  it('the sound toggle mutes without leaving the splash', async () => {
-    renderSplash();
-    await userEvent.click(screen.getByRole('button', { name: 'Mute sound' }));
-    expect(screen.getByRole('button', { name: 'Unmute sound' })).toBeInTheDocument();
+  it('?stay keeps it on screen', async () => {
+    renderSplash('/splash?stay');
+    await new Promise((r) => setTimeout(r, SPLASH_MS + 300));
     expect(screen.queryByText('login page')).toBeNull();
-
-    await userEvent.click(screen.getByRole('button', { name: 'Tap to Begin' }));
-    expect(await screen.findByText('login page')).toBeInTheDocument();
-    expect(audioPlay).not.toHaveBeenCalled();
   });
 
   it('renders the Arabic copy', async () => {
     await setLanguage('ar');
     renderSplash();
     expect(screen.getByRole('heading', { name: 'LevelUP' })).toHaveAccessibleDescription('تابع. اتطوّر. اتغيّر.');
-    expect(screen.getByRole('button', { name: 'دوس عشان تبدأ' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'اكتم الصوت' })).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'بيحمّل' })).toBeInTheDocument();
   });
 });

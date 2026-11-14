@@ -20,7 +20,8 @@ for (const lang of LOCALES)
       test('splash → sign in → every tab → sign out', async ({ page }) => {
         const s = strings[lang];
         await page.goto('/');
-        await page.getByTestId('page-splash').click();
+        // The splash moves on by itself.
+        await expect(page).toHaveURL(/\/login$/, { timeout: 5000 });
         await page.getByLabel(s.login.fitId).fill('101');
         await page.getByRole('button', { name: s.login.submit }).click();
         await expect(page).toHaveURL(/\/tabs\/home$/);

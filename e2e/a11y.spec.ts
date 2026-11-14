@@ -9,7 +9,7 @@ import { expect, LOCALES, test, THEMES } from './fixtures';
 const AXE = createRequire(import.meta.url).resolve('axe-core/axe.min.js');
 
 const SCREENS: { name: string; url: string; fitId?: string; open?: 'notifications' | 'signOut' }[] = [
-  { name: 'splash', url: '/splash' },
+  { name: 'splash', url: '/splash?stay' },
   { name: 'login', url: '/login' },
   { name: 'home', url: '/tabs/home', fitId: '101' },
   { name: 'home (new member)', url: '/tabs/home', fitId: '102' },
