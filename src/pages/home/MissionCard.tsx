@@ -1,18 +1,15 @@
 import { IonIcon } from '@ionic/react';
-import { calendarOutline, chevronForward, flagOutline } from 'ionicons/icons';
+import { chevronForward, flagOutline } from 'ionicons/icons';
 import { useId, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import type { MissionSummary } from '../../api/types';
 import PixelIcon from '../../components/PixelIcon';
-import { formatNumber, formatPercent, numberLocale } from '../../i18n/format';
+import { formatNumber, formatPercent } from '../../i18n/format';
 
 const RADIUS = 26;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-const formatDay = (iso: string) =>
-  new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric' }).format(new Date(iso));
 
 /** The active goal with a progress ring. Opens the Goals tab. */
 const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) => {
@@ -96,12 +93,6 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
                   done: formatNumber(mission.doneKg, 1),
                   total: formatNumber(mission.doneKg + mission.remainingKg, 1),
                 })}
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-[0.875rem] text-muted">
-                <IonIcon className="flex-none text-[1rem]" icon={calendarOutline} aria-hidden="true" />
-                {mission.estimatedCompletion
-                  ? t('home.mission.eta', { date: formatDay(mission.estimatedCompletion) })
-                  : t('home.mission.noEta')}
               </span>
             </span>
           </span>
