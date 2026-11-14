@@ -20,7 +20,7 @@ for (const lang of LOCALES)
         if (theme === 'dark') await expect(html).toHaveClass(/ion-palette-dark/);
         else await expect(html).not.toHaveClass(/ion-palette-dark/);
 
-        await expect(page.getByTestId('page-home').getByTestId('greeting')).toContainText('Sam');
+        await expect(page.getByTestId('page-home').getByTestId('greeting')).toContainText('Mohamed');
         await expect(page.getByTestId('tab-home')).toHaveText(strings[lang].tabs.short.home);
         expect(await noHorizontalOverflow(page)).toBe(true);
       });

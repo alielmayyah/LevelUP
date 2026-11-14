@@ -53,7 +53,7 @@ describe('FitScore (InBody Score method)', () => {
     expect(computeFitScore({ weightKg: 160, bodyFatKg: 110, heightCm: 170, sex: 'MALE' })).toBe(0);
   });
 
-  it("Sam's six scans climb from 72 to 79 as fat drops and muscle grows", () => {
+  it("a 178 cm member's six scans climb from 72 to 79 as fat drops and muscle grows", () => {
     const scans = [
       [86.0, 26.0],
       [85.2, 25.1],

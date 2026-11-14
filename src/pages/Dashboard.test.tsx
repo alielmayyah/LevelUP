@@ -34,42 +34,42 @@ describe('Home', () => {
     await setLanguage('en');
   });
 
-  it("greets Sam by name with today's date", async () => {
+  it("greets Mohamed by name with today's date", async () => {
     await renderHome();
-    expect(screen.getByTestId('greeting')).toHaveTextContent(/Sam/);
+    expect(screen.getByTestId('greeting')).toHaveTextContent(/Mohamed/);
     expect(screen.getByTestId('today').textContent).not.toBe('');
   });
 
-  it("shows Sam's FitScore, tier, and change", async () => {
+  it("shows Mohamed's FitScore, tier, and change", async () => {
     await renderHome();
     const card = screen.getByTestId('fitscore-card');
-    expect(within(card).getByTestId('fitscore-value')).toHaveTextContent('79');
-    expect(within(card).getByText('Strong')).toBeInTheDocument();
+    expect(within(card).getByTestId('fitscore-value')).toHaveTextContent('91');
+    expect(within(card).getByText('Elite')).toBeInTheDocument();
     expect(within(card).getByTestId('fitscore-change')).toHaveTextContent(/\+2/);
     expect(within(card).getByText('Private')).toBeInTheDocument();
-    // Strong is the 4th of 5 tiers: 4 blocks lit, the 4th marked current.
+    // Elite is the top tier: all 5 blocks lit, the 5th marked current.
     const blocks = within(card).getByTestId('tier-meter').children;
-    expect([...blocks].filter((b) => b.classList.contains('is-on'))).toHaveLength(4);
-    expect(blocks[3]).toHaveClass('is-current');
+    expect([...blocks].filter((b) => b.classList.contains('is-on'))).toHaveLength(5);
+    expect(blocks[4]).toHaveClass('is-current');
   });
 
   it('shows rank, top percent, and the nudge; tapping opens the leaderboard', async () => {
     await renderHome();
     const card = screen.getByTestId('rank-card');
-    expect(within(card).getByTestId('rank-number')).toHaveTextContent(/#4⁩ of 19/);
+    expect(within(card).getByTestId('rank-number')).toHaveTextContent(/#1⁩ of 19/);
     expect(card).toHaveTextContent(/Top ⁦\d+%⁩/); // isolated so Arabic keeps the % in place
-    expect(card).toHaveTextContent('15 members behind you');
-    expect(card).toHaveTextContent(/\d+ points to reach/);
+    expect(card).toHaveTextContent('18 members behind you');
+    expect(card).toHaveTextContent("You're #1, defend it!");
     await userEvent.click(card);
     expect(await screen.findByText('leaderboard page')).toBeInTheDocument();
   });
 
-  it("shows Sam's current mission with progress", async () => {
+  it("shows Mohamed's current mission with progress", async () => {
     await renderHome();
     const card = screen.getByTestId('mission-card');
-    expect(card).toHaveTextContent('Lose 5 kg of body fat');
-    expect(card).toHaveTextContent('60%');
-    expect(card).toHaveTextContent('3.0 of 5.0 kg');
+    expect(card).toHaveTextContent('Gain 3 kg of muscle');
+    expect(card).toHaveTextContent('67%');
+    expect(card).toHaveTextContent('2.0 of 3.0 kg');
     // The coach's note is not on Home (it is in the goal's details on the Goals tab).
     expect(screen.queryByText('Keep protein high on training days.')).toBeNull();
   });
@@ -77,9 +77,9 @@ describe('Home', () => {
   it('colors the monthly tiles and shows the join date', async () => {
     await renderHome();
     expect(screen.getByTestId('tile-body-fat')).toHaveClass('lu-tile-good');
-    expect(screen.getByTestId('tile-body-fat')).toHaveTextContent('−1.2%');
+    expect(screen.getByTestId('tile-body-fat')).toHaveTextContent('−1.1%');
     expect(screen.getByTestId('tile-muscle')).toHaveClass('lu-tile-good');
-    expect(screen.getByTestId('tile-muscle')).toHaveTextContent('+0.8 kg');
+    expect(screen.getByTestId('tile-muscle')).toHaveTextContent('+0.9 kg');
     expect(screen.getByTestId('tile-member-since')).toHaveTextContent('Mar 2026');
   });
 
@@ -124,7 +124,7 @@ describe('Home', () => {
   it('renders Egyptian Arabic copy', async () => {
     await setLanguage('ar');
     await renderHome();
-    expect(screen.getByTestId('greeting')).toHaveTextContent(/Sam/);
+    expect(screen.getByTestId('greeting')).toHaveTextContent(/Mohamed/);
     expect(screen.getByText('خاص')).toBeInTheDocument();
     expect(screen.getByText('دهون الجسم')).toBeInTheDocument();
   });

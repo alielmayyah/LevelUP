@@ -9,18 +9,18 @@ for (const lang of LOCALES)
     test.describe(`${lang}/${theme}`, () => {
       test.use({ lang, theme });
 
-      test("Sam's home shows greeting, date, FitScore, rank, and tiles", async ({ page, loginAs }) => {
+      test("Mohamed's home shows greeting, date, FitScore, rank, and tiles", async ({ page, loginAs }) => {
         const s = strings[lang].home;
         await loginAs();
         await page.goto('/tabs/home');
         const home = page.getByTestId('page-home');
-        await expect(home.getByTestId('greeting')).toContainText('Sam');
+        await expect(home.getByTestId('greeting')).toContainText('Mohamed');
         await expect(home.getByTestId('today')).not.toBeEmpty();
-        await expect(home.getByTestId('fitscore-value')).toHaveText('79');
-        await expect(home.getByText(s.tier.strong)).toBeVisible();
-        await expect(home.getByTestId('rank-number')).toContainText('#4');
-        await expect(home.getByTestId('tile-body-fat')).toContainText('1.2%');
-        await expect(home.getByTestId('tile-muscle')).toContainText(`0.8 ${strings[lang].units.kg}`);
+        await expect(home.getByTestId('fitscore-value')).toHaveText('91');
+        await expect(home.getByText(s.tier.elite)).toBeVisible();
+        await expect(home.getByTestId('rank-number')).toContainText('#1');
+        await expect(home.getByTestId('tile-body-fat')).toContainText('1.1%');
+        await expect(home.getByTestId('tile-muscle')).toContainText(`0.9 ${strings[lang].units.kg}`);
         await expect(home.getByTestId('tile-member-since')).toContainText('2026');
         expect(await noHorizontalOverflow(page)).toBe(true);
       });

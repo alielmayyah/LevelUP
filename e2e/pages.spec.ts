@@ -6,13 +6,13 @@ import { expect, test } from './fixtures';
 const tab = (name: string) => `[data-testid="page-${name}"]`;
 
 test.describe('Progress', () => {
-  test("Sam's key numbers, their change, and one trend at a time", async ({ page, loginAs }) => {
+  test("Mohamed's key numbers, their change, and one trend at a time", async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/progress');
     const p = page.locator(tab('progress'));
-    await expect(p.getByTestId('metric-weight')).toContainText(/82\.6\s?kg/);
-    await expect(p.getByTestId('change-muscle')).toContainText('▲ 0.8 kg');
-    await expect(p.getByTestId('trend-headline')).toContainText(/82\.6\s?kg/);
+    await expect(p.getByTestId('metric-weight')).toContainText(/80\.0\s?kg/);
+    await expect(p.getByTestId('change-muscle')).toContainText('▲ 0.9 kg');
+    await expect(p.getByTestId('trend-headline')).toContainText(/80\.0\s?kg/);
     // All nine measurements show; the six smaller cards keep just a name and value.
     await expect(p.getByTestId('metric-visceral')).toContainText(en.progress.metric.visceral);
     await expect(p.getByTestId('metric-visceral')).not.toContainText(en.progress.info.visceral.what);
@@ -24,7 +24,7 @@ test.describe('Progress', () => {
     await expect(info).toBeHidden();
     // An earlier scan is one tap away.
     await p.getByRole('button', { name: en.progress.olderScan }).click();
-    await expect(p.getByTestId('metric-weight')).toContainText(/83\.3\s?kg/);
+    await expect(p.getByTestId('metric-weight')).toContainText(/79\.3\s?kg/);
     await p.getByRole('button', { name: en.progress.newerScan }).click();
     // View all scans: pick any scan from the full list.
     await p.getByTestId('view-all-scans').click();
@@ -36,10 +36,10 @@ test.describe('Progress', () => {
     // One line at a time; tapping a point shows its value.
     await expect(p.getByTestId('chart-trend')).toBeVisible();
     await p.getByTestId('chart-trend-point-5').click();
-    await expect(p.getByTestId('chart-trend-tip')).toContainText('82.6');
+    await expect(p.getByTestId('chart-trend-tip')).toContainText('80.0');
     await p.getByRole('radio', { name: en.progress.metric.muscle }).click();
     await p.getByTestId('chart-trend-point-5').click();
-    await expect(p.getByTestId('chart-trend-tip')).toContainText('34.9');
+    await expect(p.getByTestId('chart-trend-tip')).toContainText('41.3');
   });
 
   test('Omar: one scan, so changes and trends wait for the second', async ({ page, loginAs }) => {
@@ -72,7 +72,7 @@ test.describe('Goals', () => {
 });
 
 test.describe('Leaderboard', () => {
-  test('highlights Sam and remembers the board across a reload', async ({ page, loginAs }) => {
+  test('highlights Mohamed and remembers the board across a reload', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/leaderboard');
     const lb = page.locator(tab('leaderboard'));
@@ -95,8 +95,10 @@ test.describe('Leaderboard', () => {
     await expect(podium.locator('svg[data-crop="full"]')).toHaveCount(3);
     const list = lb.getByRole('list', { name: en.leaderboard.board.score });
     await expect(list).toHaveAttribute('start', '4');
-    // Sam is #6 among the men, so he is in the list, which starts at 4th.
-    await expect(list.getByTestId('my-row').locator('svg').first()).toBeVisible();
+    // Mohamed is #1 among the men, so he stands on the podium, not in the list.
+    await expect(podium.getByTestId('my-row')).toBeVisible();
+    await expect(list.getByTestId('my-row')).toHaveCount(0);
+    await expect(list.getByTestId('row').first().locator('svg').first()).toBeVisible();
     // 16 men after the podium need two pages: the pager appears and turns the page.
     const pager = lb.getByTestId('pager');
     await expect(pager).toContainText('1');
@@ -131,7 +133,7 @@ test.describe('Profile', () => {
     await expect(page.locator(tab('progress')).getByTestId('trend-score')).toHaveCount(0);
   });
 
-  test('turning off the leaderboard setting removes Sam from the boards', async ({ page, loginAs }) => {
+  test('turning off the leaderboard setting removes Mohamed from the boards', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/profile');
     await page.getByTestId('setting-leaderboard').click();

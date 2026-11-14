@@ -1,7 +1,7 @@
 /*
  * Mock members. See README.md in this folder for what each one is for.
  *
- *   101 Sam Khalil   full history, opted in, coach assigned
+ *   101 Mohamed Omran  full history, #1 on every men's board, coach assigned
  *   102 Lina Haddad  new member: no scans, no goals, opted out
  *   103 Omar Aziz    one scan, FitScore hidden, membership ends in 10 days
  *   104–139       36 opted-in fillers (18 men, 18 women) so both leaderboards have rows
@@ -39,25 +39,26 @@ export interface MockMember {
   notifications: NotificationDto[];
 }
 
-function sam(now: Date): MockMember {
-  const heightCm = 178;
+function mohamed(now: Date): MockMember {
+  const heightCm = 183;
   const dates = monthlyScanDates(now, 6);
+  // Six months of a lean bulk: muscle up 4.9 kg while body fat falls to 8%.
   const series = [
-    { weightKg: 86.0, bodyFatPct: 26.0, skeletalMuscleKg: 32.6, visceralFatLevel: 11 },
-    { weightKg: 85.2, bodyFatPct: 25.1, skeletalMuscleKg: 33.0, visceralFatLevel: 11 },
-    { weightKg: 84.5, bodyFatPct: 24.3, skeletalMuscleKg: 33.4, visceralFatLevel: 10 },
-    { weightKg: 83.9, bodyFatPct: 23.4, skeletalMuscleKg: 33.8, visceralFatLevel: 10 },
-    { weightKg: 83.3, bodyFatPct: 22.4, skeletalMuscleKg: 34.1, visceralFatLevel: 9 },
-    { weightKg: 82.6, bodyFatPct: 21.2, skeletalMuscleKg: 34.9, visceralFatLevel: 9 },
+    { weightKg: 76.2, bodyFatPct: 14.6, skeletalMuscleKg: 36.4, visceralFatLevel: 5 },
+    { weightKg: 77.0, bodyFatPct: 13.1, skeletalMuscleKg: 37.3, visceralFatLevel: 5 },
+    { weightKg: 77.8, bodyFatPct: 11.8, skeletalMuscleKg: 38.4, visceralFatLevel: 4 },
+    { weightKg: 78.6, bodyFatPct: 10.4, skeletalMuscleKg: 39.3, visceralFatLevel: 4 },
+    { weightKg: 79.3, bodyFatPct: 9.1, skeletalMuscleKg: 40.4, visceralFatLevel: 3 },
+    { weightKg: 80.0, bodyFatPct: 8.0, skeletalMuscleKg: 41.3, visceralFatLevel: 3 },
   ];
   const assessments = series.map((s, i) => assessment({ ...s, takenAt: dates[i] }, heightCm, 'MALE'));
   return {
     id: 1,
     fitId: '101',
-    firstName: 'Sam',
-    lastName: 'Khalil',
+    firstName: 'Mohamed',
+    lastName: 'Omran',
     sex: 'MALE',
-    birthDate: new Date('1994-03-12T00:00:00Z'),
+    birthDate: new Date('2003-05-20T00:00:00Z'),
     heightCm,
     membershipPlan: 'Premium · 12 months',
     membershipStart: midMonth(now, 8),
@@ -68,11 +69,11 @@ function sam(now: Date): MockMember {
     goals: [
       {
         id: 1,
-        title: 'Lose 5 kg of body fat',
-        metric: 'BODY_FAT_KG',
-        startValue: 20.5,
-        targetValue: 15.5,
-        startDate: midMonth(now, 3),
+        title: 'Gain 3 kg of muscle',
+        metric: 'MUSCLE_KG',
+        startValue: 39.3,
+        targetValue: 42.3,
+        startDate: dates[3],
         deadline: daysFrom(now, 60),
         status: 'ACTIVE',
         coachNote: 'Keep protein high on training days.',
@@ -80,34 +81,34 @@ function sam(now: Date): MockMember {
       },
       {
         id: 2,
-        title: 'Reach 85 kg',
-        metric: 'WEIGHT_KG',
-        startValue: 86.0,
-        targetValue: 85.0,
-        startDate: dates[0],
-        deadline: dates[3],
-        status: 'COMPLETED',
-        coachNote: null,
-        completedAt: dates[2],
-      },
-      {
-        id: 3,
-        title: 'Gain 1 kg of muscle',
-        metric: 'MUSCLE_KG',
-        startValue: 32.6,
-        targetValue: 33.6,
+        title: 'Lose 3 kg of body fat',
+        metric: 'BODY_FAT_KG',
+        startValue: 11.1,
+        targetValue: 8.1,
         startDate: dates[0],
         deadline: dates[4],
         status: 'COMPLETED',
-        coachNote: 'Great consistency.',
+        coachNote: null,
         completedAt: dates[3],
       },
       {
-        id: 4,
-        title: 'Gain 1.5 kg of muscle',
+        id: 3,
+        title: 'Gain 2 kg of muscle',
         metric: 'MUSCLE_KG',
-        startValue: 34.9,
-        targetValue: 36.4,
+        startValue: 36.4,
+        targetValue: 38.4,
+        startDate: dates[0],
+        deadline: dates[3],
+        status: 'COMPLETED',
+        coachNote: 'Great consistency.',
+        completedAt: dates[2],
+      },
+      {
+        id: 4,
+        title: 'Reach 82 kg',
+        metric: 'WEIGHT_KG',
+        startValue: 80.0,
+        targetValue: 82.0,
         startDate: daysFrom(now, 60),
         deadline: daysFrom(now, 180),
         status: 'UPCOMING',
@@ -117,7 +118,7 @@ function sam(now: Date): MockMember {
     ],
     notifications: [
       scanNotification(dates[2], assessments[2].fitScore, true),
-      missionNotification(dates[3], 'Gain 1 kg of muscle', true),
+      missionNotification(dates[3], 'Lose 3 kg of body fat', true),
       scanNotification(dates[4], assessments[4].fitScore, false),
       scanNotification(dates[5], assessments[5].fitScore, false),
     ],
@@ -259,5 +260,5 @@ const round = (n: number) => Math.round(n * 10) / 10;
 
 export function buildMembers(now: Date): MockMember[] {
   resetIds();
-  return [sam(now), lina(now), omar(now), ...FILLERS.map((_, i) => filler(now, i))];
+  return [mohamed(now), lina(now), omar(now), ...FILLERS.map((_, i) => filler(now, i))];
 }

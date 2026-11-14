@@ -26,7 +26,7 @@ describe('api client (mock mode)', () => {
   it('sends the stored token', async () => {
     await setToken('mock.101');
     const d = await api<DashboardDto>('/me/dashboard');
-    expect(d.member.firstName).toBe('Sam');
+    expect(d.member.firstName).toBe('Mohamed');
   });
 
   it('signs in with a JSON body', async () => {
