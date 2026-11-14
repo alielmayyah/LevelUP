@@ -205,12 +205,6 @@
     "loading": "Loading"
   },
   "home": {
-    "greeting": {
-      "morning": "Good morning, {{name}}",
-      "afternoon": "Good afternoon, {{name}}",
-      "evening": "Good evening, {{name}}",
-      "late": "Late session, {{name}}? Respect."
-    },
     "fitScore": {
       "title": "FitScore",
       "private": "Private",
@@ -274,7 +268,8 @@
       "read": "Read"
     },
     "error": "Couldn't load your dashboard.",
-    "openProfile": "Your profile"
+    "openProfile": "Your profile",
+    "hello": "Hello, {{name}}"
   },
   "login": {
     "welcome": "Welcome to {{name}}",

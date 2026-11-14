@@ -205,12 +205,6 @@
     "loading": "بيحمّل"
   },
   "home": {
-    "greeting": {
-      "morning": "صباح الخير يا {{name}}",
-      "afternoon": "يومك سعيد يا {{name}}",
-      "evening": "مساء الخير يا {{name}}",
-      "late": "بتتمرّن بالليل كده يا {{name}}؟ احترامي."
-    },
     "fitScore": {
       "title": "FitScore",
       "private": "خاص",
@@ -274,7 +268,8 @@
       "read": "مقروء"
     },
     "error": "مقدرناش نحمّل الصفحة.",
-    "openProfile": "حسابك"
+    "openProfile": "حسابك",
+    "hello": "أهلاً يا {{name}}"
   },
   "login": {
     "welcome": "أهلاً بيك في {{name}}",

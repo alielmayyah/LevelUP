@@ -1,22 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { setLanguage } from '../../i18n';
-import { formatTimeAgo, formatToday, greetingPart, tierKey } from './homeText';
+import { formatTimeAgo, formatToday, tierKey } from './homeText';
 
 describe('home text helpers', () => {
   afterEach(async () => {
     await setLanguage('en');
-  });
-
-  it('greets by the device hour', () => {
-    expect(greetingPart(5)).toBe('morning');
-    expect(greetingPart(11)).toBe('morning');
-    expect(greetingPart(12)).toBe('afternoon');
-    expect(greetingPart(16)).toBe('afternoon');
-    expect(greetingPart(17)).toBe('evening');
-    expect(greetingPart(21)).toBe('evening');
-    expect(greetingPart(22)).toBe('late');
-    expect(greetingPart(4)).toBe('late');
   });
 
   it('maps tiers to keys', () => {

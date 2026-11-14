@@ -12,7 +12,7 @@ import '../avatar/avatar.scss';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
 import FitScoreCard from './home/FitScoreCard';
-import { formatToday, greetingPart } from './home/homeText';
+import { formatToday } from './home/homeText';
 import MissionCard from './home/MissionCard';
 import NotificationsSheet from './home/NotificationsSheet';
 import RankCard from './home/RankCard';
@@ -38,7 +38,6 @@ const Dashboard: React.FC = () => {
 
   const d = dashboard.status === 'ready' ? dashboard.data : null;
   const unread = d?.unreadNotifications ?? 0;
-  const part = greetingPart(today.getHours());
 
   return (
     <IonPage data-testid="page-home">
@@ -77,11 +76,7 @@ const Dashboard: React.FC = () => {
                   className="lu-display m-0 text-[clamp(2.25rem,10vw,3rem)] leading-none wrap-anywhere text-ink"
                   data-testid="greeting"
                 >
-                  {d ? (
-                    t(`home.greeting.${part}`, { name: d.member.firstName })
-                  ) : (
-                    <span className="lu-skeleton h-[1em] w-[70%]" />
-                  )}
+                  {d ? t('home.hello', { name: d.member.firstName }) : <span className="lu-skeleton h-[1em] w-[70%]" />}
                 </h1>
               </div>
               <button
