@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { LeaderboardBoard, LeaderboardRow } from '../../api/types';
+import type { LeaderboardBoard, LeaderboardRow, Sex } from '../../api/types';
 import Avatar from '../../avatar/Avatar';
 import { formatNumber } from '../../i18n/format';
 import MetricIcon from './MetricIcon';
@@ -42,6 +42,7 @@ const Crown: React.FC = () => (
 
 interface Props {
   rows: LeaderboardRow[];
+  division: Sex;
   board: LeaderboardBoard;
   format: (value: number) => string;
   you: string;
@@ -53,7 +54,7 @@ interface Props {
  * In the DOM they stay in rank order (1, 2, 3) for screen readers; CSS order
  * puts 1st in the middle.
  */
-const Podium: React.FC<Props> = ({ rows, board, format, you, myRef }) => {
+const Podium: React.FC<Props> = ({ rows, division, board, format, you, myRef }) => {
   const { t } = useTranslation();
   return (
     <section className="lu-podium mb-3 px-3 pt-3 pb-0" aria-label={t('leaderboard.podium')}>
@@ -66,7 +67,7 @@ const Podium: React.FC<Props> = ({ rows, board, format, you, myRef }) => {
             data-testid={r.isMe ? 'my-row' : 'podium-place'}
           >
             {r.rank === 1 && <Crown />}
-            <Avatar config={rowAvatar(r)} crop="full" className={`lu-podium-figure block w-auto ${FIGURE[r.rank]}`} />
+            <Avatar config={rowAvatar(r, division)} crop="full" className={`lu-podium-figure block w-auto ${FIGURE[r.rank]}`} />
             <div className="lu-podium-base mt-[-4px] grid w-full">
               <div className={`lu-podium-block lu-medal-${r.rank} grid place-items-center ${BLOCK[r.rank]}`}>
                 <span className="lu-display text-[1.3rem] leading-none">{formatNumber(r.rank)}</span>

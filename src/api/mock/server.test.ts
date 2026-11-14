@@ -77,6 +77,7 @@ describe('dashboard', () => {
     expect(d.member).toEqual({
       memberId: 1,
       firstName: 'Mohamed',
+      sex: 'MALE',
       showFitScore: true,
       avatar: null,
     });

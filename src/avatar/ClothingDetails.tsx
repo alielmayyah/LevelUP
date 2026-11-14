@@ -224,6 +224,21 @@ export function TopDetails({ style, paint: p }: { style: ResolvedStyles['top']; 
           <path fill={p.topLight} d="M1278 576h108v5h-108z" />
         </g>
       );
+    case 'fitted-zip':
+      return (
+        <g data-art-detail="fitted-zip">
+          <LongSleeveDetails paint={p} />
+          <Mirrored>
+            <path fill={p.topShade} d="M1281 472h12v37h8v38h-9v27h-14v-35h8v-25h-5z M1282 547h15v8h-8v12h-7z" />
+            <path fill={p.topLight} d="M1280 477h5v34h8v27h-5v-25h-8z M1277 579h54v5h-54z" />
+          </Mirrored>
+          <path fill={p.topShade} d="M1279 427h106v21h-15v12h-19v9h-10v130h-18V469h-10v-9h-19v-12h-15z" />
+          <path
+            fill={p.topTrim}
+            d="M1291 434h6v9h17v12h36v-12h17v-9h6v12h-18v13h-20v137h-6V459h-20v-13h-18z M1335 466h8v13h-8z"
+          />
+        </g>
+      );
     case 'sleeveless-hoodie':
       return (
         <g data-art-detail="sleeveless-hoodie">

@@ -272,6 +272,9 @@ test.describe('Character', () => {
             'true',
           );
           const outfits = editor.getByRole('group', { name: copy.avatar.outfitTitle });
+          await expect(preview).toHaveAttribute('data-rig', 'standard');
+          await expect(outfits.getByRole('button', { name: copy.avatar.outfit['hijab-training'] })).toHaveCount(0);
+          await expect(outfits.getByRole('button', { name: copy.avatar.outfit['violet-training'] })).toHaveCount(0);
           const studio = outfits.getByRole('button', { name: copy.avatar.outfit['studio-flow'] });
           await studio.click();
           await expect(studio).toHaveAttribute('aria-pressed', 'true');
@@ -305,6 +308,9 @@ test.describe('Character', () => {
           ] as const;
           for (const [part, id] of choices) {
             await selectTab(part);
+            if (part === 'hair') {
+              await expect(editor.getByRole('radio', { name: copy.avatar.style['sport-hijab'] })).toHaveCount(0);
+            }
             const option = editor
               .getByRole('radiogroup', { name: copy.avatar.styleLabel[part] })
               .getByRole('radio', { name: copy.avatar.style[id] });
@@ -363,6 +369,66 @@ test.describe('Character', () => {
           await expect(color('socks', 'violet')).toHaveAttribute('aria-checked', 'true');
           await selectTab('hair');
           await expect(color('hair', 'silver')).toHaveAttribute('aria-checked', 'true');
+        });
+
+        test('shows the women’s catalog and keeps a customized hijab after reload', async ({ page, loginAs }) => {
+          const copy = lang === 'ar' ? ar : en;
+          await loginAs('102');
+          await page.goto('/tabs/profile');
+          await page.getByRole('link', { name: copy.profile.customize }).click();
+          const editor = page.locator(tab('character'));
+          const preview = editor.getByTestId('character-preview');
+          const selectTab = (key: keyof typeof copy.avatar.tab) =>
+            editor.getByRole('tab', { name: copy.avatar.tab[key], exact: true }).click();
+
+          await expect(preview).toHaveAttribute('data-rig', 'women');
+          await expect(preview.locator('[data-style-layer="hair"]')).toHaveAttribute('data-variant', 'high-ponytail');
+          await expect(editor.getByRole('tab', { name: copy.avatar.tab.beard })).toHaveCount(0);
+          await selectTab('body');
+          await expect(editor.getByRole('radiogroup')).toHaveCount(2);
+          await editor.getByRole('radio', { name: copy.avatar.style.athletic, exact: true }).click();
+
+          await selectTab('outfits');
+          const preset = editor.getByRole('button', { name: copy.avatar.outfit['hijab-training'] });
+          await preset.click();
+          await expect(preset).toHaveAttribute('aria-pressed', 'true');
+          await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'fitted-zip');
+          await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'track-pants');
+          await selectTab('hair');
+          await expect(editor.getByRole('radio', { name: copy.avatar.style.fade, exact: true })).toHaveCount(0);
+          const hijab = editor.getByRole('radio', { name: copy.avatar.style['sport-hijab'] });
+          await expect(hijab).toBeChecked();
+          await editor.getByRole('radio', { name: copy.avatar.style['braided-ponytail'] }).click();
+          await hijab.click();
+          const fabric = preview.locator('[data-paint="hijab-fabric"]');
+          const originalColor = await fabric.getAttribute('fill');
+          const sage = editor
+            .getByRole('radiogroup', { name: copy.avatar.part.hijab })
+            .getByRole('radio', { name: copy.avatar.color.sage, exact: true });
+          await sage.click();
+          await expect(fabric).not.toHaveAttribute('fill', originalColor!);
+          await expect
+            .poll(() =>
+              page.evaluate(() => JSON.parse(localStorage.getItem('CapacitorStorage.lu.mock.avatar.102') ?? 'null')),
+            )
+            .toMatchObject({
+              rig: 'women',
+              styles: { body: 'athletic', hair: 'sport-hijab', top: 'fitted-zip' },
+              colors: { hijab: 'sage' },
+            });
+
+          await editor.getByTestId('character-back').click();
+          const portrait = page.getByTestId('profile-avatar');
+          await expect(portrait).toHaveAttribute('data-rig', 'women');
+          await expect(portrait.locator('[data-style-layer="hair"]')).toHaveAttribute(
+            'data-variant',
+            'sport-hijab',
+          );
+          await page.reload();
+          await expect(portrait.locator('[data-paint="hijab-fabric"]')).toHaveCount(1);
+          await page.goto('/tabs/profile/character');
+          await selectTab('hair');
+          await expect(sage).toBeChecked();
         });
       });
     }

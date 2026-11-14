@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { saveSettings } from '../api/settings';
-import { LEADERBOARD_BOARDS, type LeaderboardBoard, type LeaderboardDto, type LeaderboardRow } from '../api/types';
+import { LEADERBOARD_BOARDS, type LeaderboardBoard, type LeaderboardDto, type LeaderboardRow, type Sex } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
 import Avatar from '../avatar/Avatar';
@@ -37,6 +37,7 @@ const isBoard = (v: unknown): v is LeaderboardBoard => LEADERBOARD_BOARDS.includ
 
 interface RowProps {
   row: LeaderboardRow;
+  division: Sex;
   board: LeaderboardBoard;
   value: string;
   you: string;
@@ -44,7 +45,7 @@ interface RowProps {
 }
 
 /** Memoized so a long board re-renders only the rows that changed. */
-const Row = memo(function Row({ row, board, value, you, rowRef }: RowProps) {
+const Row = memo(function Row({ row, division, board, value, you, rowRef }: RowProps) {
   const medal = row.rank <= 3 ? `lu-medal-${row.rank}` : '';
   return (
     <li
@@ -58,7 +59,7 @@ const Row = memo(function Row({ row, board, value, you, rowRef }: RowProps) {
       </span>
       <span className="flex min-w-0 items-center gap-2 font-extrabold">
         <span className="lu-avatar-frame block size-9 flex-none overflow-hidden rounded-[8px]">
-          <Avatar config={rowAvatar(row)} className="block size-full" />
+          <Avatar config={rowAvatar(row, division)} className="block size-full" />
         </span>
         <span className="truncate" dir="auto">
           {row.name}
@@ -149,7 +150,7 @@ const Leaderboard: React.FC = () => {
       subtitle={d ? t(`leaderboard.division.${d.division}`) : t('leaderboard.subtitle')}
       onRefresh={data.reload}
       actions={
-        me && !stale ? (
+        me && d && !stale ? (
           <div
             className="lu-lb-me flex flex-none items-center gap-2 rounded-[10px] border-2 py-1 ps-1 pe-2.5"
             data-testid="my-rank"
@@ -157,12 +158,12 @@ const Leaderboard: React.FC = () => {
             aria-label={t('leaderboard.yourRank')}
           >
             <span className="lu-avatar-frame block size-10 flex-none overflow-hidden rounded-[8px]">
-              <Avatar config={rowAvatar(me)} className="block size-full" />
+              <Avatar config={rowAvatar(me, d.division)} className="block size-full" />
             </span>
             <span className="grid leading-none">
               <strong className="lu-display text-[1.6rem] text-ink">{formatRank(me.rank)}</strong>
               <span className="text-[0.7rem] font-bold text-muted">
-                {t('leaderboard.of', { total: formatNumber(d!.rows.length) })}
+                {t('leaderboard.of', { total: formatNumber(d.rows.length) })}
               </span>
             </span>
           </div>
@@ -244,6 +245,7 @@ const Leaderboard: React.FC = () => {
           {d && d.rows.length > 0 && (
             <Podium
               rows={d.rows.slice(0, 3)}
+              division={d.division}
               board={d.board}
               format={(v) => format(v, d.board)}
               you={t('leaderboard.you')}
@@ -270,6 +272,7 @@ const Leaderboard: React.FC = () => {
                   <Row
                     key={r.memberId}
                     row={r}
+                    division={d.division}
                     board={d.board}
                     value={format(r.value, d.board)}
                     you={t('leaderboard.you')}

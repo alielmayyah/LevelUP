@@ -323,6 +323,7 @@
     "customize": "Customize your character",
     "outfitTitle": "Ready-made outfits",
     "outfit": {
+      "hijab-training": "Hijab Training",
       "dark-hoodie": "Dark Hoodie",
       "summer-fit": "Summer Fit",
       "gym-ready": "Gym Ready",
@@ -427,6 +428,7 @@
       "braided-ponytail": "Braided ponytail",
       "low-bun": "Low bun",
       "puff": "Curly puff",
+      "sport-hijab": "Sport hijab",
       "longline-tank": "Longline training tank",
       "racerback-bra": "Racerback sports bra",
       "fitted-zip": "Fitted training jacket",
@@ -436,6 +438,7 @@
     "part": {
       "skin": "Skin tone",
       "hair": "Hair color",
+      "hijab": "Hijab color",
       "eyes": "Eyes",
       "tank": "Top color",
       "shorts": "Pants color",
@@ -509,11 +512,7 @@
       "gum": "Gum brown"
     },
     "saved": "Saved",
-    "baseTitle": "Avatar base",
-    "base": {
-      "standard": "Original",
-      "women": "Women’s"
-    }
+    "hairAndHeadwear": "Hair and headwear"
   },
   "bodyComp": {
     "kicker": "From your InBody scan",

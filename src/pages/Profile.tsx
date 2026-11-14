@@ -8,7 +8,7 @@ import { useApi, useRefreshOnEnter } from '../api/useApi';
 import { clearToken } from '../auth/token';
 import Avatar from '../avatar/Avatar';
 import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
-import { starterAvatar } from '../avatar/catalog';
+import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
 import { brand } from '../brand.config';
 import CtaButton from '../components/CtaButton';
@@ -179,11 +179,7 @@ const Profile: React.FC = () => {
         <div className={`${GRID} flex-1 grid-rows-[auto_1fr_auto] wide:grid-rows-[auto_1fr_auto]`}>
           <section className="lu-px-card flex items-center gap-3.5 wide:col-span-full">
             <span className="lu-avatar-frame block size-[72px] flex-none overflow-hidden rounded-[12px]">
-              <Avatar
-                config={p.avatar ?? starterAvatar(String(p.memberId))}
-                className="block size-full"
-                testId="profile-avatar"
-              />
+              <Avatar config={memberAvatar(p)} className="block size-full" testId="profile-avatar" />
             </span>
             <div className="min-w-0">
               <h2 className="lu-display m-0 text-[2rem] leading-[1.1]" data-testid="profile-name">

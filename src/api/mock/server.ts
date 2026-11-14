@@ -296,6 +296,7 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
     member: {
       memberId: m.id,
       firstName: m.firstName,
+      sex: m.sex,
       showFitScore: m.settings.showFitScore,
       avatar: await loadAvatar(m),
     },

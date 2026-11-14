@@ -5,19 +5,37 @@
  * Saved data is a list of choices from this catalog, never raw colors or
  * markup, so the renderer only ever paints bundled colors.
  */
-import type { AvatarConfigDto, AvatarPart, AvatarStyles } from '../api/types';
+import type { AvatarConfigDto, AvatarPart, AvatarRig, AvatarStyles, ProfileDto } from '../api/types';
 import palettes from './palettes.json';
 
-export type { AvatarConfigDto, AvatarPart };
+export type { AvatarConfigDto, AvatarPart, AvatarRig };
+export const AVATAR_RIGS = ['standard', 'women'] as const satisfies readonly AvatarRig[];
+export const WOMEN_HAIR = ['high-ponytail', 'braided-ponytail', 'low-bun', 'puff'] as const;
 
 export type ResolvedStyles = Required<AvatarStyles>;
 export type StylePart = keyof ResolvedStyles;
-export type ColorPart = AvatarPart | 'beard' | 'socks';
+export type ColorPart = AvatarPart | 'beard' | 'socks' | 'hijab';
 export const CUSTOMIZER_TABS = ['outfits', 'top', 'pants', 'shoes', 'socks', 'hair', 'beard', 'body', 'face'] as const;
 export type CustomizerTab = (typeof CUSTOMIZER_TABS)[number];
 
 export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
-  hair: ['curls', 'fade', 'side-part', 'locs', 'top-knot', 'buzz-cut', 'waves', 'shaved', 'spikes', 'braids'],
+  hair: [
+    'curls',
+    'fade',
+    'side-part',
+    'locs',
+    'top-knot',
+    'buzz-cut',
+    'waves',
+    'shaved',
+    'spikes',
+    'braids',
+    'high-ponytail',
+    'braided-ponytail',
+    'low-bun',
+    'puff',
+    'sport-hijab',
+  ],
   body: ['balanced', 'lean', 'broad', 'compact', 'tall', 'stocky', 'athletic', 'relaxed'],
   top: [
     'tank',
@@ -30,6 +48,9 @@ export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
     'compression-top',
     'quarter-zip',
     'sleeveless-hoodie',
+    'longline-tank',
+    'racerback-bra',
+    'fitted-zip',
   ],
   shoes: ['trainers', 'high-tops', 'runners', 'slip-ons', 'boots', 'canvas', 'lifters', 'cross-trainers', 'barefoot'],
   pants: [
@@ -43,6 +64,8 @@ export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
     'training-tights',
     'split-shorts',
     'warmup-pants',
+    'high-rise-leggings',
+    'capris',
   ],
   beard: [
     'clean-shaven',
@@ -60,16 +83,42 @@ export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
 
 // Older casual styles still render on saved characters.
 const CASUAL_STYLES: ReadonlySet<string> = new Set(['varsity', 'jeans', 'boots', 'canvas', 'slip-ons']);
+const WOMEN_ONLY_STYLES: ReadonlySet<string> = new Set([
+  ...WOMEN_HAIR,
+  'sport-hijab',
+  'longline-tank',
+  'racerback-bra',
+  'fitted-zip',
+  'high-rise-leggings',
+  'capris',
+]);
+const MEN_ONLY_STYLES: ReadonlySet<string> = new Set(['fade', 'side-part', 'buzz-cut', 'waves', 'spikes']);
+
+function isStyleForRig(part: StylePart, style: string, rig: AvatarRig): boolean {
+  if (rig === 'standard') return !WOMEN_ONLY_STYLES.has(style);
+  if (part === 'beard') return style === 'clean-shaven';
+  return !MEN_ONLY_STYLES.has(style);
+}
 
 export function trainingStyles<K extends StylePart>(
   part: K,
+  rig: AvatarRig,
   current?: ResolvedStyles[K],
 ): readonly ResolvedStyles[K][] {
-  return STYLES[part].filter((style) => style === current || !CASUAL_STYLES.has(style));
+  return STYLES[part].filter(
+    (style) => isStyleForRig(part, style, rig) && (style === current || !CASUAL_STYLES.has(style)),
+  );
 }
 
+export const customizerTabsFor = (rig: AvatarRig): readonly CustomizerTab[] =>
+  rig === 'women' ? CUSTOMIZER_TABS.filter((tab) => tab !== 'beard') : CUSTOMIZER_TABS;
+
 export const showsLowerLeg = (pants: ResolvedStyles['pants']): boolean =>
-  pants === 'shorts' || pants === 'bike-shorts' || pants === 'liner-shorts' || pants === 'split-shorts';
+  pants === 'shorts' ||
+  pants === 'bike-shorts' ||
+  pants === 'liner-shorts' ||
+  pants === 'split-shorts' ||
+  pants === 'capris';
 
 export const STYLE_PARTS = Object.keys(STYLES) as StylePart[];
 
@@ -112,19 +161,20 @@ export const AVATAR_SCHEMA_VERSION = 1;
 export const OUTLINE: string = outline;
 
 export const MATCH_HAIR = 'match-hair';
-const OPTIONAL_COLORS = { beard: MATCH_HAIR, socks: 'off-white' } as const;
+const OPTIONAL_COLORS = { beard: MATCH_HAIR, socks: 'off-white', hijab: 'navy' } as const;
 const OPTIONAL_STYLES: readonly StylePart[] = ['pants', 'beard', 'socks'];
 
 const palettePart = (part: ColorPart): AvatarPart => {
   if (part === 'beard') return 'hair';
   if (part === 'socks') return 'shoes';
+  if (part === 'hijab') return 'tank';
   return part;
 };
 
 export const presetsFor = (part: ColorPart): readonly Preset[] => CATALOG[palettePart(part)].presets;
 
 export function colorIdFor(config: AvatarConfigDto, part: ColorPart): string {
-  if (part === 'beard' || part === 'socks') return config.colors[part] ?? OPTIONAL_COLORS[part];
+  if (part === 'beard' || part === 'socks' || part === 'hijab') return config.colors[part] ?? OPTIONAL_COLORS[part];
   return config.colors[part];
 }
 
@@ -146,13 +196,13 @@ export const defaultAvatar = (): AvatarConfigDto => ({
 export function isValidAvatar(value: unknown): value is AvatarConfigDto {
   if (!value || typeof value !== 'object') return false;
   const v = value as Partial<AvatarConfigDto>;
-  if (v.schemaVersion !== AVATAR_SCHEMA_VERSION || v.rig !== 'standard') return false;
+  if (v.schemaVersion !== AVATAR_SCHEMA_VERSION || !v.rig || !AVATAR_RIGS.includes(v.rig)) return false;
   if (!v.colors || typeof v.colors !== 'object') return false;
   const keys = Object.keys(v.colors);
   if (keys.some((k) => k !== 'smile' && !Object.hasOwn(OPTIONAL_COLORS, k) && !AVATAR_PARTS.includes(k as AvatarPart)))
     return false;
   if (v.colors.smile !== undefined && !['dark-plum', 'brown', 'warm-brown'].includes(v.colors.smile)) return false;
-  for (const part of ['beard', 'socks'] as const) {
+  for (const part of ['beard', 'socks', 'hijab'] as const) {
     if (v.colors[part] !== undefined && !has(part, v.colors[part])) return false;
   }
   if (v.styles !== undefined) {
@@ -181,9 +231,15 @@ export function normalizeAvatar(value: unknown): AvatarConfigDto {
     for (const p of AVATAR_PARTS) if (has(p, saved[p])) colors[p] = saved[p];
     if (has('beard', saved.beard)) colors.beard = saved.beard;
     if (has('socks', saved.socks)) colors.socks = saved.socks;
+    if (has('hijab', saved.hijab)) colors.hijab = saved.hijab;
   }
-  const styles = (value as { styles?: Partial<Record<StylePart, unknown>> } | null)?.styles;
-  return { schemaVersion: AVATAR_SCHEMA_VERSION, rig: 'standard', colors, styles: stylesFor(styles) };
+  const config = value as { rig?: unknown; styles?: Partial<Record<StylePart, unknown>> } | null;
+  return {
+    schemaVersion: AVATAR_SCHEMA_VERSION,
+    rig: config?.rig === 'women' ? 'women' : 'standard',
+    colors,
+    styles: stylesFor(config?.styles),
+  };
 }
 
 /** Small seeded generator (mulberry32), so a seed always gives the same look. */
@@ -219,20 +275,20 @@ function randomColors(random: () => number, keepStarterSequence = false): Avatar
   return colors;
 }
 
-export function randomAvatar(random: () => number = Math.random): AvatarConfigDto {
+export function randomAvatar(random: () => number = Math.random, rig: AvatarRig = 'standard'): AvatarConfigDto {
   const colors = randomColors(random);
   const pick = <T>(options: readonly T[]): T => options[Math.floor(random() * options.length) % options.length];
   return {
     schemaVersion: AVATAR_SCHEMA_VERSION,
-    rig: 'standard',
+    rig,
     colors,
     styles: {
-      hair: pick(STYLES.hair),
+      hair: pick(trainingStyles('hair', rig).filter((style) => style !== 'sport-hijab')),
       body: pick(STYLES.body),
-      top: pick(trainingStyles('top')),
-      shoes: pick(trainingStyles('shoes')),
-      pants: pick(trainingStyles('pants')),
-      beard: pick(STYLES.beard),
+      top: pick(trainingStyles('top', rig)),
+      shoes: pick(trainingStyles('shoes', rig)),
+      pants: pick(trainingStyles('pants', rig)),
+      beard: pick(trainingStyles('beard', rig)),
       socks: pick(STYLES.socks),
     },
   };
@@ -242,28 +298,76 @@ export function randomAvatar(random: () => number = Math.random): AvatarConfigDt
  * The look a member gets before saving one. It comes from an opaque member
  * identifier only (never name, age, sex, or scans) and is the same every time.
  */
-export const starterAvatar = (memberKey: string): AvatarConfigDto => ({
+const starterAvatar = (memberKey: string): AvatarConfigDto => ({
   ...defaultAvatar(),
   colors: randomColors(seeded(hash(memberKey)), true),
 });
+
+export function memberAvatar({
+  memberId,
+  sex,
+  avatar,
+}: Pick<ProfileDto, 'memberId' | 'avatar'> & Partial<Pick<ProfileDto, 'sex'>>): AvatarConfigDto {
+  const config = avatar ?? starterAvatar(String(memberId));
+  const rig = sex === undefined ? config.rig : sex === 'FEMALE' ? 'women' : 'standard';
+  const styles = stylesFor(config.styles);
+  const defaultHair = rig === 'women' ? 'high-ponytail' : 'curls';
+  if (!isStyleForRig('hair', styles.hair, rig) || (rig !== config.rig && styles.hair === 'curls')) {
+    styles.hair = defaultHair;
+  }
+  if (!isStyleForRig('top', styles.top, rig)) styles.top = 'tee';
+  if (!isStyleForRig('pants', styles.pants, rig)) styles.pants = 'track-pants';
+  if (!isStyleForRig('beard', styles.beard, rig)) styles.beard = 'clean-shaven';
+  return { ...config, rig, styles };
+}
 
 export function sameAvatar(a: AvatarConfigDto, b: AvatarConfigDto): boolean {
   const first = stylesFor(a.styles);
   const second = stylesFor(b.styles);
   return (
+    a.rig === b.rig &&
     AVATAR_PARTS.every((p) => a.colors[p] === b.colors[p]) &&
     colorIdFor(a, 'beard') === colorIdFor(b, 'beard') &&
     colorIdFor(a, 'socks') === colorIdFor(b, 'socks') &&
+    colorIdFor(a, 'hijab') === colorIdFor(b, 'hijab') &&
     STYLE_PARTS.every((p) => first[p] === second[p])
   );
 }
 
 type Outfit = {
-  styles: Pick<ResolvedStyles, 'top' | 'pants' | 'shoes' | 'socks'>;
-  colors: Required<Pick<AvatarConfigDto['colors'], 'tank' | 'shorts' | 'shoes' | 'socks'>>;
+  styles: Pick<ResolvedStyles, 'top' | 'pants' | 'shoes' | 'socks'> & Partial<Pick<ResolvedStyles, 'hair' | 'beard'>>;
+  colors: Required<Pick<AvatarConfigDto['colors'], 'tank' | 'shorts' | 'shoes' | 'socks'>> &
+    Pick<AvatarConfigDto['colors'], 'hijab'>;
 };
 
 export const OUTFITS = {
+  'hijab-training': {
+    styles: {
+      hair: 'sport-hijab',
+      beard: 'clean-shaven',
+      top: 'fitted-zip',
+      pants: 'track-pants',
+      shoes: 'runners',
+      socks: 'crew-socks',
+    },
+    colors: { hijab: 'navy', tank: 'cloud-blue', shorts: 'charcoal', shoes: 'off-white', socks: 'charcoal' },
+  },
+  'violet-training': {
+    styles: { top: 'longline-tank', pants: 'high-rise-leggings', shoes: 'cross-trainers', socks: 'ankle-socks' },
+    colors: { tank: 'levelup-violet', shorts: 'charcoal', shoes: 'violet', socks: 'off-white' },
+  },
+  'pilates-studio': {
+    styles: { top: 'racerback-bra', pants: 'high-rise-leggings', shoes: 'barefoot', socks: 'grip-socks' },
+    colors: { tank: 'sage', shorts: 'forest', shoes: 'charcoal', socks: 'sage' },
+  },
+  'run-club': {
+    styles: { top: 'fitted-zip', pants: 'capris', shoes: 'runners', socks: 'cushioned-socks' },
+    colors: { tank: 'coral', shorts: 'graphite', shoes: 'off-white', socks: 'off-white' },
+  },
+  'lift-club': {
+    styles: { top: 'racerback-bra', pants: 'liner-shorts', shoes: 'lifters', socks: 'striped-socks' },
+    colors: { tank: 'plum', shorts: 'aubergine', shoes: 'charcoal', socks: 'off-white' },
+  },
   'dark-hoodie': {
     styles: { top: 'hoodie', pants: 'joggers', shoes: 'high-tops', socks: 'crew-socks' },
     colors: { tank: 'charcoal', shorts: 'charcoal', shoes: 'charcoal', socks: 'charcoal' },
@@ -311,7 +415,7 @@ export const OUTFITS = {
 } satisfies Record<string, Outfit>;
 
 export type OutfitId = keyof typeof OUTFITS;
-export const OUTFIT_IDS = [
+const SHARED_OUTFIT_IDS = [
   'strength-day',
   'circuit-training',
   'treadmill-run',
@@ -324,6 +428,11 @@ export const OUTFIT_IDS = [
   'summer-fit',
   'dark-hoodie',
 ] as const satisfies readonly OutfitId[];
+
+export function outfitsFor(rig: AvatarRig): readonly OutfitId[] {
+  if (rig === 'standard') return SHARED_OUTFIT_IDS;
+  return ['hijab-training', 'violet-training', 'pilates-studio', 'run-club', 'lift-club', ...SHARED_OUTFIT_IDS];
+}
 
 export function applyOutfit(config: AvatarConfigDto, id: OutfitId): AvatarConfigDto {
   const outfit = OUTFITS[id];
@@ -396,6 +505,9 @@ export interface AvatarPaint {
   hair: string;
   hairLight: string;
   hairShade: string;
+  hijab: string;
+  hijabLight: string;
+  hijabShade: string;
   eyes: string;
   eyeAccent: string;
   mouth: string;
@@ -430,6 +542,7 @@ export function paintFor(config: AvatarConfigDto): AvatarPaint {
   const c = (part: AvatarPart) => colorOf(part, config.colors[part]);
   const skin = c('skin');
   const hair = c('hair');
+  const hijab = colorOf('tank', colorIdFor(config, 'hijab'));
   const beardId = config.colors.beard ?? MATCH_HAIR;
   const beard = beardId === MATCH_HAIR ? hair : colorOf('hair', beardId);
   const eyes = c('eyes');
@@ -449,6 +562,9 @@ export function paintFor(config: AvatarConfigDto): AvatarPaint {
     hair,
     hairLight: lighten(hair, HAIR_LIGHT),
     hairShade: darken(hair, HAIR_SHADE),
+    hijab,
+    hijabLight: lighten(hijab, [0.22, 0.22, 0.22]),
+    hijabShade: darken(hijab, [0.7, 0.7, 0.7]),
     eyes: iris,
     eyeAccent: iris !== eyes && contrastRatio(OUTLINE, skin) < 1.9 ? featureAccent(eyes, skin, 2.35) : iris,
     mouth: featureAccent(darken(skin, [0.6, 0.54, 0.54]), skin, 2.1),

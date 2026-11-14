@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import type { DashboardDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import Avatar from '../avatar/Avatar';
-import { starterAvatar } from '../avatar/catalog';
+import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
                   data-testid="home-avatar"
                 >
                   <Avatar
-                    config={d.member.avatar ?? starterAvatar(String(d.member.memberId))}
+                    config={memberAvatar(d.member)}
                     className="block size-full"
                   />
                 </Link>

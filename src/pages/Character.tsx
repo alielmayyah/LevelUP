@@ -7,14 +7,14 @@ import type { AvatarConfigDto, ProfileDto } from '../api/types';
 import { useApi } from '../api/useApi';
 import Avatar from '../avatar/Avatar';
 import {
-  CUSTOMIZER_TABS,
   MATCH_HAIR,
   colorIdFor,
+  customizerTabsFor,
+  memberAvatar,
   showsLowerLeg,
   presetsFor,
   randomAvatar,
   sameAvatar,
-  starterAvatar,
   stylesFor,
   type ColorPart,
   type CustomizerTab,
@@ -126,10 +126,7 @@ const Character: React.FC = () => {
   const p = me.status === 'ready' ? me.data : null;
 
   /** What the member has now: their saved character, or their starter. */
-  const saved = useMemo<AvatarConfigDto | null>(
-    () => (p ? (p.avatar ?? starterAvatar(String(p.memberId))) : null),
-    [p],
-  );
+  const saved = useMemo(() => (p ? memberAvatar(p) : null), [p]);
   /** Edits not yet saved; null means the draft is the saved character. */
   const [edits, setEdits] = useState<AvatarConfigDto | null>(null);
   const [active, setActive] = useState<CustomizerTab>('outfits');
@@ -190,18 +187,14 @@ const Character: React.FC = () => {
 
   const styles = draft ? stylesFor(draft.styles) : null;
 
+  const tabs = customizerTabsFor(draft?.rig ?? 'standard');
+
   // Swipe sideways on the options to move to the next or previous category; the category row follows.
   const nextTab = useCallback(
-    () =>
-      setActive(
-        (cur) => CUSTOMIZER_TABS[Math.min(CUSTOMIZER_TABS.length - 1, CUSTOMIZER_TABS.indexOf(cur) + 1)] ?? cur,
-      ),
-    [],
+    () => setActive((cur) => tabs[Math.min(tabs.length - 1, tabs.indexOf(cur) + 1)] ?? cur),
+    [tabs],
   );
-  const prevTab = useCallback(
-    () => setActive((cur) => CUSTOMIZER_TABS[Math.max(0, CUSTOMIZER_TABS.indexOf(cur) - 1)] ?? cur),
-    [],
-  );
+  const prevTab = useCallback(() => setActive((cur) => tabs[Math.max(0, tabs.indexOf(cur) - 1)] ?? cur), [tabs]);
   const swipe = useSwipe({ onNext: nextTab, onPrev: prevTab, rtl: i18n.dir() === 'rtl' });
   useEffect(() => {
     document.getElementById(`avatar-tab-${active}`)?.scrollIntoView?.({ inline: 'nearest', block: 'nearest' });
@@ -228,7 +221,7 @@ const Character: React.FC = () => {
             <button
               type="button"
               className="lu-icon-button"
-              onClick={() => setEdits(randomAvatar())}
+              onClick={() => draft && setEdits(randomAvatar(Math.random, draft.rig))}
               disabled={!draft}
               aria-label={t('avatar.randomize')}
               data-testid="character-random"
@@ -295,7 +288,7 @@ const Character: React.FC = () => {
                   outerClassName="flex-none"
                   className="flex gap-1.5 overflow-x-auto px-3 pt-3 pb-2"
                 >
-                  {CUSTOMIZER_TABS.map((tab, i) => (
+                  {tabs.map((tab, i) => (
                     <button
                       key={tab}
                       id={`avatar-tab-${tab}`}
@@ -311,9 +304,9 @@ const Character: React.FC = () => {
                         e.currentTarget.scrollIntoView({ inline: 'nearest', block: 'nearest' });
                       }}
                       onKeyDown={(e) => {
-                        const to = rovingTarget(e, i, CUSTOMIZER_TABS.length, i18n.dir() === 'rtl');
+                        const to = rovingTarget(e, i, tabs.length, i18n.dir() === 'rtl');
                         if (to === null) return;
-                        setActive(CUSTOMIZER_TABS[to]);
+                        setActive(tabs[to]);
                         focusSibling(e, to);
                       }}
                     >
@@ -327,7 +320,7 @@ const Character: React.FC = () => {
                   ref={swipe}
                   className="min-h-0 flex-1 overflow-y-auto px-3 pt-1 pb-[calc(16px+var(--ion-safe-area-bottom,0px))]"
                 >
-                  {CUSTOMIZER_TABS.map((tab) => (
+                  {tabs.map((tab) => (
                     <div
                       key={tab}
                       id={`avatar-panel-${tab}`}
@@ -341,7 +334,10 @@ const Character: React.FC = () => {
                         ) : (
                           <div className="grid gap-3">
                             {/* Colors first, then shapes: the strip is what people change most. */}
-                            {COLORS[active].map((part) =>
+                            {(active === 'hair' && styles.hair === 'sport-hijab'
+                              ? (['hijab'] as const)
+                              : COLORS[active]
+                            ).map((part) =>
                               (part === 'beard' && styles.beard === 'clean-shaven') ||
                               (part === 'shoes' && styles.shoes === 'barefoot') ? null : (
                                 <Swatches

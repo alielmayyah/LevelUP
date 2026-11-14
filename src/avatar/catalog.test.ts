@@ -2,23 +2,26 @@ import { describe, expect, it } from 'vitest';
 
 import {
   AVATAR_PARTS,
-  OUTFIT_IDS,
   STYLE_PARTS,
   applyOutfit,
   contrastRatio,
+  customizerTabsFor,
   defaultAvatar,
   isValidAvatar,
+  memberAvatar,
   normalizeAvatar,
+  outfitsFor,
   paintFor,
   presetsFor,
   randomAvatar,
   sameAvatar,
-  starterAvatar,
   stylesFor,
   trainingStyles,
 } from './catalog';
 
 describe('avatar catalog', () => {
+  const starterAvatar = (memberId: number) => memberAvatar({ memberId, sex: 'MALE', avatar: null });
+
   it('default look is valid and reproduces the original art’s shades', () => {
     const d = defaultAvatar();
     expect(isValidAvatar(d)).toBe(true);
@@ -39,11 +42,11 @@ describe('avatar catalog', () => {
   });
 
   it('a starter is stable per member and differs between members', () => {
-    expect(starterAvatar('101')).toEqual(starterAvatar('101'));
-    expect(isValidAvatar(starterAvatar('101'))).toBe(true);
-    const looks = ['101', '102', '103', '104', '105'].map(starterAvatar);
+    expect(starterAvatar(101)).toEqual(starterAvatar(101));
+    expect(isValidAvatar(starterAvatar(101))).toBe(true);
+    const looks = [101, 102, 103, 104, 105].map(starterAvatar);
     expect(new Set(looks.map((l) => JSON.stringify(l))).size).toBeGreaterThan(1);
-    expect(starterAvatar('101').colors).toEqual({
+    expect(starterAvatar(101).colors).toEqual({
       skin: 'medium-brown',
       hair: 'honey-blond',
       eyes: 'brown',
@@ -59,8 +62,8 @@ describe('avatar catalog', () => {
     const first = randomAvatar(() => 0);
     const last = randomAvatar(() => 0.999999);
     for (const part of STYLE_PARTS) {
-      expect(first.styles?.[part]).toBe(trainingStyles(part)[0]);
-      expect(last.styles?.[part]).toBe(trainingStyles(part).at(-1));
+      expect(first.styles?.[part]).toBe(trainingStyles(part, 'standard')[0]);
+      expect(last.styles?.[part]).toBe(trainingStyles(part, 'standard').at(-1));
     }
   });
 
@@ -68,14 +71,16 @@ describe('avatar catalog', () => {
     const legacy = { ...defaultAvatar(), styles: { ...stylesFor(), top: 'varsity', pants: 'jeans', shoes: 'canvas' } };
     expect(isValidAvatar(legacy)).toBe(true);
     expect(stylesFor(legacy.styles)).toMatchObject({ top: 'varsity', pants: 'jeans', shoes: 'canvas' });
-    expect(trainingStyles('top', 'varsity')).toContain('varsity');
-    expect(trainingStyles('top')).not.toContain('varsity');
-    expect(trainingStyles('pants')).not.toContain('jeans');
-    expect(trainingStyles('shoes')).not.toContain('canvas');
-    for (const id of OUTFIT_IDS) {
-      const styles = stylesFor(applyOutfit(defaultAvatar(), id).styles);
-      for (const part of ['top', 'pants', 'shoes', 'socks'] as const)
-        expect(trainingStyles(part)).toContain(styles[part]);
+    expect(trainingStyles('top', 'standard', 'varsity')).toContain('varsity');
+    expect(trainingStyles('top', 'standard')).not.toContain('varsity');
+    expect(trainingStyles('pants', 'standard')).not.toContain('jeans');
+    expect(trainingStyles('shoes', 'standard')).not.toContain('canvas');
+    for (const rig of ['standard', 'women'] as const) {
+      for (const id of outfitsFor(rig)) {
+        const styles = stylesFor(applyOutfit({ ...defaultAvatar(), rig }, id).styles);
+        for (const part of ['top', 'pants', 'shoes', 'socks'] as const)
+          expect(trainingStyles(part, rig)).toContain(styles[part]);
+      }
     }
   });
 
@@ -94,6 +99,48 @@ describe('avatar catalog', () => {
     expect(sameAvatar(a, { ...a, styles: { ...a.styles!, top: 'hoodie' } })).toBe(false);
   });
 
+  it('selects a women’s base with a ponytail and keeps the chosen skin tone, body and kit', () => {
+    const original = applyOutfit(defaultAvatar(), 'strength-day');
+    original.styles = { ...stylesFor(original.styles), body: 'stocky' };
+    const women = memberAvatar({ memberId: 102, sex: 'FEMALE', avatar: original });
+    expect(isValidAvatar(women)).toBe(true);
+    expect(isValidAvatar({ ...women, rig: 'unknown' })).toBe(false);
+    expect(women.styles).toMatchObject({ hair: 'high-ponytail', body: 'stocky', top: 'sleeveless-hoodie' });
+    expect(women.colors).toEqual(original.colors);
+    expect(sameAvatar({ ...women, rig: 'standard' }, women)).toBe(false);
+    const pilates = applyOutfit(women, 'pilates-studio');
+    expect(normalizeAvatar(pilates)).toEqual(pilates);
+    expect(pilates.styles).toMatchObject({ hair: 'high-ponytail', top: 'racerback-bra', pants: 'high-rise-leggings' });
+    expect(randomAvatar(() => 0.9, 'women')).toMatchObject({ rig: 'women', styles: { beard: 'clean-shaven' } });
+  });
+
+  it('uses the account catalog for saved and randomized looks', () => {
+    const women = memberAvatar({ memberId: 102, sex: 'FEMALE', avatar: null });
+    const hijab = applyOutfit(women, 'hijab-training');
+    expect(outfitsFor('women')[0]).toBe('hijab-training');
+    expect(outfitsFor('standard')).not.toContain('hijab-training');
+    expect(customizerTabsFor('women')).not.toContain('beard');
+    expect(trainingStyles('hair', 'standard', 'sport-hijab')).not.toContain('sport-hijab');
+    expect(trainingStyles('hair', 'women')).not.toContain('fade');
+    expect(isValidAvatar(hijab)).toBe(true);
+    expect(normalizeAvatar(hijab)).toEqual(hijab);
+    expect(isValidAvatar({ ...hijab, colors: { ...hijab.colors, hijab: 'unknown' } })).toBe(false);
+    const sage = { ...hijab, colors: { ...hijab.colors, hijab: 'sage' } };
+    expect(sameAvatar(sage, hijab)).toBe(false);
+    expect(paintFor(sage).hair).toBe(paintFor(hijab).hair);
+    expect(paintFor(sage).hijab).not.toBe(paintFor(hijab).hijab);
+    expect(memberAvatar({ memberId: 101, sex: 'MALE', avatar: hijab })).toMatchObject({
+      rig: 'standard',
+      styles: { hair: 'curls', top: 'tee' },
+    });
+    for (const rig of ['standard', 'women'] as const) {
+      for (const roll of [0, 0.25, 0.5, 0.75, 0.99]) {
+        const styles = stylesFor(randomAvatar(() => roll, rig).styles);
+        for (const part of STYLE_PARTS) expect(trainingStyles(part, rig)).toContain(styles[part]);
+      }
+    }
+  });
+
   it('preserves legacy colors and uses the original styles for an older save', () => {
     const { styles, ...legacy } = defaultAvatar();
     legacy.colors.hair = 'silver';
@@ -109,10 +156,10 @@ describe('avatar catalog', () => {
   });
 
   it('applies valid outfits while preserving hair, face, body, and beard', () => {
-    const original = starterAvatar('101');
+    const original = starterAvatar(101);
     original.styles = { hair: 'locs', body: 'broad', top: 'tee', shoes: 'runners', beard: 'goatee' };
     original.colors.beard = 'silver';
-    for (const id of OUTFIT_IDS) {
+    for (const id of outfitsFor('standard')) {
       const outfit = applyOutfit(original, id);
       expect(isValidAvatar(outfit)).toBe(true);
       expect(outfit.styles).toMatchObject({ body: 'broad', hair: 'locs', beard: 'goatee' });

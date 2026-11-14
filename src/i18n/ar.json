@@ -323,6 +323,7 @@
     "customize": "ظبّط شخصيتك",
     "outfitTitle": "أطقم جاهزة",
     "outfit": {
+      "hijab-training": "طقم تمرين بالحجاب",
       "dark-hoodie": "هودي غامق",
       "summer-fit": "طقم صيفي",
       "gym-ready": "طقم الجيم",
@@ -427,6 +428,7 @@
       "braided-ponytail": "ديل حصان بضفيرة",
       "low-bun": "كعكة واطية",
       "puff": "كيرلي مرفوع",
+      "sport-hijab": "حجاب رياضي",
       "longline-tank": "توب تمرين طويل",
       "racerback-bra": "برا رياضية بظهر مفتوح",
       "fitted-zip": "جاكيت تمرين ضيّق",
@@ -436,6 +438,7 @@
     "part": {
       "skin": "لون البشرة",
       "hair": "لون الشعر",
+      "hijab": "لون الحجاب",
       "eyes": "العينين",
       "tank": "لون اللبس",
       "shorts": "لون البنطلون",
@@ -509,11 +512,7 @@
       "gum": "بني عسلي"
     },
     "saved": "اتحفظت",
-    "baseTitle": "شكل الشخصية الأساسي",
-    "base": {
-      "standard": "الأصلي",
-      "women": "نسائي"
-    }
+    "hairAndHeadwear": "تسريحات وغطا الراس"
   },
   "bodyComp": {
     "kicker": "من قياس الـ InBody بتاعك",

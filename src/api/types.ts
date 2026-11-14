@@ -72,6 +72,7 @@ export interface DashboardDto {
     /** Opaque member id; seeds the starter character when none is saved. */
     memberId: number;
     firstName: string;
+    sex?: Sex;
     showFitScore: boolean;
     /** The member's saved character, so Home shows their picture without a second request. */
     avatar: AvatarConfigDto | null;
@@ -216,9 +217,25 @@ export interface ProfileDto {
 
 /** Parts of the standard character that take a color preset. */
 export type AvatarPart = 'skin' | 'hair' | 'eyes' | 'tank' | 'shorts' | 'shoes';
+export type AvatarRig = 'standard' | 'women';
 
 export interface AvatarStyles {
-  hair: 'curls' | 'fade' | 'side-part' | 'locs' | 'top-knot' | 'buzz-cut' | 'waves' | 'shaved' | 'spikes' | 'braids';
+  hair:
+    | 'curls'
+    | 'fade'
+    | 'side-part'
+    | 'locs'
+    | 'top-knot'
+    | 'buzz-cut'
+    | 'waves'
+    | 'shaved'
+    | 'spikes'
+    | 'braids'
+    | 'high-ponytail'
+    | 'braided-ponytail'
+    | 'low-bun'
+    | 'puff'
+    | 'sport-hijab';
   body: 'balanced' | 'lean' | 'broad' | 'compact' | 'tall' | 'stocky' | 'athletic' | 'relaxed';
   top:
     | 'tank'
@@ -230,7 +247,10 @@ export interface AvatarStyles {
     | 'mesh-tee'
     | 'compression-top'
     | 'quarter-zip'
-    | 'sleeveless-hoodie';
+    | 'sleeveless-hoodie'
+    | 'longline-tank'
+    | 'racerback-bra'
+    | 'fitted-zip';
   shoes:
     'trainers' | 'high-tops' | 'runners' | 'slip-ons' | 'boots' | 'canvas' | 'lifters' | 'cross-trainers' | 'barefoot';
   pants?:
@@ -243,7 +263,9 @@ export interface AvatarStyles {
     | 'liner-shorts'
     | 'training-tights'
     | 'split-shorts'
-    | 'warmup-pants';
+    | 'warmup-pants'
+    | 'high-rise-leggings'
+    | 'capris';
   beard?:
     | 'clean-shaven'
     | 'stubble'
@@ -263,10 +285,11 @@ export interface AvatarStyles {
  */
 export interface AvatarConfigDto {
   schemaVersion: 1;
-  rig: 'standard';
+  rig: AvatarRig;
   colors: Record<AvatarPart, string> & {
     beard?: string;
     socks?: string;
+    hijab?: string;
     /** Accepted when reading older saves. The mouth shade is derived from skin tone. */
     smile?: 'dark-plum' | 'brown' | 'warm-brown';
   };

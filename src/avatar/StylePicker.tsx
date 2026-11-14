@@ -4,7 +4,7 @@ import { focusSibling, rovingTarget } from '../components/roving';
 import Avatar from './Avatar';
 import {
   applyOutfit,
-  OUTFIT_IDS,
+  outfitsFor,
   trainingStyles,
   sameAvatar,
   stylesFor,
@@ -55,7 +55,7 @@ export function OutfitPicker({
         {t('avatar.outfitTitle')}
       </h2>
       <div className="grid grid-cols-4 gap-2" role="group" aria-labelledby="avatar-outfit-title">
-        {OUTFIT_IDS.map((id) => {
+        {outfitsFor(config.rig).map((id) => {
           const preview = applyOutfit(config, id);
           const selected = sameAvatar(config, preview);
           return (
@@ -103,9 +103,9 @@ interface StylePickerProps<K extends StylePart> {
 export function StylePicker<K extends StylePart>({ part, config, onChange }: StylePickerProps<K>) {
   const { t, i18n } = useTranslation();
   const styles = stylesFor(config.styles);
-  const options = trainingStyles(part, styles[part]);
+  const options = trainingStyles(part, config.rig, styles[part]);
   const labelId = `style-label-${part}`;
-  const labelKey: `avatar.styleLabel.${StylePart}` = `avatar.styleLabel.${part}`;
+  const labelKey = part === 'hair' && config.rig === 'women' ? 'avatar.hairAndHeadwear' : `avatar.styleLabel.${part}`;
 
   return (
     <div className="grid gap-2">

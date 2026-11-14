@@ -1,12 +1,14 @@
-import type { AvatarPaint, ResolvedStyles } from './catalog';
+import type { AvatarPaint, ResolvedStyles, WOMEN_HAIR } from './catalog';
 import { Mirrored, PantDetails, ShoeDetails, TopDetails } from './ClothingDetails';
+import { StudioLeggings } from './WomenArt';
 
 interface VariantProps<K extends keyof ResolvedStyles> {
   style: ResolvedStyles[K];
   paint: AvatarPaint;
 }
 
-const HAIR: Record<Exclude<ResolvedStyles['hair'], 'curls' | 'shaved'>, [string, string, string, string]> = {
+type AltHairStyle = Exclude<ResolvedStyles['hair'], 'curls' | 'sport-hijab' | (typeof WOMEN_HAIR)[number]>;
+const HAIR: Record<Exclude<AltHairStyle, 'shaved'>, [string, string, string, string]> = {
   fade: [
     'M1184 166H1205V131H1240V111H1282V99H1382V111H1424V131H1459V166H1480V251H1466V286H1450V307H1436V256H1412V238H1381V226H1282V238H1252V256H1220V307H1206V287H1193V251H1184Z',
     'M1201 170H1223V146H1258V127H1290V115H1374V127H1406V146H1441V170H1463V220H1438V236H1418V221H1388V209H1273V221H1246V236H1220V220H1201Z',
@@ -57,10 +59,7 @@ const HAIR: Record<Exclude<ResolvedStyles['hair'], 'curls' | 'shaved'>, [string,
   ],
 };
 
-export function AltHair({
-  style,
-  paint: p,
-}: VariantProps<'hair'> & { style: Exclude<ResolvedStyles['hair'], 'curls'> }) {
+export function AltHair({ style, paint: p }: VariantProps<'hair'> & { style: AltHairStyle }) {
   if (style === 'shaved') {
     return (
       <g data-style-layer="hair" data-variant={style}>
@@ -255,6 +254,7 @@ export function Socks({ style, shoes, paint: p }: VariantProps<'socks'> & { shoe
 }
 
 export function Pants({ style, paint: p }: VariantProps<'pants'>) {
+  if (style === 'high-rise-leggings' || style === 'capris') return <StudioLeggings style={style} paint={p} />;
   if (style === 'liner-shorts' || style === 'split-shorts') {
     const lined = style === 'liner-shorts';
     return (
