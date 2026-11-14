@@ -165,6 +165,7 @@ const Profile: React.FC = () => {
 
   return (
     <TabPage
+      fill
       testId="page-profile"
       title={t('tabs.profile')}
       titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="person" />}
@@ -186,7 +187,8 @@ const Profile: React.FC = () => {
       )}
 
       {p && (
-        <div className={GRID}>
+        // The settings card stretches to the tab bar, with Sign out at its foot.
+        <div className={`${GRID} flex-1 grid-rows-[auto_1fr] wide:grid-rows-[auto_1fr]`}>
           <section className="lu-px-card flex items-center gap-3.5 wide:col-span-full">
             <span className="lu-avatar-frame block size-[72px] flex-none overflow-hidden rounded-[12px]">
               <Avatar
@@ -213,7 +215,7 @@ const Profile: React.FC = () => {
             </div>
           </section>
 
-          <section className="lu-px-card grid py-1.5" aria-labelledby="sec-settings">
+          <section className="lu-px-card flex flex-col py-1.5" aria-labelledby="sec-settings">
             <h3 id="sec-settings" className={SECTION}>
               <IonIcon icon={settingsOutline} aria-hidden="true" />
               {t('profile.settings')}
@@ -291,7 +293,7 @@ const Profile: React.FC = () => {
 
             <button
               type="button"
-              className={`lu-row-button lu-signout ${ROW} w-full cursor-pointer border-0 bg-transparent font-inherit text-danger`}
+              className={`lu-row-button lu-signout ${ROW} mt-auto w-full cursor-pointer border-0 bg-transparent font-inherit text-danger`}
               onClick={() => setConfirmOut(true)}
             >
               <span className={`${LABEL} text-danger`}>
