@@ -1,5 +1,5 @@
 /*
- * The splash's pixel-art scene: dusk backdrop, the lifter pressing a barbell,
+ * The splash: dusk backdrop, the logo's breathing glow,
  * twinkling stars, and the CSS intro. Layout is Tailwind classes in Splash.tsx.
  * The class names here are also the hooks the exit animation (splashMotion.ts) targets.
  */
@@ -11,115 +11,20 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* The lifter stands in a soft spotlight so the dark outline reads on the dusk sky. */
-  .lu-splash-scene {
-    display: grid;
-    justify-items: center;
-    align-items: end;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 10% 10% 0;
-      background: radial-gradient(
-        ellipse at 50% 70%,
-        color-mix(in srgb, var(--lu-press-glow) 55%, transparent),
-        transparent 65%
-      );
-    }
+  /* The logo's glow: a soft brand-colored halo that slowly breathes. */
+  .lu-splash-glow {
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--ion-color-primary) 45%, transparent),
+      color-mix(in srgb, var(--ion-color-primary) 12%, transparent) 45%,
+      transparent 70%
+    );
+    opacity: 0.8;
   }
 
-  .lu-press {
-    position: relative;
-
-    .lu-px-ink {
-      fill: var(--lu-press-ink);
-    }
-    .lu-px-skin {
-      fill: var(--lu-press-skin);
-    }
-    .lu-px-shade {
-      fill: var(--lu-press-shade);
-    }
-    .lu-px-hair {
-      fill: var(--lu-press-hair);
-    }
-    .lu-px-tank {
-      fill: var(--lu-press-tank);
-    }
-    .lu-px-shorts {
-      fill: var(--lu-press-shorts);
-    }
-    .lu-px-shoe {
-      fill: var(--lu-press-shoe);
-    }
-    .lu-px-metal {
-      fill: var(--lu-metal);
-    }
-    .lu-px-metalHi {
-      fill: var(--lu-metal-hi);
-    }
-    .lu-px-plate {
-      fill: var(--lu-press-plate);
-    }
-    .lu-px-plateHi {
-      fill: var(--lu-press-plate-hi);
-    }
-    .lu-px-floor {
-      fill: var(--lu-floor);
-    }
-    .lu-px-floorEdge {
-      fill: var(--lu-floor-edge);
-    }
-    .lu-px-floorSeam {
-      fill: var(--lu-floor-seam);
-    }
-
-    .lu-press-sparks {
-      fill: var(--lu-gold);
-    }
-
-    /* Still image (reduced motion, or before CSS animation runs): the lockout pose. */
-    .lu-press-rack,
-    .lu-press-mid,
-    .lu-press-spark {
-      opacity: 0;
-    }
-  }
-
-  /*
-   * One rep every 2.6 s: hold the rack, press through the middle, hold the
-   * lockout while the sparkles pop, lower through the middle, back to the rack.
-   * step-end holds each pose until the next keyframe, like sprite frames.
-   */
   @media (prefers-reduced-motion: no-preference) {
-    .lu-press {
-      .lu-press-frame {
-        animation: 2.6s step-end infinite;
-      }
-      .lu-press-rack {
-        animation-name: lu-press-rack;
-      }
-      .lu-press-mid {
-        animation-name: lu-press-mid;
-      }
-      .lu-press-lock {
-        animation-name: lu-press-lock;
-      }
-
-      .lu-press-spark {
-        animation: lu-press-spark 2.6s linear infinite;
-      }
-      .lu-press-spark:nth-child(2n) {
-        animation-delay: 0.08s;
-      }
-
-      /* The shadow tightens as the bar goes up. */
-      .lu-press-shadow {
-        transform-box: fill-box;
-        transform-origin: center;
-        animation: lu-press-shadow 2.6s step-end infinite;
-      }
+    .lu-splash-glow {
+      animation: lu-splash-glow 3.2s ease-in-out infinite alternate;
     }
   }
 
@@ -195,10 +100,6 @@
    * during the run, so the exit animation's inline styles win afterwards.
    */
   @media (prefers-reduced-motion: no-preference) {
-    .lu-splash-scene {
-      animation: lu-splash-scene-in 700ms ease-out backwards;
-    }
-
     .lu-splash-brand {
       animation: lu-splash-brand-in 700ms ease-out backwards;
     }
@@ -217,90 +118,20 @@
   }
 }
 
-@keyframes lu-splash-scene-in {
-  from {
-    opacity: 0.45;
-    transform: translateY(10px);
-  }
-}
-
 @keyframes lu-splash-brand-in {
   from {
     transform: translateY(8px);
   }
 }
 
-@keyframes lu-press-rack {
-  0% {
-    opacity: 1;
+@keyframes lu-splash-glow {
+  from {
+    opacity: 0.55;
+    transform: scale(0.92);
   }
-  28% {
-    opacity: 0;
-  }
-  86% {
-    opacity: 1;
-  }
-}
 
-@keyframes lu-press-mid {
-  0% {
-    opacity: 0;
-  }
-  28% {
+  to {
     opacity: 1;
-  }
-  38% {
-    opacity: 0;
-  }
-  76% {
-    opacity: 1;
-  }
-  86% {
-    opacity: 0;
-  }
-}
-
-@keyframes lu-press-lock {
-  0% {
-    opacity: 0;
-  }
-  38% {
-    opacity: 1;
-  }
-  76% {
-    opacity: 0;
-  }
-}
-
-@keyframes lu-press-spark {
-  0%,
-  38% {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-  44% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  58% {
-    opacity: 1;
-    transform: scale(1.3);
-  }
-  66%,
-  100% {
-    opacity: 0;
-    transform: scale(1.3);
-  }
-}
-
-@keyframes lu-press-shadow {
-  0% {
-    transform: scaleX(1);
-  }
-  38% {
-    transform: scaleX(0.8);
-  }
-  76% {
-    transform: scaleX(1);
+    transform: scale(1.06);
   }
 }

@@ -11,7 +11,6 @@ import SoundToggle from '../components/SoundToggle';
 import { CORNER_CONTROLS } from '../components/cornerControl';
 import { useSound } from '../sound/useSound';
 import './Splash.scss';
-import PressScene from './splash/PressScene';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 /** Navigation still finishes if animation frames stall. */
@@ -65,20 +64,15 @@ const Splash: React.FC = () => {
       onClick={() => void begin()}
     >
       <div className="absolute inset-0 isolate ar:font-arabic" ref={stage}>
-        {/* The lifter stands between the logo and the button; on a sideways phone, beside the text. */}
-        <div
-          className="lu-splash-scene pointer-events-none absolute inset-x-0 bottom-[calc(clamp(84px,13vh,120px)+var(--ion-safe-area-bottom,0px))] h-[min(44%,420px)] short-landscape:inset-y-[12%] short-landscape:start-auto short-landscape:end-[4%] short-landscape:h-auto short-landscape:w-[38%]"
-          aria-hidden="true"
-        >
-          <PressScene />
-        </div>
-        <div className="lu-splash-stars pointer-events-none absolute inset-x-0 top-[4%] h-[42%]" aria-hidden="true" />
+        <div className="lu-splash-stars pointer-events-none absolute inset-x-0 top-[4%] bottom-[4%]" aria-hidden="true" />
         <div className={`lu-splash-sound ${CORNER_CONTROLS}`}>
           <LanguageToggle />
           <SoundToggle />
         </div>
         <main className="relative box-border grid h-full grid-rows-[1fr_auto] justify-items-center pt-[calc(clamp(55px,11vh,96px)+var(--ion-safe-area-top,0px))] pr-[calc(20px+var(--ion-safe-area-right,0px))] pb-[calc(clamp(16px,3.5vh,32px)+var(--ion-safe-area-bottom,0px))] pl-[calc(20px+var(--ion-safe-area-left,0px))] text-center short-landscape:w-[58%] short-landscape:pt-[calc(22px+var(--ion-safe-area-top,0px))]">
-          <div className="lu-splash-brand relative w-[clamp(180px,min(73vw,37vh),308px)] max-w-full self-start short-landscape:w-[clamp(130px,56vh,228px)] short-landscape:self-center">
+          <div className="lu-splash-brand relative w-[clamp(180px,min(73vw,37vh),308px)] max-w-full self-center short-landscape:w-[clamp(130px,56vh,228px)]">
+            {/* A soft glow that breathes behind the logo. */}
+            <span className="lu-splash-glow pointer-events-none absolute inset-[-30%]" aria-hidden="true" />
             <h1
               className="relative m-0 drop-shadow-[0_2px_8px_var(--lu-splash-bg)]"
               aria-describedby="splash-brand-tagline"

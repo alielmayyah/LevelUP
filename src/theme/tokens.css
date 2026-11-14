@@ -57,18 +57,6 @@
   --lu-splash-star: #ffffff;
   --lu-splash-danger: #ff9b9b;
 
-  /* The pixel lifter on the splash (same in both themes, like the dusk backdrop). */
-  --lu-press-skin: #d47c51;
-  --lu-press-shade: #a85536;
-  --lu-press-hair: #35192f;
-  --lu-press-tank: #8b5cf6;
-  --lu-press-shorts: #2f4869;
-  --lu-press-shoe: #e1d7df;
-  --lu-press-plate: #e5484d;
-  --lu-press-plate-hi: #ff8a8f;
-  --lu-press-ink: #170817;
-  --lu-press-glow: #6d3fd1;
-
   --lu-tabbar-height: 64px;
   /* Breathing room between the last item on a page and the dock (counted twice in layout.css). */
   --lu-tabbar-gap: 8px;

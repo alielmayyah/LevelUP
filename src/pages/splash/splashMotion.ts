@@ -19,7 +19,7 @@ export function warpOut(stage: HTMLElement, onDone: () => void, maxMs: number): 
     gsap
       .timeline({ defaults: { duration: 0.3, ease: 'power2.in' }, onComplete: finish })
       .to('.lu-splash-brand', { scale: 1.08, opacity: 0 }, 0)
-      .to(['.lu-splash-scene', '.lu-splash-stars', '.lu-splash-cta', '.lu-splash-sound'], { opacity: 0 }, 0);
+      .to(['.lu-splash-glow', '.lu-splash-stars', '.lu-splash-cta', '.lu-splash-sound'], { opacity: 0 }, 0);
   }, stage);
   return () => {
     window.clearTimeout(timer);

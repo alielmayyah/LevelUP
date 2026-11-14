@@ -14,8 +14,6 @@ for (const lang of LOCALES)
         await page.goto('/');
         await expect(page).toHaveURL(/\/splash$/);
         const splash = page.getByTestId('page-splash');
-        const scene = splash.getByTestId('splash-scene');
-        await expect(scene).toBeVisible();
         const logo = splash.getByRole('img', { name: brand.name });
         await expect(logo).toBeVisible();
         await expect(logo).toHaveAttribute('src', brand.logo);
@@ -112,7 +110,7 @@ test.describe('landscape phone', () => {
   });
 });
 
-test('the lifter stands centered above the button while controls clear the safe areas', async ({ page }) => {
+test('controls clear the safe areas and the logo stays above the button', async ({ page }) => {
   await page.goto('/splash');
   await page.evaluate(() => {
     const { style } = document.documentElement;
@@ -121,36 +119,22 @@ test('the lifter stands centered above the button while controls clear the safe 
   });
   const splash = page.getByTestId('page-splash');
   const bounds = (await splash.boundingBox())!;
-  const scene = (await splash.getByTestId('splash-scene').boundingBox())!;
   const sound = (await splash.getByTestId('sound-toggle').boundingBox())!;
   const logo = (await splash.getByTestId('splash-logo').boundingBox())!;
   const cta = (await splash.getByRole('button', { name: en.splash.cta }).boundingBox())!;
 
-  const portrait = bounds.width < bounds.height;
-  if (portrait) expect(Math.abs(scene.x + scene.width / 2 - (bounds.x + bounds.width / 2))).toBeLessThan(2);
-  expect(scene.y + scene.height).toBeLessThanOrEqual(cta.y);
   expect(sound.y).toBeGreaterThanOrEqual(bounds.y + 59);
   expect(logo.y).toBeGreaterThanOrEqual(bounds.y + 59);
+  expect(logo.y + logo.height).toBeLessThan(cta.y);
   expect(cta.y + cta.height).toBeLessThanOrEqual(bounds.y + bounds.height - 34);
 });
 
 test.describe('reduced motion', () => {
   test.use({ reducedMotion: 'reduce' });
 
-  test('the lifter holds a still lockout pose', async ({ page }) => {
+  test('the logo glow holds still', async ({ page }) => {
     await page.goto('/splash');
-    const scene = page.getByTestId('splash-scene');
-    await expect(scene.locator('.lu-press-lock')).toHaveCSS('opacity', '1');
-    await expect(scene.locator('.lu-press-rack')).toHaveCSS('opacity', '0');
-    expect(
-      await page.evaluate(
-        () =>
-          document
-            .getAnimations()
-            .filter((a) => 'animationName' in a && String((a as CSSAnimation).animationName).startsWith('lu-press'))
-            .length,
-      ),
-    ).toBe(0);
+    await expect(page.locator('.lu-splash-glow')).toHaveCSS('animation-name', 'none');
   });
 
   test('starfield stands still', async ({ page }) => {
