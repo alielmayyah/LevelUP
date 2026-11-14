@@ -65,13 +65,14 @@ test('a brand-new member (102) sees empty states on every tab, never NaN or unde
   }
 });
 
-test('the tab bar sits above the home indicator on every tab', async ({ page, loginAs }) => {
+test('the tabs sit above the home indicator on every tab', async ({ page, loginAs }) => {
   await loginAs();
   for (const tab of TABS) {
     await page.goto(`/tabs/${tab}`);
     await page.evaluate(() => document.documentElement.style.setProperty('--ion-safe-area-bottom', '34px'));
-    const bar = (await page.getByRole('navigation', { name: en.tabs.navLabel }).boundingBox())!;
-    expect(bar.y + bar.height).toBeLessThanOrEqual(page.viewportSize()!.height - 34);
+    // The dock runs to the bottom edge; its tabs stay clear of the home indicator.
+    const button = (await page.getByTestId(`tab-${tab}`).boundingBox())!;
+    expect(button.y + button.height).toBeLessThanOrEqual(page.viewportSize()!.height - 34);
   }
 });
 
