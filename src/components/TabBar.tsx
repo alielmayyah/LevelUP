@@ -1,14 +1,34 @@
 import { IonIcon, IonLabel, IonTabBar, IonTabButton } from '@ionic/react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
 import { pillTransform, tabIndex, TABS } from './tabConfig';
-import './TabBar.css';
+import './TabBar.scss';
+
+/*
+ * Floating bar in the pixel style: chunky border, hard drop shadow, and a blocky
+ * pill. Centered, at most 480 px wide, above the home indicator. Page bodies
+ * reserve room for it (theme/layout.css). Slimmer on a phone held sideways.
+ */
+const BAR = [
+  'lu-tabbar absolute inset-x-0 bottom-[calc(var(--lu-tabbar-gap)+var(--ion-safe-area-bottom,0px))] z-10 mx-auto box-border',
+  'h-(--lu-tabbar-height) w-[calc(100%-var(--lu-gutter)*2-var(--ion-safe-area-left,0px)-var(--ion-safe-area-right,0px))] max-w-[480px]',
+  'rounded-2xl border-2 border-line bg-surface p-(--lu-tabbar-padding) shadow-px [--lu-tabbar-padding:6px]',
+  'short-landscape:bottom-[calc(8px+var(--ion-safe-area-bottom,0px))] short-landscape:h-12 short-landscape:max-w-[360px] short-landscape:[--lu-tabbar-padding:4px]',
+].join(' ');
+
+/*
+ * Slides with a CSS transform transition (compositor only, no JS per frame).
+ * Reduced motion: it jumps.
+ */
+const PILL =
+  'absolute start-(--lu-tabbar-padding) top-(--lu-tabbar-padding) bottom-(--lu-tabbar-padding) w-[calc((100%-var(--lu-tabbar-padding)*2)/5)] rounded-[10px] bg-primary shadow-[inset_0_-3px_0_var(--ion-color-primary-shade)] transition-transform duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 
-type Gsap = typeof import('gsap').gsap;
+/** Longest the label waits for the pill, in case transitionend never fires (tab hidden, transition cut). */
+const LIT_FALLBACK_MS = 400;
 
 /**
  * Floating 5-tab bar inside a <nav> landmark. IonTabBar only renders
@@ -19,9 +39,8 @@ type Gsap = typeof import('gsap').gsap;
  * itself would be copied onto the outer element too, which breaks the tab
  * list's structure for screen readers.
  *
- * The pill glides with GSAP (loaded in the background, so it stays out of the
- * initial bundle). A label turns white only once the pill is under it, so text
- * never sits white-on-white mid-move.
+ * A label turns white only once the pill has arrived under it, so text never
+ * sits white-on-white mid-move.
  */
 const TabBar: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -30,82 +49,44 @@ const TabBar: React.FC = () => {
   const rtl = i18n.dir() === 'rtl';
 
   const pill = useRef<HTMLDivElement>(null);
-  const bar = useRef<HTMLElement>(null);
   const shown = useRef({ index: Math.max(index, 0), rtl });
-  const gsapRef = useRef<Gsap | null>(null);
   /** The tab whose label is drawn on the pill (white). Lags the route until the pill arrives. */
   const [lit, setLit] = useState(index);
 
-  useEffect(() => {
-    if (!window.matchMedia(MOTION_OK).matches) return;
-    let live = true;
-    void import('gsap').then((m) => {
-      if (live) gsapRef.current = m.gsap;
-    });
-    return () => {
-      live = false;
-    };
-  }, []);
-
-  // Place the pill before paint on first render and whenever it should jump.
   useLayoutEffect(() => {
     const el = pill.current;
     if (!el) return;
     const to = Math.max(index, 0);
     const from = shown.current;
-    const g = gsapRef.current;
-    const animate = g && index >= 0 && from.index !== to && from.rtl === rtl && window.matchMedia(MOTION_OK).matches;
     shown.current = { index: to, rtl };
+    const slide = index >= 0 && from.index !== to && from.rtl === rtl && window.matchMedia(MOTION_OK).matches;
 
-    if (!animate) {
-      g?.killTweensOf(el);
+    if (!slide) {
+      // Jump with no transition: first render, language flip, or reduced motion.
+      el.style.transition = 'none';
       el.style.transform = pillTransform(to, rtl);
+      void el.offsetWidth;
+      el.style.transition = '';
       setLit(index);
       return;
     }
 
-    const sign = rtl ? -1 : 1;
-    const buttons = [...(bar.current?.querySelectorAll('ion-tab-button') ?? [])];
-    let current = from.index;
-    // Every frame, the label the pill's center is over is the white one, so a label
-    // is white only while the purple pill is under it (never white on the white bar).
-    const followPill = () => {
-      const r = el.getBoundingClientRect();
-      const center = r.left + r.width / 2;
-      const over = buttons.findIndex((b) => {
-        const br = b.getBoundingClientRect();
-        return center >= br.left && center < br.right;
-      });
-      if (over >= 0 && over !== current) {
-        current = over;
-        setLit(over);
-      }
+    el.style.transform = pillTransform(to, rtl);
+    const arrive = () => setLit(index);
+    const onEnd = (e: TransitionEvent) => {
+      if (e.target === el && e.propertyName === 'transform') arrive();
     };
-    g.killTweensOf(el);
-    const tl = g.timeline({
-      onComplete: () => {
-        // Hand the final position back as a plain transform the rest of the app (and tests) can read.
-        g.set(el, { clearProps: 'transform' });
-        el.style.transform = pillTransform(to, rtl);
-        setLit(index);
-      },
-    });
-    tl.fromTo(
-      el,
-      { xPercent: from.index * 100 * sign },
-      { xPercent: to * 100 * sign, duration: 0.42, ease: 'power3.inOut', onUpdate: followPill },
-      0,
-    );
-    // A little stretch while it travels, then it settles back to size.
-    tl.to(el, { scaleX: 1.14, duration: 0.21, ease: 'sine.out', yoyo: true, repeat: 1 }, 0);
-    // The tapped icon hops once.
-    const icon = bar.current?.querySelector(`[data-testid="tab-${TABS[to].tab}"] ion-icon`);
-    if (icon) tl.fromTo(icon, { y: 0 }, { y: -4, duration: 0.14, ease: 'power2.out', yoyo: true, repeat: 1 }, 0.18);
+    el.addEventListener('transitionend', onEnd);
+    const timer = window.setTimeout(arrive, LIT_FALLBACK_MS);
+    return () => {
+      el.removeEventListener('transitionend', onEnd);
+      window.clearTimeout(timer);
+    };
   }, [index, rtl]);
 
   return (
-    <nav ref={bar} className="lu-tabbar" slot="bottom" aria-label={t('tabs.navLabel')}>
-      <div className="lu-tab-pill" data-testid="tab-pill" ref={pill} aria-hidden="true" hidden={index < 0} />
+    <nav className={BAR} slot="bottom" aria-label={t('tabs.navLabel')}>
+      <div className={PILL} data-testid="tab-pill" ref={pill} aria-hidden="true" hidden={index < 0} />
       <IonTabBar>
         {TABS.map(({ tab, href, icon }, i) => (
           <IonTabButton
