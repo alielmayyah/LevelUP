@@ -309,3 +309,13 @@
     transform: translateY(2px);
   }
 }
+
+/* The "you" tag on the dark podium panel: white on brand purple, in both themes. */
+@layer components {
+  .lu-podium .lu-chip,
+  :root.ion-palette-dark .lu-podium .lu-chip {
+    border-color: var(--ion-color-primary-shade);
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+  }
+}

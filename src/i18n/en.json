@@ -179,7 +179,11 @@
     "pages": "Leaderboard pages",
     "prevPage": "Previous page",
     "nextPage": "Next page",
-    "pageOf": "Page {{page}} of {{pages}}"
+    "pageOf": "Page {{page}} of {{pages}}",
+    "division": {
+      "MALE": "Men's rankings",
+      "FEMALE": "Women's rankings"
+    }
   },
   "profile": {
     "subtitle": "Member settings",

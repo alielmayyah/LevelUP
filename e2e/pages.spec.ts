@@ -94,7 +94,9 @@ test.describe('Leaderboard', () => {
     await expect(podium.locator('svg[data-crop="full"]')).toHaveCount(3);
     const list = lb.getByRole('list', { name: en.leaderboard.board.score });
     await expect(list).toHaveAttribute('start', '4');
-    await expect(list.getByTestId('my-row').locator('svg').first()).toBeVisible();
+    // Sam is #2 among the men, so he stands on the podium; the list starts at 4th.
+    await expect(podium.getByTestId('my-row')).toBeVisible();
+    await expect(list.getByRole('listitem').first().locator('svg').first()).toBeVisible();
     // 10 rows after the podium fit on one page, so no pager.
     await expect(lb.getByTestId('pager')).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

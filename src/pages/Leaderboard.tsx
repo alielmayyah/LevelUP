@@ -146,7 +146,7 @@ const Leaderboard: React.FC = () => {
     <TabPage
       testId="page-leaderboard"
       title={t('tabs.leaderboard')}
-      subtitle={t('leaderboard.subtitle')}
+      subtitle={d ? t(`leaderboard.division.${d.division}`) : t('leaderboard.subtitle')}
       onRefresh={data.reload}
       actions={
         me && !stale ? (

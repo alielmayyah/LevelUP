@@ -179,7 +179,11 @@
     "pages": "صفحات الترتيب",
     "prevPage": "الصفحة اللي قبل",
     "nextPage": "الصفحة اللي بعد",
-    "pageOf": "صفحة {{page}} من {{pages}}"
+    "pageOf": "صفحة {{page}} من {{pages}}",
+    "division": {
+      "MALE": "ترتيب الرجالة",
+      "FEMALE": "ترتيب الستات"
+    }
   },
   "profile": {
     "subtitle": "إعدادات العضو",

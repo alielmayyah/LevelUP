@@ -107,6 +107,8 @@ export interface LeaderboardRow {
 
 export interface LeaderboardDto {
   board: LeaderboardBoard;
+  /** Members are ranked within their own division (account sex), since men's and women's body composition differ. */
+  division: Sex;
   optedIn: boolean;
   rows: LeaderboardRow[];
 }

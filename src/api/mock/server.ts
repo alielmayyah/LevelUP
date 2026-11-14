@@ -155,19 +155,22 @@ const LOWEST_FIRST: readonly LeaderboardBoard[] = ['bodyFat'];
 
 async function boardRows(board: LeaderboardBoard, me: MockMember): Promise<LeaderboardRow[]> {
   const myAvatar = await loadAvatar(me);
-  return members
-    .filter((m) => m.settings.fitScoreOnLeaderboard)
-    .map((m) => ({ m, value: boardValue(m, board) }))
-    .filter((x): x is { m: MockMember; value: number } => x.value !== null)
-    .sort((a, b) => (LOWEST_FIRST.includes(board) ? a.value - b.value : b.value - a.value) || a.m.id - b.m.id)
-    .map(({ m, value }, i) => ({
-      rank: i + 1,
-      memberId: m.id,
-      name: `${m.firstName} ${m.lastName.charAt(0)}.`,
-      value,
-      isMe: m.id === me.id,
-      avatar: m.id === me.id ? myAvatar : null,
-    }));
+  return (
+    members
+      // Men and women are ranked separately: body composition differs too much to compare fairly.
+      .filter((m) => m.settings.fitScoreOnLeaderboard && m.sex === me.sex)
+      .map((m) => ({ m, value: boardValue(m, board) }))
+      .filter((x): x is { m: MockMember; value: number } => x.value !== null)
+      .sort((a, b) => (LOWEST_FIRST.includes(board) ? a.value - b.value : b.value - a.value) || a.m.id - b.m.id)
+      .map(({ m, value }, i) => ({
+        rank: i + 1,
+        memberId: m.id,
+        name: `${m.firstName} ${m.lastName.charAt(0)}.`,
+        value,
+        isMe: m.id === me.id,
+        avatar: m.id === me.id ? myAvatar : null,
+      }))
+  );
 }
 
 async function leaderboardSummary(me: MockMember): Promise<LeaderboardSummary> {
@@ -191,7 +194,12 @@ async function leaderboardSummary(me: MockMember): Promise<LeaderboardSummary> {
 async function leaderboard(me: MockMember, query: URLSearchParams): Promise<MockResponse> {
   const board = (query.get('board') ?? 'score') as LeaderboardBoard;
   if (!LEADERBOARD_BOARDS.includes(board)) return fail(400, 'Unknown board');
-  const res: LeaderboardDto = { board, optedIn: me.settings.fitScoreOnLeaderboard, rows: await boardRows(board, me) };
+  const res: LeaderboardDto = {
+    board,
+    division: me.sex,
+    optedIn: me.settings.fitScoreOnLeaderboard,
+    rows: await boardRows(board, me),
+  };
   return ok(res);
 }
 
