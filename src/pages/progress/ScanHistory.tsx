@@ -1,6 +1,6 @@
 import { IonIcon, IonModal } from '@ionic/react';
 import { close } from 'ionicons/icons';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto } from '../../api/types';
@@ -63,10 +63,9 @@ const SheetBody: React.FC<Props & { title: string }> = ({
   const [page, setPage] = useState(() => Math.min(pages - 1, Math.floor(Math.max(0, anchor) / size)));
   const first = page * size;
   // Swipe sideways to turn pages; up and down still drags the sheet.
-  const list = useRef<HTMLOListElement>(null);
   const next = useCallback(() => setPage((p) => Math.min(pages - 1, p + 1)), [pages]);
   const prev = useCallback(() => setPage((p) => Math.max(0, p - 1)), []);
-  useSwipe(list, { onNext: next, onPrev: prev, rtl: i18n.dir() === 'rtl' });
+  const swipe = useSwipe({ onNext: next, onPrev: prev, rtl: i18n.dir() === 'rtl' });
   return (
     <section
       className="flex h-full flex-col bg-page text-ink"
@@ -84,7 +83,7 @@ const SheetBody: React.FC<Props & { title: string }> = ({
       {comparing && (
         <p className="m-0 px-4 pb-3 text-[0.85rem] font-semibold text-muted">{t('progress.compareHint')}</p>
       )}
-      <ol ref={list} className="m-0 grid flex-1 list-none content-start gap-2 overflow-y-auto px-4 pt-0 pb-4">
+      <ol ref={swipe} className="m-0 grid flex-1 list-none content-start gap-2 overflow-y-auto px-4 pt-0 pb-4">
         {scans.slice(first, first + size).map((s, n) => {
           const i = first + n;
           const on = i === current;

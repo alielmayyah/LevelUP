@@ -1,13 +1,11 @@
 import { render } from '@testing-library/react';
-import { useRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { useSwipe } from './useSwipe';
 
 function Strip({ onNext, onPrev, rtl = false }: { onNext: () => void; onPrev: () => void; rtl?: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useSwipe(ref, { onNext, onPrev, rtl });
-  return <div ref={ref} data-testid="strip" />;
+  const swipe = useSwipe({ onNext, onPrev, rtl });
+  return <div ref={swipe} data-testid="strip" />;
 }
 
 /** A one-finger swipe from (x0, y0) to (x1, y1). */

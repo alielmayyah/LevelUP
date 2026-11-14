@@ -1,6 +1,6 @@
 import { IonIcon, IonModal } from '@ionic/react';
 import { chevronBack, chevronForward, close } from 'ionicons/icons';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto } from '../../api/types';
@@ -49,10 +49,9 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
   const heads = Array.from({ length: 7 }, (_, i) => weekday.format(new Date(2023, 0, 1 + ((weekStart + i) % 7))));
   const scansThisMonth = scans.filter((s) => monthKey(new Date(s.takenAt)) === month).length;
   // Swipe sideways to change month, within the scan history.
-  const grid = useRef<HTMLDivElement>(null);
   const next = useCallback(() => setMonth((x) => Math.min(last, x + 1)), [last]);
   const prev = useCallback(() => setMonth((x) => Math.max(first, x - 1)), [first]);
-  useSwipe(grid, { onNext: next, onPrev: prev, rtl: i18n.dir() === 'rtl' });
+  const swipe = useSwipe({ onNext: next, onPrev: prev, rtl: i18n.dir() === 'rtl' });
 
   return (
     <section
@@ -70,7 +69,7 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
       </div>
       <p className="m-0 px-4 pb-3 text-[0.85rem] font-semibold text-muted">{t('progress.calendarHint')}</p>
 
-      <div ref={grid} className="mx-4 grid gap-3 rounded-xl border-2 border-line bg-surface p-3">
+      <div ref={swipe} className="mx-4 grid gap-3 rounded-xl border-2 border-line bg-surface p-3">
         <div className="flex items-center gap-2">
           <button
             type="button"

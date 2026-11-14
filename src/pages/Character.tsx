@@ -26,6 +26,7 @@ import { CustomizerIcon, OutfitPicker, StylePicker } from '../avatar/StylePicker
 import CtaButton from '../components/CtaButton';
 import PixelToast from '../components/PixelToast';
 import ScrollStrip from '../components/ScrollStrip';
+import { useSwipe } from '../components/useSwipe';
 import { focusSibling, rovingTarget } from '../components/roving';
 import '../avatar/avatar.scss';
 
@@ -190,6 +191,23 @@ const Character: React.FC = () => {
 
   const styles = draft ? stylesFor(draft.styles) : null;
 
+  // Swipe sideways on the options to move to the next or previous category; the category row follows.
+  const nextTab = useCallback(
+    () =>
+      setActive(
+        (cur) => CUSTOMIZER_TABS[Math.min(CUSTOMIZER_TABS.length - 1, CUSTOMIZER_TABS.indexOf(cur) + 1)] ?? cur,
+      ),
+    [],
+  );
+  const prevTab = useCallback(
+    () => setActive((cur) => CUSTOMIZER_TABS[Math.max(0, CUSTOMIZER_TABS.indexOf(cur) - 1)] ?? cur),
+    [],
+  );
+  const swipe = useSwipe({ onNext: nextTab, onPrev: prevTab, rtl: i18n.dir() === 'rtl' });
+  useEffect(() => {
+    document.getElementById(`avatar-tab-${active}`)?.scrollIntoView?.({ inline: 'nearest', block: 'nearest' });
+  }, [active]);
+
   return (
     <IonPage data-testid="page-character">
       {/* The page holds still; only the option panel scrolls, so the character never leaves the screen. */}
@@ -306,7 +324,10 @@ const Character: React.FC = () => {
                   ))}
                 </ScrollStrip>
 
-                <div className="min-h-0 flex-1 overflow-y-auto px-3 pt-1 pb-[calc(16px+var(--ion-safe-area-bottom,0px))]">
+                <div
+                  ref={swipe}
+                  className="min-h-0 flex-1 overflow-y-auto px-3 pt-1 pb-[calc(16px+var(--ion-safe-area-bottom,0px))]"
+                >
                   {CUSTOMIZER_TABS.map((tab) => (
                     <div
                       key={tab}

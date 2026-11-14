@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react';
+import { useEffect, useState } from 'react';
 
 /** How far a finger must travel sideways, and how much more sideways than up or down, to count as a swipe. */
 const MIN_DX = 50;
@@ -9,13 +9,22 @@ const RATIO = 1.5;
  * start (right to left in English, left to right in Arabic), `onPrev` for the
  * other way, like turning a page. Up and down movement is left alone, so a
  * sheet can still be dragged closed and a list still scrolls.
+ *
+ * Returns a ref callback for the element. It works for elements that appear
+ * later (after data loads), since listeners attach whenever the element does.
  */
-export function useSwipe(
-  ref: RefObject<HTMLElement | null>,
-  { onNext, onPrev, rtl }: { onNext: () => void; onPrev: () => void; rtl: boolean },
-): void {
+export function useSwipe({
+  onNext,
+  onPrev,
+  rtl,
+}: {
+  onNext: () => void;
+  onPrev: () => void;
+  rtl: boolean;
+}): (el: HTMLElement | null) => void {
+  const [el, setEl] = useState<HTMLElement | null>(null);
+
   useEffect(() => {
-    const el = ref.current;
     if (!el) return;
     let start: { x: number; y: number } | null = null;
 
@@ -47,5 +56,7 @@ export function useSwipe(
       el.removeEventListener('touchend', up);
       el.removeEventListener('touchcancel', cancel);
     };
-  }, [ref, onNext, onPrev, rtl]);
+  }, [el, onNext, onPrev, rtl]);
+
+  return setEl;
 }
