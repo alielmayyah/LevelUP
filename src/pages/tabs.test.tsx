@@ -177,15 +177,15 @@ describe('Progress', () => {
 });
 
 describe('Goals', () => {
-  it('shows every goal on one page: journey, then in progress, up next, completed', async () => {
+  it('shows every goal on one page: in progress, up next, completed', async () => {
     await renderAs('101', Goals);
-    const journey = await screen.findByTestId('journey');
-    expect(journey).toHaveTextContent('2/4 goals done');
+    await screen.findByTestId('section-active');
+    expect(screen.queryByTestId('journey')).toBeNull();
     expect(within(screen.getByTestId('section-active')).getAllByTestId('goal')).toHaveLength(1);
     expect(within(screen.getByTestId('section-upcoming')).getAllByTestId('goal')).toHaveLength(1);
     expect(within(screen.getByTestId('section-completed')).getAllByTestId('goal')).toHaveLength(2);
     const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
-    expect(headings).toEqual(['Your journey', 'In progress 1', 'Up next 1', 'Completed 2']);
+    expect(headings).toEqual(['In progress 1', 'Up next 1', 'Completed 2']);
   });
 
   it('an active goal shows percent, kg done of total, and its bar', async () => {
@@ -218,7 +218,7 @@ describe('Goals', () => {
     expect(within(goal).getByText('Keep protein high on training days.')).toBeVisible();
   });
 
-  it('Lina, with no goals, sees one empty state and no journey', async () => {
+  it('Lina, with no goals, sees one empty state', async () => {
     await renderAs('102', Goals);
     expect(await screen.findByText('Nothing here yet')).toBeInTheDocument();
     expect(screen.queryByTestId('journey')).toBeNull();

@@ -85,11 +85,10 @@ test.describe('Progress', () => {
 });
 
 test.describe('Goals', () => {
-  test('every goal is on one page, with the journey on top', async ({ page, loginAs }) => {
+  test('every goal is on one page', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/goals');
     const g = page.locator(tab('goals'));
-    await expect(g.getByTestId('journey')).toContainText(`2/4 ${en.goals.done}`);
     await expect(g.getByTestId('section-active').getByTestId('goal')).toHaveCount(1);
     await expect(g.getByTestId('section-upcoming').getByTestId('goal')).toContainText(en.goals.upcomingNote);
     await expect(g.getByTestId('section-completed').getByTestId('goal')).toHaveCount(2);

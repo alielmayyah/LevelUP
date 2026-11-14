@@ -137,47 +137,6 @@ const GoalRow: React.FC<{ goal: GoalView; kind: GoalTab; now: number }> = ({ goa
   );
 };
 
-/**
- * The whole journey at a glance: "2/4 goals done", and one pixel block per goal
- * in order, filled when done, partly filled for the one in progress, empty for
- * what's next.
- */
-const Journey: React.FC<{ goals: GoalsDto }> = ({ goals }) => {
-  const { t } = useTranslation();
-  const done = goals.completed.length;
-  const total = done + goals.active.length + goals.upcoming.length;
-  const blocks = [
-    ...goals.completed.map((g) => ({ id: g.id, kind: 'completed' as const, percent: 100 })),
-    ...goals.active.map((g) => ({ id: g.id, kind: 'active' as const, percent: Math.min(100, Math.max(0, g.percent)) })),
-    ...goals.upcoming.map((g) => ({ id: g.id, kind: 'upcoming' as const, percent: 0 })),
-  ];
-  return (
-    <section className="lu-px-card grid gap-3" data-testid="journey" aria-labelledby="journey-title">
-      <div className="flex items-baseline justify-between gap-2">
-        <h2 id="journey-title" className="lu-card-title">
-          {t('goals.journey')}
-        </h2>
-        <p className="m-0 font-bold text-muted">
-          {/* "2/4" is a fraction, so it stays left-to-right in Arabic too. */}
-          <strong className="lu-display text-[2rem] leading-none text-ink" dir="ltr">
-            {formatNumber(done)}/{formatNumber(total)}
-          </strong>{' '}
-          {t('goals.done')}
-        </p>
-      </div>
-      <ol className="m-0 grid list-none auto-cols-fr grid-flow-col gap-1.5 p-0" aria-hidden="true">
-        {blocks.map((b) => (
-          <li
-            key={b.id}
-            className={`lu-journey-step h-4 rounded-[3px] is-${b.kind}`}
-            style={{ '--lu-step': `${b.percent}%` } as CSSProperties}
-          />
-        ))}
-      </ol>
-    </section>
-  );
-};
-
 /** Goals tab: every goal on one page, in progress first, then up next, then completed. */
 const Goals: React.FC = () => {
   const { t } = useTranslation();
@@ -189,7 +148,13 @@ const Goals: React.FC = () => {
   const total = data ? data.active.length + data.upcoming.length + data.completed.length : 0;
 
   return (
-    <TabPage testId="page-goals" title={t('tabs.goals')} subtitle={t('goals.subtitle')} onRefresh={goals.reload}>
+    <TabPage
+      testId="page-goals"
+      title={t('tabs.goals')}
+      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="flag" />}
+      subtitle={t('goals.subtitle')}
+      onRefresh={goals.reload}
+    >
       {goals.status === 'loading' && (
         <div className={LIST} aria-busy="true">
           <div className="lu-skeleton-card min-h-[92px]" />
@@ -213,7 +178,6 @@ const Goals: React.FC = () => {
 
       {data && total > 0 && (
         <div className="grid gap-[18px]">
-          <Journey goals={data} />
           {SECTIONS.map((kind) =>
             data[kind].length === 0 ? null : (
               <section key={kind} aria-labelledby={`goals-${kind}`} data-testid={`section-${kind}`}>
