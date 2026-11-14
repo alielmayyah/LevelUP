@@ -21,7 +21,7 @@ const patch = <T>(path: string, body: unknown, fitId: string) =>
   mockServer.handle('PATCH', path, body, `mock.${fitId}`) as Promise<{ status: number; body: T }>;
 const post = (path: string, fitId: string) => mockServer.handle('POST', path, null, `mock.${fitId}`);
 
-const BOARDS = ['score', 'progress', 'muscle', 'fatLoss'] as const;
+const BOARDS = ['score', 'muscle', 'bodyFat'] as const;
 
 beforeEach(async () => {
   await Preferences.clear();
@@ -213,23 +213,27 @@ describe('leaderboard', () => {
     expect(r.rows.map((x) => x.name)).not.toContain('Omar A.');
   });
 
-  it.each(BOARDS)('board %s orders by value desc and ranks from 1', async (board) => {
+  it.each(BOARDS)('board %s ranks best first from 1 (lowest body fat, highest otherwise)', async (board) => {
     const r = (await get<LeaderboardDto>(`/leaderboard?board=${board}`, '101')).body;
     expect(r.board).toBe(board);
     expect(r.rows.length).toBeGreaterThanOrEqual(3);
-    expect(r.rows.map((x) => x.value)).toEqual([...r.rows.map((x) => x.value)].sort((a, b) => b - a));
+    const best = board === 'bodyFat' ? (a: number, b: number) => a - b : (a: number, b: number) => b - a;
+    expect(r.rows.map((x) => x.value)).toEqual([...r.rows.map((x) => x.value)].sort(best));
     expect(r.rows.map((x) => x.rank)).toEqual(r.rows.map((_, i) => i + 1));
   });
 
-  it('monthly boards leave out members with no scan this month', async () => {
-    const score = (await get<LeaderboardDto>('/leaderboard?board=score', '101')).body.rows;
-    const progress = (await get<LeaderboardDto>('/leaderboard?board=progress', '101')).body.rows;
-    expect(progress.length).toBeLessThan(score.length);
+  it('muscle and body fat boards show the latest scan’s values', async () => {
+    const muscle = (await get<LeaderboardDto>('/leaderboard?board=muscle', '101')).body.rows.find((r) => r.isMe);
+    const fat = (await get<LeaderboardDto>('/leaderboard?board=bodyFat', '101')).body.rows.find((r) => r.isMe);
+    expect(muscle?.value).toBe(34.9);
+    expect(fat?.value).toBe(21.2);
   });
 
-  it('fatLoss is positive when fat dropped', async () => {
-    const me = (await get<LeaderboardDto>('/leaderboard?board=fatLoss', '101')).body.rows.find((r) => r.isMe);
-    expect(me?.value).toBeCloseTo(1.2, 1);
+  it('every board has the same members (anyone opted in with a scan)', async () => {
+    const counts = await Promise.all(
+      BOARDS.map(async (b) => (await get<LeaderboardDto>(`/leaderboard?board=${b}`, '101')).body.rows.length),
+    );
+    expect(new Set(counts).size).toBe(1);
   });
 
   it('opt-out removes member from every board immediately', async () => {
@@ -260,7 +264,7 @@ describe('leaderboard', () => {
 
   it('no row exposes xp or level', async () => {
     for (const row of (await get<LeaderboardDto>('/leaderboard', '101')).body.rows) {
-      expect(Object.keys(row).sort()).toEqual(['isMe', 'memberId', 'name', 'rank', 'value']);
+      expect(Object.keys(row).sort()).toEqual(['avatar', 'isMe', 'memberId', 'name', 'rank', 'value']);
     }
   });
 });
@@ -295,5 +299,74 @@ describe('notifications', () => {
 
   it('Lina has none', async () => {
     expect((await get<NotificationDto[]>('/me/notifications', '102')).body).toEqual([]);
+  });
+});
+
+describe('avatar', () => {
+  const put = (body: unknown, fitId: string) => mockServer.handle('PUT', '/me/avatar', body, `mock.${fitId}`);
+  const look = {
+    schemaVersion: 1,
+    rig: 'standard',
+    colors: {
+      skin: 'deep-brown',
+      hair: 'silver',
+      eyes: 'hazel',
+      smile: 'brown',
+      tank: 'teal',
+      shorts: 'navy',
+      shoes: 'amber',
+    },
+  };
+
+  it('starts null, saves a valid look, and keeps it after a reload', async () => {
+    expect((await get<ProfileDto>('/me', '101')).body.avatar).toBeNull();
+    expect(await put(look, '101')).toEqual({ status: 200, body: look });
+    resetMockServer(NOW);
+    expect((await get<ProfileDto>('/me', '101')).body.avatar).toEqual(look);
+  });
+
+  it('keeps each member’s look separate', async () => {
+    await put(look, '101');
+    expect((await get<ProfileDto>('/me', '102')).body.avatar).toBeNull();
+  });
+
+  it('saves all styles and returns them after a reload', async () => {
+    const styled = {
+      ...look,
+      colors: { ...look.colors, beard: 'silver' },
+      styles: { hair: 'locs', body: 'broad', top: 'hoodie', shoes: 'high-tops', pants: 'cargo', beard: 'goatee' },
+    };
+    expect(await put(styled, '101')).toEqual({ status: 200, body: styled });
+    resetMockServer(NOW);
+    expect((await get<ProfileDto>('/me', '101')).body.avatar).toEqual(styled);
+    expect(await put({ ...styled, styles: { ...styled.styles, top: 'cape' } }, '101')).toMatchObject({ status: 400 });
+    expect(await put({ ...styled, styles: { ...styled.styles, hat: 'cap' } }, '101')).toMatchObject({ status: 400 });
+    expect(await put({ ...styled, styles: { hair: 'locs' } }, '101')).toMatchObject({ status: 400 });
+    expect(await put({ ...styled, colors: { ...styled.colors, beard: 'neon' } }, '101')).toMatchObject({ status: 400 });
+  });
+
+  it('rejects unknown presets, missing parts, extra fields, and wrong versions', async () => {
+    for (const bad of [
+      null,
+      { ...look, colors: { ...look.colors, hair: 'neon' } },
+      { ...look, colors: { ...look.colors, shoes: undefined } },
+      { ...look, colors: { ...look.colors, hat: 'red' } },
+      { ...look, schemaVersion: 2 },
+      { ...look, colors: { ...look.colors, skin: '#ff0000' } },
+    ]) {
+      expect((await put(bad, '101')).status).toBe(400);
+    }
+    expect((await get<ProfileDto>('/me', '101')).body.avatar).toBeNull();
+  });
+
+  it('sends the saved look on the member’s own leaderboard row only', async () => {
+    await put(look, '101');
+    const rows = (await get<LeaderboardDto>('/leaderboard?board=score', '101')).body.rows;
+    expect(rows.find((r) => r.isMe)?.avatar).toEqual(look);
+    expect(rows.filter((r) => !r.isMe).every((r) => r.avatar === null)).toBe(true);
+  });
+
+  it('needs a signed-in member', async () => {
+    expect((await mockServer.handle('PUT', '/me/avatar', look, null)).status).toBe(401);
   });
 });

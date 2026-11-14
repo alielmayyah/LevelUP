@@ -74,9 +74,13 @@ export interface DashboardDto {
 
 /* ---------- Leaderboard (core plan Task 8) ---------- */
 
-export type LeaderboardBoard = 'score' | 'progress' | 'muscle' | 'fatLoss';
+/**
+ * score: highest FitScore. muscle: most skeletal muscle (kg). bodyFat: lowest
+ * body fat (%). All three use each member's latest scan.
+ */
+export type LeaderboardBoard = 'score' | 'muscle' | 'bodyFat';
 
-export const LEADERBOARD_BOARDS: readonly LeaderboardBoard[] = ['score', 'progress', 'muscle', 'fatLoss'];
+export const LEADERBOARD_BOARDS: readonly LeaderboardBoard[] = ['score', 'muscle', 'bodyFat'];
 
 export interface LeaderboardRow {
   rank: number;
@@ -85,6 +89,12 @@ export interface LeaderboardRow {
   name: string;
   value: number;
   isMe: boolean;
+  /**
+   * The member's saved character. Sent only on the member's own row until a
+   * separate avatar-sharing setting exists; null otherwise, and the app draws
+   * the starter for `memberId`.
+   */
+  avatar: AvatarConfigDto | null;
 }
 
 export interface LeaderboardDto {
@@ -147,6 +157,8 @@ export interface GoalsDto {
 export type Sex = 'MALE' | 'FEMALE';
 
 export interface ProfileDto {
+  /** Opaque member id; seeds the starter character, so it matches the leaderboard. */
+  memberId: number;
   firstName: string;
   lastName: string;
   fitId: string;
@@ -159,6 +171,34 @@ export interface ProfileDto {
   coach: { name: string } | null;
   showFitScore: boolean;
   fitScoreOnLeaderboard: boolean;
+  /** The member's saved character; null until they save one (the app then shows a starter). */
+  avatar: AvatarConfigDto | null;
+}
+
+/* ---------- Character (character customization plan) ---------- */
+
+/** Parts of the standard character that take a color preset. */
+export type AvatarPart = 'skin' | 'hair' | 'eyes' | 'smile' | 'tank' | 'shorts' | 'shoes';
+
+export interface AvatarStyles {
+  hair: 'curls' | 'fade' | 'side-part' | 'locs' | 'top-knot';
+  body: 'balanced' | 'lean' | 'broad' | 'compact';
+  top: 'tank' | 'tee' | 'hoodie' | 'track-jacket';
+  shoes: 'trainers' | 'high-tops' | 'runners' | 'slip-ons';
+  pants?: 'shorts' | 'joggers' | 'cargo' | 'track-pants';
+  beard?: 'clean-shaven' | 'stubble' | 'mustache' | 'goatee' | 'short-beard' | 'full-beard';
+}
+
+/**
+ * A saved character: catalog preset IDs only, never raw colors or markup.
+ * Body of PUT /me/avatar (full replacement), which returns the saved config.
+ */
+export interface AvatarConfigDto {
+  schemaVersion: 1;
+  rig: 'standard';
+  colors: Record<AvatarPart, string> & { beard?: string };
+  /** Optional for characters saved before styles were available. */
+  styles?: AvatarStyles;
 }
 
 export interface SettingsDto {
