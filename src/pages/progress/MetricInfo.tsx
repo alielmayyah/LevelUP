@@ -1,12 +1,5 @@
 import { IonIcon } from '@ionic/react';
-import {
-  bulbOutline,
-  checkmarkCircleOutline,
-  close,
-  heartOutline,
-  informationCircleOutline,
-  personOutline,
-} from 'ionicons/icons';
+import { bulbOutline, checkmarkCircleOutline, close, heartOutline, informationCircleOutline } from 'ionicons/icons';
 import { useEffect, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -141,11 +134,6 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
               </li>
             ))}
           </ul>
-
-          <p className="m-0 flex items-center gap-2 text-[0.8rem] font-semibold text-muted">
-            <IonIcon className="flex-none text-[1rem]" icon={personOutline} aria-hidden="true" />
-            {t('progress.infoCoach')}
-          </p>
         </div>
       )}
     </dialog>
