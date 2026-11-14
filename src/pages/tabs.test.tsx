@@ -53,6 +53,9 @@ describe('Progress', () => {
     expect(within(scan).getByTestId('metric-bodyFat')).toHaveTextContent('21.2%');
     expect(within(more).getByTestId('metric-visceral')).toHaveTextContent(/^Visceral fat9/);
     expect(within(more).getByTestId('metric-bmr')).toHaveTextContent(/1,\d{3} kcal/);
+    // The six smaller cards show the change since the scan before, with a sign.
+    for (const key of ['water', 'protein', 'minerals', 'bmr', 'bmi', 'visceral'])
+      expect(within(more).getByTestId(`change-${key}`)).toHaveTextContent(/^[+−]|±0/);
     // Muscle up is good news (green), body fat down is good news (green), weight has no right way.
     expect(within(scan).getByText('Up 0.8 kg since the scan before').parentElement).toHaveClass('text-success');
     expect(within(scan).getByText('Down 1.2% since the scan before').parentElement).toHaveClass('text-success');

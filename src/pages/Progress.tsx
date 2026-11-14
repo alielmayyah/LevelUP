@@ -29,9 +29,15 @@ interface Metric<K> {
   tone: string;
 }
 
+/** Which way is good news for a measurement; null when it has no right direction (weight, water, BMI). */
+type Better = 'up' | 'down' | null;
+
 interface MainMetric extends Metric<MainKey> {
-  /** Which way is good news: muscle up, body fat down. Weight has no right direction. */
-  better: 'up' | 'down' | null;
+  better: Better;
+}
+
+interface MoreMetric extends Metric<MoreKey> {
+  better: Better;
 }
 
 /** The three numbers members care about: big, with their change. */
@@ -65,14 +71,45 @@ const MAIN: MainMetric[] = [
   },
 ];
 
-/** The rest of the scan: smaller cards, each with its own icon and a plain-language line. */
-const MORE: Metric<MoreKey>[] = [
-  { key: 'water', value: (a) => a.totalBodyWaterKg, unit: 'kg', digits: 1, icon: 'drop', tone: 'lu-tone-water' },
-  { key: 'protein', value: (a) => a.proteinKg, unit: 'kg', digits: 1, icon: 'drumstick', tone: 'lu-tone-protein' },
-  { key: 'minerals', value: (a) => a.mineralsKg, unit: 'kg', digits: 1, icon: 'gem', tone: 'lu-tone-minerals' },
-  { key: 'bmr', value: (a) => a.bmrKcal, unit: 'kcal', digits: 0, icon: 'bolt', tone: 'lu-tone-bmr' },
-  { key: 'bmi', value: (a) => a.bmi, digits: 1, icon: 'ruler', tone: 'lu-tone-bmi' },
-  { key: 'visceral', value: (a) => a.visceralFatLevel, digits: 0, icon: 'heart', tone: 'lu-tone-visceral' },
+/** The rest of the scan: small cards with an icon, name, and value; the ⓘ sheet explains each one. */
+const MORE: MoreMetric[] = [
+  {
+    key: 'water',
+    value: (a) => a.totalBodyWaterKg,
+    unit: 'kg',
+    digits: 1,
+    icon: 'drop',
+    tone: 'lu-tone-water',
+    better: null,
+  },
+  {
+    key: 'protein',
+    value: (a) => a.proteinKg,
+    unit: 'kg',
+    digits: 1,
+    icon: 'drumstick',
+    tone: 'lu-tone-protein',
+    better: 'up',
+  },
+  {
+    key: 'minerals',
+    value: (a) => a.mineralsKg,
+    unit: 'kg',
+    digits: 1,
+    icon: 'gem',
+    tone: 'lu-tone-minerals',
+    better: 'up',
+  },
+  { key: 'bmr', value: (a) => a.bmrKcal, unit: 'kcal', digits: 0, icon: 'bolt', tone: 'lu-tone-bmr', better: 'up' },
+  { key: 'bmi', value: (a) => a.bmi, digits: 1, icon: 'ruler', tone: 'lu-tone-bmi', better: null },
+  {
+    key: 'visceral',
+    value: (a) => a.visceralFatLevel,
+    digits: 0,
+    icon: 'heart',
+    tone: 'lu-tone-visceral',
+    better: 'down',
+  },
 ];
 
 const scanDate = (iso: string) =>
@@ -150,18 +187,26 @@ const Progress: React.FC = () => {
   };
 
   /** "▲ 0.8 kg", colored by whether that direction is good news. Null when there is no earlier scan. */
-  const change = (m: MainMetric) => {
+  const change = (m: MainMetric | MoreMetric) => {
     if (!scan || !before) return null;
     if (!Number.isFinite(m.value(scan)) || !Number.isFinite(m.value(before))) return null;
     const diff = Math.round((m.value(scan) - m.value(before)) * 10 ** m.digits) / 10 ** m.digits;
     if (diff === 0)
-      return { text: t('progress.noChange'), arrow: '', tone: 'text-muted', label: t('progress.noChange') };
+      return {
+        text: t('progress.noChange'),
+        arrow: '',
+        signed: '±0',
+        tone: 'text-muted',
+        label: t('progress.noChange'),
+      };
     const up = diff > 0;
     const good = m.better === null ? null : (m.better === 'up') === up;
     const amount = `${formatNumber(Math.abs(diff), m.digits)}${unit(m.unit)}`;
     return {
       text: amount,
       arrow: up ? '▲' : '▼',
+      /** For the small cards: a plain sign, "+0.4 kg" or "−0.2 kg". */
+      signed: `${up ? '+' : '−'}${amount}`,
       tone: good === null ? 'text-muted' : good ? 'text-success' : 'text-danger',
       label: t(up ? 'progress.changeUp' : 'progress.changeDown', { amount }),
     };
@@ -356,10 +401,16 @@ const Progress: React.FC = () => {
                     <dd className="lu-display m-0 text-[1.45rem] leading-none whitespace-nowrap text-ink">
                       {value(m, scan)}
                     </dd>
-                    {/* A plain-language line, so numbers like "Visceral fat 9" mean something. */}
-                    <dd className="m-0 text-[0.75rem] leading-snug font-semibold text-muted">
-                      {t(`progress.hint.${m.key}`)}
-                    </dd>
+                    {(() => {
+                      // The change since the scan before, with a sign; nothing on the first scan.
+                      const c = change(m);
+                      return c ? (
+                        <dd className={`m-0 text-[0.78rem] font-extrabold ${c.tone}`} data-testid={`change-${m.key}`}>
+                          <bdi aria-hidden="true">{c.signed}</bdi>
+                          <span className="sr-only">{c.label}</span>
+                        </dd>
+                      ) : null;
+                    })()}
                   </div>
                 ))}
               </dl>

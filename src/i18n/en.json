@@ -56,14 +56,6 @@
     "upSince": "up {{amount}} since {{date}}",
     "downSince": "down {{amount}} since {{date}}",
     "sameSince": "same as {{date}}",
-    "hint": {
-      "bmi": "Weight for your height. 18.5–25 is the usual healthy range.",
-      "visceral": "Fat around your organs. Lower is better.",
-      "water": "All the water in your body.",
-      "protein": "Protein in your body, mostly in your muscles.",
-      "minerals": "Minerals in your body, mostly in your bones.",
-      "bmr": "Calories your body burns in a day at rest."
-    },
     "olderScan": "Older scan",
     "newerScan": "Newer scan",
     "earlierScan": "Earlier scan",

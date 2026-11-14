@@ -13,8 +13,9 @@ test.describe('Progress', () => {
     await expect(p.getByTestId('metric-weight')).toContainText('82.6 kg');
     await expect(p.getByTestId('change-muscle')).toContainText('▲ 0.8 kg');
     await expect(p.getByTestId('trend-headline')).toContainText('82.6 kg');
-    // All nine measurements show; the other six each explain themselves.
-    await expect(p.getByTestId('metric-visceral')).toContainText(en.progress.hint.visceral);
+    // All nine measurements show; the six smaller cards keep just a name and value.
+    await expect(p.getByTestId('metric-visceral')).toContainText(en.progress.metric.visceral);
+    await expect(p.getByTestId('metric-visceral')).not.toContainText(en.progress.info.visceral.what);
     // Each measurement explains itself in a pop-up.
     await p.getByTestId('info-muscle').click();
     const info = page.getByRole('dialog', { name: en.progress.metric.muscle });
