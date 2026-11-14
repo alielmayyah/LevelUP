@@ -264,7 +264,9 @@ test.describe('Character', () => {
           expect(await eyes.first().getAttribute('fill')).not.toBe(await eyes.last().getAttribute('fill'));
           await expect(preview.locator('[data-feature="smile"]')).toHaveCount(1);
           expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-          await editor.getByTestId('character-save').click();
+          // No Save button: every change saves on its own.
+          await expect(editor.getByTestId('character-status')).toHaveText(copy.avatar.saved);
+          await editor.getByTestId('character-back').click();
           await expect(page).toHaveURL(/\/tabs\/profile$/);
           await expect(page.getByTestId('profile-avatar').locator('[data-style-layer="hair"]')).toHaveAttribute(
             'data-variant',
@@ -304,18 +306,19 @@ test.describe('Character', () => {
     await expect(skin.getByRole('radio', { checked: true })).toBeFocused();
   });
 
-  test('leaving with unsaved changes asks first, and Keep editing stays', async ({ page, loginAs }) => {
+  test('a change saves on its own, even when leaving right away', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/profile/character');
     const editor = page.locator(tab('character'));
+    await expect(editor.getByTestId('character-save')).toHaveCount(0);
     await editor.getByTestId('character-random').click();
+    // Leave before the half-second autosave: the pending save is still sent, no dialog.
     await editor.getByTestId('character-back').click();
-    const dialog = page.getByRole('dialog', { name: en.avatar.leaveTitle });
-    await dialog.getByRole('button', { name: en.avatar.keepEditing }).click();
-    await expect(page).toHaveURL(/\/tabs\/profile\/character$/);
-    await editor.getByTestId('character-back').click();
-    await dialog.getByRole('button', { name: en.avatar.discard }).click();
     await expect(page).toHaveURL(/\/tabs\/profile$/);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect
+      .poll(() => page.evaluate(() => localStorage.getItem('CapacitorStorage.lu.mock.avatar.101')))
+      .not.toBeNull();
   });
 
   test('the editor works in Arabic without horizontal scroll', async ({ page, loginAs }) => {

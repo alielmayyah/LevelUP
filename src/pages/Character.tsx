@@ -1,6 +1,6 @@
 import { IonContent, IonIcon, IonPage, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import { arrowBack, checkmark, refreshOutline, shuffleOutline } from 'ionicons/icons';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { saveAvatar } from '../api/avatar';
@@ -22,7 +22,6 @@ import {
 } from '../avatar/catalog';
 import { CustomizerIcon, OutfitPicker, StylePicker } from '../avatar/StylePicker';
 import CtaButton from '../components/CtaButton';
-import PixelDialog from '../components/PixelDialog';
 import PixelToast from '../components/PixelToast';
 import { focusSibling, rovingTarget } from '../components/roving';
 import '../avatar/avatar.scss';
@@ -98,8 +97,13 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
   );
 };
 
+/** How long after the last change the character saves, so tapping through colors sends one request. */
+const AUTOSAVE_MS = 500;
+
 /**
  * Style and color choices share one live preview and one saved character.
+ * Every change saves on its own (no Save button); leaving with a save still
+ * pending sends it right away.
  */
 const Character: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -112,35 +116,55 @@ const Character: React.FC = () => {
     () => (p ? (p.avatar ?? starterAvatar(String(p.memberId))) : null),
     [p],
   );
-  /** Unsaved edits; null means the draft is the saved character. */
+  /** Edits not yet saved; null means the draft is the saved character. */
   const [edits, setEdits] = useState<AvatarConfigDto | null>(null);
   const [active, setActive] = useState<CustomizerTab>('outfits');
   useIonViewWillEnter(() => setActive('outfits'));
   const draft = edits ?? saved;
-  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [failed, setFailed] = useState(false);
-  const [confirmLeave, setConfirmLeave] = useState(false);
   const clearFailed = useCallback(() => setFailed(false), []);
+  /** The look when the editor opened, for Reset. */
+  const [original, setOriginal] = useState<AvatarConfigDto | null>(null);
+  if (saved && !original) setOriginal(saved);
 
   const dirty = !!draft && !!saved && !sameAvatar(draft, saved);
 
-  const leave = useCallback(() => {
-    if (router.canGoBack()) router.goBack();
-    else router.push('/tabs/profile', 'back', 'replace');
-  }, [router]);
+  /** Saves the current edits; keeps them if the save fails so the next change retries. */
+  const latest = useRef<AvatarConfigDto | null>(null);
+  useEffect(() => {
+    latest.current = dirty ? draft : null;
+  }, [dirty, draft]);
+  const { setData } = me;
+  const flush = useCallback(async () => {
+    const look = latest.current;
+    if (!look) return;
+    setStatus('saving');
+    try {
+      const result = await saveAvatar(look);
+      setData((d) => ({ ...d, avatar: result }));
+      // Only clear the edits if nothing changed while the request ran.
+      setEdits((current) => (current && sameAvatar(current, look) ? null : current));
+      setStatus('saved');
+    } catch {
+      setFailed(true);
+      setStatus('idle');
+    }
+  }, [setData]);
 
-  const back = useCallback(() => (dirty ? setConfirmLeave(true) : leave()), [dirty, leave]);
-
-  // Android back asks first too when there are unsaved changes.
+  // Each change saves a moment after the last tap.
   useEffect(() => {
     if (!dirty) return;
-    const onBack = (e: Event) =>
-      (e as CustomEvent<{ register: (priority: number, handler: () => void) => void }>).detail.register(100, () =>
-        setConfirmLeave(true),
-      );
-    document.addEventListener('ionBackButton', onBack);
-    return () => document.removeEventListener('ionBackButton', onBack);
-  }, [dirty]);
+    const timer = setTimeout(() => void flush(), AUTOSAVE_MS);
+    return () => clearTimeout(timer);
+  }, [draft, dirty, flush]);
+
+  const leave = useCallback(() => {
+    // A change made in the last half second still gets saved.
+    void flush();
+    if (router.canGoBack()) router.goBack();
+    else router.push('/tabs/profile', 'back', 'replace');
+  }, [flush, router]);
 
   const setPart = (part: ColorPart, id: string) => {
     if (draft) setEdits({ ...draft, colors: { ...draft.colors, [part]: id } });
@@ -148,21 +172,6 @@ const Character: React.FC = () => {
 
   const setStyle = <K extends StylePart>(part: K, id: ResolvedStyles[K]) => {
     if (draft) setEdits({ ...draft, styles: { ...stylesFor(draft.styles), [part]: id } });
-  };
-
-  const save = async () => {
-    if (!draft || saving) return;
-    setSaving(true);
-    try {
-      const result = await saveAvatar(draft);
-      me.setData((d) => ({ ...d, avatar: result }));
-      setEdits(null);
-      leave();
-    } catch {
-      setFailed(true);
-    } finally {
-      setSaving(false);
-    }
   };
 
   return (
@@ -173,7 +182,7 @@ const Character: React.FC = () => {
             <button
               type="button"
               className="lu-icon-button"
-              onClick={back}
+              onClick={leave}
               aria-label={t('avatar.back')}
               data-testid="character-back"
             >
@@ -209,6 +218,13 @@ const Character: React.FC = () => {
                   testId="character-preview"
                   className="block h-[min(25vh,230px)] w-auto max-w-full short-landscape:h-[52vh] split:h-[min(60vh,440px)]"
                 />
+                <p
+                  className="m-0 mt-1 min-h-[1.2em] text-[0.8rem] font-bold text-muted"
+                  role="status"
+                  data-testid="character-status"
+                >
+                  {status === 'saving' ? t('avatar.saving') : status === 'saved' ? t('avatar.saved') : ''}
+                </p>
               </section>
 
               <div className="grid min-w-0 gap-3.5">
@@ -286,43 +302,20 @@ const Character: React.FC = () => {
                   <button
                     type="button"
                     className="lu-link-button inline-flex items-center gap-1.5"
-                    onClick={() => setEdits(null)}
-                    disabled={!dirty}
+                    onClick={() => original && setEdits(original)}
+                    disabled={!draft || !original || sameAvatar(draft, original)}
                     data-testid="character-reset"
                   >
                     <IonIcon icon={refreshOutline} aria-hidden="true" />
                     {t('avatar.reset')}
                   </button>
                 </div>
-
-                <CtaButton
-                  className="w-full"
-                  onClick={() => void save()}
-                  disabled={saving}
-                  aria-busy={saving}
-                  data-testid="character-save"
-                >
-                  {saving ? t('avatar.saving') : t('avatar.save')}
-                </CtaButton>
               </div>
             </div>
           )}
         </div>
       </IonContent>
 
-      <PixelDialog
-        open={confirmLeave}
-        title={t('avatar.leaveTitle')}
-        cancelLabel={t('avatar.keepEditing')}
-        confirmLabel={t('avatar.discard')}
-        destructive
-        onCancel={() => setConfirmLeave(false)}
-        onConfirm={() => {
-          setConfirmLeave(false);
-          setEdits(null);
-          leave();
-        }}
-      />
       <PixelToast message={failed ? t('avatar.saveFailed') : null} onDone={clearFailed} />
     </IonPage>
   );

@@ -255,7 +255,7 @@
       "title": "{{month}} wins",
       "bodyFat": "Body fat",
       "muscle": "Muscle",
-      "memberSince": "Member since"
+      "bmi": "BMI"
     },
     "notifications": {
       "bell": "Notifications",
@@ -386,13 +386,9 @@
     },
     "randomize": "Surprise me",
     "reset": "Undo changes",
-    "save": "Save character",
     "saving": "Saving…",
     "saveFailed": "Couldn't save your character. Try again.",
     "error": "Couldn't load your character.",
-    "leaveTitle": "Leave without saving?",
-    "keepEditing": "Keep editing",
-    "discard": "Discard changes",
     "color": {
       "match-hair": "Match hair",
       "fair": "Fair",
@@ -429,7 +425,8 @@
       "gray": "Gray",
       "dark-plum": "Dark plum",
       "warm-brown": "Warm brown"
-    }
+    },
+    "saved": "Saved"
   },
   "bodyComp": {
     "kicker": "From your InBody scan",
