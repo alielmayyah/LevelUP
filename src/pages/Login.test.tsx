@@ -38,7 +38,8 @@ describe('Login', () => {
 
   it('has one Fit ID field, no password, and a numeric keypad', () => {
     renderLogin();
-    expect(screen.getByRole('heading', { name: 'Welcome to LevelUP' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'LevelUP' })).toBeInTheDocument();
+    expect(screen.queryByText('Welcome to LevelUP')).toBeNull();
     expect(field()).toHaveAttribute('inputmode', 'numeric');
     expect(field()).toHaveAttribute('dir', 'ltr');
     expect(document.querySelector('input[type="password"]')).toBeNull();

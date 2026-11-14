@@ -13,7 +13,9 @@ for (const lang of LOCALES)
         const s = strings[lang].login;
         await page.goto('/login');
         const login = page.getByTestId('page-login');
-        await expect(login.getByRole('heading', { name: s.welcome.replace('{{name}}', 'LevelUP') })).toBeVisible();
+        // The logo is the heading; there is no scene picture and no welcome line.
+        await expect(login.getByRole('heading', { level: 1, name: 'LevelUP' })).toBeVisible();
+        await expect(login.locator('img')).toHaveCount(1);
         await expect(login.getByText(s.help)).toBeVisible();
         const field = login.getByLabel(s.fitId);
         await expect(field).toHaveAttribute('dir', 'ltr');

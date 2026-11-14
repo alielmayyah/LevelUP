@@ -276,7 +276,6 @@
     "hello": "Hello, {{name}}"
   },
   "login": {
-    "welcome": "Welcome to {{name}}",
     "fitId": "Fit ID",
     "help": "Ask the front desk if you don't have one.",
     "submit": "Sign in",
