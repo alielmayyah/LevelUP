@@ -1,0 +1,258 @@
+{
+  "outline": "#170817",
+  "skin": {
+    "default": "warm-tan",
+    "presets": [
+      {
+        "id": "fair",
+        "color": "#f3ceb1",
+        "name": "Fair"
+      },
+      {
+        "id": "light",
+        "color": "#eab78e",
+        "name": "Light"
+      },
+      {
+        "id": "light-olive",
+        "color": "#d8a77e",
+        "name": "Light olive"
+      },
+      {
+        "id": "warm-tan",
+        "color": "#d47c51",
+        "name": "Warm tan"
+      },
+      {
+        "id": "golden-brown",
+        "color": "#b77a50",
+        "name": "Golden brown"
+      },
+      {
+        "id": "medium-brown",
+        "color": "#985d3f",
+        "name": "Medium brown"
+      },
+      {
+        "id": "deep-brown",
+        "color": "#794735",
+        "name": "Deep brown"
+      },
+      {
+        "id": "rich-brown",
+        "color": "#583327",
+        "name": "Rich brown"
+      }
+    ]
+  },
+  "hair": {
+    "default": "espresso",
+    "presets": [
+      {
+        "id": "espresso",
+        "color": "#35192f",
+        "name": "Espresso"
+      },
+      {
+        "id": "soft-black",
+        "color": "#25222a",
+        "name": "Soft black"
+      },
+      {
+        "id": "brown",
+        "color": "#513626",
+        "name": "Brown"
+      },
+      {
+        "id": "auburn",
+        "color": "#783d2d",
+        "name": "Auburn"
+      },
+      {
+        "id": "honey-blond",
+        "color": "#be8a4d",
+        "name": "Honey blond"
+      },
+      {
+        "id": "silver",
+        "color": "#9693a5",
+        "name": "Silver"
+      }
+    ]
+  },
+  "tank": {
+    "default": "levelup-violet",
+    "presets": [
+      {
+        "id": "levelup-violet",
+        "color": "#4b3763",
+        "name": "LevelUP violet"
+      },
+      {
+        "id": "charcoal",
+        "color": "#31343d",
+        "name": "Charcoal"
+      },
+      {
+        "id": "navy",
+        "color": "#2f4869",
+        "name": "Navy"
+      },
+      {
+        "id": "teal",
+        "color": "#337f75",
+        "name": "Teal"
+      },
+      {
+        "id": "rust",
+        "color": "#a35a43",
+        "name": "Rust"
+      },
+      {
+        "id": "amber",
+        "color": "#b7833d",
+        "name": "Amber"
+      },
+      {
+        "id": "orchid",
+        "color": "#a6459c",
+        "name": "Orchid"
+      },
+      {
+        "id": "cream",
+        "color": "#ded4c9",
+        "name": "Cream"
+      }
+    ]
+  },
+  "shorts": {
+    "default": "deep-violet",
+    "presets": [
+      {
+        "id": "deep-violet",
+        "color": "#3b2e51",
+        "name": "Deep violet"
+      },
+      {
+        "id": "charcoal",
+        "color": "#31343d",
+        "name": "Charcoal"
+      },
+      {
+        "id": "navy",
+        "color": "#2f4869",
+        "name": "Navy"
+      },
+      {
+        "id": "teal",
+        "color": "#337f75",
+        "name": "Teal"
+      },
+      {
+        "id": "slate",
+        "color": "#565b70",
+        "name": "Slate"
+      },
+      {
+        "id": "olive",
+        "color": "#626647",
+        "name": "Olive"
+      }
+    ]
+  },
+  "shoes": {
+    "default": "off-white",
+    "presets": [
+      {
+        "id": "off-white",
+        "color": "#e1d7df",
+        "name": "Off-white"
+      },
+      {
+        "id": "charcoal",
+        "color": "#31343d",
+        "name": "Charcoal"
+      },
+      {
+        "id": "slate",
+        "color": "#565b70",
+        "name": "Slate"
+      },
+      {
+        "id": "violet",
+        "color": "#714aa3",
+        "name": "Violet"
+      },
+      {
+        "id": "teal",
+        "color": "#337f75",
+        "name": "Teal"
+      },
+      {
+        "id": "amber",
+        "color": "#b7833d",
+        "name": "Amber"
+      },
+      {
+        "id": "orchid",
+        "color": "#a6459c",
+        "name": "Orchid"
+      }
+    ]
+  },
+  "eyes": {
+    "default": "dark-brown",
+    "presets": [
+      {
+        "id": "dark-brown",
+        "color": "#170817",
+        "name": "Dark brown"
+      },
+      {
+        "id": "brown",
+        "color": "#543626",
+        "name": "Brown"
+      },
+      {
+        "id": "hazel",
+        "color": "#755435",
+        "name": "Hazel"
+      },
+      {
+        "id": "green",
+        "color": "#485a38",
+        "name": "Green"
+      },
+      {
+        "id": "blue",
+        "color": "#365577",
+        "name": "Blue"
+      },
+      {
+        "id": "gray",
+        "color": "#575465",
+        "name": "Gray"
+      }
+    ]
+  },
+  "smile": {
+    "default": "dark-plum",
+    "presets": [
+      {
+        "id": "dark-plum",
+        "color": "#170817",
+        "name": "Dark plum"
+      },
+      {
+        "id": "brown",
+        "color": "#58332b",
+        "name": "Brown"
+      },
+      {
+        "id": "warm-brown",
+        "color": "#754136",
+        "name": "Warm brown"
+      }
+    ]
+  }
+}

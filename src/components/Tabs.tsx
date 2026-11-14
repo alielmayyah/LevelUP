@@ -18,6 +18,7 @@ const withSuspense = (Page: LazyExoticComponent<ComponentType>) => {
 const Home = withSuspense(lazy(() => import('../pages/Dashboard')));
 const Progress = withSuspense(lazy(() => import('../pages/Progress')));
 const Goals = withSuspense(lazy(() => import('../pages/Goals')));
+const Character = withSuspense(lazy(() => import('../pages/Character')));
 const Leaderboard = withSuspense(lazy(() => import('../pages/Leaderboard')));
 const Profile = withSuspense(lazy(() => import('../pages/Profile')));
 
@@ -35,6 +36,7 @@ const Tabs: React.FC = () => {
         <Route exact path="/tabs/goals" component={Goals} />
         <Route exact path="/tabs/leaderboard" component={Leaderboard} />
         <Route exact path="/tabs/profile" component={Profile} />
+        <Route exact path="/tabs/profile/character" component={Character} />
         <Route exact path="/tabs">
           <Redirect to="/tabs/home" />
         </Route>

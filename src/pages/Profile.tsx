@@ -1,5 +1,6 @@
 import { IonIcon } from '@ionic/react';
 import {
+  brushOutline,
   chevronForward,
   colorPaletteOutline,
   eyeOutline,
@@ -12,12 +13,15 @@ import {
 } from 'ionicons/icons';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { saveSettings } from '../api/settings';
 import type { ProfileDto, SettingsDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import { clearToken } from '../auth/token';
+import Avatar from '../avatar/Avatar';
+import { starterAvatar } from '../avatar/catalog';
+import '../avatar/avatar.scss';
 import { brand } from '../brand.config';
 import CtaButton from '../components/CtaButton';
 import PixelDialog from '../components/PixelDialog';
@@ -29,7 +33,40 @@ import { formatNumber } from '../i18n/format';
 import { useSound } from '../sound/useSound';
 import { getThemeMode, setTheme, type ThemeMode } from '../theme/theme';
 import { ageOn } from './profile/age';
-import './profile/Profile.css';
+
+const GRID = 'grid gap-3.5 wide:grid-cols-[1fr_1fr] wide:items-start';
+/** One settings line: label on one side, value or control on the other; wraps on narrow screens. */
+const ROW = 'flex min-h-[52px] flex-wrap items-center justify-between gap-x-3 gap-y-2 py-2 font-semibold';
+/** Rows are split by a thin rule, except the last one. */
+const RULED = '[border-block-end:2px_solid_var(--lu-surface-2)] last:[border-block-end:0]';
+const LABEL = 'flex min-w-0 items-center gap-2.5 font-bold';
+const LABEL_ICON = 'flex-none text-[1.2rem]';
+const HINT = 'text-[0.8rem] font-semibold text-muted';
+
+/** A label with an icon, and optionally a one-line hint under it. */
+const RowLabel: React.FC<{ icon: string; children: React.ReactNode; hint?: { id: string; text: string } }> = ({
+  icon,
+  children,
+  hint,
+}) => (
+  <span className={`${LABEL} text-ink`}>
+    <IonIcon className={`${LABEL_ICON} text-muted`} icon={icon} aria-hidden="true" />
+    {hint ? (
+      <span className="grid">
+        {children}
+        <small id={hint.id} className={HINT}>
+          {hint.text}
+        </small>
+      </span>
+    ) : (
+      children
+    )}
+  </span>
+);
+
+const SECTION =
+  'mx-0 mt-3 mb-1 flex items-center gap-2 text-[0.8rem] font-extrabold tracking-[0.08em] text-primary uppercase dark:text-secondary ar:text-[0.9rem] ar:tracking-normal';
+const VALUE = 'text-end font-extrabold text-ink';
 
 interface SwitchProps {
   checked: boolean;
@@ -65,12 +102,18 @@ interface ChoiceProps<T extends string> {
 function Choice<T extends string>({ label, value, options, onChange, testId }: ChoiceProps<T>) {
   const { i18n } = useTranslation();
   return (
-    <div className="lu-choice" role="radiogroup" aria-label={label} data-testid={testId}>
+    <div
+      className="lu-choice inline-flex gap-0.5 rounded-lg border-2 border-line bg-surface-2 p-0.5"
+      role="radiogroup"
+      aria-label={label}
+      data-testid={testId}
+    >
       {options.map((o, i) => (
         <button
           key={o.value}
           type="button"
           role="radio"
+          className="min-h-9 min-w-11 cursor-pointer rounded-md border-0 bg-transparent px-2.5 py-0 font-inherit text-[0.8rem] font-extrabold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
           lang={o.lang}
           aria-checked={value === o.value}
           tabIndex={value === o.value ? 0 : -1}
@@ -126,7 +169,7 @@ const Profile: React.FC = () => {
   return (
     <TabPage testId="page-profile" title={t('tabs.profile')} subtitle={t('profile.subtitle')} onRefresh={me.reload}>
       {me.status === 'loading' && (
-        <div className="lu-profile" aria-busy="true">
+        <div className={GRID} aria-busy="true">
           <div className="lu-skeleton-card" />
           <div className="lu-skeleton-card" />
         </div>
@@ -140,50 +183,56 @@ const Profile: React.FC = () => {
       )}
 
       {p && (
-        <div className="lu-profile">
-          <section className="lu-px-card lu-profile-id">
-            <span className="lu-avatar lu-display" aria-hidden="true">
-              {p.firstName.charAt(0)}
-              {p.lastName.charAt(0)}
+        <div className={GRID}>
+          <section className="lu-px-card flex items-center gap-3.5 wide:col-span-full">
+            <span className="lu-avatar-frame block size-[72px] flex-none overflow-hidden rounded-[12px]">
+              <Avatar config={p.avatar ?? starterAvatar(String(p.memberId))} className="block size-full" testId="profile-avatar" />
             </span>
-            <div>
-              <h2 className="lu-profile-name lu-display" data-testid="profile-name">
+            <div className="min-w-0">
+              <h2 className="lu-display m-0 text-[2rem] leading-[1.1]" data-testid="profile-name">
                 {p.firstName} {p.lastName}
               </h2>
-              <p className="lu-profile-fitid" dir="auto">
+              <p className="mx-0 mt-1 mb-0 font-bold text-muted" dir="auto">
                 {t('profile.fitId', { id: p.fitId })}
               </p>
+              <Link
+                to="/tabs/profile/character"
+                className="lu-link-button -ms-2.5 mt-1 inline-flex items-center gap-1.5 no-underline"
+                data-testid="customize-character"
+              >
+                <IonIcon icon={brushOutline} aria-hidden="true" />
+                {t('profile.customize')}
+              </Link>
             </div>
           </section>
 
-          <section className="lu-px-card lu-rows" aria-labelledby="sec-personal">
-            <h3 id="sec-personal" className="lu-row-section">
+          <section className="lu-px-card grid py-1.5" aria-labelledby="sec-personal">
+            <h3 id="sec-personal" className={SECTION}>
               <IonIcon icon={personOutline} aria-hidden="true" />
               {t('profile.personal')}
             </h3>
-            <div className="lu-row">
+            <div className={`${ROW} ${RULED} text-muted`}>
               <span>{t('profile.age')}</span>
-              <strong data-testid="profile-age">{formatNumber(ageOn(p.birthDate, now))}</strong>
+              <strong className={VALUE} data-testid="profile-age">
+                {formatNumber(ageOn(p.birthDate, now))}
+              </strong>
             </div>
-            <div className="lu-row">
+            <div className={`${ROW} ${RULED} text-muted`}>
               <span>{t('profile.height')}</span>
-              <strong>
+              <strong className={VALUE}>
                 {formatNumber(p.heightCm)} {t('units.cm')}
               </strong>
             </div>
           </section>
 
-          <section className="lu-px-card lu-rows" aria-labelledby="sec-settings">
-            <h3 id="sec-settings" className="lu-row-section">
+          <section className="lu-px-card grid py-1.5" aria-labelledby="sec-settings">
+            <h3 id="sec-settings" className={SECTION}>
               <IonIcon icon={settingsOutline} aria-hidden="true" />
               {t('profile.settings')}
             </h3>
 
-            <div className="lu-row">
-              <span className="lu-row-label">
-                <IonIcon icon={languageOutline} aria-hidden="true" />
-                {t('settings.language')}
-              </span>
+            <div className={`${ROW} ${RULED} text-muted`}>
+              <RowLabel icon={languageOutline}>{t('settings.language')}</RowLabel>
               <Choice
                 testId="setting-language"
                 label={t('settings.language')}
@@ -199,11 +248,8 @@ const Profile: React.FC = () => {
               />
             </div>
 
-            <div className="lu-row">
-              <span className="lu-row-label">
-                <IonIcon icon={colorPaletteOutline} aria-hidden="true" />
-                {t('settings.theme')}
-              </span>
+            <div className={`${ROW} ${RULED} text-muted`}>
+              <RowLabel icon={colorPaletteOutline}>{t('settings.theme')}</RowLabel>
               <Choice
                 testId="setting-theme"
                 label={t('settings.theme')}
@@ -216,14 +262,10 @@ const Profile: React.FC = () => {
               />
             </div>
 
-            <div className="lu-row">
-              <span className="lu-row-label">
-                <IonIcon icon={volumeHighOutline} aria-hidden="true" />
-                <span>
-                  {t('profile.sound')}
-                  <small id="hint-sound">{t('profile.soundHint')}</small>
-                </span>
-              </span>
+            <div className={`${ROW} ${RULED} text-muted`}>
+              <RowLabel icon={volumeHighOutline} hint={{ id: 'hint-sound', text: t('profile.soundHint') }}>
+                {t('profile.sound')}
+              </RowLabel>
               <Switch
                 testId="setting-sound"
                 hintId="hint-sound"
@@ -233,14 +275,10 @@ const Profile: React.FC = () => {
               />
             </div>
 
-            <div className="lu-row">
-              <span className="lu-row-label">
-                <IonIcon icon={eyeOutline} aria-hidden="true" />
-                <span>
-                  {t('profile.showFitScore')}
-                  <small id="hint-show-fitscore">{t('profile.showFitScoreHint')}</small>
-                </span>
-              </span>
+            <div className={`${ROW} ${RULED} text-muted`}>
+              <RowLabel icon={eyeOutline} hint={{ id: 'hint-show-fitscore', text: t('profile.showFitScoreHint') }}>
+                {t('profile.showFitScore')}
+              </RowLabel>
               <Switch
                 testId="setting-show-fitscore"
                 hintId="hint-show-fitscore"
@@ -250,14 +288,10 @@ const Profile: React.FC = () => {
               />
             </div>
 
-            <div className="lu-row">
-              <span className="lu-row-label">
-                <IonIcon icon={podiumOutline} aria-hidden="true" />
-                <span>
-                  {t('profile.leaderboard')}
-                  <small id="hint-leaderboard">{t('profile.leaderboardHint')}</small>
-                </span>
-              </span>
+            <div className={`${ROW} ${RULED} text-muted`}>
+              <RowLabel icon={podiumOutline} hint={{ id: 'hint-leaderboard', text: t('profile.leaderboardHint') }}>
+                {t('profile.leaderboard')}
+              </RowLabel>
               <Switch
                 testId="setting-leaderboard"
                 hintId="hint-leaderboard"
@@ -267,12 +301,16 @@ const Profile: React.FC = () => {
               />
             </div>
 
-            <button type="button" className="lu-row lu-row-button lu-signout" onClick={() => setConfirmOut(true)}>
-              <span className="lu-row-label">
-                <IonIcon icon={logOutOutline} aria-hidden="true" />
+            <button
+              type="button"
+              className={`lu-row-button lu-signout ${ROW} w-full cursor-pointer border-0 bg-transparent font-inherit text-danger`}
+              onClick={() => setConfirmOut(true)}
+            >
+              <span className={`${LABEL} text-danger`}>
+                <IonIcon className={`${LABEL_ICON} text-danger`} icon={logOutOutline} aria-hidden="true" />
                 {t('profile.signOut')}
               </span>
-              <IonIcon className="lu-chevron" icon={chevronForward} aria-hidden="true" />
+              <IonIcon className="lu-chevron text-danger" icon={chevronForward} aria-hidden="true" />
             </button>
           </section>
         </div>

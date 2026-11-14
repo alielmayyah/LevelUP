@@ -1,0 +1,62 @@
+/* Character frames and the editor's swatches: gradients and outlines utilities can't say cleanly. */
+@layer components {
+  /* Dusk stage behind the character, from the splash palette, in both themes. */
+  .lu-avatar-stage {
+    background: radial-gradient(ellipse at 50% 40%, var(--lu-splash-bg-2), var(--lu-splash-bg) 78%);
+    border-color: color-mix(in srgb, var(--lu-splash-bg-2) 60%, var(--lu-border));
+  }
+
+  /* Portrait tile in Profile: the same stage, framed like a pixel badge. */
+  .lu-avatar-frame {
+    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border));
+    background: radial-gradient(ellipse at 50% 35%, var(--lu-splash-bg-2), var(--lu-splash-bg) 80%);
+    box-shadow: 0 3px 0 var(--ion-color-primary-shade);
+  }
+
+  .lu-style-thumb {
+    background: color-mix(in srgb, var(--lu-splash-text) 24%, var(--lu-splash-bg-2));
+  }
+
+  .lu-customizer-tab {
+    background: var(--lu-surface-2);
+    color: var(--lu-text-muted);
+  }
+
+  .lu-customizer-tab[aria-selected='true'] {
+    background: color-mix(in srgb, var(--ion-color-primary) 12%, var(--lu-surface));
+    color: var(--lu-text);
+  }
+
+  .lu-swatch {
+    box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .lu-swatch[aria-checked='true'] {
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: 2px;
+  }
+
+  :is(.lu-swatch, .lu-style-card, .lu-customizer-tab):focus-visible {
+    outline: 3px dashed var(--lu-text);
+    outline-offset: 3px;
+  }
+
+  .lu-swatch:active {
+    transform: translateY(2px);
+    box-shadow: none;
+  }
+
+  /* White tick with a dark ring reads on every swatch, light or dark. */
+  .lu-swatch-check {
+    color: var(--lu-splash-text);
+    filter: drop-shadow(0 0 1px var(--lu-splash-bg)) drop-shadow(0 0 1px var(--lu-splash-bg));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-swatch:active {
+      transform: none;
+    }
+  }
+}
