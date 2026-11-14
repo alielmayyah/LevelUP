@@ -98,6 +98,8 @@ describe('Progress', () => {
     await userEvent.click(await screen.findByTestId('progress-more'));
     expect(await screen.findByTestId('chart-trend')).toBeInTheDocument();
     expect(screen.getByText(/Weight went from 76\.2 kg to 80\.0 kg/)).toBeInTheDocument();
+    // Each option carries its metric's pixel icon; the name stays the visible label.
+    expect(screen.getByRole('radio', { name: 'Body fat' }).querySelector('svg.lu-pixel-icon')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('radio', { name: 'Body fat' }));
     expect(screen.getByText(/Body fat went from 14\.6% to 8\.0%/)).toBeInTheDocument();
     expect(screen.getByTestId('trend-score')).toBeInTheDocument();
