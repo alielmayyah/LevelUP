@@ -58,8 +58,7 @@
     "sameSince": "same as {{date}}",
     "olderScan": "Older scan",
     "newerScan": "Newer scan",
-    "earlierScan": "Earlier scan",
-    "scanPosition": "{{date}} · scan {{n}} of {{total}}",
+    "scanPosition": "Scan {{n}} of {{total}}",
     "firstScan": "Your first scan",
     "viewAll": "All scans ({{n}})",
     "allScans": "All scans",
@@ -139,11 +138,7 @@
     "subtitle": "Your missions",
     "start": "Start",
     "target": "Target",
-    "progress": "Progress",
-    "due": "Due {{date}}",
-    "completedOn": "Completed {{date}}",
     "upcomingNote": "Starts after your current mission",
-    "overdue": "Overdue",
     "empty": "Nothing here yet",
     "error": "Couldn't load your goals.",
     "section": {
@@ -152,7 +147,10 @@
       "completed": "Completed"
     },
     "new": "New goal",
-    "emptyCta": "Set your first goal"
+    "emptyCta": "Set your first goal",
+    "now": "Now",
+    "reached": "Goal reached",
+    "doneOf": "{{done}} of {{total}} kg done"
   },
   "leaderboard": {
     "subtitle": "Gym rankings",

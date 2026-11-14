@@ -58,8 +58,7 @@
     "sameSince": "زي {{date}} بالظبط",
     "olderScan": "القياس اللي قبله",
     "newerScan": "القياس اللي بعده",
-    "earlierScan": "قياس قديم",
-    "scanPosition": "{{date}} · قياس {{n}} من {{total}}",
+    "scanPosition": "قياس {{n}} من {{total}}",
     "firstScan": "أول قياس ليك",
     "viewAll": "كل القياسات ({{n}})",
     "allScans": "كل القياسات",
@@ -139,11 +138,7 @@
     "subtitle": "مهماتك",
     "start": "البداية",
     "target": "الهدف",
-    "progress": "التقدّم",
-    "due": "آخر ميعاد {{date}}",
-    "completedOn": "خلصت يوم {{date}}",
     "upcomingNote": "هتبدأ بعد مهمتك الحالية",
-    "overdue": "متأخرة",
     "empty": "مفيش حاجة هنا لسه",
     "error": "مقدرناش نحمّل أهدافك.",
     "section": {
@@ -152,7 +147,10 @@
       "completed": "اللي خلصت"
     },
     "new": "هدف جديد",
-    "emptyCta": "حط أول هدف ليك"
+    "emptyCta": "حط أول هدف ليك",
+    "now": "دلوقتي",
+    "reached": "وصلت للهدف",
+    "doneOf": "خلّصت {{done}} من {{total}} كجم"
   },
   "leaderboard": {
     "subtitle": "ترتيب الجيم",

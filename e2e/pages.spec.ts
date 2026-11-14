@@ -104,11 +104,10 @@ test.describe('Goals', () => {
     // Sections in order: in progress, up next, completed.
     const order = await g.locator('[data-testid^="section-"]').evaluateAll((els) => els.map((e) => e.dataset.testid));
     expect(order).toEqual(['section-active', 'section-upcoming', 'section-completed']);
-    // A goal's details open on tap.
-    const first = g.getByTestId('section-active').getByRole('button');
-    await first.click();
-    await expect(first).toHaveAttribute('aria-expanded', 'true');
-    await expect(g.getByText(en.goals.due.replace(' {{date}}', ''), { exact: false }).first()).toBeVisible();
+    // Every detail is on the card: start, now, target. No dates, no coach note.
+    await expect(g.getByTestId('section-active').getByTestId('goal-stats')).toContainText(en.goals.now);
+    await expect(g.getByTestId('section-completed').getByTestId('goal').first()).toContainText(en.goals.reached);
+    await expect(g.getByText('Keep protein high on training days.')).toHaveCount(0);
   });
 
   test('a member creates their own goal and it goes live at once', async ({ page, loginAs }) => {
@@ -123,7 +122,7 @@ test.describe('Goals', () => {
     await n.getByTestId('goal-more').click();
     await expect(n.getByTestId('goal-name')).toHaveText('Gain 2.5 kg of muscle');
     // No due date to pick.
-    await expect(n.getByText(en.goals.due.replace(' {{date}}', ''), { exact: false })).toHaveCount(0);
+    await expect(n.getByText(/^Due /)).toHaveCount(0);
     await n.getByTestId('goal-create').click();
 
     await expect(page).toHaveURL(/\/tabs\/goals$/);

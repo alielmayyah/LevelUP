@@ -104,8 +104,10 @@ describe('Progress', () => {
     await screen.findByTestId('latest-scan');
     expect(screen.getByTestId('scan-newer')).toBeDisabled();
     await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
-    expect(screen.getByTestId('scan-title')).toHaveTextContent('Earlier scan');
-    expect(screen.getByTestId('scan-date')).toHaveTextContent('scan 5 of 6');
+    // The date is the title; the position reads 5/6 (and Scan 5 of 6 to screen readers).
+    expect(screen.getByTestId('scan-title')).toHaveTextContent('Oct 15, 2026');
+    expect(screen.getByTestId('scan-date')).toHaveTextContent('5/6');
+    expect(screen.getByTestId('scan-date')).toHaveTextContent('Scan 5 of 6');
     expect(screen.getByTestId('metric-weight')).toHaveTextContent(/79\.3\s?kg/);
     for (let i = 0; i < 4; i++) await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
     expect(screen.getByTestId('scan-older')).toBeDisabled();
@@ -122,7 +124,7 @@ describe('Progress', () => {
     expect(screen.getByTestId('pager')).toHaveTextContent('Page 1 of 2');
     expect(rows[0]).toHaveAttribute('aria-current', 'true');
     await userEvent.click(rows[2]);
-    expect(screen.getByTestId('scan-date')).toHaveTextContent('scan 4 of 6');
+    expect(screen.getByTestId('scan-date')).toHaveTextContent('4/6');
   });
 
   it('every measurement has an info button that explains it', async () => {
@@ -216,30 +218,31 @@ describe('Goals', () => {
     await renderAs('101', Goals);
     const goal = within(await screen.findByTestId('section-active')).getByTestId('goal');
     expect(goal).toHaveTextContent('Gain 3 kg of muscle');
-    expect(within(goal).getByTestId('goal-meta')).toHaveTextContent(/67%.*2\.0 \/ 3\.0 kg/);
+    expect(within(goal).getByTestId('goal-percent')).toHaveTextContent('67%');
+    expect(within(goal).getByTestId('goal-meta')).toHaveTextContent('2.0 of 3.0 kg done');
     expect(within(goal).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '67');
+    // Start, now, and target are on the card: nothing to open.
+    expect(within(goal).getByTestId('goal-stats')).toHaveTextContent(/Start.*Now.*Target/);
+    expect(within(goal).queryByRole('button')).toBeNull();
   });
 
-  it('completed goals keep a full bar and their date; upcoming ones say when they start', async () => {
+  it('completed goals keep a full bar and no date; upcoming ones say when they start', async () => {
     await renderAs('101', Goals);
     const done = within(await screen.findByTestId('section-completed')).getAllByTestId('goal');
-    expect(done[0]).toHaveTextContent(/Completed /);
+    expect(done[0]).toHaveTextContent('Goal reached');
+    // A scan's date is when the member was measured, not when the goal was met.
+    expect(done[0]).not.toHaveTextContent(/Completed |2026/);
     expect(within(done[0]).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
     const next = within(screen.getByTestId('section-upcoming')).getByTestId('goal');
     expect(next).toHaveTextContent('Starts after your current mission');
     expect(within(next).queryByRole('progressbar')).toBeNull();
   });
 
-  it('tapping a goal opens its details: start → target, due date, and coach note', async () => {
+  it('cards show no due date and no coach note', async () => {
     await renderAs('101', Goals);
-    const goal = within(await screen.findByTestId('section-active')).getByTestId('goal');
-    const toggle = within(goal).getByRole('button', { name: /Gain 3 kg of muscle/ });
-    expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    expect(within(goal).queryByText(/Due /)).not.toBeVisible();
-    await userEvent.click(toggle);
-    expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    expect(within(goal).getByText(/Due /)).toBeVisible();
-    expect(within(goal).getByText('Keep protein high on training days.')).toBeVisible();
+    await screen.findByTestId('section-active');
+    expect(screen.queryByText(/Due /)).toBeNull();
+    expect(screen.queryByText('Keep protein high on training days.')).toBeNull();
   });
 
   it('Lina, with no goals, sees one empty state', async () => {

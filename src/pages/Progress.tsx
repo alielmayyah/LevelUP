@@ -294,15 +294,22 @@ const Progress: React.FC = () => {
                   <IonIcon className="rtl:-scale-x-100" icon={chevronBack} aria-hidden="true" />
                 </button>
                 <div className="grid min-w-0 flex-1 justify-items-center text-center" aria-live="polite">
+                  {/* The scan's date is the title; under it, just where it sits, like 6/6. */}
                   <h2 id="latest-scan" className="lu-card-title m-0" data-testid="scan-title">
-                    {index === 0 ? t('progress.latest') : t('progress.earlierScan')}
+                    {scanDate(scan.takenAt)}
                   </h2>
                   <span className="text-[0.8rem] font-bold text-muted" data-testid="scan-date">
-                    {t('progress.scanPosition', {
-                      date: scanDate(scan.takenAt),
-                      n: formatNumber(list.length - index),
-                      total: formatNumber(list.length),
-                    })}
+                    <span aria-hidden="true">
+                      <bdi>
+                        {formatNumber(list.length - index)}/{formatNumber(list.length)}
+                      </bdi>
+                    </span>
+                    <span className="sr-only">
+                      {t('progress.scanPosition', {
+                        n: formatNumber(list.length - index),
+                        total: formatNumber(list.length),
+                      })}
+                    </span>
                   </span>
                 </div>
                 <button
