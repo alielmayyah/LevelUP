@@ -104,9 +104,8 @@ describe('Progress', () => {
     await screen.findByTestId('latest-scan');
     expect(screen.getByTestId('scan-newer')).toBeDisabled();
     await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
-    // The date is the title; the position reads 5/6 (and Scan 5 of 6 to screen readers).
+    // The date is the title; only screen readers hear Scan 5 of 6.
     expect(screen.getByTestId('scan-title')).toHaveTextContent('Oct 15, 2026');
-    expect(screen.getByTestId('scan-date')).toHaveTextContent('5/6');
     expect(screen.getByTestId('scan-date')).toHaveTextContent('Scan 5 of 6');
     expect(screen.getByTestId('metric-weight')).toHaveTextContent(/79\.3\s?kg/);
     for (let i = 0; i < 4; i++) await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
@@ -124,7 +123,7 @@ describe('Progress', () => {
     expect(screen.getByTestId('pager')).toHaveTextContent('Page 1 of 2');
     expect(rows[0]).toHaveAttribute('aria-current', 'true');
     await userEvent.click(rows[2]);
-    expect(screen.getByTestId('scan-date')).toHaveTextContent('4/6');
+    expect(screen.getByTestId('scan-date')).toHaveTextContent('Scan 4 of 6');
   });
 
   it('every measurement has an info button that explains it', async () => {
