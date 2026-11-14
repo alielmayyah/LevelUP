@@ -14,6 +14,7 @@ Work top to bottom. Record each finding as `ID · severity · screen · what's w
 - [ ] Deep link + reload on every `/tabs/*` URL.
 - [ ] Unknown URLs redirect (no blank screen).
 - [ ] Sign out → login; tabs locked; Back doesn't reveal data. A 401 does the same.
+- [ ] **No dead ends (iPhone has no back button):** open every screen, sheet, and dialog with only taps, as on an iPhone. Each has a visible way out: tab bar, top-start Back, ✕ or Cancel, or Retry. Deep-link straight to each stack page and check Back still goes somewhere.
 
 ## 3. Overlays
 - [ ] Each overlay: close button, Escape, backdrop (unless destructive), hardware back (`ionBackButton`).

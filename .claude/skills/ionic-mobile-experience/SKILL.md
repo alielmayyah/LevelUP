@@ -42,13 +42,14 @@ Load this skill before: creating a page; changing routes, the tab bar, or any na
 ## Standards (summary — details in references)
 
 - **Navigation** (`references/navigation-standards.md`): one route per screen; `history.replace` after sign-in/out so Back can't return to the wrong side of the gate; unknown routes never render blank; the active tab is always visible; re-tapping the active tab scrolls it to the top.
+- **No dead ends** (`references/navigation-standards.md`): iPhones have no back button, so every screen shows a tappable way out — the tab bar, a top-start Back button on stack and full-screen pages, a ✕ or Cancel on every sheet and dialog, Retry on errors. Swipe and Escape are extras, never the only exit.
 - **Pull to refresh**: every data tab uses `TabPage`'s `onRefresh` (Home has its own `IonRefresher`). Always call `e.detail.complete()` in `finally`. Not inside the notifications sheet: its pull-down already dismisses the sheet, and the sheet refetches on every open.
 - **Gestures** (`references/gesture-standards.md`): Ionic swipe-back on stack pages, swipe-down on sheets. No swipe-between-tabs (it would fight horizontal content and the iOS back swipe).
 - **Touch**: every control has a pixel pressed state (moves down 2–3 px, its hard shadow shrinks); `-webkit-tap-highlight-color: transparent` only where a pressed state replaces it; `user-select: none` on controls, never on readable content; targets ≥ 44×44 px.
 - **Overlays**: `IonModal` for sheets; `PixelDialog` for confirmations; `PixelToast` for short messages. Do not add `IonAlert`, `IonToast`, `IonActionSheet`, or `IonPopover`: `@ionic/react` is one module, so any overlay used anywhere lands in the initial bundle (it pushed it past 200 KB once). Every overlay closes with its close button, Escape, a backdrop tap (unless destructive), and Android back.
 - **Keyboard**: the right `inputMode`/`type`/`autocomplete`/`enterKeyHint` on every field; Enter submits; the submit button stays reachable with the keyboard open (Ionic's scroll assist inside `IonContent`).
 - **Lifecycle**: data refreshes when a tab is re-entered, when the app comes back to the foreground, and when the network returns — only for the visible tab.
-- **Motion**: GSAP for the tab pill and scripted sequences, loaded with `import()` outside the initial bundle; respect `prefers-reduced-motion` (see `ui-standards` → Animation).
+- **Motion**: a CSS transition for the tab pill; GSAP for scripted sequences, loaded with `import()` outside the initial bundle; respect `prefers-reduced-motion` (see `ui-standards` → Animation).
 
 ## Audit
 

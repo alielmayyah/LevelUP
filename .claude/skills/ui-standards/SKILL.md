@@ -153,5 +153,6 @@ Target WCAG 2.2 AA. `e2e/a11y.spec.ts` runs axe-core on every screen in both lan
 | Notch-safe | The iPhone project screenshot shows nothing under the notch or home indicator |
 | Bundle within budget | Build size report |
 | E2E test added or updated | See the `e2e-testing` skill |
+| No dead ends | Every screen, sheet, and dialog has a visible way out by tap alone (iPhone has no back button): tab bar, top-start Back, ✕/Cancel, or Retry |
 | Empty and partial data | The screen is checked as Lina (no scans) and Omar (one scan); every `null` has its own message |
 | Accessibility | `e2e/a11y.spec.ts` covers the screen and passes with zero violations |

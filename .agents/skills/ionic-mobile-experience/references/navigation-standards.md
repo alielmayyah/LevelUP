@@ -26,7 +26,14 @@ anything else → redirect (never a blank page)
 - **In e2e, a page mid-transition is still in the DOM** (hidden with `.ion-page-hidden`, reporting `scrollTop` 0). Wait for `not.toHaveClass(/ion-page-hidden/)` or filter `{ visible: true }` before measuring.
 - **Deep links and refresh** on any `/tabs/*` URL load that tab directly (tested by every e2e spec that does `page.goto('/tabs/…')`).
 - **Overlays don't change the URL.** Opening the notifications sheet or a dialog must not push history, so Back closes the overlay (hardware back) or leaves the page (browser), never half of each.
-- **No dead ends.** Every screen has a way out: the tab bar, a close button, or a Back path. Error states have Retry.
+- **No dead ends, ever — iPhones have no back button.** Android has a hardware/gesture back; iOS doesn't, and the swipe-back edge gesture only works on Ionic stack pages and is invisible to most members. So every screen must offer a visible, tappable way to move on or go back:
+  - **Tab pages**: the tab bar.
+  - **Stack pages** (anything reached from a tab, e.g. `/tabs/profile/character`): a Back button in the top inline-start corner (`lu-icon-button` with a mirrored arrow), plus Ionic swipe-back. Back uses `router.goBack()` when there is history and falls back to the parent route (`router.push(parent, 'back', 'replace')`) after a deep link or refresh.
+  - **Full-screen pages outside the tabs** (Login): a Back button in the top inline-start corner (`CORNER_START` + `CORNER_BUTTON`).
+  - **Sheets and dialogs**: a visible ✕ or Cancel button, never only swipe-down, Escape, or a backdrop tap.
+  - **Error and empty states**: Retry, or a link to where the member can fix it.
+  - **Unsaved changes**: Back asks first (Keep editing / Discard), it never silently traps the member.
+  - A screen that leads on by itself (the splash) must never wait on a gesture the member can't discover.
 
 ## Android hardware back
 
