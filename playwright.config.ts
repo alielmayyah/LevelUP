@@ -5,6 +5,8 @@ const baseURL = 'http://localhost:5173';
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
+  // One worker per CPU core (Playwright's default is half), locally and in CI.
+  workers: '100%',
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',

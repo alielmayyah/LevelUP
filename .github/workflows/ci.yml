@@ -1,4 +1,5 @@
 # Checks every push to dev and every pull request: lint, colors, unit tests, and the full e2e suite.
+# The e2e suite runs as five parallel jobs, one per device size, each using every CPU core.
 name: CI
 
 on:
@@ -17,7 +18,7 @@ concurrency:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,17 +29,44 @@ jobs:
       - run: npm run lint
       - run: npm run check-colors
       - run: npm test
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+
+  e2e:
+    name: e2e (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: iphone
+            browser: webkit
+          - project: android
+            browser: chromium
+          - project: small
+            browser: chromium
+          - project: tablet
+            browser: webkit
+          - project: desktop
+            browser: chromium
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Only the browser this device size needs.
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
       # The production build, served by vite preview, is what the e2e suite checks.
-      - name: E2E (all five device sizes)
-        run: npm run test:e2e
+      - name: E2E (${{ matrix.project }})
+        run: npx playwright test --project=${{ matrix.project }}
         env:
           E2E_PROD: '1'
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.project }}
           path: |
             playwright-report
             test-results
