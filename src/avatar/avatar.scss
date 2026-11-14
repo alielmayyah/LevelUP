@@ -61,16 +61,6 @@
     }
   }
 
-  /* Sideways strips scroll without a scrollbar; the cut-off edge shows there is more. */
-  .lu-strip {
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
   .lu-customizer-tab {
     background: transparent;
     color: var(--lu-text-muted);

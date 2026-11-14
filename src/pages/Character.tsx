@@ -25,6 +25,7 @@ import {
 import { CustomizerIcon, OutfitPicker, StylePicker } from '../avatar/StylePicker';
 import CtaButton from '../components/CtaButton';
 import PixelToast from '../components/PixelToast';
+import ScrollStrip from '../components/ScrollStrip';
 import { focusSibling, rovingTarget } from '../components/roving';
 import '../avatar/avatar.scss';
 
@@ -63,10 +64,11 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
         </span>
       </p>
       {/* One row that scrolls sideways, edge to edge, like a color strip in a camera app. */}
-      <div
+      <ScrollStrip
         role="radiogroup"
         aria-labelledby={labelId}
-        className="lu-strip -mx-3 flex gap-2.5 overflow-x-auto px-3 pt-1 pb-2"
+        outerClassName="-mx-3"
+        className="flex gap-2.5 overflow-x-auto px-3 pt-1 pb-2"
       >
         {presets.map((preset, i) => {
           const on = preset.id === value;
@@ -103,7 +105,7 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
             </button>
           );
         })}
-      </div>
+      </ScrollStrip>
     </div>
   );
 };
@@ -270,10 +272,11 @@ const Character: React.FC = () => {
                 className="lu-editor-panel flex min-h-0 flex-col split:m-3 split:ms-0"
                 aria-label={t('avatar.customize')}
               >
-                <div
+                <ScrollStrip
                   role="tablist"
                   aria-label={t('avatar.customize')}
-                  className="lu-strip flex flex-none gap-1.5 overflow-x-auto px-3 pt-3 pb-2"
+                  outerClassName="flex-none"
+                  className="flex gap-1.5 overflow-x-auto px-3 pt-3 pb-2"
                 >
                   {CUSTOMIZER_TABS.map((tab, i) => (
                     <button
@@ -301,7 +304,7 @@ const Character: React.FC = () => {
                       {t(`avatar.tab.${tab}`)}
                     </button>
                   ))}
-                </div>
+                </ScrollStrip>
 
                 <div className="min-h-0 flex-1 overflow-y-auto px-3 pt-1 pb-[calc(16px+var(--ion-safe-area-bottom,0px))]">
                   {CUSTOMIZER_TABS.map((tab) => (
