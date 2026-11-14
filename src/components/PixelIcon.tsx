@@ -1,4 +1,4 @@
-import './PixelIcon.css';
+import './PixelIcon.scss';
 
 /*
  * Pixel-art icons drawn on a 12×12 grid, to match the app's pixel style.
@@ -122,6 +122,96 @@ const ICONS = {
     '.....XX.....',
     '....XOOX....',
     '...XXXXXX...',
+    '............',
+  ],
+  // Water: one drop with a shine down its left side.
+  drop: [
+    '.....XX.....',
+    '....XOOX....',
+    '....XOOX....',
+    '...XOOOOX...',
+    '...XOOOOX...',
+    '..XOYOOOOX..',
+    '..XOYOOOOX..',
+    '.XOYOOOOOOX.',
+    '.XOYOOOOOOX.',
+    '.XOOOOOOOOX.',
+    '..XOOOOOOX..',
+    '...XXXXXX...',
+  ],
+  // Protein: a chicken drumstick, meat up top (fill), bone down to the knuckle (core).
+  drumstick: [
+    '...XXXX.....',
+    '..XOOOOX....',
+    '.XOYYOOOX...',
+    '.XOYOOOOX...',
+    '.XOOOOOOX...',
+    '..XOOOOOX...',
+    '...XOOOX....',
+    '....XXHX....',
+    '.....XHHX.XX',
+    '......XHHXHX',
+    '.......XHHHX',
+    '........XXX.',
+  ],
+  // Minerals: a cut gem, lit from the top left.
+  gem: [
+    '............',
+    '...XXXXXX...',
+    '..XYYOOOOX..',
+    '.XYYOOOOOOX.',
+    'XXXXXXXXXXXX',
+    '.XOOYOOOOOX.',
+    '..XOYOOOOX..',
+    '...XOYOOX...',
+    '....XOOX....',
+    '.....XX.....',
+    '............',
+    '............',
+  ],
+  // Resting calories: a lightning bolt, the energy the body burns.
+  bolt: [
+    '.....XXXXX..',
+    '....XOYOX...',
+    '....XOOX....',
+    '...XOOX.....',
+    '..XOOXXXX...',
+    '..XOOOOOOX..',
+    '..XXXXOOX...',
+    '.....XOX....',
+    '....XOX.....',
+    '...XOX......',
+    '...XX.......',
+    '............',
+  ],
+  // BMI: a ruler with tick marks (size for your height).
+  ruler: [
+    '............',
+    '............',
+    '............',
+    'XXXXXXXXXXXX',
+    'XOYYYYYYYYOX',
+    'XOXOXOXOXOOX',
+    'XOXOOOXOOOOX',
+    'XOOOOOOOOOOX',
+    'XXXXXXXXXXXX',
+    '............',
+    '............',
+    '............',
+  ],
+  // Visceral fat: a heart, for the organs this deep belly fat sits around.
+  heart: [
+    '............',
+    '..XX....XX..',
+    '.XOOX..XOOX.',
+    'XOYOOXXOOOOX',
+    'XOYOOOOOOOOX',
+    'XOOOOOOOOOOX',
+    '.XOOOOOOOOX.',
+    '..XOOOOOOX..',
+    '...XOOOOX...',
+    '....XOOX....',
+    '.....XX.....',
     '............',
   ],
 } as const;
