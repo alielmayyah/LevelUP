@@ -74,7 +74,13 @@ describe('dashboard', () => {
     const { status, body: d } = await get<DashboardDto>('/me/dashboard', '101');
     expect(status).toBe(200);
     const { body: me } = await get<ProfileDto>('/me', '101');
-    expect(d.member).toEqual({ firstName: 'Sam', showFitScore: true, memberSince: me.membershipStart });
+    expect(d.member).toEqual({
+      memberId: 1,
+      firstName: 'Sam',
+      showFitScore: true,
+      memberSince: me.membershipStart,
+      avatar: null,
+    });
     expect(d.fitScore).toEqual({ score: 72, tier: 'Strong', changeSinceLastScan: 3 });
     expect(d.mission).toMatchObject({ title: 'Lose 5 kg of body fat', percent: 60, doneKg: 3, remainingKg: 2 });
     expect(d.mission!.estimatedCompletion).not.toBeNull();
@@ -364,6 +370,12 @@ describe('avatar', () => {
     const rows = (await get<LeaderboardDto>('/leaderboard?board=score', '101')).body.rows;
     expect(rows.find((r) => r.isMe)?.avatar).toEqual(look);
     expect(rows.filter((r) => !r.isMe).every((r) => r.avatar === null)).toBe(true);
+  });
+
+  it('the dashboard carries the member id and saved look for the Home picture', async () => {
+    await put(look, '101');
+    const member = (await get<DashboardDto>('/me/dashboard', '101')).body.member;
+    expect(member).toMatchObject({ memberId: 1, avatar: look });
   });
 
   it('needs a signed-in member', async () => {

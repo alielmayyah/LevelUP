@@ -73,6 +73,13 @@ test('the rank card opens the leaderboard', async ({ page, loginAs }) => {
   await expect(page).toHaveURL(/\/tabs\/leaderboard$/);
 });
 
+test('the profile picture on Home opens Profile', async ({ page, loginAs }) => {
+  await loginAs();
+  await page.goto('/tabs/home');
+  await page.getByRole('link', { name: en.home.openProfile }).click();
+  await expect(page).toHaveURL(/\/tabs\/profile$/);
+});
+
 test('the header clears the notch and the last tile clears the tab bar', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');

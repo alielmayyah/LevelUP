@@ -241,9 +241,11 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
 
   return {
     member: {
+      memberId: m.id,
       firstName: m.firstName,
       showFitScore: m.settings.showFitScore,
       memberSince: m.membershipStart.toISOString(),
+      avatar: await loadAvatar(m),
     },
     fitScore: last
       ? {

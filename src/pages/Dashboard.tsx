@@ -2,9 +2,13 @@ import { IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from 
 import { notificationsOutline } from 'ionicons/icons';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import type { DashboardDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
+import Avatar from '../avatar/Avatar';
+import { starterAvatar } from '../avatar/catalog';
+import '../avatar/avatar.scss';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
 import FitScoreCard from './home/FitScoreCard';
@@ -52,6 +56,19 @@ const Dashboard: React.FC = () => {
         <div className="lu-page-body lu-tab-body" data-testid="page-body">
           <div className="mb-4">
             <div className="flex items-start gap-3">
+              {d && (
+                <Link
+                  to="/tabs/profile"
+                  className="lu-avatar-frame lu-home-pfp block size-14 flex-none overflow-hidden rounded-[12px]"
+                  aria-label={t('home.openProfile')}
+                  data-testid="home-avatar"
+                >
+                  <Avatar
+                    config={d.member.avatar ?? starterAvatar(String(d.member.memberId))}
+                    className="block size-full"
+                  />
+                </Link>
+              )}
               <div className="min-w-0 flex-1">
                 <p className="m-0 mb-1 text-[0.875rem] font-bold text-muted" data-testid="today">
                   {formatToday(today)}

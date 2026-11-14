@@ -64,7 +64,15 @@ export interface LeaderboardSummary {
 
 export interface DashboardDto {
   /** memberSince: the membership start date, for the "Member since" tile. */
-  member: { firstName: string; showFitScore: boolean; memberSince: string };
+  member: {
+    /** Opaque member id; seeds the starter character when none is saved. */
+    memberId: number;
+    firstName: string;
+    showFitScore: boolean;
+    memberSince: string;
+    /** The member's saved character, so Home shows their picture without a second request. */
+    avatar: AvatarConfigDto | null;
+  };
   fitScore: FitScoreSummary | null;
   mission: MissionSummary | null;
   monthlyWins: MonthlyWins;

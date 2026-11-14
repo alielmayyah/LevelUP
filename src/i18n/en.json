@@ -273,7 +273,8 @@
       "unreadCount": "{{n}} unread",
       "read": "Read"
     },
-    "error": "Couldn't load your dashboard."
+    "error": "Couldn't load your dashboard.",
+    "openProfile": "Your profile"
   },
   "login": {
     "welcome": "Welcome to {{name}}",
