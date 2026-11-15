@@ -246,6 +246,8 @@ test.describe('Profile', () => {
 });
 
 test.describe('Character', () => {
+  test.use({ reducedMotion: 'reduce' });
+
   for (const lang of ['en', 'ar'] as const) {
     for (const theme of ['light', 'dark'] as const) {
       test.describe(`${lang}/${theme}`, () => {
@@ -366,7 +368,7 @@ test.describe('Character', () => {
           );
 
           await page.reload();
-          await page.goto('/tabs/profile/character');
+          await page.getByRole('link', { name: copy.profile.customize }).click();
           for (const [part, id] of choices) {
             await expect(preview.locator(`[data-style-layer="${part}"]`)).toHaveAttribute('data-variant', id);
           }
@@ -435,11 +437,12 @@ test.describe('Character', () => {
 
           await editor.getByTestId('character-back').click();
           const portrait = page.getByTestId('profile-avatar');
+          await expect(page).toHaveURL(/\/tabs\/profile$/);
           await expect(portrait).toHaveAttribute('data-rig', 'women');
           await expect(portrait.locator('[data-style-layer="hair"]')).toHaveAttribute('data-variant', 'longline-hijab');
           await page.reload();
           await expect(portrait.locator('[data-paint="hijab-fabric"]')).toHaveCount(1);
-          await page.goto('/tabs/profile/character');
+          await page.getByRole('link', { name: copy.profile.customize }).click();
           await selectTab('hair');
           await expect(sage).toBeChecked();
           await editor.getByRole('button', { name: copy.avatar.removeHijab }).click();

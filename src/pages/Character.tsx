@@ -83,7 +83,7 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
               aria-checked={on}
               aria-label={t(`avatar.color.${preset.id}`)}
               tabIndex={on ? 0 : -1}
-              className="lu-swatch relative grid size-11 flex-none cursor-pointer place-items-center rounded-full border-2 border-line bg-surface-2 p-0 text-ink"
+              className="lu-swatch relative grid size-11 flex-none cursor-pointer scroll-mx-8 place-items-center rounded-full border-2 border-line bg-surface-2 p-0 text-ink"
               style={{ backgroundColor: preset.color }}
               onClick={() => onChange(preset.id)}
               onKeyDown={(e) => {
@@ -126,6 +126,7 @@ const Character: React.FC = () => {
   const router = useIonRouter();
   const me = useApi<ProfileDto>('/me');
   const p = me.status === 'ready' ? me.data : null;
+  const memberId = p?.memberId;
 
   /** What the member has now: their saved character, or their starter. */
   const saved = useMemo(() => (p ? memberAvatar(p) : null), [p]);
@@ -152,7 +153,7 @@ const Character: React.FC = () => {
   const { setData } = me;
   const flush = useCallback(() => {
     if (inFlight.current) return inFlight.current;
-    if (!pending.current) return Promise.resolve(true);
+    if (memberId === undefined || !pending.current) return Promise.resolve(true);
     setStatus('saving');
     setFailed(false);
     const savePending = async () => {
@@ -160,7 +161,7 @@ const Character: React.FC = () => {
         // Finish the current write before sending the latest edit, including an undo.
         while (pending.current) {
           const look = pending.current;
-          const result = await saveAvatar(look);
+          const result = await saveAvatar(memberId, look);
           setData((d) => ({ ...d, avatar: result }));
           if (pending.current && sameAvatar(pending.current, look)) {
             pending.current = null;
@@ -179,7 +180,7 @@ const Character: React.FC = () => {
     };
     inFlight.current = savePending();
     return inFlight.current;
-  }, [setData]);
+  }, [memberId, setData]);
 
   const edit = (look: AvatarConfigDto) => {
     pending.current = !inFlight.current && saved && sameAvatar(look, saved) ? null : look;

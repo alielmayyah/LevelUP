@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 
+import { onAvatarSaved } from '../api/avatar';
 import { saveSettings } from '../api/settings';
 import type { ProfileDto, SettingsDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
@@ -130,6 +131,14 @@ const Profile: React.FC = () => {
   const clearSaveFailed = useCallback(() => setSaveFailed(false), []);
   const [confirmOut, setConfirmOut] = useState(false);
   useRefreshOnEnter(me.reload);
+  const { setData } = me;
+  useEffect(
+    () =>
+      onAvatarSaved((memberId, avatar) =>
+        setData((profile) => (profile.memberId === memberId ? { ...profile, avatar } : profile)),
+      ),
+    [setData],
+  );
 
   const p = me.status === 'ready' ? me.data : null;
 
