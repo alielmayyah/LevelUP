@@ -170,6 +170,31 @@ describe('avatar catalog', () => {
     }
   });
 
+  it('defaults older saves to no glasses and keeps frames independent of outfits and expressions', () => {
+    for (const rig of ['standard', 'women'] as const) {
+      const legacy = {
+        ...defaultAvatar(),
+        rig,
+        styles: { hair: 'curls', body: 'balanced', top: 'tank', shoes: 'trainers' },
+      } as const;
+      const base = normalizeAvatar(legacy);
+      const styles = stylesFor(base.styles);
+      expect(isValidAvatar(legacy)).toBe(true);
+      expect(styles.glasses).toBe('no-glasses');
+      expect(sameAvatar(base, legacy)).toBe(true);
+
+      for (const glasses of trainingStyles('glasses', rig)) {
+        const look = { ...base, styles: { ...styles, glasses, face: 'grin' as const } };
+        expect(isValidAvatar(look)).toBe(true);
+        expect(normalizeAvatar(look)).toEqual(look);
+        expect(applyOutfit(look, 'hoodie-warmup').styles).toMatchObject({ glasses, face: 'grin' });
+      }
+      const round = { ...base, styles: { ...styles, glasses: 'round-glasses' as const } };
+      expect(sameAvatar(base, round)).toBe(false);
+      expect(isValidAvatar({ ...base, styles: { ...styles, glasses: 'unknown' } })).toBe(false);
+    }
+  });
+
   it('preserves legacy colors and uses the original styles for an older save', () => {
     const { styles, ...legacy } = defaultAvatar();
     legacy.colors.hair = 'silver';

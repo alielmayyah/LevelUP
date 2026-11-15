@@ -142,7 +142,7 @@ export function StylePicker<K extends StylePart>({ part, config, onChange, actio
               }}
             >
               <span className="lu-style-thumb relative grid aspect-square place-items-center" aria-hidden="true">
-                <Avatar config={preview} crop={part} className="h-[80%] w-full" />
+                <Avatar config={preview} crop={part === 'glasses' ? 'face' : part} className="h-[80%] w-full" />
                 {selected && <SelectedMark />}
               </span>
               <span className={TILE_LABEL}>{t(optionKey)}</span>

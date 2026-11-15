@@ -358,6 +358,7 @@
     },
     "styleLabel": {
       "face": "Expression",
+      "glasses": "Glasses",
       "hair": "Hairstyle",
       "body": "Body shape",
       "top": "Top style",
@@ -388,6 +389,10 @@
       "boxed-beard": "Boxed beard",
       "circle-beard": "Circle beard",
       "smile": "Smile",
+      "no-glasses": "No glasses",
+      "round-glasses": "Round frames",
+      "rectangular-glasses": "Rectangular frames",
+      "sport-glasses": "Sports glasses",
       "focused": "Focused",
       "grin": "Wide grin",
       "curls": "Curls",

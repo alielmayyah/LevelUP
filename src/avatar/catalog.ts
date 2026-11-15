@@ -121,6 +121,7 @@ export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
     'compression-socks',
   ],
   face: ['smile', 'focused', 'grin'],
+  glasses: ['no-glasses', 'round-glasses', 'rectangular-glasses', 'sport-glasses'],
 };
 
 // Older casual styles still render on saved characters.
@@ -189,6 +190,7 @@ export function stylesFor(value?: Partial<Record<StylePart, unknown>> | null): R
     beard: styleFor('beard', value?.beard),
     socks: styleFor('socks', value?.socks),
     face: styleFor('face', value?.face),
+    glasses: styleFor('glasses', value?.glasses),
   };
 }
 
@@ -215,7 +217,7 @@ export const OUTLINE: string = outline;
 
 export const MATCH_HAIR = 'match-hair';
 const OPTIONAL_COLORS = { beard: MATCH_HAIR, socks: 'off-white', hijab: 'navy' } as const;
-const OPTIONAL_STYLES: readonly StylePart[] = ['pants', 'beard', 'socks', 'face'];
+const OPTIONAL_STYLES: readonly StylePart[] = ['pants', 'beard', 'socks', 'face', 'glasses'];
 
 const isUncoveredHair = (value: unknown): value is ResolvedStyles['hair'] =>
   STYLES.hair.some((style) => style === value && !isHijab(style));
@@ -363,6 +365,7 @@ export function randomAvatar(
       beard: pick(trainingStyles('beard', rig)),
       socks: pick(STYLES.socks),
       face: pick(STYLES.face),
+      glasses: pick(STYLES.glasses),
     },
     ...(covered && current.hairUnderHijab ? { hairUnderHijab: current.hairUnderHijab } : {}),
   };

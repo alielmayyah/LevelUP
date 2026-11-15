@@ -10,6 +10,7 @@ import {
   type AvatarConfigDto,
 } from './catalog';
 import { Hands, TopDetails } from './ClothingDetails';
+import { Glasses } from './Glasses';
 import { AltHair, Beard, Pants, ShoePair, SleeveTop, Socks } from './VariantArt';
 import { FittedTank, HIJAB_FACE_OPENING, SportHijab, TiedHair } from './WomenArt';
 
@@ -288,6 +289,7 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
               <AltHair style={hair} paint={p} />
             ))
           )}
+          {styles.glasses !== 'no-glasses' && <Glasses style={styles.glasses} paint={p} />}
         </g>
       )}
     </svg>

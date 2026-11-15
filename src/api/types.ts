@@ -321,6 +321,7 @@ export interface AvatarStyles {
     | 'tab-socks'
     | 'compression-socks';
   face?: 'smile' | 'focused' | 'grin';
+  glasses?: 'no-glasses' | 'round-glasses' | 'rectangular-glasses' | 'sport-glasses';
 }
 
 /**

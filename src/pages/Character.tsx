@@ -412,6 +412,9 @@ const Character: React.FC = () => {
                             {active === 'hair' && !wearingHijab && styles.top === 'hood-up' && (
                               <p className="m-0 text-[0.8rem] text-muted">{t('avatar.hoodHint')}</p>
                             )}
+                            {active === 'face' && (
+                              <StylePicker part="glasses" config={draft} onChange={(id) => setStyle('glasses', id)} />
+                            )}
                             {active === 'hair' ? (
                               <StylePicker
                                 part="hair"

@@ -358,6 +358,7 @@
     },
     "styleLabel": {
       "face": "تعبير الوش",
+      "glasses": "النضارة",
       "hair": "تسريحة الشعر",
       "body": "شكل الجسم",
       "top": "ستايل التوب",
@@ -388,6 +389,10 @@
       "boxed-beard": "دقن مربّعة",
       "circle-beard": "شنب وسكسوكة متوصلين",
       "smile": "ابتسامة",
+      "no-glasses": "من غير نضارة",
+      "round-glasses": "نضارة مدوّرة",
+      "rectangular-glasses": "نضارة مستطيلة",
+      "sport-glasses": "نضارة رياضية",
       "focused": "مركّز",
       "grin": "ابتسامة عريضة",
       "curls": "كيرلي",

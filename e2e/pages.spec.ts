@@ -345,9 +345,11 @@ test.describe('Character', () => {
           }
           await selectTab('face');
           const face = editor.getByRole('tabpanel', { name: copy.avatar.tab.face });
-          await expect(face.getByRole('radiogroup')).toHaveCount(2);
           await color('eyes', 'brown').click();
-          await face.getByRole('radio', { name: copy.avatar.style.grin, exact: true }).click();
+          await face
+            .getByRole('radiogroup', { name: copy.avatar.styleLabel.face, exact: true })
+            .getByRole('radio', { name: copy.avatar.style.grin, exact: true })
+            .click();
           await expect(preview.locator('[data-style-layer="face"]')).toHaveAttribute('data-variant', 'grin');
           const eyes = preview.locator('[data-feature="eyes"] path');
           await expect(eyes).toHaveCount(2);
@@ -379,6 +381,52 @@ test.describe('Character', () => {
           await expect(color('socks', 'violet')).toHaveAttribute('aria-checked', 'true');
           await selectTab('hair');
           await expect(color('hair', 'silver')).toHaveAttribute('aria-checked', 'true');
+        });
+
+        test('saves and removes character glasses', async ({ page, loginAs }) => {
+          const copy = lang === 'ar' ? ar : en;
+          const women = lang === 'ar';
+          const style = theme === 'dark' ? 'sport-glasses' : women ? 'round-glasses' : 'rectangular-glasses';
+          await loginAs(women ? '102' : '101');
+          await page.goto('/tabs/profile/character');
+          const editor = page.locator(tab('character'));
+          const preview = editor.getByTestId('character-preview');
+          const openFace = () => editor.getByRole('tab', { name: copy.avatar.tab.face, exact: true }).click();
+          const frames = editor.getByRole('radiogroup', { name: copy.avatar.styleLabel.glasses, exact: true });
+          const noGlasses = frames.getByRole('radio', { name: copy.avatar.style['no-glasses'], exact: true });
+          const option = frames.getByRole('radio', { name: copy.avatar.style[style], exact: true });
+          const previewFrames = preview.locator('[data-style-layer="glasses"]');
+          const portraitFrames = page.getByTestId('profile-avatar').locator('[data-style-layer="glasses"]');
+          const outfit = women ? 'hijab-training' : 'hoodie-warmup';
+
+          await editor.getByRole('button', { name: copy.avatar.outfit[outfit], exact: true }).click();
+          await openFace();
+          await expect(noGlasses).toBeChecked();
+          await expect(previewFrames).toHaveCount(0);
+          await option.click();
+          await expect(option).toBeChecked();
+          await expect(previewFrames).toHaveAttribute('data-variant', style);
+          await expect(
+            preview.locator(women ? '[data-paint="hijab-fabric"]' : '[data-art-detail="raised-hood"]'),
+          ).toHaveCount(1);
+          if (women) await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+          if (theme === 'dark') await expect(page.locator('html')).toHaveClass(/ion-palette-dark/);
+          expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+          await editor.getByTestId('character-back').click();
+          await expect(page).toHaveURL(/\/tabs\/profile$/);
+          await expect(portraitFrames).toHaveAttribute('data-variant', style);
+          await page.reload();
+          await expect(portraitFrames).toHaveAttribute('data-variant', style);
+          await page.getByRole('link', { name: copy.profile.customize }).click();
+          await openFace();
+          await expect(option).toBeChecked();
+          await option.press('Home');
+          await expect(noGlasses).toBeChecked();
+          await expect(previewFrames).toHaveCount(0);
+          await editor.getByTestId('character-back').click();
+          await expect(page).toHaveURL(/\/tabs\/profile$/);
+          await expect(portraitFrames).toHaveCount(0);
         });
 
         test('shows the women’s catalog and keeps a customized hijab after reload', async ({ page, loginAs }) => {
