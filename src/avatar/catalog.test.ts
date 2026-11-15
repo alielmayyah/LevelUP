@@ -7,6 +7,8 @@ import {
   contrastRatio,
   customizerTabsFor,
   defaultAvatar,
+  hasLongSleeves,
+  isHijab,
   isValidAvatar,
   memberAvatar,
   normalizeAvatar,
@@ -14,9 +16,12 @@ import {
   paintFor,
   presetsFor,
   randomAvatar,
+  removeHijab,
   sameAvatar,
+  showsLowerLeg,
   stylesFor,
   trainingStyles,
+  withHair,
 } from './catalog';
 
 describe('avatar catalog', () => {
@@ -138,6 +143,30 @@ describe('avatar catalog', () => {
         const styles = stylesFor(randomAvatar(() => roll, rig).styles);
         for (const part of STYLE_PARTS) expect(trainingStyles(part, rig)).toContain(styles[part]);
       }
+    }
+  });
+
+  it('keeps the underlying hairstyle through hijab changes, randomization and storage', () => {
+    const women = memberAvatar({ memberId: 102, sex: 'FEMALE', avatar: null });
+    const braided = withHair(women, 'double-braids');
+    const covered = applyOutfit(braided, 'covered-cardio');
+    const long = withHair(covered, 'longline-hijab');
+    expect(isValidAvatar(long)).toBe(true);
+    expect(isValidAvatar({ ...long, hairUnderHijab: 'wrap-hijab' })).toBe(false);
+    expect(removeHijab(normalizeAvatar(long))).toMatchObject({ styles: { hair: 'double-braids' } });
+    expect(removeHijab(long)).not.toHaveProperty('hairUnderHijab');
+    expect(trainingStyles('hair', 'standard').some(isHijab)).toBe(false);
+    expect(trainingStyles('pants', 'standard')).not.toContain('cargo');
+    const legacy = { ...women, styles: { ...stylesFor(women.styles), hair: 'sport-hijab' } } as const;
+    expect(removeHijab(legacy).styles?.hair).toBe('high-ponytail');
+    for (const roll of [0, 0.25, 0.5, 0.75, 0.99]) {
+      const mixed = randomAvatar(() => roll, 'women', long);
+      const styles = stylesFor(mixed.styles);
+      expect(styles.hair).toBe('longline-hijab');
+      expect(hasLongSleeves(styles.top)).toBe(true);
+      expect(showsLowerLeg(styles.pants)).toBe(false);
+      expect(mixed.colors.hijab).toBe(long.colors.hijab);
+      expect(removeHijab(mixed).colors.hair).toBe(braided.colors.hair);
     }
   });
 

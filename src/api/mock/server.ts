@@ -109,9 +109,10 @@ async function saveAvatar(m: MockMember, body: unknown): Promise<MockResponse> {
     rig: body.rig,
     colors: { ...body.colors },
     ...(body.styles ? { styles: { ...body.styles } } : {}),
+    ...(body.hairUnderHijab ? { hairUnderHijab: body.hairUnderHijab } : {}),
   };
-  avatars.set(m.id, config);
   await Preferences.set({ key: avatarKey(m), value: JSON.stringify(config) });
+  avatars.set(m.id, config);
   return ok(config);
 }
 

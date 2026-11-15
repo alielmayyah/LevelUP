@@ -1,4 +1,4 @@
-import { IonContent, IonPage, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonContent, IonPage, useIonRouter, useIonViewWillEnter, useIonViewWillLeave } from '@ionic/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,12 +10,15 @@ import {
   MATCH_HAIR,
   colorIdFor,
   customizerTabsFor,
+  isHijab,
   memberAvatar,
   showsLowerLeg,
   presetsFor,
   randomAvatar,
+  removeHijab,
   sameAvatar,
   stylesFor,
+  withHair,
   type ColorPart,
   type CustomizerTab,
   type ResolvedStyles,
@@ -23,7 +26,6 @@ import {
 } from '../avatar/catalog';
 import { CustomizerIcon, OutfitPicker, StylePicker } from '../avatar/StylePicker';
 import CtaButton from '../components/CtaButton';
-import PixelToast from '../components/PixelToast';
 import ScrollStrip from '../components/ScrollStrip';
 import { useSwipe } from '../components/useSwipe';
 import { focusSibling, rovingTarget } from '../components/roving';
@@ -130,62 +132,97 @@ const Character: React.FC = () => {
   /** Edits not yet saved; null means the draft is the saved character. */
   const [edits, setEdits] = useState<AvatarConfigDto | null>(null);
   const [active, setActive] = useState<CustomizerTab>('outfits');
-  useIonViewWillEnter(() => setActive('outfits'));
   const draft = edits ?? saved;
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [failed, setFailed] = useState(false);
-  const clearFailed = useCallback(() => setFailed(false), []);
+  const optionsPanel = useRef<HTMLDivElement | null>(null);
+  const leaving = useRef(false);
   /** The look when the editor opened, for Reset. */
   const [original, setOriginal] = useState<AvatarConfigDto | null>(null);
   if (saved && !original) setOriginal(saved);
+  useIonViewWillEnter(() => {
+    leaving.current = false;
+    if (optionsPanel.current) optionsPanel.current.scrollTop = 0;
+    setActive('outfits');
+    setOriginal(null);
+  }, []);
 
-  const dirty = !!draft && !!saved && !sameAvatar(draft, saved);
-
-  /** Saves the current edits; keeps them if the save fails so the next change retries. */
-  const latest = useRef<AvatarConfigDto | null>(null);
-  useEffect(() => {
-    latest.current = dirty ? draft : null;
-  }, [dirty, draft]);
+  const pending = useRef<AvatarConfigDto | null>(null);
+  const inFlight = useRef<Promise<boolean> | null>(null);
   const { setData } = me;
-  const flush = useCallback(async () => {
-    const look = latest.current;
-    if (!look) return;
+  const flush = useCallback(() => {
+    if (inFlight.current) return inFlight.current;
+    if (!pending.current) return Promise.resolve(true);
     setStatus('saving');
-    try {
-      const result = await saveAvatar(look);
-      setData((d) => ({ ...d, avatar: result }));
-      // Only clear the edits if nothing changed while the request ran.
-      setEdits((current) => (current && sameAvatar(current, look) ? null : current));
-      setStatus('saved');
-    } catch {
-      setFailed(true);
-      setStatus('idle');
-    }
+    setFailed(false);
+    const savePending = async () => {
+      try {
+        // Finish the current write before sending the latest edit, including an undo.
+        while (pending.current) {
+          const look = pending.current;
+          const result = await saveAvatar(look);
+          setData((d) => ({ ...d, avatar: result }));
+          if (pending.current && sameAvatar(pending.current, look)) {
+            pending.current = null;
+            setEdits(null);
+          }
+        }
+        setStatus('saved');
+        return true;
+      } catch {
+        setFailed(true);
+        setStatus('idle');
+        return false;
+      } finally {
+        inFlight.current = null;
+      }
+    };
+    inFlight.current = savePending();
+    return inFlight.current;
   }, [setData]);
+
+  const edit = (look: AvatarConfigDto) => {
+    pending.current = !inFlight.current && saved && sameAvatar(look, saved) ? null : look;
+    setEdits(pending.current);
+    if (!inFlight.current) setStatus('idle');
+    setFailed(false);
+  };
+
+  const discardUnsaved = () => {
+    pending.current = null;
+    setEdits(null);
+    setFailed(false);
+  };
 
   // Each change saves a moment after the last tap.
   useEffect(() => {
-    if (!dirty) return;
+    if (!edits) return;
     const timer = setTimeout(() => void flush(), AUTOSAVE_MS);
     return () => clearTimeout(timer);
-  }, [draft, dirty, flush]);
+  }, [edits, flush]);
 
-  const leave = useCallback(() => {
-    // A change made in the last half second still gets saved.
-    void flush();
+  useIonViewWillLeave(() => void flush(), [flush]);
+  const leave = useCallback(async () => {
+    if (leaving.current) return;
+    leaving.current = true;
+    if (!(await flush())) {
+      leaving.current = false;
+      return;
+    }
     if (router.canGoBack()) router.goBack();
     else router.push('/tabs/profile', 'back', 'replace');
   }, [flush, router]);
 
   const setPart = (part: ColorPart, id: string) => {
-    if (draft) setEdits({ ...draft, colors: { ...draft.colors, [part]: id } });
+    if (draft) edit({ ...draft, colors: { ...draft.colors, [part]: id } });
   };
 
   const setStyle = <K extends StylePart>(part: K, id: ResolvedStyles[K]) => {
-    if (draft) setEdits({ ...draft, styles: { ...stylesFor(draft.styles), [part]: id } });
+    if (draft) edit({ ...draft, styles: { ...stylesFor(draft.styles), [part]: id } });
   };
 
   const styles = draft ? stylesFor(draft.styles) : null;
+  const wearingHijab = !!styles && isHijab(styles.hair);
 
   const tabs = customizerTabsFor(draft?.rig ?? 'standard');
 
@@ -196,15 +233,23 @@ const Character: React.FC = () => {
   );
   const prevTab = useCallback(() => setActive((cur) => tabs[Math.max(0, tabs.indexOf(cur) - 1)] ?? cur), [tabs]);
   const swipe = useSwipe({ onNext: nextTab, onPrev: prevTab, rtl: i18n.dir() === 'rtl' });
+  const setOptionsPanel = useCallback(
+    (element: HTMLDivElement | null) => {
+      optionsPanel.current = element;
+      swipe(element);
+    },
+    [swipe],
+  );
   useEffect(() => {
     document.getElementById(`avatar-tab-${active}`)?.scrollIntoView?.({ inline: 'nearest', block: 'nearest' });
+    if (optionsPanel.current) optionsPanel.current.scrollTop = 0;
   }, [active]);
 
   return (
     <IonPage data-testid="page-character">
       {/* The page holds still; only the option panel scrolls, so the character never leaves the screen. */}
       <IonContent scrollY={false}>
-        <div className="lu-editor grid h-full grid-cols-[minmax(0,1fr)] grid-rows-[auto_auto_minmax(0,1fr)] split:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] split:grid-rows-[auto_minmax(0,1fr)]">
+        <div className="lu-editor grid h-full grid-cols-[minmax(0,1fr)] grid-rows-[auto_auto_minmax(0,1fr)] px-[max(var(--ion-safe-area-left,0px),var(--ion-safe-area-right,0px))] split:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] split:grid-rows-[auto_minmax(0,1fr)]">
           <div className="flex items-center gap-2 px-(--lu-gutter) pt-[calc(10px+var(--ion-safe-area-top,0px))] pb-2 split:col-span-2">
             <button
               type="button"
@@ -221,7 +266,7 @@ const Character: React.FC = () => {
             <button
               type="button"
               className="lu-icon-button"
-              onClick={() => draft && setEdits(randomAvatar(Math.random, draft.rig))}
+              onClick={() => draft && edit(randomAvatar(Math.random, draft.rig, draft))}
               disabled={!draft}
               aria-label={t('avatar.randomize')}
               data-testid="character-random"
@@ -231,7 +276,7 @@ const Character: React.FC = () => {
             <button
               type="button"
               className="lu-icon-button disabled:opacity-40"
-              onClick={() => original && setEdits(original)}
+              onClick={() => original && edit(original)}
               disabled={!draft || !original || sameAvatar(draft, original)}
               aria-label={t('avatar.reset')}
               data-testid="character-reset"
@@ -279,9 +324,22 @@ const Character: React.FC = () => {
 
               {/* The panel: one row of categories, then that category's colors and styles. */}
               <section
-                className="lu-editor-panel flex min-h-0 flex-col split:m-3 split:ms-0"
+                className="lu-editor-panel flex min-h-0 flex-col split:m-3 split:ms-0 split:mb-[max(12px,var(--ion-safe-area-bottom,0px))]"
                 aria-label={t('avatar.customize')}
               >
+                {failed && (
+                  <div className="flex flex-wrap items-center gap-x-2 px-3 pt-2">
+                    <p className="m-0 grow text-[0.8rem] text-ink" role="alert">
+                      {t('avatar.saveFailed')}
+                    </p>
+                    <button className="lu-link-button min-h-11 shrink-0" type="button" onClick={() => void flush()}>
+                      {t('common.retry')}
+                    </button>
+                    <button className="lu-link-button min-h-11 shrink-0" type="button" onClick={discardUnsaved}>
+                      {t('avatar.discardUnsaved')}
+                    </button>
+                  </div>
+                )}
                 <ScrollStrip
                   role="tablist"
                   aria-label={t('avatar.customize')}
@@ -297,7 +355,7 @@ const Character: React.FC = () => {
                       aria-controls={`avatar-panel-${tab}`}
                       aria-selected={tab === active}
                       tabIndex={tab === active ? 0 : -1}
-                      className="lu-customizer-tab grid min-h-14 min-w-16 flex-none cursor-pointer place-items-center content-center gap-1 rounded-xl border-0 px-2 py-1.5 text-[0.72rem] leading-tight font-extrabold whitespace-nowrap"
+                      className="lu-customizer-tab grid min-h-14 min-w-16 flex-none cursor-pointer scroll-mx-8 place-items-center content-center gap-1 rounded-xl border-0 px-2 py-1.5 text-[0.72rem] leading-tight font-extrabold whitespace-nowrap"
                       onClick={(e) => {
                         setActive(tab);
                         // Bring a half-hidden category fully into the strip.
@@ -317,7 +375,8 @@ const Character: React.FC = () => {
                 </ScrollStrip>
 
                 <div
-                  ref={swipe}
+                  ref={setOptionsPanel}
+                  data-testid="character-options"
                   className="min-h-0 flex-1 overflow-y-auto px-3 pt-1 pb-[calc(16px+var(--ion-safe-area-bottom,0px))]"
                 >
                   {tabs.map((tab) => (
@@ -330,16 +389,14 @@ const Character: React.FC = () => {
                     >
                       {tab === active &&
                         (active === 'outfits' ? (
-                          <OutfitPicker config={draft} onChange={setEdits} />
+                          <OutfitPicker config={draft} onChange={edit} />
                         ) : (
                           <div className="grid gap-3">
                             {/* Colors first, then shapes: the strip is what people change most. */}
-                            {(active === 'hair' && styles.hair === 'sport-hijab'
-                              ? (['hijab'] as const)
-                              : COLORS[active]
-                            ).map((part) =>
+                            {(active === 'hair' && wearingHijab ? (['hijab'] as const) : COLORS[active]).map((part) =>
                               (part === 'beard' && styles.beard === 'clean-shaven') ||
-                              (part === 'shoes' && styles.shoes === 'barefoot') ? null : (
+                              (part === 'shoes' && styles.shoes === 'barefoot') ||
+                              (part === 'socks' && styles.socks === 'no-socks') ? null : (
                                 <Swatches
                                   key={part}
                                   part={part}
@@ -351,7 +408,27 @@ const Character: React.FC = () => {
                             {active === 'socks' && !showsLowerLeg(styles.pants) && (
                               <p className="m-0 text-[0.8rem] text-muted">{t('avatar.socksHint')}</p>
                             )}
-                            {active !== 'face' && (
+                            {active === 'hair' && !wearingHijab && styles.top === 'hood-up' && (
+                              <p className="m-0 text-[0.8rem] text-muted">{t('avatar.hoodHint')}</p>
+                            )}
+                            {active === 'hair' ? (
+                              <StylePicker
+                                part="hair"
+                                config={draft}
+                                onChange={(id) => edit(withHair(draft, id))}
+                                action={
+                                  wearingHijab && (
+                                    <button
+                                      className="lu-link-button"
+                                      type="button"
+                                      onClick={() => edit(removeHijab(draft))}
+                                    >
+                                      {t('avatar.removeHijab')}
+                                    </button>
+                                  )
+                                }
+                              />
+                            ) : (
                               <StylePicker part={active} config={draft} onChange={(id) => setStyle(active, id)} />
                             )}
                           </div>
@@ -364,8 +441,6 @@ const Character: React.FC = () => {
           )}
         </div>
       </IonContent>
-
-      <PixelToast message={failed ? t('avatar.saveFailed') : null} onDone={clearFailed} />
     </IonPage>
   );
 };

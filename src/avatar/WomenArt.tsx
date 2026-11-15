@@ -1,4 +1,4 @@
-import type { AvatarPaint, ResolvedStyles, WOMEN_HAIR } from './catalog';
+import type { AvatarPaint, HijabStyle, ResolvedStyles, WOMEN_HAIR } from './catalog';
 import { Mirrored } from './ClothingDetails';
 
 type HairStyle = (typeof WOMEN_HAIR)[number];
@@ -40,6 +40,18 @@ const PONYTAILS: Record<HairStyle, readonly [outline: string, fill: string, ligh
     'M1308 74h16V60h22V46h24v9h19v10h-25V54h-16v15h-20v16h-20z M1388 77h20v11h15v12h-15V89h-20z',
     'M1291 96h19v8h24v-8h20v-7h27v12h21v-8h26v9h-14v12h-22v11h-56v-11h-34v-9h-11z',
   ],
+  'double-braids': [
+    'M1188 168h37v58h-16v54h-14v67h-12v69h-14v22h-27v-22h-12v-69h12v-67h17v-55h15z M1476 168h-37v58h16v54h14v67h12v69h14v22h27v-22h12v-69h-12v-67h-17v-55h-15z',
+    'M1198 189h12v30h-16v58h-14v66h-12v70h-18v-61h8v-66h17v-55h12z M1466 189h-12v30h16v58h14v66h12v70h18v-61h-8v-66h-17v-55h-12z',
+    'M1178 257h17v8h-17z M1164 303h16v8h-16z M1151 350h18v8h-18z M1150 394h18v8h-18z M1469 257h17v8h-17z M1484 303h16v8h-16z M1495 350h18v8h-18z M1496 394h18v8h-18z',
+    'M1148 409h22v9h-22z M1494 409h22v9h-22z',
+  ],
+  'high-bun': [
+    'M1250 119V74h14V41h24V22h29V10h45v13h26v18h19v28h14v49h-30v16h-115v-15z',
+    'M1267 104V79h13V50h22V35h23V24h30v11h25v16h16v25h11v29h-25v13h-98v-14z',
+    'M1289 73V55h18V42h25V32h23v9h-18v14h-24v16h-12v12h-12z',
+    'M1276 94h25v-8h26v9h44v-9h25v-9h11v28h-25v13h-98v-14h-8z',
+  ],
 };
 
 export function TiedHair({ style, paint: p, back = false }: { style: HairStyle; paint: AvatarPaint; back?: boolean }) {
@@ -67,28 +79,53 @@ export function TiedHair({ style, paint: p, back = false }: { style: HairStyle; 
 export const HIJAB_FACE_OPENING =
   'M1300 176h62v12h27v17h20v27h14v45h8v45h-9v25h-14v17h-19v17h-25v13h-66v-12h-27v-16h-19v-18h-15v-26h-9v-46h9v-44h15v-26h20v-18h28z';
 
-export function SportHijab({ paint: p }: { paint: AvatarPaint }) {
+// All three fits share a close face opening. The lower edges have different
+// lengths and folds, so the drape reads in both the portrait and full crop.
+const HIJAB_CROWN =
+  'M1192 377v-22h-13v-46h-7v-61h10v-53h12v-39h15v-29h22v-23h27V88h38V73h70v15h39v16h28v23h22v29h15v39h12v53h10v61h-7v46h-13v22';
+const HIJAB_FABRIC =
+  'M1204 381v-31h-12v-44h-7v-53h10v-52h12v-39h15v-29h22v-19h27V99h31V86h58v13h36v15h26v19h22v29h15v39h12v52h10v53h-7v44h-12v31';
+const FACE_SEAM =
+  'M1293 166h76v12h26v17h23v28h15v44h9v62h-9v26h-15v18h-22v18h-26v14h-80v-13h-26v-16h-23v-19h-15v-28h-9v-62h9v-45h16v-27h23v-17h28z';
+
+const HIJAB_DRAPE = {
+  'sport-hijab': {
+    outer: 'h-15v30h-16v29h-22v24h-32v16h-41v9h-69v-9h-41v-16h-32v-24h-23v-29h-16v-30h-14z',
+    fabric: 'h-14v30h-16v28h-23v23h-29v14h-38v8h-56v-8h-38v-14h-29v-23h-23v-28h-16v-30h-13z',
+    folds:
+      'M1254 413h15v12h18v9h22v7h40v8h-44v-7h-23v-9h-20v-12h-8z M1398 413h10v11h-14v12h-18v8h-18v-7h15v-9h14v-9h11z',
+  },
+  'wrap-hijab': {
+    outer: 'h-15v24h-13v18h-13v18h27v17h-18v15h-30v11h-36v8h-114v-8h-29v-14h-21v-22h-15v-22h-15v-23h-15z',
+    fabric: 'h-14v24h-13v20h-17v24h27v7h-15v12h-28v9h-34v8h-102v-8h-25v-14h-20v-21h-15v-22h-15v-23h-7z',
+    folds:
+      'M1223 379h10v14h13v13h16v11h19v11h24v10h26v10h31v9h28v7h-37v-7h-29v-9h-26v-10h-23v-10h-20v-11h-16v-13h-13v-15h-3z M1400 456h21v-7h25v-8h9v9h-10v7h-22v7h-23z',
+  },
+  'longline-hijab': {
+    outer: 'h-15v22h12v25h19v24h25v22h-20v14h-37v12h-46v9h-121v-9h-46v-12h-37v-14h-20v-22h25v-24h19v-25h13v-22h-15z',
+    fabric: 'h-13v20h12v27h19v24h23v6h-17v13h-34v11h-45v9h-109v-9h-45v-11h-34v-13h-17v-6h23v-24h19v-27h13v-20h-13z',
+    folds:
+      'M1223 452h17v12h26v9h20v8h-23v-8h-27v-10h-13z M1270 412h17v10h20v10h49v-8h18v-10h16v7h-12v10h-18v9h-56v-9h-21v-11h-13z M1391 473h28v-9h20v-12h13v9h-10v11h-20v9h-31z',
+  },
+} satisfies Record<HijabStyle, { outer: string; fabric: string; folds: string }>;
+
+export function SportHijab({ style, paint: p }: { style: HijabStyle; paint: AvatarPaint }) {
+  const drape = HIJAB_DRAPE[style];
   return (
-    <g data-style-layer="hair" data-variant="sport-hijab">
-      <path
-        fill={p.outline}
-        fillRule="evenodd"
-        d={`M1269 76h30V63h65v13h35v13h25v17h23v22h17v28h14v35h12v48h11v58h-7v54h-11v28h-16v24h-20v29h21v24h-16v19h-25v15h-36v10h-98v-10h-37v-15h-26v-20h-17v-29h20v-22h-17v-24h-16v-28h-12v-54h-7v-64h11v-46h12v-34h14v-28h18v-23h22V89h11z ${HIJAB_FACE_OPENING}`}
-      />
+    <g data-style-layer="hair" data-variant={style}>
+      <path fill={p.outline} fillRule="evenodd" d={`${HIJAB_CROWN}${drape.outer} ${HIJAB_FACE_OPENING}`} />
       <path
         fill={p.hijab}
         data-paint="hijab-fabric"
         fillRule="evenodd"
-        d="M1274 91h31V78h53v13h35v13h25v17h21v22h17v28h13v34h11v48h8v45h-7v50h-11v26h-16v23h-21v43h21v12h-15v13h-22v12h-32v10h-90v-10h-33v-14h-22v-14h-13v-13h19v-39h-17v-23h-16v-26h-11v-51h-7v-46h11v-46h12v-34h14v-28h18v-22h23v-17H1274z M1290 165h82v12h24v17h23v27h16v46h8v62h-9v26h-15v19h-21v17h-28v15h-78v-12h-29v-16h-22v-18h-16v-28h-9v-67h9v-44h16v-27h22v-18h27z"
+        d={`${HIJAB_FABRIC}${drape.fabric} ${FACE_SEAM}`}
       />
-      <path
-        fill={p.hijabLight}
-        d="M1237 146h16v-20h22v-15h30V98h54v9h-48v11h-28v15h-22v20h-14v23h-10z M1467 235h8v51h9v32h-9v-26h-8z M1253 419h13v13h18v10h24v8h37v9h-42v-9h-26v-11h-15v-11h-9z"
-      />
+      <path fill={p.hijabLight} d="M1215 192v-25h16v-28h22v-16h25v-15h33V96h42v7h-35v13h-32v15h-26v17h-21v27h-16v17z" />
       <path
         fill={p.hijabShade}
-        d="M1205 294h8v35h9v27h13v19h18v17h22v12h26v11h68v-11h26v-16h21v-15h17v-20h12v-23h10v27h-10v20h-17v23h-24v16h-25v11h-84v-11h-27v-13h-23v-18h-18v-24h-12v-27h-8z M1421 437h20v8h-20v12h-16v11h-29v13h-46v-8h34v-11h29v-11h28z"
+        d="M1200 274h8v51h8v27h12v20h17v18h22v13h26v12h74v-12h27v-13h22v-18h17v-20h12v-27h8v-51h8v53h-8v29h-13v22h-17v19h-24v15h-27v11h-84v-11h-27v-15h-24v-19h-17v-22h-12v-29h-8z"
       />
+      <path fill={p.hijabLight} d={drape.folds} />
     </g>
   );
 }

@@ -100,6 +100,7 @@ export function TopDetails({ style, paint: p }: { style: ResolvedStyles['top']; 
         </g>
       );
     case 'hoodie':
+    case 'hood-up':
       return (
         <g data-art-detail="stitched-hoodie">
           <LongSleeveDetails paint={p} />
@@ -118,6 +119,48 @@ export function TopDetails({ style, paint: p }: { style: ResolvedStyles['top']; 
           <path
             fill={p.topShade}
             d="M1282 591h4v7h-4z M1296 591h4v7h-4z M1310 591h4v7h-4z M1324 591h4v7h-4z M1338 591h4v7h-4z M1352 591h4v7h-4z M1366 591h4v7h-4z M1380 591h4v7h-4z"
+          />
+        </g>
+      );
+    case 'zip-hoodie':
+      return (
+        <g data-art-detail="zip-hoodie">
+          <LongSleeveDetails paint={p} />
+          <Mirrored>
+            <path fill={p.topShade} d="M1277 524h27v18h-10v16h-15v21h25v10h-28v-35h9v-13h10v-9h-18z" />
+            <path fill={p.topLight} d="M1300 465h7v29h-7z M1284 564h5v10h-5z" />
+          </Mirrored>
+          <path fill={p.topShade} d="M1322 448h20v151h-20z" />
+          <path
+            fill={p.topTrim}
+            d="M1329 452h5v146h-5z M1326 463h11v12h-11z M1326 489h11v3h-11z M1326 522h11v3h-11z M1326 555h11v3h-11z M1326 588h11v3h-11z"
+          />
+        </g>
+      );
+    case 'raglan-top':
+      return (
+        <g data-art-detail="raglan-training-top">
+          <Mirrored>
+            <path
+              fill={p.topShade}
+              d="M1227 443h43v17h-11v26h-11v27h-10v31h-12v32h-13v35h-18v17h-11v-8h-22v-33h7v-42h13v-38h18v-31h10v-20h17z"
+            />
+            <path fill={p.topLight} d="M1271 445h6v25h-11v26h-10v24h-6v-24h10v-26h11z" />
+            <path fill={p.topTrim} d="M1168 607h42v5h-42z M1173 615h30v4h-30z" />
+          </Mirrored>
+          <path fill={p.topLight} d="M1292 448h15v7h50v-7h15v9h-13v5h-54v-5h-13z M1290 577h84v5h-84z" />
+        </g>
+      );
+    case 'longline-training-top':
+      return (
+        <g data-art-detail="longline-training-top">
+          <LongSleeveDetails paint={p} />
+          <path fill={p.outline} d="M1253 576h158v24h10v26h9v18h-32v8h-47v6h-38v-6h-47v-8h-32v-18h9v-26h10z" />
+          <path fill={p.tank} d="M1272 569h120v35h12v22h10v8h-22v7h-45v6h-30v-6h-45v-7h-22v-8h10v-22h12z" />
+          <path fill={p.topShade} d="M1262 621h10v10h25v8h-25v-5h-20v-9h10z M1392 621h10v4h10v9h-20v5h-25v-8h25z" />
+          <path
+            fill={p.topLight}
+            d="M1288 440h13v11h12v6h39v-6h12v-11h13v14h-12v10h-66v-10h-11z M1280 625h8v5h-8z M1293 625h8v5h-8z M1306 625h8v5h-8z"
           />
         </g>
       );

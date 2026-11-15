@@ -235,8 +235,23 @@ export interface AvatarStyles {
     | 'braided-ponytail'
     | 'low-bun'
     | 'puff'
-    | 'sport-hijab';
-  body: 'balanced' | 'lean' | 'broad' | 'compact' | 'tall' | 'stocky' | 'athletic' | 'relaxed';
+    | 'tapered-curls'
+    | 'double-braids'
+    | 'high-bun'
+    | 'sport-hijab'
+    | 'wrap-hijab'
+    | 'longline-hijab';
+  body:
+    | 'balanced'
+    | 'lean'
+    | 'broad'
+    | 'compact'
+    | 'tall'
+    | 'stocky'
+    | 'athletic'
+    | 'relaxed'
+    | 'long-limbed'
+    | 'power-build';
   top:
     | 'tank'
     | 'tee'
@@ -250,9 +265,23 @@ export interface AvatarStyles {
     | 'sleeveless-hoodie'
     | 'longline-tank'
     | 'racerback-bra'
-    | 'fitted-zip';
+    | 'fitted-zip'
+    | 'hood-up'
+    | 'zip-hoodie'
+    | 'raglan-top'
+    | 'longline-training-top';
   shoes:
-    'trainers' | 'high-tops' | 'runners' | 'slip-ons' | 'boots' | 'canvas' | 'lifters' | 'cross-trainers' | 'barefoot';
+    | 'trainers'
+    | 'high-tops'
+    | 'runners'
+    | 'slip-ons'
+    | 'boots'
+    | 'canvas'
+    | 'lifters'
+    | 'cross-trainers'
+    | 'barefoot'
+    | 'flat-lifters'
+    | 'cushioned-runners';
   pants?:
     | 'shorts'
     | 'joggers'
@@ -265,7 +294,10 @@ export interface AvatarStyles {
     | 'split-shorts'
     | 'warmup-pants'
     | 'high-rise-leggings'
-    | 'capris';
+    | 'capris'
+    | 'tapered-joggers'
+    | 'panel-tights'
+    | 'loose-training-shorts';
   beard?:
     | 'clean-shaven'
     | 'stubble'
@@ -275,8 +307,20 @@ export interface AvatarStyles {
     | 'full-beard'
     | 'chin-strap'
     | 'fade-beard'
-    | 'chin-tuft';
-  socks?: 'no-socks' | 'ankle-socks' | 'crew-socks' | 'striped-socks' | 'knee-highs' | 'grip-socks' | 'cushioned-socks';
+    | 'chin-tuft'
+    | 'boxed-beard'
+    | 'circle-beard';
+  socks?:
+    | 'no-socks'
+    | 'ankle-socks'
+    | 'crew-socks'
+    | 'striped-socks'
+    | 'knee-highs'
+    | 'grip-socks'
+    | 'cushioned-socks'
+    | 'tab-socks'
+    | 'compression-socks';
+  face?: 'smile' | 'focused' | 'grin';
 }
 
 /**
@@ -295,6 +339,8 @@ export interface AvatarConfigDto {
   };
   /** Optional for characters saved before styles were available. */
   styles?: AvatarStyles;
+  /** The hairstyle to restore when a member removes their hijab. */
+  hairUnderHijab?: AvatarStyles['hair'];
 }
 
 export interface SettingsDto {

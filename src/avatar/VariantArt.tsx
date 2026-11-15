@@ -1,4 +1,4 @@
-import type { AvatarPaint, ResolvedStyles, WOMEN_HAIR } from './catalog';
+import type { AvatarPaint, HijabStyle, ResolvedStyles, WOMEN_HAIR } from './catalog';
 import { Mirrored, PantDetails, ShoeDetails, TopDetails } from './ClothingDetails';
 import { StudioLeggings } from './WomenArt';
 
@@ -7,7 +7,7 @@ interface VariantProps<K extends keyof ResolvedStyles> {
   paint: AvatarPaint;
 }
 
-type AltHairStyle = Exclude<ResolvedStyles['hair'], 'curls' | 'sport-hijab' | (typeof WOMEN_HAIR)[number]>;
+type AltHairStyle = Exclude<ResolvedStyles['hair'], 'curls' | HijabStyle | (typeof WOMEN_HAIR)[number]>;
 const HAIR: Record<Exclude<AltHairStyle, 'shaved'>, [string, string, string, string]> = {
   fade: [
     'M1184 166H1205V131H1240V111H1282V99H1382V111H1424V131H1459V166H1480V251H1466V286H1450V307H1436V256H1412V238H1381V226H1282V238H1252V256H1220V307H1206V287H1193V251H1184Z',
@@ -57,6 +57,12 @@ const HAIR: Record<Exclude<AltHairStyle, 'shaved'>, [string, string, string, str
     'M1233 153h20v-18h28v-13h101v7h-69v18h-20v55h-8v-53h-13v16h-23v38h-9v-32h-7z M1344 132h8v70h-8z M1383 143h18v16h15v43h-8v-35h-18v-15h-7z M1214 222h15v8h-15z M1227 268h15v8h-15z M1236 316h15v8h-15z M1435 222h15v8h-15z M1422 268h15v8h-15z M1413 316h15v8h-15z',
     'M1211 198h21v11h26v-13h147v13h27v-11h21v14h-17v15h-30v-8h-147v8h-30v-15h-18z',
   ],
+  'tapered-curls': [
+    'M1177 250v-62h15v-32h15v-19h19v-22h28V94h31V78h38v13h24V77h39v16h32v20h25v22h21v24h14v32h11v59h-16v29h-22v25h-16v-49h-17v-22h-19v-15h-30v-14h-91v14h-29v15h-20v22h-17v49h-16v-25h-22v-29z',
+    'M1194 241v-48h14v-30h15v-19h21v-15h25v-20h29V94h15v13h40V93h24v15h29v20h25v21h22v24h12v26h12v42h-19v22h-12v-25h-19v-23h-21v-15h-37v-14h-92v14h-37v15h-21v23h-19v25h-12v-22z',
+    'M1210 187h17v-15h18v-17h23v-16h32v-10h18v10h20v-9h28v-13h22v14h29v19h23v21h-12v-13h-23v-14h-29v7h-38v9h-27v-10h-18v9h-29v13h-22v15h-16v14h-16z',
+    'M1194 225h27v-16h22v-15h35v-13h33v8h39v-7h35v13h34v15h22v15h36v16h-19v22h-12v-25h-19v-23h-21v-15h-37v-14h-92v14h-37v15h-21v23h-19v25h-12v-22z',
+  ],
 };
 
 export function AltHair({ style, paint: p }: VariantProps<'hair'> & { style: AltHairStyle }) {
@@ -85,7 +91,7 @@ export function SleeveTop({
   paint: p,
 }: VariantProps<'top'> & { style: Exclude<ResolvedStyles['top'], 'tank'> }) {
   const tee = style === 'tee' || style === 'mesh-tee';
-  const hoodie = style === 'hoodie';
+  const hoodie = style === 'hoodie' || style === 'hood-up' || style === 'zip-hoodie';
   return (
     <g data-style-layer="top" data-variant={style}>
       {hoodie && (
@@ -183,6 +189,18 @@ const SHOES: Record<ResolvedStyles['shoes'], [string, string, string, string]> =
     'M1189 848h7v12h-7z M1209 853h6v14h-6z M1229 857h6v10h-6z M1251 857h6v10h-6z',
     '',
   ],
+  'flat-lifters': [
+    'M1207 780h23v-9h58v14h17v33h14v44h-10v15h-148v-11h-12v-38h13v-14h20v-12h25z',
+    'M1223 792h16v-8h42v15h13v28h11v24h-142v-17h12v-12h21v-13h27z',
+    'M1192 827h47v-11h49v13h-38v13h-72v-7h14z M1285 835h20v16h-29v-8h9z',
+    'M1163 852h142v10h-142z M1217 808h67v9h-67z M1169 864h15v4h-15z M1200 864h15v4h-15z M1272 864h24v4h-24z',
+  ],
+  'cushioned-runners': [
+    'M1202 792h19v-14h63v13h17v21h13v16h14v33h-10v12h-27v4h-131v-9h-15v-23h10v-15h13v-12h16v-15h18z',
+    'M1215 802h20v-9h43v12h13v22h15v14h-141v-7h13v-9h18v-14h19z',
+    'M1179 834h22v-10h26v-11h45v8h-19v11h-29v9h-45z M1292 826h14v15h-31v-7h17z',
+    'M1160 844h153v13h-12v6h-22v3h-110v-7h-9z M1222 807h49v6h-49z',
+  ],
 };
 
 export function ShoePair({ style, paint: p }: VariantProps<'shoes'>) {
@@ -203,17 +221,26 @@ export function ShoePair({ style, paint: p }: VariantProps<'shoes'>) {
   );
 }
 
-export function Socks({ style, shoes, paint: p }: VariantProps<'socks'> & { shoes: ResolvedStyles['shoes'] }) {
+export function Socks({
+  style,
+  shoes,
+  paint: p,
+  underPants,
+}: VariantProps<'socks'> & { shoes: ResolvedStyles['shoes']; underPants: boolean }) {
   const grip = style === 'grip-socks';
-  const ankle = style === 'ankle-socks' || grip;
+  const tab = style === 'tab-socks';
+  const compression = style === 'compression-socks';
+  const ankle = underPants || style === 'ankle-socks' || grip || tab;
   const tallShoe = shoes === 'high-tops' || shoes === 'boots';
-  const knee = style === 'knee-highs';
-  const y = ankle ? (tallShoe ? (shoes === 'boots' ? 711 : 739) : 767) : knee ? 695 : 719;
+  const knee = !underPants && (style === 'knee-highs' || compression);
+  const y = ankle ? (tallShoe ? (shoes === 'boots' ? 711 : 739) : tab ? 774 : 767) : knee ? 695 : 719;
   return (
     <g data-style-layer="socks" data-variant={style}>
       {style !== 'no-socks' && (
         <Mirrored>
-          <g transform={knee ? `translate(0 ${y}) scale(1 1.3)` : `translate(0 ${y})`}>
+          <g
+            transform={`translate(0 ${y})${knee ? ' scale(1 1.3)' : ''}${underPants ? ' translate(352 0) scale(.72 1)' : ''}`}
+          >
             <path fill={p.outline} d={ankle ? 'M1210 0h98v70h-98z' : 'M1219 0h94v29h-7v25h-10v36h-87V30h10z'} />
             <path
               data-paint="sock-fabric"
@@ -224,13 +251,19 @@ export function Socks({ style, shoes, paint: p }: VariantProps<'socks'> & { shoe
               fill={p.sockShade}
               d={ankle ? 'M1220 3h77v5h-77z' : 'M1230 4h72v7h-72z M1297 13h5v14h-5z M1290 27h5v24h-5z'}
             />
-            {(style === 'striped-socks' || knee) && (
+            {!underPants && (style === 'striped-socks' || style === 'knee-highs') && (
               <path fill={p.sockTrim} d="M1230 12h72v5h-72z M1230 22h72v5h-72z" />
             )}
-            {(style === 'crew-socks' || style === 'cushioned-socks') && (
+            {!underPants && (style === 'crew-socks' || style === 'cushioned-socks') && (
               <path fill={p.sockShade} d="M1240 14h4v18h-4z M1253 14h4v18h-4z M1266 14h4v18h-4z M1279 14h4v18h-4z" />
             )}
-            {style === 'cushioned-socks' && <path fill={p.sockTrim} d="M1230 10h72v5h-72z M1219 54h65v14h-65z" />}
+            {!underPants && style === 'cushioned-socks' && (
+              <path fill={p.sockTrim} d="M1230 10h72v5h-72z M1219 54h65v14h-65z" />
+            )}
+            {tab && <path fill={p.sockTrim} d="M1278 0h19v12h-19z M1223 12h52v4h-52z" />}
+            {!underPants && compression && (
+              <path fill={p.sockTrim} d="M1230 8h72v4h-72z M1240 20h6v46h-6z M1253 29h6v28h-6z" />
+            )}
             {grip && (
               <path fill={p.sockTrim} d="M1220 10h77v4h-77z M1224 28h7v7h-7z M1237 35h7v7h-7z M1284 28h7v7h-7z" />
             )}
@@ -255,6 +288,25 @@ export function Socks({ style, shoes, paint: p }: VariantProps<'socks'> & { shoe
 
 export function Pants({ style, paint: p }: VariantProps<'pants'>) {
   if (style === 'high-rise-leggings' || style === 'capris') return <StudioLeggings style={style} paint={p} />;
+  if (style === 'loose-training-shorts') {
+    return (
+      <g data-style-layer="pants" data-variant={style}>
+        <path
+          fill={p.outline}
+          d="M1249 575h166v16h15v25h13v33h13v72h-106v-19h-10v-37h-16v37h-10v19h-106v-72h13v-33h13v-25h15z"
+        />
+        <path
+          fill={p.shorts}
+          d="M1260 588h144v16h14v24h12v31h13v49h-80v-18h-11v-40h-40v40h-11v18h-80v-49h13v-31h12v-24h14z"
+        />
+        <path fill={p.pantsShade} d="M1260 588h144v13h-144z M1221 696h80v12h-80z M1363 696h80v12h-80z" />
+        <Mirrored>
+          <path fill={p.pantsTrim} d="M1247 628h5v29h-12v33h-5v-36h12z M1225 697h61v4h-61z" />
+          <path fill={p.pantsShade} d="M1255 623h30v7h-19v15h-11z" />
+        </Mirrored>
+      </g>
+    );
+  }
   if (style === 'liner-shorts' || style === 'split-shorts') {
     const lined = style === 'liner-shorts';
     return (
@@ -281,8 +333,8 @@ export function Pants({ style, paint: p }: VariantProps<'pants'>) {
       </g>
     );
   }
-  if (style === 'training-tights' || style === 'warmup-pants') {
-    const tights = style === 'training-tights';
+  if (style === 'training-tights' || style === 'warmup-pants' || style === 'panel-tights') {
+    const tights = style !== 'warmup-pants';
     return (
       <g data-style-layer="pants" data-variant={style}>
         <path
@@ -323,6 +375,12 @@ export function Pants({ style, paint: p }: VariantProps<'pants'>) {
             </>
           )}
         </Mirrored>
+        {style === 'panel-tights' && (
+          <Mirrored>
+            <path fill={p.pantsLight} d="M1248 651h27v28h-9v35h-10v37h-9v30h-23v-24h10v-38h8v-34h6z" />
+            <path fill={p.pantsTrim} d="M1256 658h12v5h-12z M1237 749h6v19h-6z" />
+          </Mirrored>
+        )}
         <path fill={p.pantsShade} d="M1265 591h134v10h-134z" />
       </g>
     );
@@ -340,7 +398,8 @@ export function Pants({ style, paint: p }: VariantProps<'pants'>) {
     );
   }
   const shorts = style === 'shorts';
-  const joggers = style === 'joggers';
+  const tapered = style === 'tapered-joggers';
+  const joggers = style === 'joggers' || tapered;
   return (
     <g data-style-layer="pants" data-variant={style}>
       <path
@@ -366,6 +425,12 @@ export function Pants({ style, paint: p }: VariantProps<'pants'>) {
           <path fill={p.pantsShade} d="M1238 778H1290V797H1238Z M1374 778H1426V797H1374Z M1263 590H1400V610H1263Z" />
           <path fill={p.pantsLight} d="M1318 600H1327V628H1318Z M1337 600H1346V635H1337Z" />
         </>
+      )}
+      {tapered && (
+        <Mirrored>
+          <path fill={p.pantsShade} d="M1247 615h38v9h-20v14h-18z M1228 683h22v31h-8v50h-12v-51h-2z" />
+          <path fill={p.pantsLight} d="M1252 619h24v4h-18v11h-6z M1241 783h46v4h-46z M1241 790h46v3h-46z" />
+        </Mirrored>
       )}
       {style === 'cargo' && (
         <>
@@ -447,6 +512,18 @@ const BEARDS: Record<Exclude<ResolvedStyles['beard'], 'clean-shaven'>, BeardArt>
     base: 'M1310 380h12v5h20v-5h12v13h-6v12h-6v9h-17v-9h-9v-12h-6z',
     shade: 'M1316 394h7v6h8v7h8v-7h8v5h-5v9h-17v-9h-9z',
     texture: 'M1324 387h5v9h-5z M1336 389h5v10h-5z',
+  },
+  'boxed-beard': {
+    base: 'M1228 334h14v21h17v12h28v-17h13v-12h60v12h16v17h28v-12h16v-21h14v41h-11v13h-18v13h-22v20h-103v-20h-22v-13h-19v-13h-11z',
+    shade: 'M1240 372h17v12h23v13h16v13h72v-13h17v-13h22v-12h17v14h-19v13h-22v22h-103v-22h-22v-13h-18z',
+    texture: 'M1290 381h7v12h-7z M1311 386h7v15h-7z M1330 385h7v17h-7z M1351 383h7v14h-7z M1372 378h7v12h-7z',
+    opening: true,
+  },
+  'circle-beard': {
+    base: 'M1297 346h12v-9h42v9h14v13h9v26h-9v13h-13v8h-44v-8h-12v-13h-9v-26h10z',
+    shade: 'M1293 378h8v11h12v7h35v-7h13v-11h7v9h-6v11h-12v8h-42v-8h-12v-13h-3z',
+    texture: 'M1313 380h5v10h-5z M1328 381h5v13h-5z M1343 380h5v10h-5z',
+    opening: true,
   },
 };
 
