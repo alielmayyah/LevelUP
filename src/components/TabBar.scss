@@ -81,8 +81,6 @@
     /* Resting icons: muted lavender outlines with a quiet fill. */
     --px-line: var(--lu-text-muted);
     --px-fill: color-mix(in srgb, var(--lu-text-muted) 22%, var(--lu-surface));
-    --px-hi: color-mix(in srgb, var(--lu-text-muted) 45%, var(--lu-surface));
-    --px-core: var(--lu-surface);
 
     .lu-pixel-icon {
       transition: transform 120ms ease-out;
@@ -99,8 +97,6 @@
     --color-selected: var(--ion-color-primary);
     --px-line: var(--lu-splash-star);
     --px-fill: color-mix(in srgb, var(--lu-splash-star) 55%, var(--ion-color-primary));
-    --px-hi: var(--lu-splash-star);
-    --px-core: var(--ion-color-primary);
   }
 
   /*
@@ -135,13 +131,9 @@
     font-weight: 800;
   }
 
-  /*
-   * Below 360 px only icons show. The label is hidden visually, not removed,
-   * so it still names the tab for screen readers.
-   */
   @media (max-width: 359.98px) {
     ion-label {
-      @include visually-hidden;
+      font-size: 0.625rem;
     }
   }
 

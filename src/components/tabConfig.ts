@@ -3,7 +3,7 @@ import type { PixelIconName } from './PixelIcon';
 export const TABS = [
   { tab: 'home', href: '/tabs/home', icon: 'house' },
   { tab: 'progress', href: '/tabs/progress', icon: 'chart' },
-  { tab: 'goals', href: '/tabs/goals', icon: 'flag' },
+  { tab: 'goals', href: '/tabs/goals', icon: 'target' },
   { tab: 'community', href: '/tabs/community', icon: 'community' },
   { tab: 'profile', href: '/tabs/profile', icon: 'person' },
 ] as const satisfies readonly { tab: string; href: string; icon: PixelIconName }[];

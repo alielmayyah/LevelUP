@@ -251,7 +251,7 @@ const Settings: React.FC = () => {
             data-testid="sign-out"
           >
             <span className={`${LABEL} text-danger`}>
-              <PixelIcon className={`${LABEL_ICON} text-danger`} name="logout" />
+              <PixelIcon className={`${LABEL_ICON} text-danger rtl:-scale-x-100`} name="logout" />
               {t('profile.signOut')}
             </span>
             <PixelIcon className="lu-chevron text-danger" name="chevronForward" />

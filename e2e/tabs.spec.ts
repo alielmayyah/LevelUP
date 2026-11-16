@@ -87,14 +87,18 @@ test('the dock is full width with its tabs centered in at most 560 px', async ({
   expect(Math.abs(Math.min(first.x, last.x) + row / 2 - width / 2)).toBeLessThan(2);
 });
 
-test('labels show at 360 px and up, icons only below', async ({ page, loginAs }) => {
+test('the dock pairs each icon with a readable label on compact phones', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');
-  const label = page.getByTestId('tab-home').locator('ion-label');
-  // Below 360 px the label is visually hidden (1 px, clipped) but still names the tab for screen readers.
-  if (page.viewportSize()!.width < 360) expect((await label.boundingBox())!.width).toBeLessThanOrEqual(1);
-  else await expect(label).toBeVisible();
-  await expect(page.getByRole('tab', { name: en.tabs.short.home, exact: true })).toBeVisible();
+  const nav = page.getByRole('navigation', { name: en.tabs.navLabel });
+  for (const tab of TABS) {
+    await expect(nav.getByRole('tab', { name: en.tabs.short[tab], exact: true })).toBeVisible();
+    const host = nav.getByTestId(`tab-${tab}`);
+    await expect(host.locator('[data-icon]')).toHaveAttribute('viewBox', '0 0 24 24');
+    const label = host.locator('ion-label');
+    expect((await label.boundingBox())!.width).toBeGreaterThan(1);
+    expect(await label.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(false);
+  }
 });
 
 test('every tab button is at least 44 × 44 px', async ({ page, loginAs }) => {

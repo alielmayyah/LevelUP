@@ -11,13 +11,13 @@ import '../avatar/avatar.scss';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
 import FitScoreCard from './home/FitScoreCard';
+import HomeIcon from './home/HomeIcon';
 import { formatToday } from './home/homeText';
 import MissionCard from './home/MissionCard';
 import NotificationsSheet from './home/NotificationsSheet';
 import RankCard from './home/RankCard';
 import StatTiles from './home/StatTiles';
 import { HOME_GRID, HOME_SPAN, TILES } from './home/layout';
-import PixelIcon from '../components/PixelIcon';
 import './home/Dashboard.scss';
 
 /** Home tab. Everything on it comes from one request: GET /me/dashboard. */
@@ -85,7 +85,7 @@ const Dashboard: React.FC = () => {
                 }
                 onClick={() => setNotifOpen(true)}
               >
-                <PixelIcon name="bell" />
+                <HomeIcon name="bell" />
                 {unread > 0 && (
                   <span
                     className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 border-page bg-danger px-[5px] text-[0.72rem] leading-none font-black text-surface dark:text-pixel-ink"

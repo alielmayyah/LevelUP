@@ -70,7 +70,7 @@ const MAIN: MainMetric[] = [
     value: (a) => a.bodyFatPct,
     unit: '%',
     digits: 1,
-    icon: 'flame',
+    icon: 'bodyFat',
     tone: 'lu-tone-fat',
     better: 'down',
   },
@@ -92,7 +92,7 @@ const MORE: MoreMetric[] = [
     value: (a) => a.proteinKg,
     unit: 'kg',
     digits: 1,
-    icon: 'drumstick',
+    icon: 'protein',
     tone: 'lu-tone-protein',
     better: 'up',
   },
@@ -106,12 +106,12 @@ const MORE: MoreMetric[] = [
     better: 'up',
   },
   { key: 'bmr', value: (a) => a.bmrKcal, unit: 'kcal', digits: 0, icon: 'bolt', tone: 'lu-tone-bmr', better: 'up' },
-  { key: 'bmi', value: (a) => a.bmi, digits: 1, icon: 'ruler', tone: 'lu-tone-bmi', better: null },
+  { key: 'bmi', value: (a) => a.bmi, digits: 1, icon: 'gauge', tone: 'lu-tone-bmi', better: null },
   {
     key: 'visceral',
     value: (a) => a.visceralFatLevel,
     digits: 0,
-    icon: 'heart',
+    icon: 'abdomen',
     tone: 'lu-tone-visceral',
     better: 'down',
   },
@@ -261,7 +261,7 @@ const Progress: React.FC = () => {
             onClick={() => setShowAll(true)}
             data-testid="view-all-scans"
           >
-            <PixelIcon className="text-[1.15rem]" name="list" />
+            <PixelIcon className="text-[1.15rem] rtl:-scale-x-100" name="history" />
             {/* Icon only on the narrowest phones, so the page title keeps its line; the name stays for screen readers. */}
             <span className="max-[359px]:sr-only">{t('progress.viewAll', { n: formatNumber(list.length) })}</span>
           </button>

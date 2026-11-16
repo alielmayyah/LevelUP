@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import type { MissionSummary } from '../../api/types';
-import PixelIcon from '../../components/PixelIcon';
+import HomeIcon from './HomeIcon';
 import { formatNumber, formatPercent } from '../../i18n/format';
 
 const RADIUS = 26;
@@ -22,10 +22,10 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
   const head = (
     <span className="lu-card-head">
       <span className="lu-card-kicker">
-        <PixelIcon name="flag" />
+        <HomeIcon name="flag" />
         {t('home.mission.title')}
       </span>
-      {mission && <PixelIcon className="lu-chevron" name="chevronForward" />}
+      {mission && <HomeIcon className="lu-chevron" name="chevronForward" />}
     </span>
   );
   // A heading for heading navigation. The visible label stays in the button so its name matches what is shown (WCAG 2.5.3).
@@ -119,7 +119,7 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
         {/* A gym-floor strip with a dumbbell, along the card's bottom edge. Decorative. */}
         <span className="lu-mission-ground" aria-hidden="true">
           <span className="lu-mission-dumbbell">
-            <PixelIcon name="dumbbell" />
+            <HomeIcon name="dumbbell" />
           </span>
         </span>
       </button>

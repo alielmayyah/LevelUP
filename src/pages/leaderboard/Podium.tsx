@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { LeaderboardBoard, LeaderboardRow, Sex } from '../../api/types';
 import Avatar from '../../avatar/Avatar';
+import PixelIcon from '../../components/PixelIcon';
 import { formatCount } from '../../i18n/format';
 import MetricIcon from './MetricIcon';
 import { rowAvatar } from './rowAvatar';
@@ -25,20 +26,6 @@ const FIGURE: Record<number, string> = {
   2: 'h-[clamp(68px,18vw,92px)]',
   3: 'h-[clamp(68px,18vw,92px)]',
 };
-
-/** Pixel crown over 1st place. */
-const Crown: React.FC = () => (
-  <svg
-    viewBox="0 0 14 9"
-    className="lu-crown mx-auto mb-[-2px] block h-[18px] w-auto"
-    shapeRendering="crispEdges"
-    aria-hidden="true"
-  >
-    <path className="lu-crown-ink" d="M0 1h3v1h1v1h1V1h1V0h2v1h1v2h1V2h1V1h3v8H0z" />
-    <path className="lu-crown-gold" d="M1 2h1v1h1v1h2V2h1V1h2v1h1v2h2V3h1V2h1v6H1z" />
-    <path className="lu-crown-gem" d="M6 5h2v2H6z" />
-  </svg>
-);
 
 interface Props {
   rows: LeaderboardRow[];
@@ -66,7 +53,7 @@ const Podium: React.FC<Props> = ({ rows, division, board, format, you, myRef }) 
             className={`grid min-w-0 justify-items-center ${PLACE[r.rank] ?? ''}`}
             data-testid={r.isMe ? 'my-row' : 'podium-place'}
           >
-            {r.rank === 1 && <Crown />}
+            {r.rank === 1 && <PixelIcon name="crown" className="text-[1.35rem] text-gold" />}
             <Avatar
               config={rowAvatar(r, division)}
               crop="full"

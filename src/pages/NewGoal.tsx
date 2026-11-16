@@ -17,7 +17,7 @@ const METRICS: readonly GoalMetric[] = ['BODY_FAT_KG', 'MUSCLE_KG', 'WEIGHT_KG']
 
 /** Same icon and hue as the goal rows, Home, and Progress. */
 const LOOK: Record<GoalMetric, { icon: PixelIconName; tone: string }> = {
-  BODY_FAT_KG: { icon: 'flame', tone: 'fat' },
+  BODY_FAT_KG: { icon: 'bodyFat', tone: 'fat' },
   MUSCLE_KG: { icon: 'muscle', tone: 'muscle' },
   WEIGHT_KG: { icon: 'scale', tone: 'weight' },
 };

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import type { LeaderboardSummary } from '../../api/types';
-import PixelIcon from '../../components/PixelIcon';
+import HomeIcon from './HomeIcon';
 import { formatCount, formatPercent, formatRank } from '../../i18n/format';
 
 /**
@@ -29,7 +29,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
     const body = (
       <>
         <span className="lu-icon-tile" aria-hidden="true">
-          <PixelIcon name="podium" />
+          <HomeIcon name="podium" />
         </span>
         <span className="grid min-w-0 gap-0.5 text-[0.85rem] text-muted">
           <strong className="text-[1rem] text-ink">{t(joinable ? 'home.rank.join' : 'home.rank.title')}</strong>
@@ -48,7 +48,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
             onClick={() => history.push('/tabs/community/leaderboard')}
           >
             {body}
-            <PixelIcon className="lu-chevron" name="chevronForward" />
+            <HomeIcon className="lu-chevron" name="chevronForward" />
           </button>
         ) : (
           <div className="lu-px-card flex items-center gap-3" data-testid="rank-card">
@@ -68,8 +68,8 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
         data-testid="rank-card"
         onClick={() => history.push('/tabs/community/leaderboard')}
       >
-        <span className="lu-icon-tile lu-icon-tile-gold" aria-hidden="true">
-          <PixelIcon name="trophy" />
+        <span className="lu-icon-tile lu-icon-tile-gold" aria-hidden="true" data-testid="rank-trophy">
+          <HomeIcon name="trophy" />
         </span>
         <span className="grid min-w-0 gap-0.5 text-[0.85rem] text-muted">
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -93,7 +93,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
             </span>
           </span>
         </span>
-        <PixelIcon className="lu-chevron" name="chevronForward" />
+        <HomeIcon className="lu-chevron" name="chevronForward" />
       </button>
     </section>
   );

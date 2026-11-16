@@ -17,7 +17,7 @@ const SECTIONS: GoalTab[] = ['active', 'completed'];
 
 /** Each goal metric gets the same icon and hue it has on Home and Progress. */
 const METRIC: Record<GoalMetric, { icon: PixelIconName; tone: string }> = {
-  BODY_FAT_KG: { icon: 'flame', tone: 'fat' },
+  BODY_FAT_KG: { icon: 'bodyFat', tone: 'fat' },
   MUSCLE_KG: { icon: 'muscle', tone: 'muscle' },
   WEIGHT_KG: { icon: 'scale', tone: 'weight' },
 };
@@ -117,7 +117,7 @@ const Goals: React.FC = () => {
     <TabPage
       testId="page-goals"
       title={t('tabs.goals')}
-      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="flag" />}
+      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="target" />}
       subtitle={t('goals.subtitle')}
       onRefresh={goals.reload}
       actions={
@@ -147,7 +147,7 @@ const Goals: React.FC = () => {
 
       {data && total === 0 && (
         <div className="lu-px-card lu-state" data-testid="goals-empty">
-          <PixelIcon name="flag" />
+          <PixelIcon name="target" />
           <p>{t('goals.empty')}</p>
           <CtaButton onClick={newGoal} data-testid="goal-new-empty">
             {t('goals.emptyCta')}

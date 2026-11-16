@@ -13,15 +13,15 @@ const day = (iso: string) =>
 
 type TrendKey = 'weight' | 'muscle' | 'bodyFat' | 'score';
 
-/** The same metric icons as the rest of the app: scale, muscle, flame, and the FitScore trophy. */
+/** The same metric icons as the rest of the app: scale, muscle, body fat, and the FitScore trophy. */
 const ICON: Record<TrendKey, { name: PixelIconName; colors: string }> = {
-  weight: { name: 'scale', colors: '[--px-hi:var(--lu-surface)]' },
-  muscle: { name: 'muscle', colors: '[--px-fill:var(--lu-muscle)] [--px-hi:var(--lu-muscle-hi)]' },
+  weight: { name: 'scale', colors: '[--px-fill:var(--lu-metal)]' },
+  muscle: { name: 'muscle', colors: '[--px-fill:var(--lu-muscle)]' },
   bodyFat: {
-    name: 'flame',
-    colors: '[--px-core:var(--lu-fat-core)] [--px-fill:var(--lu-fat)] [--px-hi:var(--lu-fat-hi)]',
+    name: 'bodyFat',
+    colors: '[--px-fill:var(--lu-fat)]',
   },
-  score: { name: 'trophy', colors: '[--px-fill:var(--lu-gold)] [--px-hi:var(--lu-fat-core)]' },
+  score: { name: 'trophy', colors: '[--px-fill:var(--lu-gold)]' },
 };
 
 /** Which way is good news on each trend. Weight has no right direction. */

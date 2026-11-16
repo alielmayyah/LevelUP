@@ -1,6 +1,6 @@
 /*
  * Progress cards: each measurement has its own hue (--tone) for the border and
- * a faint tint, plus the colors of its pixel icon.
+ * a faint tint, plus the colors of its icon.
  */
 @layer components {
   .lu-scan-tile,
@@ -21,59 +21,47 @@
   .lu-tone-weight {
     --tone: var(--ion-color-primary);
     --px-fill: var(--lu-metal);
-    --px-hi: var(--lu-metal-hi);
   }
 
   .lu-tone-muscle {
     --tone: var(--lu-tier-4);
     --px-fill: var(--lu-muscle);
-    --px-hi: var(--lu-muscle-hi);
   }
 
   .lu-tone-fat {
     --tone: var(--lu-fat);
     --px-fill: var(--lu-fat);
-    --px-hi: var(--lu-fat-hi);
-    --px-core: var(--lu-fat-core);
   }
 
   .lu-tone-water {
     --tone: var(--lu-muscle);
     --px-fill: var(--lu-muscle);
-    --px-hi: var(--lu-muscle-hi);
   }
 
-  /* Drumstick: golden-brown meat, pale bone. */
+  /* Protein uses the warm nutrition accent. */
   .lu-tone-protein {
     --tone: var(--lu-fat);
     --px-fill: var(--lu-bronze);
-    --px-hi: var(--lu-gold);
-    --px-core: var(--lu-metal-hi);
   }
 
   .lu-tone-minerals {
     --tone: var(--lu-tier-5);
     --px-fill: var(--lu-tier-5);
-    --px-hi: var(--lu-metal-hi);
   }
 
   .lu-tone-bmr {
     --tone: var(--lu-gold);
     --px-fill: var(--lu-gold);
-    --px-hi: var(--lu-fat-core);
   }
 
   .lu-tone-bmi {
     --tone: var(--lu-tier-3);
     --px-fill: var(--lu-tier-3);
-    --px-hi: var(--lu-fat-core);
   }
 
   .lu-tone-visceral {
     --tone: var(--lu-tier-1);
     --px-fill: var(--lu-tier-1);
-    --px-hi: color-mix(in srgb, var(--lu-tier-1) 35%, var(--lu-splash-star));
-    --px-core: color-mix(in srgb, var(--lu-tier-1) 62%, var(--lu-pixel-ink));
   }
 
   /*
@@ -185,8 +173,6 @@
   /* Calendar and title icons in the brand purple. */
   .lu-tone-calendar {
     --px-fill: var(--ion-color-primary);
-    --px-hi: color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-splash-star));
-    --px-core: var(--lu-splash-star);
   }
 
   /*

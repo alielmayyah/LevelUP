@@ -19,9 +19,27 @@ for (const lang of LOCALES)
         await expect(home.getByTestId('fitscore-value')).toHaveText('91');
         await expect(home.getByText(s.tier.elite)).toBeVisible();
         await expect(home.getByTestId('rank-number')).toContainText('#1');
+        const trophy = home.getByTestId('rank-trophy');
+        await expect(trophy).toBeVisible();
+        const { fill, gold } = await trophy.evaluate((tile) => {
+          const cup = tile.querySelector('.px-fill')!;
+          const sample = document.createElement('span');
+          sample.style.color = 'var(--lu-gold)';
+          tile.append(sample);
+          const gold = getComputedStyle(sample).color;
+          sample.remove();
+          return { fill: getComputedStyle(cup).fill, gold };
+        });
+        expect(fill).toBe(gold);
         await expect(home.getByTestId('tile-body-fat')).toContainText('1.1%');
         await expect(home.getByTestId('tile-muscle')).toContainText(`0.9 ${strings[lang].units.kg}`);
         await expect(home.getByTestId('tile-bmi')).toContainText(strings[lang].home.wins.bmi);
+        for (const metric of ['body-fat', 'muscle', 'bmi']) {
+          await expect(home.getByTestId(`tile-${metric}`).locator('svg')).toHaveAttribute(
+            'shape-rendering',
+            'crispEdges',
+          );
+        }
         expect(await noHorizontalOverflow(page)).toBe(true);
       });
 
