@@ -41,6 +41,8 @@
   --lu-floor-edge: #6b5f92;
   --lu-floor-seam: #17122b;
   --lu-floor-fleck: #3d3459;
+  --lu-gym-mat: #3a3e4d;
+  --lu-gym-mat-seam: #303441;
   --lu-metal: #c9c2e3;
   --lu-metal-hi: #f6f1ff;
 
@@ -48,6 +50,17 @@
   --lu-gold: #f5a524;
   --lu-silver: #9aa6b8;
   --lu-bronze: #c27a3a;
+
+  /* Medal rarities (Trophy Room). The art keeps these in both themes. */
+  --lu-rarity-bronze: #cd7f32;
+  --lu-rarity-silver: #c5cedd;
+  --lu-rarity-gold: #ffc247;
+  --lu-rarity-epic: #b66aff;
+  --lu-rarity-legendary: #45c9ff;
+  /* Medal outlines, faces and highlights: fixed, so the art reads the same on light and dark cards. */
+  --lu-medal-ink: #1a0f2b;
+  --lu-medal-shine: #ffffff;
+  --lu-medal-locked: #6b6385;
 
   /* Dusk backdrop behind the logo and pixel-art gym (splash and login) in both themes. */
   --lu-splash-bg: #1a0f2b;

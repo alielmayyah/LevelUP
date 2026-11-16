@@ -1,0 +1,360 @@
+@layer components {
+  .lu-medal-art {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 1;
+    overflow: hidden;
+    image-rendering: pixelated;
+
+    &[data-locked='true'] {
+      filter: grayscale(0.94);
+      opacity: 0.72;
+    }
+  }
+
+  /* ---------- Overview ---------- */
+
+  .lu-trophy-overview {
+    display: grid;
+    gap: 14px;
+    padding: 16px;
+    border: 2px solid color-mix(in srgb, var(--lu-rarity-epic) 45%, var(--lu-splash-bg-2));
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--lu-splash-bg-2), var(--lu-splash-bg));
+    color: var(--lu-splash-text);
+    box-shadow: 0 4px 0 var(--lu-pixel-shadow);
+  }
+
+  .lu-trophy-count {
+    color: var(--lu-rarity-gold);
+    font-size: clamp(2.4rem, 11vw, 3.4rem);
+
+    small {
+      color: var(--lu-splash-text-muted);
+      font-size: 0.5em;
+    }
+  }
+
+  .lu-trophy-bar {
+    block-size: 10px;
+    border: 2px solid var(--lu-medal-ink);
+    background: color-mix(in srgb, var(--lu-splash-text) 14%, var(--lu-splash-bg));
+
+    > span {
+      display: block;
+      block-size: 100%;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--lu-rarity-gold) 0 6px,
+        color-mix(in srgb, var(--lu-rarity-gold) 70%, var(--lu-medal-ink)) 6px 8px
+      );
+    }
+  }
+
+  .lu-trophy-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+
+    > div {
+      display: grid;
+      gap: 2px;
+      padding: 8px 6px;
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--lu-splash-text) 9%, transparent);
+      text-align: center;
+    }
+
+    dt {
+      color: var(--lu-splash-text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  /* ---------- Filters ---------- */
+
+  .lu-trophy-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--lu-border);
+    border-radius: 10px;
+    background: var(--lu-surface-2);
+
+    button {
+      min-block-size: 44px;
+      min-inline-size: 0;
+      padding: 5px 4px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--lu-text-muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      cursor: pointer;
+
+      &[aria-checked='true'] {
+        background: var(--ion-color-primary);
+        color: var(--ion-color-primary-contrast);
+        box-shadow: 0 2px 0 var(--ion-color-primary-shade);
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--lu-text);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  /* ---------- Category sections ---------- */
+
+  .lu-medal-section {
+    --tone: var(--lu-fat);
+    display: grid;
+    gap: 14px;
+    padding: 14px;
+
+    &[data-category='muscle'] {
+      --tone: var(--lu-muscle);
+    }
+    &[data-category='bench'] {
+      --tone: var(--lu-tier-5);
+    }
+    &[data-category='squat'] {
+      --tone: var(--lu-tier-5);
+    }
+  }
+
+  .lu-medal-section-icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 44px;
+    block-size: 44px;
+    border: 2px solid color-mix(in srgb, var(--tone) 45%, var(--lu-border));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--tone) 14%, var(--lu-surface-2));
+    font-size: 1.5rem;
+    --px-fill: var(--tone);
+    --px-hi: color-mix(in srgb, var(--tone) 50%, var(--lu-medal-shine));
+  }
+
+  .lu-medal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 480px) {
+    .lu-medal-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 768px) {
+    .lu-medal-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  /* Wide screens: the reference layout, title on the start side and the five medals beside it. */
+  @media (min-width: 1024px) {
+    .lu-medal-section {
+      grid-template-columns: minmax(180px, 230px) minmax(0, 1fr);
+      align-items: center;
+      gap: 20px;
+    }
+  }
+
+  .lu-medal-card {
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    gap: 4px;
+    inline-size: 100%;
+    block-size: 100%;
+    padding: 8px 6px 10px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--lu-text);
+    font: inherit;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 120ms ease-out;
+
+    &:hover {
+      background: color-mix(in srgb, var(--lu-text) 4%, transparent);
+    }
+
+    &:active {
+      transform: translateY(2px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--lu-text);
+      outline-offset: 2px;
+    }
+
+    .lu-medal-art {
+      max-inline-size: 132px;
+    }
+  }
+
+  .lu-rarity {
+    --m: var(--lu-rarity-bronze);
+    /* Mostly text color, tinted by the rarity: pale metals stay readable on light cards. */
+    color: color-mix(in srgb, var(--m) 38%, var(--lu-text));
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    &[data-rarity='silver'] {
+      --m: var(--lu-rarity-silver);
+    }
+    &[data-rarity='gold'] {
+      --m: var(--lu-rarity-gold);
+    }
+    &[data-rarity='epic'] {
+      --m: var(--lu-rarity-epic);
+    }
+    &[data-rarity='legendary'] {
+      --m: var(--lu-rarity-legendary);
+    }
+  }
+
+  .lu-medal-progress {
+    inline-size: 100%;
+    block-size: 6px;
+    border-radius: 2px;
+    background: var(--lu-surface-2);
+    box-shadow: inset 0 0 0 1px var(--lu-border);
+    overflow: hidden;
+
+    > span {
+      display: block;
+      block-size: 100%;
+      background: var(--ion-color-primary);
+    }
+  }
+
+  .lu-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.9rem), 1fr));
+  }
+
+  .lu-showcase-medal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    inline-size: 100%;
+    block-size: 100%;
+    padding: 0.5rem 0.25rem;
+    border: 1px solid var(--lu-border);
+    border-radius: 8px;
+    background: var(--lu-surface-2);
+    color: var(--lu-text);
+    font: inherit;
+    text-align: center;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+
+    .lu-medal-art {
+      inline-size: min(100%, 3.5rem);
+    }
+
+    &:hover {
+      border-color: var(--ion-color-primary);
+    }
+
+    &:active {
+      transform: translateY(2px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--lu-text);
+      outline-offset: 2px;
+    }
+  }
+
+  /* ---------- Detail sheet and unlock celebration ---------- */
+
+  .lu-medal-sheet .lu-medal-art {
+    inline-size: min(56vw, 220px);
+  }
+
+  .lu-medal-celebrate {
+    --width: min(92vw, 380px);
+    --height: auto;
+    --border-radius: 12px;
+    --background: transparent;
+    --box-shadow: none;
+  }
+
+  .lu-medal-celebrate-card {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 22px 18px 18px;
+    border: 2px solid color-mix(in srgb, var(--lu-rarity-gold) 50%, var(--lu-splash-bg-2));
+    border-radius: 12px;
+    background: radial-gradient(
+      circle at 50% 30%,
+      color-mix(in srgb, var(--lu-rarity-epic) 30%, var(--lu-splash-bg-2)),
+      var(--lu-splash-bg) 70%
+    );
+    color: var(--lu-splash-text);
+    box-shadow: 0 6px 0 var(--lu-pixel-shadow);
+    text-align: center;
+
+    .lu-medal-art {
+      inline-size: min(52vw, 190px);
+      animation: lu-medal-pop 520ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+    }
+  }
+
+  @keyframes lu-medal-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.6) translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-trophy-filters button:active,
+    .lu-showcase-medal:active,
+    .lu-medal-card:active {
+      transform: none;
+    }
+    .lu-medal-card {
+      transition: none;
+    }
+    .lu-medal-celebrate-card .lu-medal-art {
+      animation: none;
+    }
+  }
+}

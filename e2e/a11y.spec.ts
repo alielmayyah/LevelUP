@@ -20,9 +20,13 @@ const SCREENS: { name: string; url: string; fitId?: string; open?: 'notification
   { name: 'new goal (no scan)', url: '/tabs/goals/new', fitId: '102' },
   { name: 'leaderboard', url: '/tabs/leaderboard', fitId: '101' },
   { name: 'leaderboard (not joined)', url: '/tabs/leaderboard', fitId: '102' },
+  { name: 'community', url: '/tabs/community', fitId: '101' },
   { name: 'profile', url: '/tabs/profile', fitId: '101' },
+  { name: 'settings', url: '/tabs/profile/settings', fitId: '101' },
   { name: 'character editor', url: '/tabs/profile/character', fitId: '101' },
-  { name: 'sign-out dialog', url: '/tabs/profile', fitId: '101', open: 'signOut' },
+  { name: 'medals', url: '/tabs/profile/medals', fitId: '101' },
+  { name: 'medals (no data)', url: '/tabs/profile/medals', fitId: '102' },
+  { name: 'sign-out dialog', url: '/tabs/profile/settings', fitId: '101', open: 'signOut' },
 ];
 
 for (const lang of LOCALES)
@@ -46,6 +50,16 @@ for (const lang of LOCALES)
           }
           // Let intro and count-up animations finish so contrast is measured on final colors.
           await page.waitForTimeout(1200);
+          // On a busy machine some entrances run late: wait for every finite animation to end
+          // (looping glows never finish, so they are left alone).
+          await page.evaluate(() =>
+            Promise.all(
+              document
+                .getAnimations()
+                .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+                .map((a) => a.finished.catch(() => undefined)),
+            ),
+          );
           // Content scrolls under the floating tab bar by design; at the bottom of the page the
           // reserved padding leaves nothing under it. Focus is checked separately below (2.4.11).
           if (s.url.startsWith('/tabs/') && !s.open)
@@ -79,7 +93,7 @@ for (const lang of LOCALES)
 
 /** WCAG 2.4.11: a focused control is never hidden behind the floating tab bar. */
 for (const lang of LOCALES)
-  for (const tab of ['home', 'progress', 'goals', 'leaderboard', 'profile'])
+  for (const tab of ['home', 'progress', 'goals', 'community', 'leaderboard', 'profile', 'profile/settings'])
     test.describe(`${lang}`, () => {
       test.use({ lang });
       test(`${tab}: keyboard focus never sits under the tab bar`, async ({ page, loginAs }) => {
@@ -92,8 +106,16 @@ for (const lang of LOCALES)
           const r = await page.evaluate(async () => {
             // Let the browser finish scrolling the newly focused control into view
             // (it can take a few frames on a busy machine), then measure where it rests.
-            for (let f = 0; f < 6; f++) await new Promise((done) => requestAnimationFrame(done));
+            const frame = () => new Promise((done) => requestAnimationFrame(done));
+            for (let f = 0; f < 6; f++) await frame();
             const a = document.activeElement as HTMLElement | null;
+            // Then wait until it stops moving (up to ~1 s), so a slow smooth scroll isn't caught mid-way.
+            for (let f = 0, last = NaN; a && f < 60; f++) {
+              const top = a.getBoundingClientRect().top;
+              if (top === last) break;
+              last = top;
+              await frame();
+            }
             const bar = document.querySelector('.lu-tabbar');
             if (!a || !bar || bar.contains(a) || a === document.body) return null;
             const box = a.getBoundingClientRect();

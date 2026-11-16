@@ -19,8 +19,18 @@ export function formatNumber(n: number | null | undefined, digits?: number): str
   }).format(n);
 }
 
+/**
+ * A whole count that may grow large (ranks, member totals, XP): exact below
+ * 1,000, then short, `1.2K`, `34K`, `1.5M`, so it never pushes a tight layout apart.
+ */
+export function formatCount(n: number | null | undefined): string {
+  if (!isNumber(n)) return DASH;
+  if (Math.abs(n) < 1000) return formatNumber(Math.round(n));
+  return new Intl.NumberFormat(numberLocale(), { notation: 'compact', maximumFractionDigits: 1 }).format(n);
+}
+
 /** A rank such as `#4`, isolated so Arabic never moves the `#` to the other side. */
-export const formatRank = (rank: number): string => `${LRI}#${formatNumber(rank)}${PDI}`;
+export const formatRank = (rank: number): string => `${LRI}#${formatCount(rank)}${PDI}`;
 
 /** A percentage such as `31%`, isolated so Arabic never moves the `%` to the other side. */
 export const formatPercent = (n: number): string => `${LRI}${formatNumber(n)}%${PDI}`;

@@ -16,8 +16,7 @@ const renderHome = async (fitId = '101') => {
   render(
     <MemoryRouter initialEntries={['/tabs/home']}>
       <Route exact path="/tabs/home" component={Dashboard} />
-      <Route path="/tabs/leaderboard" render={() => <p>leaderboard page</p>} />
-      <Route path="/tabs/profile" render={() => <p>profile page</p>} />
+      <Route path="/tabs/community/leaderboard" render={() => <p>leaderboard page</p>} />
     </MemoryRouter>,
   );
   return screen.findByTestId('fitscore-card').catch(() => screen.findByTestId('rank-card'));
@@ -93,7 +92,7 @@ describe('Home', () => {
     expect(screen.getByTestId('tile-body-fat')).toHaveTextContent('—');
     expect(screen.queryByTestId('bell-dot')).toBeNull();
     await userEvent.click(screen.getByTestId('rank-card'));
-    expect(await screen.findByText('profile page')).toBeInTheDocument();
+    expect(await screen.findByText('leaderboard page')).toBeInTheDocument();
   });
 
   it('hides the FitScore card when the member turned it off', async () => {

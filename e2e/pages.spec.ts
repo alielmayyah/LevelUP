@@ -162,6 +162,65 @@ test.describe('Leaderboard', () => {
     await expect(page.locator(tab('leaderboard')).getByTestId('board-muscle')).toHaveAttribute('aria-selected', 'true');
   });
 
+  test('a docked "you" bar shows the member’s rank while their row is off screen, and jumps to it', async ({
+    page,
+    loginAs,
+  }) => {
+    await loginAs('108');
+    await page.setViewportSize({ width: 390, height: 560 });
+    await page.goto('/tabs/leaderboard');
+    const lb = page.locator(tab('leaderboard'));
+    await expect(lb.getByTestId('my-row')).toBeAttached();
+    await lb
+      .locator('ion-content')
+      .evaluate((c) => (c as HTMLElement & { scrollToTop: (ms: number) => Promise<void> }).scrollToTop(0));
+    const dock = lb.getByTestId('my-rank-dock');
+    await expect(dock).toBeVisible();
+    await expect(dock).toContainText(en.leaderboard.you);
+    await dock.click();
+    await expect(lb.getByTestId('my-row')).toBeInViewport();
+    await expect(dock).toHaveCount(0);
+  });
+
+  test('filters by age group from the funnel menu and remembers it across a reload', async ({ page, loginAs }) => {
+    await loginAs();
+    await page.goto('/tabs/leaderboard');
+    const lb = page.locator(tab('leaderboard'));
+    const funnel = lb.getByTestId('age-filter-button');
+    await expect(funnel).toHaveAttribute('data-active', 'false');
+
+    await funnel.click();
+    const menu = lb.getByRole('radiogroup', { name: en.leaderboard.age.label });
+    await expect(menu.getByRole('radio', { name: en.leaderboard.age.all })).toHaveAttribute('aria-checked', 'true');
+    // Mohamed is 23: his bracket carries the "your age group" mark.
+    await expect(lb.getByTestId('age-under25').getByLabel(en.leaderboard.age.yours)).toBeVisible();
+    await lb.getByTestId('age-under25').click();
+    await expect(menu).toHaveCount(0);
+    await expect(funnel).toHaveAttribute('data-active', 'true');
+    await expect(lb.getByTestId('age-chip')).toContainText(en.leaderboard.age.under25);
+    await expect(lb.getByTestId('my-row')).toBeVisible();
+
+    await funnel.click();
+    await lb.getByTestId('age-45plus').click();
+    await expect(lb.getByTestId('other-age-note')).toHaveText(en.leaderboard.age.otherGroup);
+    await expect(lb.getByTestId('my-row')).toHaveCount(0);
+    await expect(lb.getByTestId('no-scan-note')).toHaveCount(0);
+
+    // Arrow keys move through the brackets; Escape closes and returns focus to the funnel.
+    await funnel.click();
+    await expect(lb.getByTestId('age-45plus')).toBeFocused();
+    await page.keyboard.press('ArrowUp');
+    await expect(lb.getByTestId('age-35to44')).toHaveAttribute('aria-checked', 'true');
+    await page.keyboard.press('Escape');
+    await expect(menu).toHaveCount(0);
+    await expect(funnel).toBeFocused();
+
+    await page.reload();
+    await expect(page.locator(tab('leaderboard')).getByTestId('age-chip')).toContainText(en.leaderboard.age['35to44']);
+    await page.locator(tab('leaderboard')).getByTestId('age-chip').click();
+    await expect(page.locator(tab('leaderboard')).getByTestId('age-chip')).toHaveCount(0);
+  });
+
   test('the top three stand on the podium, everyone else is listed from 4th with a character', async ({
     page,
     loginAs,
@@ -203,6 +262,7 @@ test.describe('Profile', () => {
     await expect(page.getByTestId('fitscore-card')).toBeVisible();
     const bar = page.getByRole('navigation', { name: en.tabs.navLabel });
     await bar.getByRole('tab', { name: en.tabs.short.profile, exact: true }).click();
+    await page.getByRole('link', { name: en.profile.settings, exact: true }).click();
     await page.getByTestId('setting-show-fitscore').click();
     await expect(page.getByTestId('setting-show-fitscore')).toHaveAttribute('aria-checked', 'false');
     await bar.getByRole('tab', { name: en.tabs.short.home, exact: true }).click();
@@ -216,32 +276,34 @@ test.describe('Profile', () => {
   test('turning off the leaderboard setting removes Mohamed from the boards', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/profile');
+    await page.getByRole('link', { name: en.profile.settings, exact: true }).click();
     await page.getByTestId('setting-leaderboard').click();
     await expect(page.getByTestId('setting-leaderboard')).toHaveAttribute('aria-checked', 'false');
     await page
       .getByRole('navigation', { name: en.tabs.navLabel })
-      .getByRole('tab', { name: en.tabs.short.leaderboard, exact: true })
+      .getByRole('tab', { name: en.tabs.short.community, exact: true })
       .click();
+    await page.getByTestId('community-wall-board').click();
     await expect(page.getByTestId('join-banner')).toBeVisible();
     await expect(page.getByTestId('my-row')).toHaveCount(0);
   });
 
   test('language and theme switch the whole app at once', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/profile');
+    await page.goto('/tabs/profile/settings');
     await page.getByTestId('setting-language').getByRole('radio', { name: 'عربي' }).click();
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(ar.tabs.profile);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(ar.profile.settings);
     await page.getByTestId('setting-theme').getByRole('radio', { name: ar.theme.dark }).click();
     await expect(page.locator('html')).toHaveClass(/ion-palette-dark/);
   });
 
   test('cancelling sign out keeps the member signed in', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/profile');
+    await page.goto('/tabs/profile/settings');
     await page.getByRole('button', { name: en.profile.signOut }).click();
     await page.getByRole('dialog').getByRole('button', { name: en.profile.cancel }).click();
-    await expect(page).toHaveURL(/\/tabs\/profile$/);
+    await expect(page).toHaveURL(/\/tabs\/profile\/settings$/);
   });
 });
 
@@ -281,6 +343,11 @@ test.describe('Character', () => {
           await hoodUp.click();
           await expect(preview.locator('[data-art-detail="raised-hood"]')).toHaveCount(1);
           await expect(preview.locator('[data-style-layer="hair"]')).toHaveCount(0);
+          await expect(preview.locator('[data-art-detail="folded-hood"]')).toHaveCount(0);
+          await selectTab('top');
+          const hoodTile = editor.getByRole('radio', { name: copy.avatar.style['hood-up'], exact: true });
+          await expect(hoodTile.locator('svg[data-crop="top"] [data-art-detail="raised-hood"]')).toHaveCount(1);
+          await selectTab('outfits');
           const studio = outfits.getByRole('button', { name: copy.avatar.outfit['studio-flow'] });
           await studio.click();
           await expect(studio).toHaveAttribute('aria-pressed', 'true');
@@ -301,6 +368,8 @@ test.describe('Character', () => {
           await expect(summer).toHaveAttribute('aria-pressed', 'false');
           await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'hoodie');
           await expect(preview.locator('[data-art-detail="stitched-hoodie"]')).toHaveCount(1);
+          await expect(preview.locator('[data-art-detail="folded-hood"]')).toHaveCount(1);
+          await expect(preview.locator('[data-style-layer="hair"]')).toHaveCount(1);
           await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'joggers');
           await expect(preview.locator('image')).toHaveCount(0);
           const choices = [
@@ -409,6 +478,18 @@ test.describe('Character', () => {
           await expect(
             preview.locator(women ? '[data-paint="hijab-fabric"]' : '[data-art-detail="raised-hood"]'),
           ).toHaveCount(1);
+          if (women) {
+            await editor.getByRole('tab', { name: copy.avatar.tab.outfits, exact: true }).click();
+            await editor.getByRole('button', { name: copy.avatar.outfit['hoodie-warmup'], exact: true }).click();
+            await expect(preview.locator('[data-art-detail="raised-hood"]')).toHaveCount(1);
+            await expect(preview.locator('[data-art-detail="hijab-face"]')).toHaveCount(1);
+            await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-fit', 'tailored');
+            await expect(preview.locator('[data-art-detail="tailored-pants"]')).toHaveAttribute(
+              'data-variant',
+              'tapered-joggers',
+            );
+            await expect(previewFrames).toHaveAttribute('data-variant', style);
+          }
           if (women) await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
           if (theme === 'dark') await expect(page.locator('html')).toHaveClass(/ion-palette-dark/);
           expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -451,7 +532,10 @@ test.describe('Character', () => {
           await preset.click();
           await expect(preset).toHaveAttribute('aria-pressed', 'true');
           await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'fitted-zip');
-          await expect(preview.locator('[data-style-layer="pants"]')).toHaveAttribute('data-variant', 'track-pants');
+          await expect(preview.locator('[data-art-detail="tailored-pants"]')).toHaveAttribute(
+            'data-variant',
+            'track-pants',
+          );
           await selectTab('hair');
           await expect(editor.getByRole('radio', { name: copy.avatar.style.fade, exact: true })).toHaveCount(0);
           const hijab = editor.getByRole('radio', { name: copy.avatar.style['sport-hijab'], exact: true });

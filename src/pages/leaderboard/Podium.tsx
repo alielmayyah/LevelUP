@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { LeaderboardBoard, LeaderboardRow, Sex } from '../../api/types';
 import Avatar from '../../avatar/Avatar';
-import { formatNumber } from '../../i18n/format';
+import { formatCount } from '../../i18n/format';
 import MetricIcon from './MetricIcon';
 import { rowAvatar } from './rowAvatar';
 
@@ -67,10 +67,14 @@ const Podium: React.FC<Props> = ({ rows, division, board, format, you, myRef }) 
             data-testid={r.isMe ? 'my-row' : 'podium-place'}
           >
             {r.rank === 1 && <Crown />}
-            <Avatar config={rowAvatar(r, division)} crop="full" className={`lu-podium-figure block w-auto ${FIGURE[r.rank]}`} />
+            <Avatar
+              config={rowAvatar(r, division)}
+              crop="full"
+              className={`lu-podium-figure block w-auto ${FIGURE[r.rank]}`}
+            />
             <div className="lu-podium-base mt-[-4px] grid w-full">
               <div className={`lu-podium-block lu-medal-${r.rank} grid place-items-center ${BLOCK[r.rank]}`}>
-                <span className="lu-display text-[1.3rem] leading-none">{formatNumber(r.rank)}</span>
+                <span className="lu-display text-[1.3rem] leading-none">{formatCount(r.rank)}</span>
               </div>
               <div className="lu-podium-info grid justify-items-center gap-0 px-1 pt-1 pb-1.5 text-center">
                 <span className="flex max-w-full min-w-0 items-center gap-1 text-[0.8rem] font-extrabold">

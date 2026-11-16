@@ -62,10 +62,7 @@ const Dashboard: React.FC = () => {
                   aria-label={t('home.openProfile')}
                   data-testid="home-avatar"
                 >
-                  <Avatar
-                    config={memberAvatar(d.member)}
-                    className="block size-full"
-                  />
+                  <Avatar config={memberAvatar(d.member)} className="block size-full" />
                 </Link>
               )}
               <div className="min-w-0 flex-1">

@@ -5,16 +5,18 @@
     "progress": "تقدّمك",
     "goals": "أهدافك",
     "leaderboard": "الترتيب",
+    "community": "المجتمع",
     "profile": "حسابي",
     "short": {
       "home": "الرئيسية",
       "progress": "تقدّمك",
       "goals": "أهدافك",
-      "leaderboard": "الترتيب",
+      "community": "المجتمع",
       "profile": "حسابي"
     }
   },
   "common": {
+    "back": "ارجع",
     "loading": "بنحمّل…",
     "retry": "جرّب تاني",
     "error": "حصلت مشكلة.",
@@ -24,11 +26,186 @@
     "kg": "كجم",
     "kcal": "سعرة",
     "cm": "سم",
-    "pts": "نقطة"
+    "pts": "نقطة",
+    "reps": "عدة",
+    "seconds": "ث",
+    "months": "شهر"
+  },
+  "medals": {
+    "title": "أوضة الكؤوس",
+    "subtitle": "إنجازاتك وميدالياتك",
+    "back": "رجوع للبروفايل",
+    "link": "الميداليات",
+    "overview": "مجموعة الميداليات",
+    "count": "فتحت {{unlocked}} من {{total}} ميدالية",
+    "complete": "خلّصت {{percent}}",
+    "stat": {
+      "unlocked": "مفتوحة",
+      "locked": "مقفولة",
+      "xp": "XP"
+    },
+    "filter": "نوع الميداليات",
+    "all": "الكل",
+    "category": {
+      "pushUps": "ضغط",
+      "bench": "بنش برس",
+      "squat": "سكوات",
+      "deadlift": "ديدليفت",
+      "militaryPress": "ضغط كتف واقف",
+      "pullUps": "عقلة",
+      "plank": "بلانك",
+      "muscle": "كتلة العضل",
+      "bodyFat": "دهون الجسم",
+      "bmi": "BMI"
+    },
+    "hint": {
+      "pushUps": "أكتر عدد عدات ضغط ورا بعض والكوتش أكّدهم.",
+      "bench": "أعلى وزن رفعته عدة واحدة في البنش، والكوتش أكّده.",
+      "squat": "أعلى وزن نزلت بيه سكوات عدة واحدة، والكوتش أكّده.",
+      "deadlift": "أعلى وزن رفعته من الأرض بالبار في عدة واحدة، والكوتش أكّده.",
+      "militaryPress": "وإنت واقف، ارفع البار من عند كتفك لفوق راسك. الميداليات بتتحسب من أعلى عدة الكوتش أكّدها.",
+      "pullUps": "أكتر عدد عدات عقلة ورا بعض والكوتش أكّدهم.",
+      "plank": "أطول مدة ثبتّ فيها في البلانك على دراعاتك والكوتش أكّدها.",
+      "muscle": "العضل اللي زوّدته من أول قياس ليك.",
+      "bodyFat": "نسب دهون الجسم اللي اتسجّلت في قياساتك.",
+      "bmi": "من سن 20. القياسات اللي جوّه المدى بتتحسب في نفس الفترة لو مفيش أكتر من 45 يوم بين كل قياس والتاني."
+    },
+    "current": {
+      "BODY_FAT_PCT": "آخر قياس · {{value}}",
+      "MUSCLE_GAIN_KG": "زوّدت لحد دلوقتي · {{value}}",
+      "ONE_REP_MAX_KG": "أعلى عدة واحدة متأكدة · {{value}}",
+      "CONSECUTIVE_REPS": "أحسن مجموعة متأكدة · {{value}}",
+      "DURATION_SECONDS": "أطول مدة متأكدة · {{value}}",
+      "BMI_MAINTENANCE": "آخر مدة متأكدة جوّه المدى · {{value}}"
+    },
+    "workingSet": "أحسن مجموعة تمرين {{weight}} × {{reps}}، بتتحسب لوحدها بعيد عن العدة الواحدة",
+    "pending_zero": "{{count}} رفعة مستنية الكوتش يأكّدها",
+    "pending_one": "رفعة واحدة مستنية الكوتش يأكّدها",
+    "pending_two": "رفعتين مستنيين الكوتش يأكّدهم",
+    "pending_few": "{{count}} رفعات مستنية الكوتش يأكّدها",
+    "pending_many": "{{count}} رفعة مستنية الكوتش يأكّدها",
+    "pending_other": "{{count}} رفعة مستنية الكوتش يأكّدها",
+    "unavailable": {
+      "noScans": "لسه معملتش قياس. الميداليات بتتفتح من قياسات الـ InBody.",
+      "needsSecondScan": "محتاج قياس تاني عشان نقارن العضل بأول قياس.",
+      "needsProfile": "البروفايل مفيهوش النوع، فمش هنقدر نحكم على ميداليات الدهون دلوقتي.",
+      "noLifts": "مفيش عدة واحدة متأكدة لسه. خلّي الكوتش يسجّلك واحدة.",
+      "noWorkoutRecord": "خلّي الكوتش يأكّدلك مجموعة أو مدة ثبات.",
+      "noWorkoutSource": "سجل التمارين مش متاح في النسخة دي.",
+      "missingBmiProfile": "محتاجين طولك وتاريخ ميلادك عشان نحسب الميداليات دي.",
+      "adultBmiOnly": "ميداليات الـ BMI دي بتبدأ من سن 20.",
+      "bmiOutsideRange": "آخر قياس ليك برّه مدى الـ BMI للميدالية دي."
+    },
+    "rarity": {
+      "bronze": "برونزي",
+      "silver": "فضي",
+      "gold": "دهبي",
+      "epic": "خرافي",
+      "legendary": "أسطوري"
+    },
+    "requirement": {
+      "BODY_FAT_PCT": "قياس فيه نسبة دهون أقل من {{value}}.",
+      "MUSCLE_GAIN_KG": "زوّد {{value}} عضل من أول قياس.",
+      "ONE_REP_MAX_KG": "ارفع {{value}} عدة واحدة والكوتش يأكّدها.",
+      "CONSECUTIVE_REPS": "اعمل {{value}} ورا بعض في مجموعة الكوتش يأكّدها.",
+      "DURATION_SECONDS": "اثبت لمدة {{value}} في محاولة الكوتش يأكّدها.",
+      "BMI_ENTRY": "سجّل قياس BMI للكبار من 18.5 لأقل من 25.",
+      "BMI_MAINTENANCE": "سجّل قياسات جوّه المدى على مدار {{value}}، بفرق 45 يوم بالكتير بين القياسات."
+    },
+    "progress": "{{current}} / {{target}}",
+    "remaining": "فاضل {{value}}",
+    "unlocked": "مفتوحة",
+    "locked": "مقفولة",
+    "unlockedOn": "اتفتحت {{date}}",
+    "xpReward": "+{{xp}} XP",
+    "detail": {
+      "requirement": "المطلوب",
+      "progress": "إنت فين",
+      "status": "الحالة",
+      "reward": "المكافأة",
+      "close": "اقفل",
+      "noProgress": "مفيش قياس ينفع نحسب منه لسه."
+    },
+    "celebrate": {
+      "title": "فتحت ميدالية!",
+      "continue": "كمّل",
+      "skip": "عدّي الباقي",
+      "more_zero": "فاضل {{count}} ميدالية جديدة",
+      "more_one": "فاضل ميدالية جديدة كمان",
+      "more_two": "فاضل ميداليتين جداد",
+      "more_few": "فاضل {{count}} ميداليات جديدة",
+      "more_many": "فاضل {{count}} ميدالية جديدة",
+      "more_other": "فاضل {{count}} ميدالية جديدة"
+    },
+    "medal": {
+      "fatBurner": {
+        "title": "حارق الدهون"
+      },
+      "leanMachine": {
+        "title": "مكنة نشفان"
+      },
+      "shredded": {
+        "title": "مقطّع"
+      },
+      "elitePhysique": {
+        "title": "جسم أبطال"
+      },
+      "legendaryShape": {
+        "title": "فورمة أسطورية"
+      },
+      "muscleStarter": {
+        "title": "أول عضلة"
+      },
+      "growingStrong": {
+        "title": "بتقوى"
+      },
+      "muscleBuilder": {
+        "title": "بنّاء عضل"
+      },
+      "powerhouse": {
+        "title": "وحش قوة"
+      },
+      "titan": {
+        "title": "عملاق"
+      },
+      "firstPress": {
+        "title": "أول بنش"
+      },
+      "ironChest": {
+        "title": "صدر حديد"
+      },
+      "heavyHitter": {
+        "title": "تقيل"
+      },
+      "powerLifter": {
+        "title": "رافع قوة"
+      },
+      "benchLegend": {
+        "title": "أسطورة البنش"
+      },
+      "firstSquat": {
+        "title": "أول سكوات"
+      },
+      "ironLegs": {
+        "title": "رجلين حديد"
+      },
+      "squatMaster": {
+        "title": "معلّم السكوات"
+      },
+      "titanLegs": {
+        "title": "رجلين عملاقة"
+      },
+      "squatLegend": {
+        "title": "أسطورة السكوات"
+      }
+    },
+    "enterBmi": "ادخل المدى",
+    "below": "أقل من {{value}}",
+    "genericTitle": "{{category}} · {{rarity}}"
   },
   "progress": {
     "subtitle": "تاريخ قياساتك",
-    "latest": "آخر قياس",
+    "latest": "الأحدث",
     "metric": {
       "weight": "الوزن",
       "muscle": "العضلات",
@@ -138,7 +315,39 @@
     "prevMonth": "الشهر اللي فات",
     "nextMonth": "الشهر الجاي",
     "scanOn": "قياس يوم {{date}}",
-    "scansInMonth": "قياسات الشهر ده: {{n}}"
+    "scansInMonth": "قياسات الشهر ده: {{n}}",
+    "age": {
+      "today": "النهارده",
+      "yesterday": "امبارح",
+      "ago": "من {{span}}",
+      "sameDay": "نفس اليوم",
+      "before": "قبله بـ{{span}}",
+      "after": "بعده بـ{{span}}",
+      "day_zero": "{{count}} يوم",
+      "day_one": "يوم",
+      "day_two": "يومين",
+      "day_few": "{{count}} أيام",
+      "day_many": "{{count}} يوم",
+      "day_other": "{{count}} يوم",
+      "week_zero": "{{count}} أسبوع",
+      "week_one": "أسبوع",
+      "week_two": "أسبوعين",
+      "week_few": "{{count}} أسابيع",
+      "week_many": "{{count}} أسبوع",
+      "week_other": "{{count}} أسبوع",
+      "month_zero": "{{count}} شهر",
+      "month_one": "شهر",
+      "month_two": "شهرين",
+      "month_few": "{{count}} شهور",
+      "month_many": "{{count}} شهر",
+      "month_other": "{{count}} شهر",
+      "year_zero": "{{count}} سنة",
+      "year_one": "سنة",
+      "year_two": "سنتين",
+      "year_few": "{{count}} سنين",
+      "year_many": "{{count}} سنة",
+      "year_other": "{{count}} سنة"
+    }
   },
   "goals": {
     "subtitle": "مهماتك",
@@ -186,12 +395,45 @@
     "division": {
       "MALE": "ترتيب الرجالة",
       "FEMALE": "ترتيب الستات"
-    }
+    },
+    "age": {
+      "label": "الفئة العمرية",
+      "all": "كل الأعمار",
+      "under25": "أقل من 25",
+      "25to34": "25–34",
+      "35to44": "35–44",
+      "45plus": "45+",
+      "yours": "فئتك العمرية",
+      "otherGroup": "إنت مش في الفئة دي. فئتك عليها علامة في الفلتر.",
+      "empty": "محدش في الفئة دي عمل قياس لسه.",
+      "clear": "شيل فلتر السن ({{group}})"
+    },
+    "jumpToMe": "روح لمكانك:"
+  },
+  "community": {
+    "gym": "جيم المجتمع",
+    "leaderboards": "قوايم الترتيب",
+    "rooms": "صالات الجيم",
+    "empty": "مفيش أعضاء في الترتيب لسه.",
+    "failed": "مقدرناش نحمّل أعضاء الجيم.",
+    "close": "اقفل",
+    "profile": "البروفايل",
+    "cardInfo": "ترتيبه {{rank}}، FitScore بتاعه {{score}}"
   },
   "profile": {
-    "subtitle": "إعدادات العضو",
     "fitId": "رقم العضوية {{id}}",
     "settings": "الإعدادات",
+    "preferences": "التفضيلات والخصوصية",
+    "age": "السن",
+    "ageValue": "{{value}} سنة",
+    "height": "الطول",
+    "heightValue": "{{value}} {{unit}}",
+    "unknown": "مش متسجّل",
+    "medalCategoryCount": "معاك ميداليات في {{unlocked}} من {{total}} فئات",
+    "medalNext": "اللي جاي {{target}}",
+    "medalProgress": "التقدّم",
+    "medalsError": "مقدرناش نحمّل ميدالياتك.",
+    "viewMedals": "شوف كل الميداليات",
     "sound": "الصوت",
     "soundHint": "أصوات الأبلكيشن",
     "showFitScore": "اظهر الـ FitScore",
@@ -633,5 +875,13 @@
     "failed": "مقدرناش نعمل الهدف. جرّب تاني.",
     "noScan": "محتاج تعمل قياس الأول قبل ما تحط هدف. احجز واحد من الريسبشن.",
     "error": "مقدرناش نحمّل آخر قياس."
+  },
+  "member": {
+    "title": "عضو",
+    "failed": "مقدرناش نحمّل العضو ده.",
+    "ranks": "ترتيبه في الجيم",
+    "seeBoards": "شوف قوايم الترتيب",
+    "ofTotal": "من {{total}}",
+    "medalCount": "{{unlocked}} من {{total}}"
   }
 }

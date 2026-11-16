@@ -11,8 +11,9 @@ import {
 } from './catalog';
 import { Hands, TopDetails } from './ClothingDetails';
 import { Glasses } from './Glasses';
+import { HoodieTop, RaisedHood } from './HoodieArt';
 import { AltHair, Beard, Pants, ShoePair, SleeveTop, Socks } from './VariantArt';
-import { FittedTank, HIJAB_FACE_OPENING, SportHijab, TiedHair } from './WomenArt';
+import { FittedTank, FittedZip, SportHijab, TailoredPants, TiedHair, WomenArms } from './WomenArt';
 
 /*
  * The standard character, drawn on its art grid. Coordinates are the original
@@ -71,25 +72,35 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
   const full = crop === 'full' || crop === 'body' || crop === 'pants';
   const showLegs = full || crop === 'socks';
   const showTorso = crop === 'portrait' || crop === 'full' || crop === 'body' || crop === 'top';
-  const showHead = crop === 'portrait' || crop === 'hair' || crop === 'full' || crop === 'beard' || crop === 'face';
   const { top, hair, face } = styles;
   const women = config.rig === 'women';
   const tiedHair = isTiedHair(hair);
   const hijab = isHijab(hair);
   const hoodUp = top === 'hood-up';
+  const hoodie = hoodUp || top === 'hoodie' || top === 'zip-hoodie' || top === 'sleeveless-hoodie';
+  const showHead =
+    crop === 'portrait' ||
+    crop === 'hair' ||
+    crop === 'full' ||
+    crop === 'beard' ||
+    crop === 'face' ||
+    (crop === 'top' && hoodUp);
   const coveredHead = hijab || hoodUp;
   const coveredLegs = full && !showsLowerLeg(styles.pants);
   const fittedTank = top === 'longline-tank' || top === 'racerback-bra';
-  const tankCut = top === 'tank' || top === 'sleeveless-hoodie';
   const longSleeves = hasLongSleeves(top);
   const barefoot = styles.shoes === 'barefoot';
+  const pants = styles.pants;
+  const tailoredPants =
+    women &&
+    (pants === 'track-pants' || pants === 'tapered-joggers' || pants === 'joggers' || pants === 'warmup-pants');
   const [width, height] = BODY_PROPORTIONS[styles.body];
   // Scale around the shoulders, then line up everyone's soles in full crops.
   const shoulder = 416;
   const offset = full ? (877 - shoulder) * (1 - height) : 0;
-  const bodyTransform = `translate(1332 ${shoulder + offset}) scale(${width * (women ? 0.92 : 1)} ${height}) translate(-1332 ${-shoulder})`;
+  const bodyTransform = `translate(1332 ${shoulder + offset}) scale(${width * (women ? 0.86 : 1)} ${height}) translate(-1332 ${-shoulder})`;
   const headTransform = offset ? `translate(0 ${offset})` : undefined;
-  const view = crop === 'top' && hoodUp ? '1075 0 514 672' : crop === 'hair' && hijab ? '1090 0 486 520' : VIEW[crop];
+  const view = crop === 'top' && hoodUp ? '1080 55 504 642' : crop === 'hair' && hijab ? '1090 0 486 520' : VIEW[crop];
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +124,7 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
       {(showTorso || showLegs) && (
         <g transform={bodyTransform} data-style-layer="body" data-variant={styles.body}>
           {showLegs && (
-            <g transform={women ? 'translate(1332 0) scale(1.07 1) translate(-1332 0)' : undefined}>
+            <g transform={women ? 'translate(1332 0) scale(1.14 1) translate(-1332 0)' : undefined}>
               {/* Legs */}
               {!coveredLegs && (
                 <>
@@ -129,39 +140,37 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
               )}
               {barefoot && <ShoePair style={styles.shoes} paint={p} />}
               <Socks style={styles.socks} shoes={styles.shoes} paint={p} underPants={coveredLegs} />
-              {full && <Pants style={styles.pants} paint={p} />}
+              {full && (tailoredPants ? <TailoredPants style={pants} paint={p} /> : <Pants style={pants} paint={p} />)}
               {!barefoot && <ShoePair style={styles.shoes} paint={p} />}
             </g>
           )}
           {/* Arms */}
-          {showTorso && !longSleeves && (
-            <>
-              <path
-                fill={p.outline}
-                d="M1218 415H1273V492H1260V533H1248V554H1236V570H1225V586H1237V654H1209V670H1165V655H1149V640H1135V585H1149V526H1165V488H1181V451H1200V433H1218Z M1389 415H1446V433H1464V451H1482V488H1498V526H1514V585H1528V640H1514V655H1499V670H1455V654H1427V586H1439V570H1427V554H1415V533H1403V492H1389Z"
-              />
-              <path
-                fill={p.skin}
-                d="M1224 434H1254V498H1238V533H1221V562H1207V596H1222V639H1204V653H1167V639H1153V587H1167V529H1185V495H1202V453H1219V442H1224Z M1407 434H1437V442H1444V453H1461V495H1479V529H1496V587H1510V639H1496V653H1459V639H1440V596H1454V562H1441V533H1424V498H1407Z"
-              />
-            </>
-          )}
-          {showTorso && <Hands paint={p} sleeves={longSleeves} />}
           {showTorso &&
-            (fittedTank ? (
+            !longSleeves &&
+            (women ? (
+              <WomenArms paint={p} />
+            ) : (
+              <>
+                <path
+                  fill={p.outline}
+                  d="M1218 415H1273V492H1260V533H1248V554H1236V570H1225V586H1237V654H1209V670H1165V655H1149V640H1135V585H1149V526H1165V488H1181V451H1200V433H1218Z M1389 415H1446V433H1464V451H1482V488H1498V526H1514V585H1528V640H1514V655H1499V670H1455V654H1427V586H1439V570H1427V554H1415V533H1403V492H1389Z"
+                />
+                <path
+                  fill={p.skin}
+                  d="M1224 434H1254V498H1238V533H1221V562H1207V596H1222V639H1204V653H1167V639H1153V587H1167V529H1185V495H1202V453H1219V442H1224Z M1407 434H1437V442H1444V453H1461V495H1479V529H1496V587H1510V639H1496V653H1459V639H1440V596H1454V562H1441V533H1424V498H1407Z"
+                />
+              </>
+            ))}
+          {showTorso && (longSleeves || !women) && <Hands paint={p} sleeves={longSleeves} narrow={women} />}
+          {showTorso &&
+            (hoodie ? (
+              <HoodieTop style={top} paint={p} tailored={women} />
+            ) : top === 'fitted-zip' ? (
+              <FittedZip paint={p} />
+            ) : fittedTank ? (
               <FittedTank style={top} paint={p} />
-            ) : tankCut ? (
+            ) : top === 'tank' ? (
               <g data-style-layer="top" data-variant={top}>
-                {top === 'sleeveless-hoodie' && (
-                  <>
-                    <path fill={p.outline} d="M1243 438v-23h14v-14h17v-13h31v-6h54v6h31v13h17v14h14v23z" />
-                    <path fill={p.topShade} d="M1257 433v-13h15v-13h15v-11h90v11h15v13h15v13z" />
-                    <path
-                      fill={p.topLight}
-                      d="M1262 420h14v-13h12v-8h14v5h-11v10h-12v13h-17z M1402 420h-14v-13h-12v-8h-14v5h11v10h12v13h17z"
-                    />
-                  </>
-                )}
                 <path
                   fill={p.outline}
                   d="M1254 413H1407V500H1424V533H1413V585H1395V601H1268V586H1248V533H1238V500H1254Z"
@@ -177,7 +186,7 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
             ))}
         </g>
       )}
-      {(showHead || (crop === 'top' && hoodUp)) && (
+      {showHead && (
         <g transform={headTransform}>
           {/* Neck and head */}
           {!coveredHead && (
@@ -188,31 +197,9 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
               {tiedHair && <path fill={p.skin} d="M1216 250v-61h20v-22h40v-20h121v20h24v26h17v62z" />}
             </>
           )}
-          {hoodUp && (
-            <g data-art-detail="raised-hood">
-              <path
-                fill={p.outline}
-                fillRule="evenodd"
-                d={`M1140 264v-72h14v-43h19v-36h25V83h32V59h37V42h40V28h51v14h40v17h36v24h31v30h25v36h20v43h14v72h-10v62h-15v40h-19v33h-25v25h-24v18h-27v14h-37v12h-90v-12h-37v-14h-27v-18h-24v-25h-25v-33h-19v-40h-15v-62z ${HIJAB_FACE_OPENING}`}
-              />
-              <path
-                fill={p.tank}
-                fillRule="evenodd"
-                d="M1156 262v-65h14v-43h19v-36h25V88h32V66h35V51h32V41h39v10h33v15h36v22h30v30h25v36h20v43h14v65h-10v59h-14v39h-20v32h-22v25h-25v18h-28v14h-34v11h-78v-11h-34v-14h-28v-18h-25v-25h-22v-32h-20v-39h-14v-59z M1290 164h82v12h27v17h20v27h16v45h8v69h-9v25h-14v17h-20v17h-26v13h-86v-12h-27v-16h-20v-18h-16v-26h-9v-70h9v-44h15v-26h20v-18h30z"
-              />
-              <path
-                fill={p.topLight}
-                d="M1178 184h13v-26h21v-29h24v-27h31V83h35V67h27v11h-21v16h-34v19h-31v26h-24v29h-21v27h-20z M1478 222h9v63h-8v28h-9v-31h8z"
-              />
-              <path
-                fill={p.topShade}
-                d="M1203 305h10v34h14v25h18v21h25v17h25v11h72v-11h26v-17h25v-21h18v-25h14v-34h10v40h-12v25h-17v23h-23v16h-23v13h-37v12h-75v-12h-36v-13h-24v-16h-23v-23h-16v-25h-11z"
-              />
-            </g>
-          )}
-          {coveredHead ? (
-            <path fill={p.skin} d={HIJAB_FACE_OPENING} />
-          ) : (
+          {hijab && <SportHijab style={hair} paint={p} />}
+          {hoodUp && <RaisedHood paint={p} hijab={hijab} />}
+          {!coveredHead && (
             <>
               <path
                 fill={p.outline}
@@ -251,10 +238,7 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
             />
             {face === 'grin' && <path fill={p.trim} d="M1305 356h48v5h-10v3h-28v-3h-10z" />}
           </g>
-          {hijab ? (
-            <SportHijab style={hair} paint={p} />
-          ) : (
-            !hoodUp &&
+          {!coveredHead &&
             (hair === 'curls' ? (
               <g data-style-layer="hair" data-variant="curls">
                 <path
@@ -287,8 +271,7 @@ const Avatar: React.FC<Props> = ({ config, crop = 'portrait', label, className, 
               <TiedHair style={hair} paint={p} />
             ) : (
               <AltHair style={hair} paint={p} />
-            ))
-          )}
+            ))}
           {styles.glasses !== 'no-glasses' && <Glasses style={styles.glasses} paint={p} />}
         </g>
       )}

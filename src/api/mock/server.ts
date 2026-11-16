@@ -13,8 +13,11 @@
 import { Preferences } from '@capacitor/preferences';
 
 import { isValidAvatar } from '../../avatar/catalog';
+import { ageOn } from '../../body/age';
 import {
+  AGE_GROUPS,
   LEADERBOARD_BOARDS,
+  type AgeGroup,
   type AvatarConfigDto,
   type CreateGoalRequest,
   type DashboardDto,
@@ -26,12 +29,14 @@ import {
   type LeaderboardRow,
   type LeaderboardSummary,
   type LoginResponse,
+  type MemberProfileDto,
   type ProfileDto,
   type ProgressDto,
   type SettingsDto,
 } from '../types';
 import { fitScoreTier, goalProgress, metricValue, monthDelta, monthRange, round1, type Sample } from './domain';
 import type { GoalRecord } from './fixtures';
+import { evaluateMedals } from '../../pages/medals/rules';
 import { buildMembers, type MockMember } from './members';
 
 export interface MockResponse {
@@ -195,12 +200,20 @@ function boardValue(m: MockMember, board: LeaderboardBoard): number | null {
 /** Lowest body fat ranks first; the other boards rank the highest value first. */
 const LOWEST_FIRST: readonly LeaderboardBoard[] = ['bodyFat'];
 
-async function boardRows(board: LeaderboardBoard, me: MockMember): Promise<LeaderboardRow[]> {
+export function ageGroupOf(age: number): Exclude<AgeGroup, 'all'> {
+  if (age < 25) return 'under25';
+  if (age < 35) return '25to34';
+  if (age < 45) return '35to44';
+  return '45plus';
+}
+
+async function boardRows(board: LeaderboardBoard, me: MockMember, age: AgeGroup = 'all'): Promise<LeaderboardRow[]> {
   const myAvatar = await loadAvatar(me);
   return (
     members
       // Men and women are ranked separately: body composition differs too much to compare fairly.
       .filter((m) => m.settings.fitScoreOnLeaderboard && m.sex === me.sex)
+      .filter((m) => age === 'all' || ageGroupOf(ageOn(m.birthDate, now)) === age)
       .map((m) => ({ m, value: boardValue(m, board) }))
       .filter((x): x is { m: MockMember; value: number } => x.value !== null)
       .sort((a, b) => (LOWEST_FIRST.includes(board) ? a.value - b.value : b.value - a.value) || a.m.id - b.m.id)
@@ -236,11 +249,44 @@ async function leaderboardSummary(me: MockMember): Promise<LeaderboardSummary> {
 async function leaderboard(me: MockMember, query: URLSearchParams): Promise<MockResponse> {
   const board = (query.get('board') ?? 'score') as LeaderboardBoard;
   if (!LEADERBOARD_BOARDS.includes(board)) return fail(400, 'Unknown board');
+  const ageGroup = (query.get('age') ?? 'all') as AgeGroup;
+  if (!AGE_GROUPS.includes(ageGroup)) return fail(400, 'Unknown age group');
   const res: LeaderboardDto = {
     board,
+    ageGroup,
+    myAgeGroup: ageGroupOf(ageOn(me.birthDate, now)),
     division: me.sex,
     optedIn: me.settings.fitScoreOnLeaderboard,
-    rows: await boardRows(board, me),
+    rows: await boardRows(board, me, ageGroup),
+  };
+  return ok(res);
+}
+
+/** Another member's public card. Only members who share their results on the board, in the viewer's division. */
+async function memberCard(me: MockMember, id: number): Promise<MockResponse> {
+  const m = members.find((x) => x.id === id);
+  if (!m || !m.settings.fitScoreOnLeaderboard || m.sex !== me.sex) return fail(404, 'Member not found');
+  const rankings = await Promise.all(
+    LEADERBOARD_BOARDS.map(async (board) => {
+      const rows = await boardRows(board, me);
+      return { board, rank: rows.find((r) => r.memberId === m.id)?.rank ?? null, total: rows.length };
+    }),
+  );
+  const res: MemberProfileDto = {
+    memberId: m.id,
+    name: `${m.firstName} ${m.lastName.charAt(0)}.`,
+    sex: m.sex,
+    age: ageOn(m.birthDate, now),
+    heightCm: m.heightCm,
+    avatar: m.id === me.id ? await loadAvatar(m) : null,
+    rankings,
+    medals: evaluateMedals({
+      sex: m.sex,
+      birthDate: m.birthDate.toISOString(),
+      heightCm: m.heightCm,
+      scans: progress(m).assessments,
+      lifts: m.lifts,
+    }),
   };
   return ok(res);
 }
@@ -468,6 +514,8 @@ export const mockServer = {
     if (!me) return fail(401, 'Unauthorized');
 
     const read = pathname.match(/^\/me\/notifications\/(\d+)\/read$/);
+    const card = verb === 'GET' && pathname.match(/^\/members\/(\d+)$/);
+    if (card) return memberCard(me, Number(card[1]));
     switch (`${verb} ${read ? '/me/notifications/:id/read' : pathname}`) {
       case 'GET /me':
         return ok(await profile(me));
@@ -479,6 +527,8 @@ export const mockServer = {
         return ok(progress(me));
       case 'GET /me/assessments':
         return ok([...me.assessments].reverse());
+      case 'GET /me/lifts':
+        return ok(me.lifts);
       case 'GET /me/goals':
         return ok(goals(me));
       case 'POST /me/goals':

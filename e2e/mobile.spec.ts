@@ -44,15 +44,15 @@ test.describe('navigation has no dead ends', () => {
   });
 });
 
-test('Android back closes the sign-out dialog and stays on Profile', async ({ page, loginAs }) => {
+test('Android back closes the sign-out dialog and stays in Settings', async ({ page, loginAs }) => {
   await loginAs();
-  await page.goto('/tabs/profile');
+  await page.goto('/tabs/profile/settings');
   await page.getByRole('button', { name: en.profile.signOut }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   const priorities = await pressHardwareBack(page);
   expect(priorities[0]).toBeGreaterThanOrEqual(100); // the dialog outranks navigation
   await expect(page.getByRole('dialog')).toBeHidden();
-  await expect(page).toHaveURL(/\/tabs\/profile$/);
+  await expect(page).toHaveURL(/\/tabs\/profile\/settings$/);
 });
 
 /**

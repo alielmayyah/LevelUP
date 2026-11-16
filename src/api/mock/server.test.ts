@@ -11,7 +11,8 @@ import type {
   ProfileDto,
   ProgressDto,
 } from '../types';
-import { mockServer, resetMockServer } from './server';
+import { ageOn } from '../../body/age';
+import { ageGroupOf, mockServer, resetMockServer } from './server';
 
 const NOW = new Date('2026-11-13T10:00:00Z');
 
@@ -319,6 +320,40 @@ describe('leaderboard', () => {
     const best = board === 'bodyFat' ? (a: number, b: number) => a - b : (a: number, b: number) => b - a;
     expect(r.rows.map((x) => x.value)).toEqual([...r.rows.map((x) => x.value)].sort(best));
     expect(r.rows.map((x) => x.rank)).toEqual(r.rows.map((_, i) => i + 1));
+  });
+
+  it('age filter keeps only that bracket, re-ranks from 1, and reports the member’s own bracket', async () => {
+    const all = (await get<LeaderboardDto>('/leaderboard', '101')).body;
+    expect(all.ageGroup).toBe('all');
+    expect(all.myAgeGroup).toBe('under25');
+    const groups = ['under25', '25to34', '35to44', '45plus'] as const;
+    let total = 0;
+    for (const age of groups) {
+      const r = (await get<LeaderboardDto>(`/leaderboard?board=score&age=${age}`, '101')).body;
+      expect(r.ageGroup).toBe(age);
+      expect(r.rows.map((x) => x.rank)).toEqual(r.rows.map((_, i) => i + 1));
+      expect(r.rows.some((x) => x.isMe)).toBe(age === 'under25');
+      total += r.rows.length;
+    }
+    // Every ranked member lands in exactly one bracket.
+    expect(total).toBe(all.rows.length);
+  });
+
+  it('rejects an unknown age group', async () => {
+    expect((await get('/leaderboard?age=teen', '101')).status).toBe(400);
+  });
+
+  it('counts age in whole years, the day of the birthday included', () => {
+    expect(ageOn(new Date('2000-06-15T00:00:00Z'), new Date('2025-06-14T00:00:00Z'))).toBe(24);
+    expect(ageOn(new Date('2000-06-15T00:00:00Z'), new Date('2025-06-15T00:00:00Z'))).toBe(25);
+    expect([24, 25, 34, 35, 44, 45].map(ageGroupOf)).toEqual([
+      'under25',
+      '25to34',
+      '25to34',
+      '35to44',
+      '35to44',
+      '45plus',
+    ]);
   });
 
   it('muscle and body fat boards show the latest scan’s values', async () => {

@@ -9,6 +9,8 @@
  * Dates are ISO 8601 strings in UTC.
  */
 
+import type { MedalCategoryStatus } from '../pages/medals/types';
+
 /* ---------- Auth (core plan Task 5) ---------- */
 
 export interface LoginRequest {
@@ -109,8 +111,44 @@ export interface LeaderboardRow {
   avatar: AvatarConfigDto | null;
 }
 
+/** Where a member stands on one board: `rank` of `total` in their division. */
+export interface MemberRanking {
+  board: LeaderboardBoard;
+  /** Null when the member has no value for this board yet. */
+  rank: number | null;
+  total: number;
+}
+
+/**
+ * Another member's public card (`GET /members/:id`), opened from the community
+ * gym. Only members who share their results on the leaderboard can be opened;
+ * others return 404. Medals come worked out by the server, so no scan history,
+ * birth date, Fit ID, or membership details leave it.
+ */
+export interface MemberProfileDto {
+  memberId: number;
+  /** "FirstName L.", as on the leaderboard. */
+  name: string;
+  sex: Sex;
+  /** Whole years; null when the birth date is unknown. */
+  age: number | null;
+  heightCm: number | null;
+  avatar: AvatarConfigDto | null;
+  rankings: MemberRanking[];
+  medals: MedalCategoryStatus[];
+}
+
+/** Age brackets for the leaderboard filter, by age on the day the board is read. */
+export type AgeGroup = 'all' | 'under25' | '25to34' | '35to44' | '45plus';
+
+export const AGE_GROUPS: readonly AgeGroup[] = ['all', 'under25', '25to34', '35to44', '45plus'];
+
 export interface LeaderboardDto {
   board: LeaderboardBoard;
+  /** The bracket this board was filtered to (`?age=`); ranks are recomputed inside it. */
+  ageGroup: AgeGroup;
+  /** The member's own bracket, so the app can mark it; null when the birth date is unknown. */
+  myAgeGroup: Exclude<AgeGroup, 'all'> | null;
   /** Members are ranked within their own division (account sex), since men's and women's body composition differ. */
   division: Sex;
   optedIn: boolean;
@@ -367,4 +405,26 @@ export interface NotificationDto {
   body: I18nText;
   createdAt: string;
   readAt: string | null;
+}
+
+/* ---------- Lift records (medals) ---------- */
+
+export type LiftExercise = 'PUSH_UP' | 'BENCH_PRESS' | 'SQUAT' | 'DEADLIFT' | 'MILITARY_PRESS' | 'PULL_UP' | 'PLANK';
+
+/**
+ * How a lift was recorded. A one-rep max and a working set (several reps at a
+ * lighter weight) are different measurements and are never compared directly.
+ */
+export type LiftMeasurement = 'ONE_REP_MAX' | 'WORKING_SET' | 'CONSECUTIVE_REPS' | 'DURATION';
+
+export interface LiftRecordDto {
+  id: number;
+  exercise: LiftExercise;
+  measurement: LiftMeasurement;
+  weightKg: number;
+  reps: number;
+  durationSeconds?: number;
+  recordedAt: string;
+  /** True once a coach has confirmed the lift. Only verified lifts count toward medals. */
+  verified: boolean;
 }

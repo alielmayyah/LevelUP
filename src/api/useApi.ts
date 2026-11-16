@@ -9,13 +9,14 @@ export type ApiState<T> =
 /**
  * GETs `path` on mount. `reload()` fetches again and keeps the current data on
  * screen while it runs (pull to refresh); it resolves when the request ends.
- * `setData` lets a screen update the cached value after a write.
+ * `setData` lets a screen update the cached value after a write. Pass null to skip a request.
  */
-export function useApi<T>(path: string) {
+export function useApi<T>(path: string | null) {
   const [state, setState] = useState<ApiState<T>>({ status: 'loading', data: null });
   const live = useRef(true);
 
   const reload = useCallback(async () => {
+    if (path === null) return;
     try {
       const data = await api<T>(path);
       if (live.current) setState({ status: 'ready', data });
@@ -36,6 +37,7 @@ export function useApi<T>(path: string) {
 
   useEffect(() => {
     live.current = true;
+    if (path === null) return;
     api<T>(path).then(
       (data) => live.current && setState({ status: 'ready', data }),
       () => live.current && setState({ status: 'error', data: null }),

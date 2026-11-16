@@ -1,0 +1,277 @@
+@layer components {
+  .lu-community-room {
+    background: var(--lu-floor);
+    border: 2px solid var(--lu-border);
+    box-shadow: 0 4px 0 var(--lu-pixel-shadow);
+    container-type: inline-size;
+  }
+
+  .lu-community-floor {
+    --tile: 12.5cqi;
+    --tile-hi: color-mix(in srgb, var(--lu-metal) 5%, var(--lu-gym-mat));
+    inset-block-start: 31.5%;
+    background-color: var(--lu-gym-mat);
+    background-image:
+      linear-gradient(var(--lu-gym-mat-seam) 1px, var(--tile-hi) 1px 2px, transparent 2px),
+      linear-gradient(90deg, var(--lu-gym-mat-seam) 1px, var(--tile-hi) 1px 2px, transparent 2px),
+      conic-gradient(from 90deg, var(--tile-hi) 25%, transparent 0 50%, var(--tile-hi) 0 75%, transparent 0);
+    background-size:
+      var(--tile) var(--tile),
+      var(--tile) var(--tile),
+      calc(2 * var(--tile)) calc(2 * var(--tile));
+    background-position: center bottom;
+  }
+
+  .lu-community-art {
+    object-fit: fill;
+    image-rendering: pixelated;
+    /* Keep the wall and equipment from the illustration over the independent tile grid. */
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 73.2%,
+      83.7% 73.2%,
+      83.7% 67.7%,
+      85.8% 66.4%,
+      98.7% 66.4%,
+      98.7% 65.9%,
+      86.2% 65.9%,
+      86.2% 63.7%,
+      88.8% 63.7%,
+      88.8% 60.3%,
+      81.6% 60.3%,
+      81.6% 57.6%,
+      83.8% 56.8%,
+      82.4% 52.3%,
+      83.7% 51.5%,
+      99.1% 51.5%,
+      99.1% 48.2%,
+      78.7% 48.2%,
+      79% 33%,
+      97% 33%,
+      97% 32%,
+      20% 32%,
+      20% 39.8%,
+      22.5% 39.8%,
+      22.5% 41.6%,
+      21% 41.6%,
+      21% 50.2%,
+      2% 50.2%,
+      2% 51.5%,
+      14.2% 51.5%,
+      15% 67.7%,
+      1.5% 67.7%,
+      1.5% 50.2%,
+      0 50.2%
+    );
+  }
+
+  .lu-wall-board-slot {
+    /* Start in the artwork's wall panel, with room to stay pinned as the floor scrolls. */
+    position: absolute;
+    inset-block: 11.2% 0;
+    inset-inline: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .lu-wall-board {
+    position: sticky;
+    inset-block-start: calc(var(--ion-safe-area-top, 0px) + var(--lu-tabbar-gap));
+    display: grid;
+    place-content: center stretch;
+    gap: 0.3rem;
+    inline-size: 51%;
+    min-block-size: max(4.75rem, 19.75%);
+    margin-inline: auto;
+    padding: 0.3rem;
+    background: var(--lu-splash-bg);
+    color: var(--lu-splash-text);
+    border: 3px solid var(--lu-gold);
+    box-shadow:
+      0 0 0 2px var(--lu-floor-seam),
+      0 4px 0 2px var(--lu-floor-seam),
+      inset 0 0 0 2px var(--lu-floor-edge);
+    font: inherit;
+    font-size: clamp(0.75rem, 3.1cqi, 1.15rem);
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    pointer-events: auto;
+    transition: transform 100ms ease-out;
+  }
+
+  .lu-wall-portrait {
+    block-size: clamp(1.75rem, 8cqi, 2.65rem);
+    background: var(--lu-splash-bg-2);
+  }
+
+  .lu-wall-rank {
+    padding-inline: 0.2rem;
+    background: var(--lu-splash-bg);
+    color: var(--lu-splash-text);
+    font-size: 0.625rem;
+    line-height: 1.1;
+  }
+
+  .lu-wall-board:hover {
+    background: var(--lu-splash-bg-2);
+  }
+
+  .lu-wall-board:active {
+    transform: translateY(2px);
+  }
+
+  .lu-wall-board-link:focus-visible,
+  .lu-community-person:focus-visible {
+    outline: 2px solid var(--lu-splash-star);
+    outline-offset: 3px;
+  }
+
+  .lu-community-person {
+    position: absolute;
+    translate: -50% -88%;
+    inline-size: clamp(44px, 12%, 4.5rem);
+    block-size: clamp(44px, 9.5%, 4rem);
+    display: grid;
+    place-items: center;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    isolation: isolate;
+  }
+
+  button.lu-community-person {
+    cursor: pointer;
+  }
+
+  .lu-community-person::before {
+    position: absolute;
+    inset-block-end: 9%;
+    inset-inline: 13%;
+    z-index: -1;
+    block-size: 9%;
+    content: '';
+    background: var(--lu-floor-seam);
+    opacity: 0.65;
+    clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+  }
+
+  .lu-community-person[aria-pressed='true']::before {
+    background: var(--lu-gold);
+    opacity: 1;
+  }
+
+  .lu-community-person[aria-pressed='true'] {
+    z-index: 2;
+  }
+
+  .lu-community-self {
+    inset-inline-start: 50%;
+    inset-block-start: 96%;
+    z-index: 1;
+  }
+
+  .lu-community-tag {
+    position: absolute;
+    inset-block-start: 0;
+    max-inline-size: 100%;
+    padding-inline: 0.25rem;
+    background: var(--lu-splash-bg);
+    border: 1px solid var(--lu-gold);
+    color: var(--lu-splash-text);
+    font-size: 0.7rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .lu-community-name {
+    inline-size: max-content;
+    max-inline-size: 7rem;
+    translate: 0 -100%;
+  }
+
+  /* Keep the profile preview in the ceiling strip above the framed wall board. */
+  .lu-community-card {
+    position: absolute;
+    inset-inline: 3%;
+    inset-block-start: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-inline: 0.5rem 0.25rem;
+    background: var(--lu-splash-bg);
+    color: var(--lu-splash-text);
+    border: 2px solid var(--lu-gold);
+    box-shadow: 0 3px 0 var(--lu-floor-seam);
+    animation: lu-community-card-in 140ms ease-out;
+  }
+
+  .lu-community-card-info {
+    color: var(--lu-splash-text-muted);
+  }
+
+  .lu-community-visit {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 0.4rem;
+    min-block-size: 44px;
+    padding-inline: 0.75rem;
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+    border: 2px solid var(--lu-floor-edge);
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .lu-community-visit:active {
+    transform: translateY(2px);
+  }
+
+  .lu-community-close {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 44px;
+    block-size: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--lu-splash-text-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .lu-community-visit:focus-visible,
+  .lu-community-close:focus-visible {
+    outline: 2px solid var(--lu-splash-star);
+    outline-offset: 2px;
+  }
+
+  @keyframes lu-community-card-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  :dir(rtl) .lu-community-person {
+    translate: 50% -88%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-wall-board {
+      transition: none;
+    }
+
+    .lu-community-card {
+      animation: none;
+    }
+  }
+}

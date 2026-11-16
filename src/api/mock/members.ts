@@ -7,7 +7,7 @@
  *   104–139       36 opted-in fillers (18 men, 18 women) so both leaderboards have rows
  *   140 Sara Adel    new member: no scans, no goals, but joined the leaderboard
  */
-import type { AssessmentDto, NotificationDto, SettingsDto, Sex } from '../types';
+import type { AssessmentDto, LiftRecordDto, NotificationDto, SettingsDto, Sex } from '../types';
 import { bodyFatPctForScore } from './domain';
 import {
   assessment,
@@ -38,6 +38,8 @@ export interface MockMember {
   assessments: AssessmentDto[];
   goals: GoalRecord[];
   notifications: NotificationDto[];
+  /** Oldest first. Lifts a coach recorded on the gym floor. */
+  lifts: LiftRecordDto[];
 }
 
 function mohamed(now: Date): MockMember {
@@ -67,6 +69,7 @@ function mohamed(now: Date): MockMember {
     coach: 'Rami Saad',
     settings: { showFitScore: true, fitScoreOnLeaderboard: true },
     assessments,
+    lifts: mohamedLifts(dates),
     goals: [
       {
         id: 1,
@@ -126,6 +129,37 @@ function mohamed(now: Date): MockMember {
   };
 }
 
+/**
+ * Mohamed's verified bench and squat progression, plus a working set (counted
+ * separately from one-rep maxes) and a lift still waiting for his coach to verify.
+ */
+function mohamedLifts(dates: Date[]): LiftRecordDto[] {
+  const lift = (
+    id: number,
+    exercise: LiftRecordDto['exercise'],
+    measurement: LiftRecordDto['measurement'],
+    weightKg: number,
+    reps: number,
+    at: Date,
+    verified = true,
+  ): LiftRecordDto => ({ id, exercise, measurement, weightKg, reps, recordedAt: at.toISOString(), verified });
+  return [
+    lift(1, 'BENCH_PRESS', 'ONE_REP_MAX', 60, 1, dates[1]),
+    lift(2, 'SQUAT', 'ONE_REP_MAX', 85, 1, dates[1]),
+    lift(3, 'BENCH_PRESS', 'ONE_REP_MAX', 72.5, 1, dates[3]),
+    lift(4, 'SQUAT', 'ONE_REP_MAX', 100, 1, dates[3]),
+    lift(5, 'BENCH_PRESS', 'WORKING_SET', 70, 5, dates[4]),
+    lift(6, 'BENCH_PRESS', 'ONE_REP_MAX', 82.5, 1, dates[5]),
+    lift(7, 'SQUAT', 'ONE_REP_MAX', 110, 1, dates[5]),
+    lift(8, 'SQUAT', 'ONE_REP_MAX', 130, 1, dates[5], false),
+    lift(9, 'DEADLIFT', 'ONE_REP_MAX', 125, 1, dates[5]),
+    lift(10, 'MILITARY_PRESS', 'ONE_REP_MAX', 35, 1, dates[5]),
+    lift(11, 'PUSH_UP', 'CONSECUTIVE_REPS', 0, 32, dates[5]),
+    lift(12, 'PULL_UP', 'CONSECUTIVE_REPS', 0, 8, dates[5]),
+    { ...lift(13, 'PLANK', 'DURATION', 0, 0, dates[5]), durationSeconds: 120 },
+  ];
+}
+
 function lina(now: Date): MockMember {
   return {
     id: 2,
@@ -143,6 +177,7 @@ function lina(now: Date): MockMember {
     assessments: [],
     goals: [],
     notifications: [],
+    lifts: [],
   };
 }
 
@@ -164,6 +199,7 @@ function sara(now: Date): MockMember {
     assessments: [],
     goals: [],
     notifications: [],
+    lifts: [],
   };
 }
 
@@ -191,6 +227,7 @@ function omar(now: Date): MockMember {
     assessments: [scan],
     goals: [],
     notifications: [scanNotification(takenAt, scan.fitScore, false)],
+    lifts: [],
   };
 }
 
@@ -275,6 +312,7 @@ function filler(now: Date, i: number): MockMember {
     ),
     goals: [],
     notifications: [],
+    lifts: [],
   };
 }
 

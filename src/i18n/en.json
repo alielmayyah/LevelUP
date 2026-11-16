@@ -5,16 +5,18 @@
     "progress": "Progress",
     "goals": "Goals",
     "leaderboard": "Leaderboard",
+    "community": "Community",
     "profile": "Profile",
     "short": {
       "home": "Home",
       "progress": "Progress",
       "goals": "Goals",
-      "leaderboard": "Board",
+      "community": "Community",
       "profile": "Profile"
     }
   },
   "common": {
+    "back": "Back",
     "loading": "Loading…",
     "retry": "Retry",
     "error": "Something went wrong.",
@@ -24,11 +26,186 @@
     "kg": "kg",
     "kcal": "kcal",
     "cm": "cm",
-    "pts": "pts"
+    "pts": "pts",
+    "reps": "reps",
+    "seconds": "sec",
+    "months": "mo"
+  },
+  "medals": {
+    "title": "Trophy Room",
+    "subtitle": "Your achievements and milestones",
+    "back": "Back to profile",
+    "link": "Medals",
+    "overview": "Medal collection",
+    "count": "{{unlocked}} of {{total}} medals unlocked",
+    "complete": "{{percent}} complete",
+    "stat": {
+      "unlocked": "Unlocked",
+      "locked": "Locked",
+      "xp": "XP"
+    },
+    "filter": "Medal category",
+    "all": "All",
+    "category": {
+      "pushUps": "Push-ups",
+      "bench": "Bench press",
+      "squat": "Squat",
+      "deadlift": "Deadlift",
+      "militaryPress": "Military press",
+      "pullUps": "Pull-ups",
+      "plank": "Plank",
+      "muscle": "Muscle mass",
+      "bodyFat": "Body fat",
+      "bmi": "BMI"
+    },
+    "hint": {
+      "pushUps": "Your best verified set of consecutive push-ups.",
+      "bench": "Your coach-verified one-rep max on the bench press.",
+      "squat": "Your coach-verified one-rep max on the squat.",
+      "deadlift": "Your coach-verified one-rep max lifting the barbell from the floor.",
+      "militaryPress": "Stand and press the barbell from shoulder height to overhead. Medals use your verified one-rep max.",
+      "pullUps": "Your best verified set of consecutive pull-ups.",
+      "plank": "Your longest verified forearm plank hold.",
+      "muscle": "Muscle gained since your first scan.",
+      "bodyFat": "Body fat percentages recorded on your scans.",
+      "bmi": "For ages 20 and up. In-range scans count toward the same streak when they’re within 45 days of each other."
+    },
+    "current": {
+      "BODY_FAT_PCT": "Latest scan · {{value}}",
+      "MUSCLE_GAIN_KG": "Gained so far · {{value}}",
+      "ONE_REP_MAX_KG": "Best verified 1RM · {{value}}",
+      "CONSECUTIVE_REPS": "Best verified set · {{value}}",
+      "DURATION_SECONDS": "Longest verified hold · {{value}}",
+      "BMI_MAINTENANCE": "Last verified in-range streak · {{value}}"
+    },
+    "workingSet": "Best working set {{weight}} × {{reps}}, tracked apart from your 1RM",
+    "pending_zero": "{{count}} lifts waiting for your coach to verify",
+    "pending_one": "{{count}} lift waiting for your coach to verify",
+    "pending_two": "{{count}} lifts waiting for your coach to verify",
+    "pending_few": "{{count}} lifts waiting for your coach to verify",
+    "pending_many": "{{count}} lifts waiting for your coach to verify",
+    "pending_other": "{{count}} lifts waiting for your coach to verify",
+    "unavailable": {
+      "noScans": "No scan yet. Medals unlock from your InBody scans.",
+      "needsSecondScan": "Muscle gain needs a second scan to compare with your first.",
+      "needsProfile": "Your profile has no sex set, so body fat medals can’t be judged yet.",
+      "noLifts": "No verified one-rep max yet. Ask your coach to record one.",
+      "noWorkoutRecord": "Ask your coach to verify a set or timed hold.",
+      "noWorkoutSource": "Workout records aren’t available in this version.",
+      "missingBmiProfile": "Your height and date of birth are needed to calculate these medals.",
+      "adultBmiOnly": "These BMI medals start at age 20.",
+      "bmiOutsideRange": "Your most recent scan is outside the adult BMI range for this badge."
+    },
+    "rarity": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    },
+    "requirement": {
+      "BODY_FAT_PCT": "Recorded body fat below {{value}} on a scan.",
+      "MUSCLE_GAIN_KG": "Gain {{value}} of muscle since your first scan.",
+      "ONE_REP_MAX_KG": "Lift {{value}} for a verified one-rep max.",
+      "CONSECUTIVE_REPS": "Complete {{value}} in one verified set.",
+      "DURATION_SECONDS": "Hold for {{value}} in one verified attempt.",
+      "BMI_ENTRY": "Record a scan with an adult BMI from 18.5 to below 25.",
+      "BMI_MAINTENANCE": "Record in-range scans covering {{value}}, with at most 45 days between them."
+    },
+    "progress": "{{current}} / {{target}}",
+    "remaining": "{{value}} to go",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "unlockedOn": "Unlocked {{date}}",
+    "xpReward": "+{{xp}} XP",
+    "detail": {
+      "requirement": "Requirement",
+      "progress": "Your progress",
+      "status": "Status",
+      "reward": "Reward",
+      "close": "Close",
+      "noProgress": "No supported measurement yet."
+    },
+    "celebrate": {
+      "title": "Medal unlocked!",
+      "continue": "Continue",
+      "skip": "Skip the rest",
+      "more_zero": "{{count}} more new medals",
+      "more_one": "{{count}} more new medal",
+      "more_two": "{{count}} more new medals",
+      "more_few": "{{count}} more new medals",
+      "more_many": "{{count}} more new medals",
+      "more_other": "{{count}} more new medals"
+    },
+    "medal": {
+      "fatBurner": {
+        "title": "Fat Burner"
+      },
+      "leanMachine": {
+        "title": "Lean Machine"
+      },
+      "shredded": {
+        "title": "Shredded"
+      },
+      "elitePhysique": {
+        "title": "Elite Physique"
+      },
+      "legendaryShape": {
+        "title": "Legendary Shape"
+      },
+      "muscleStarter": {
+        "title": "Muscle Starter"
+      },
+      "growingStrong": {
+        "title": "Growing Strong"
+      },
+      "muscleBuilder": {
+        "title": "Muscle Builder"
+      },
+      "powerhouse": {
+        "title": "Powerhouse"
+      },
+      "titan": {
+        "title": "Titan"
+      },
+      "firstPress": {
+        "title": "First Press"
+      },
+      "ironChest": {
+        "title": "Iron Chest"
+      },
+      "heavyHitter": {
+        "title": "Heavy Hitter"
+      },
+      "powerLifter": {
+        "title": "Power Lifter"
+      },
+      "benchLegend": {
+        "title": "Bench Legend"
+      },
+      "firstSquat": {
+        "title": "First Squat"
+      },
+      "ironLegs": {
+        "title": "Iron Legs"
+      },
+      "squatMaster": {
+        "title": "Squat Master"
+      },
+      "titanLegs": {
+        "title": "Titan Legs"
+      },
+      "squatLegend": {
+        "title": "Squat Legend"
+      }
+    },
+    "enterBmi": "Enter range",
+    "below": "Below {{value}}",
+    "genericTitle": "{{category}} · {{rarity}}"
   },
   "progress": {
     "subtitle": "Your scan history",
-    "latest": "Latest scan",
+    "latest": "Latest",
     "metric": {
       "weight": "Weight",
       "muscle": "Muscle",
@@ -138,7 +315,39 @@
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
     "scanOn": "Scan on {{date}}",
-    "scansInMonth": "Scans this month: {{n}}"
+    "scansInMonth": "Scans this month: {{n}}",
+    "age": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "ago": "{{span}} ago",
+      "sameDay": "Same day",
+      "before": "{{span}} before",
+      "after": "{{span}} after",
+      "day_zero": "{{count}} days",
+      "day_one": "{{count}} day",
+      "day_two": "{{count}} days",
+      "day_few": "{{count}} days",
+      "day_many": "{{count}} days",
+      "day_other": "{{count}} days",
+      "week_zero": "{{count}} weeks",
+      "week_one": "{{count}} week",
+      "week_two": "{{count}} weeks",
+      "week_few": "{{count}} weeks",
+      "week_many": "{{count}} weeks",
+      "week_other": "{{count}} weeks",
+      "month_zero": "{{count}} months",
+      "month_one": "{{count}} month",
+      "month_two": "{{count}} months",
+      "month_few": "{{count}} months",
+      "month_many": "{{count}} months",
+      "month_other": "{{count}} months",
+      "year_zero": "{{count}} years",
+      "year_one": "{{count}} year",
+      "year_two": "{{count}} years",
+      "year_few": "{{count}} years",
+      "year_many": "{{count}} years",
+      "year_other": "{{count}} years"
+    }
   },
   "goals": {
     "subtitle": "Your missions",
@@ -186,12 +395,45 @@
     "division": {
       "MALE": "Men's rankings",
       "FEMALE": "Women's rankings"
-    }
+    },
+    "age": {
+      "label": "Age group",
+      "all": "All ages",
+      "under25": "Under 25",
+      "25to34": "25–34",
+      "35to44": "35–44",
+      "45plus": "45+",
+      "yours": "Your age group",
+      "otherGroup": "You’re not in this age group. Your own group is marked in the filter.",
+      "empty": "No one in this age group has a scan yet.",
+      "clear": "Clear age filter ({{group}})"
+    },
+    "jumpToMe": "Jump to your row:"
+  },
+  "community": {
+    "gym": "Community gym",
+    "leaderboards": "Leaderboards",
+    "rooms": "Gym rooms",
+    "empty": "No ranked members to show yet.",
+    "failed": "Couldn't load gym members.",
+    "close": "Close",
+    "profile": "Profile",
+    "cardInfo": "Rank {{rank}}, FitScore {{score}}"
   },
   "profile": {
-    "subtitle": "Member settings",
     "fitId": "Fit ID {{id}}",
-    "settings": "Member settings",
+    "settings": "Settings",
+    "preferences": "Preferences and privacy",
+    "age": "Age",
+    "ageValue": "{{value}} years",
+    "height": "Height",
+    "heightValue": "{{value}} {{unit}}",
+    "unknown": "Not on file",
+    "medalCategoryCount": "Medals earned in {{unlocked}} of {{total}} categories",
+    "medalNext": "Next {{target}}",
+    "medalProgress": "Progress",
+    "medalsError": "Couldn't load your medals.",
+    "viewMedals": "View all medals",
     "sound": "Sound",
     "soundHint": "Play app sounds",
     "showFitScore": "Show FitScore",
@@ -633,5 +875,13 @@
     "failed": "Couldn't create the goal. Try again.",
     "noScan": "You need a body scan before you can set a goal. Book one at the front desk.",
     "error": "Couldn't load your last scan."
+  },
+  "member": {
+    "title": "Member",
+    "failed": "Couldn't load this member.",
+    "ranks": "Gym rankings",
+    "seeBoards": "See the leaderboards",
+    "ofTotal": "of {{total}}",
+    "medalCount": "{{unlocked}} of {{total}}"
   }
 }

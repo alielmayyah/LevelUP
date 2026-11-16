@@ -7,7 +7,7 @@ import en from '../src/i18n/en.json' with { type: 'json' };
 import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
 
 const strings = { en, ar };
-const TABS = ['home', 'progress', 'goals', 'leaderboard', 'profile'] as const;
+const TABS = ['home', 'progress', 'goals', 'community', 'profile'] as const;
 
 /** True when the visible page text has no NaN, undefined, null, or [object Object]. */
 const cleanText = (text: string) => !/\bNaN\b|\bundefined\b|\bnull\b|\[object Object\]/.test(text);
@@ -38,6 +38,7 @@ for (const lang of LOCALES)
           expect(await noHorizontalOverflow(page)).toBe(true);
         }
 
+        await page.getByRole('link', { name: s.profile.settings, exact: true }).click();
         await page.getByRole('button', { name: s.profile.signOut }).click();
         await page.getByRole('dialog').getByRole('button', { name: s.profile.signOut }).click();
         await expect(page).toHaveURL(/\/login$/);
@@ -54,7 +55,7 @@ test('a brand-new member (102) sees empty states on every tab, never NaN or unde
     home: en.home.fitScore.empty,
     progress: en.progress.empty,
     goals: en.goals.empty,
-    leaderboard: en.leaderboard.hidden,
+    community: en.community.leaderboards,
     profile: en.profile.settings,
   };
   for (const tab of TABS) {

@@ -109,7 +109,7 @@ const TabBar: React.FC = () => {
               className={i === lit ? 'is-lit' : undefined}
               // Tapping the tab you're already on scrolls it back to the top (iOS and Android convention).
               onClick={() => {
-                if (i !== index) return;
+                if (pathname !== href) return;
                 const content = document.querySelector<HTMLIonContentElement>(
                   `[data-testid="page-${tab}"] ion-content`,
                 );

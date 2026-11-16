@@ -91,20 +91,8 @@ export function SleeveTop({
   paint: p,
 }: VariantProps<'top'> & { style: Exclude<ResolvedStyles['top'], 'tank'> }) {
   const tee = style === 'tee' || style === 'mesh-tee';
-  const hoodie = style === 'hoodie' || style === 'hood-up' || style === 'zip-hoodie';
   return (
     <g data-style-layer="top" data-variant={style}>
-      {hoodie && (
-        <>
-          <path fill={p.outline} d="M1232 399H1259V373H1292V357H1376V373H1411V399H1435V456H1406V473H1259V456H1232Z" />
-          <path fill={p.topLight} d="M1249 407H1273V390H1300V374H1368V390H1393V407H1418V445H1394V456H1270V445H1249Z" />
-          <path fill={p.topShade} d="M1255 412h23v-16h24v-13h60v13h24v16h25v29h-23v11h-113v-11h-20z" />
-          <path
-            fill={p.topLight}
-            d="M1262 415h17v-13h23v-11h10v4h-9v12h-21v13h-20z M1401 415h-17v-13h-23v-11h-10v4h9v12h21v13h20z"
-          />
-        </>
-      )}
       <path
         fill={p.outline}
         d={
