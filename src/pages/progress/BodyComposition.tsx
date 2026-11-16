@@ -447,7 +447,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                 />
               </div>
               <div className="col-start-2 row-span-2 row-start-1 grid justify-items-center">
-                <BodyScanFigure statuses={statuses} kind={kind} />
+                <BodyScanFigure statuses={statuses} kind={kind} sex={sex} />
               </div>
               <div className="col-start-3 row-start-1">
                 <Callout

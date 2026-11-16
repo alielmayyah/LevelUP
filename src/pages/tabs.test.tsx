@@ -188,11 +188,22 @@ describe('Progress', () => {
     // The hologram tints each part by its zone; it is decorative, the callouts carry the values.
     const figure = within(segs).getByTestId('segments-figure');
     expect(figure).toHaveAttribute('aria-hidden', 'true');
+    expect(figure).toHaveAttribute('data-silhouette', 'MALE');
     expect(figure.querySelector('[data-part="rightArm"]')).toHaveAttribute('data-status', 'over');
     await userEvent.click(within(segs).getByRole('radio', { name: 'Fat' }));
     expect(within(segs).getByRole('radio', { name: 'Fat' })).toHaveAttribute('aria-checked', 'true');
     expect(within(segs).getByTestId('seg-trunk')).toHaveTextContent('Under');
     expect(figure.querySelector('[data-part="trunk"]')).toHaveAttribute('data-status', 'under');
+  });
+
+  it('draws the female silhouette for Nour’s scan', async () => {
+    await renderAs('104', Progress);
+    await userEvent.click(await screen.findByTestId('progress-more'));
+    const figure = await screen.findByTestId('segments-figure');
+    expect(figure).toHaveAttribute('data-silhouette', 'FEMALE');
+    await userEvent.click(screen.getByRole('radio', { name: 'Fat' }));
+    expect(figure).toHaveAttribute('data-silhouette', 'FEMALE');
+    expect(figure).toHaveAttribute('data-view', 'fat');
   });
 
   it('compares the scan with any other scan, or with none', async () => {

@@ -20,6 +20,7 @@ for (const lang of ['en', 'ar'] as const)
       const segs = page.getByTestId('segments');
       const figure = segs.getByTestId('segments-figure');
       await expect(figure).toBeVisible();
+      await expect(figure).toHaveAttribute('data-silhouette', 'MALE');
       // Muscle view: 135% in the right arm is over the band.
       await expect(figure.locator('[data-part="rightArm"]')).toHaveAttribute('data-status', 'over');
       await expect(segs.getByTestId('seg-rightArm')).toContainText(s.bodyComp.zone.over);
@@ -30,6 +31,21 @@ for (const lang of ['en', 'ar'] as const)
       const left = (await segs.getByTestId('seg-leftArm').boundingBox())!;
       const fig = (await figure.boundingBox())!;
       expect(left.x + left.width).toBeLessThanOrEqual(fig.x + 1);
+    });
+
+    test('the female profile shows its silhouette in both scan views', async ({ page, loginAs }) => {
+      const s = { en, ar }[lang];
+      await loginAs('104');
+      await openDetails(page);
+      const segs = page.getByTestId('segments');
+      const figure = segs.getByTestId('segments-figure');
+      await expect(figure).toHaveAttribute('data-silhouette', 'FEMALE');
+      await expect(figure.locator('[data-part]')).toHaveCount(5);
+      await expect(segs.getByTestId('seg-leftArm')).toBeVisible();
+      await segs.getByRole('radio', { name: s.bodyComp.fatView }).click();
+      await expect(figure).toHaveAttribute('data-view', 'fat');
+      await expect(figure).toHaveAttribute('data-silhouette', 'FEMALE');
+      expect(await noHorizontalOverflow(page)).toBe(true);
     });
 
     test('each trend option shows its metric icon', async ({ page, loginAs }) => {
