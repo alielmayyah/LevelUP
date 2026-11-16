@@ -306,14 +306,16 @@ const Character: React.FC = () => {
                 className="lu-avatar-stage relative grid place-items-center pt-2 pb-4"
                 aria-label={t('avatar.preview')}
               >
-                <Avatar
-                  config={draft}
-                  crop="full"
-                  label={t('avatar.preview')}
-                  testId="character-preview"
-                  className="relative z-1 block h-[clamp(170px,32vh,320px)] w-auto max-w-full short-landscape:h-[56vh] split:h-[min(62vh,480px)]"
-                />
-                <span className="lu-stage-floor" aria-hidden="true" />
+                <div className="relative isolate grid max-w-full place-items-center">
+                  <span className="lu-stage-floor" aria-hidden="true" />
+                  <Avatar
+                    config={draft}
+                    crop="full"
+                    label={t('avatar.preview')}
+                    testId="character-preview"
+                    className="relative z-1 block h-[clamp(170px,32vh,320px)] w-auto max-w-full short-landscape:h-[56vh] split:h-[min(62vh,480px)]"
+                  />
+                </div>
                 <p
                   className="lu-save-chip absolute inset-e-3 bottom-2 m-0 min-h-[1.2em] rounded-full px-2.5 py-0.5 text-[0.75rem] font-extrabold empty:hidden"
                   role="status"

@@ -582,6 +582,81 @@ export function applyOutfit(config: AvatarConfigDto, id: OutfitId): AvatarConfig
   };
 }
 
+export const CHARACTER_PRESETS = {
+  'silver-sprinter': {
+    styles: { hair: 'spikes', top: 'tank', pants: 'shorts', shoes: 'high-tops', socks: 'crew-socks' },
+    colors: { hair: 'silver', tank: 'burgundy', shorts: 'charcoal', shoes: 'teal', socks: 'off-white' },
+  },
+  'cloud-hoodie': {
+    styles: { hair: 'waves', top: 'hoodie', pants: 'tapered-joggers', shoes: 'high-tops', socks: 'crew-socks' },
+    colors: { hair: 'auburn', tank: 'cream', shorts: 'graphite', shoes: 'brick', socks: 'off-white' },
+  },
+  'midnight-lift': {
+    styles: {
+      hair: 'side-part',
+      beard: 'boxed-beard',
+      top: 'zip-hoodie',
+      pants: 'warmup-pants',
+      shoes: 'lifters',
+      socks: 'ankle-socks',
+    },
+    colors: { hair: 'espresso', tank: 'charcoal', shorts: 'slate', shoes: 'amber', socks: 'charcoal' },
+  },
+  'violet-hoodie': {
+    styles: { hair: 'spikes', top: 'hoodie', pants: 'joggers', shoes: 'high-tops', socks: 'crew-socks' },
+    colors: { hair: 'indigo', tank: 'orchid', shorts: 'aubergine', shoes: 'violet', socks: 'off-white' },
+  },
+  'teal-studio': {
+    styles: { hair: 'high-bun', top: 'racerback-bra', pants: 'shorts', shoes: 'high-tops', socks: 'crew-socks' },
+    colors: { hair: 'auburn', tank: 'teal', shorts: 'slate', shoes: 'teal', socks: 'off-white' },
+  },
+  'lilac-hijab': {
+    styles: {
+      hair: 'wrap-hijab',
+      top: 'zip-hoodie',
+      pants: 'tapered-joggers',
+      shoes: 'high-tops',
+      socks: 'crew-socks',
+    },
+    colors: { hijab: 'plum', tank: 'orchid', shorts: 'aubergine', shoes: 'violet', socks: 'off-white' },
+  },
+  'amber-hijab': {
+    styles: { hair: 'sport-hijab', top: 'hoodie', pants: 'track-pants', shoes: 'trainers', socks: 'crew-socks' },
+    colors: { hijab: 'navy', tank: 'amber', shorts: 'graphite', shoes: 'amber', socks: 'charcoal' },
+  },
+  'pearl-hijab': {
+    styles: { hair: 'longline-hijab', top: 'hoodie', pants: 'joggers', shoes: 'high-tops', socks: 'crew-socks' },
+    colors: { hijab: 'plum', tank: 'cream', shorts: 'charcoal', shoes: 'off-white', socks: 'off-white' },
+  },
+} satisfies Record<
+  string,
+  Outfit & { styles: { hair: ResolvedStyles['hair'] }; colors: Partial<Pick<AvatarConfigDto['colors'], 'hair'>> }
+>;
+
+export type CharacterPresetId = keyof typeof CHARACTER_PRESETS;
+
+export function characterPresetsFor(rig: AvatarRig): readonly CharacterPresetId[] {
+  return rig === 'women'
+    ? ['lilac-hijab', 'teal-studio', 'amber-hijab', 'pearl-hijab']
+    : ['silver-sprinter', 'cloud-hoodie', 'midnight-lift', 'violet-hoodie'];
+}
+
+export function applyCharacterPreset(config: AvatarConfigDto, id: CharacterPresetId): AvatarConfigDto {
+  const preset = CHARACTER_PRESETS[id];
+  const look = withHair(config, preset.styles.hair);
+  return {
+    ...look,
+    styles: {
+      ...stylesFor(look.styles),
+      beard: 'clean-shaven',
+      glasses: 'no-glasses',
+      face: 'smile',
+      ...preset.styles,
+    },
+    colors: { ...look.colors, skin: 'light', eyes: 'dark-brown', ...preset.colors },
+  };
+}
+
 /* ---------- Paint ---------- */
 
 const channels = (hex: string): [number, number, number] => {
@@ -641,8 +716,10 @@ export interface AvatarPaint {
   skin: string;
   skinShade: string;
   skinLight: string;
+  skinGlow: string;
   hair: string;
   hairLight: string;
+  hairGlint: string;
   hairShade: string;
   hijab: string;
   hijabLight: string;
@@ -670,6 +747,7 @@ export interface AvatarPaint {
   sockShade: string;
   sockTrim: string;
   trim: string;
+  badge: string;
 }
 
 const colorOf = (part: AvatarPart, id: string): string =>
@@ -698,8 +776,10 @@ export function paintFor(config: AvatarConfigDto): AvatarPaint {
     skin,
     skinShade: darken(skin, SKIN_SHADE),
     skinLight: lighten(skin, [0.13, 0.09, 0.07]),
+    skinGlow: lighten(skin, [0.32, 0.25, 0.19]),
     hair,
     hairLight: lighten(hair, HAIR_LIGHT),
+    hairGlint: lighten(hair, [0.34, 0.31, 0.37]),
     hairShade: darken(hair, HAIR_SHADE),
     hijab,
     hijabLight: lighten(hijab, [0.22, 0.22, 0.22]),
@@ -727,5 +807,6 @@ export function paintFor(config: AvatarConfigDto): AvatarPaint {
     sockShade: darken(socks, [0.72, 0.72, 0.72]),
     sockTrim: contrastTrim(socks),
     trim,
+    badge: colorOf('tank', 'amber'),
   };
 }

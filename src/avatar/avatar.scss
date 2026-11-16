@@ -14,20 +14,31 @@
   }
 
   .lu-style-thumb {
-    background: color-mix(in srgb, var(--lu-splash-text) 24%, var(--lu-splash-bg-2));
+    background: radial-gradient(
+      ellipse at 50% 42%,
+      color-mix(in srgb, var(--lu-splash-text) 31%, var(--lu-splash-bg-2)),
+      color-mix(in srgb, var(--lu-splash-text) 12%, var(--lu-splash-bg)) 95%
+    );
   }
 
   /* Editor: the stage fills the top with no frame; a soft floor shadow grounds the character. */
   .lu-editor .lu-avatar-stage {
     border: 0;
+    background:
+      radial-gradient(
+        ellipse at 50% 42%,
+        color-mix(in srgb, var(--ion-color-primary) 30%, transparent),
+        transparent 64%
+      ),
+      linear-gradient(var(--lu-splash-bg), var(--lu-splash-bg-2));
   }
 
   .lu-stage-floor {
     position: absolute;
-    inset-block-end: 14px;
+    inset-block-end: 0;
     inset-inline: 50%;
-    inline-size: min(46%, 220px);
-    block-size: 14px;
+    inline-size: 82%;
+    block-size: 4%;
     translate: -50% 0;
     border-radius: 50%;
     background: color-mix(in srgb, var(--lu-splash-bg) 70%, transparent);

@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { focusSibling, rovingTarget } from '../components/roving';
 import Avatar from './Avatar';
 import {
+  applyCharacterPreset,
   applyOutfit,
+  characterPresetsFor,
   isHijab,
   outfitsFor,
   trainingStyles,
@@ -42,22 +44,40 @@ export function OutfitPicker({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-3">
+      <section className="grid gap-2" aria-labelledby="avatar-preset-title">
+        <h2 id="avatar-preset-title" className={HEADING}>
+          {t('avatar.presetTitle')}
+        </h2>
+        <div className="grid grid-cols-4 gap-2">
+          {characterPresetsFor(config.rig).map((id) => {
+            const preview = applyCharacterPreset(config, id);
+            return (
+              <LookTile
+                key={id}
+                preview={preview}
+                label={t(`avatar.preset.${id}`)}
+                selected={sameAvatar(config, preview)}
+                onSelect={() => onChange(preview)}
+              />
+            );
+          })}
+        </div>
+      </section>
       <h2 id="avatar-outfit-title" className={HEADING}>
         {t('avatar.outfitTitle')}
       </h2>
       <div className={GRID} role="group" aria-labelledby="avatar-outfit-title">
         {outfitsFor(config.rig).map((id) => {
           const preview = applyOutfit(config, id);
-          const selected = sameAvatar(config, preview);
           return (
-            <button key={id} type="button" aria-pressed={selected} onClick={() => onChange(preview)} className={TILE}>
-              <span className="lu-style-thumb relative grid aspect-[3/4] place-items-center" aria-hidden="true">
-                <Avatar config={preview} crop="full" className="h-[88%] w-full" />
-                {selected && <SelectedMark />}
-              </span>
-              <span className={TILE_LABEL}>{t(`avatar.outfit.${id}`)}</span>
-            </button>
+            <LookTile
+              key={id}
+              preview={preview}
+              label={t(`avatar.outfit.${id}`)}
+              selected={sameAvatar(config, preview)}
+              onSelect={() => onChange(preview)}
+            />
           );
         })}
       </div>
@@ -73,6 +93,28 @@ const TILE =
   'lu-style-card relative flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-xl border-2 border-line bg-surface p-0 aria-checked:border-primary aria-pressed:border-primary';
 const TILE_LABEL =
   'grid flex-1 place-items-center px-1.5 py-1 text-center text-[0.75rem] leading-snug font-semibold text-ink';
+
+function LookTile({
+  preview,
+  label,
+  selected,
+  onSelect,
+}: {
+  preview: AvatarConfigDto;
+  label: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button type="button" aria-pressed={selected} onClick={onSelect} className={TILE}>
+      <span className="lu-style-thumb relative grid aspect-[3/4] place-items-center" aria-hidden="true">
+        <Avatar config={preview} crop="full" className="h-[94%] w-full" />
+        {selected && <SelectedMark />}
+      </span>
+      <span className={TILE_LABEL}>{label}</span>
+    </button>
+  );
+}
 
 function SelectedMark() {
   return (
@@ -113,7 +155,8 @@ export function StylePicker<K extends StylePart>({ part, config, onChange, actio
           const selected = styles[part] === id;
           const optionKey: `avatar.style.${ResolvedStyles[StylePart]}` = `avatar.style.${id}`;
           const preview = { ...config, styles: { ...styles, body: 'balanced' as const, [part]: id } };
-          if (part === 'body') preview.styles.top = 'tank';
+          if (part === 'body' && !isHijab(styles.hair))
+            preview.styles.top = config.rig === 'women' ? 'longline-tank' : 'tank';
           if (part === 'hair' && styles.top === 'hood-up') preview.styles.top = 'hoodie';
           return (
             <button
@@ -132,7 +175,11 @@ export function StylePicker<K extends StylePart>({ part, config, onChange, actio
               }}
             >
               <span className="lu-style-thumb relative grid aspect-square place-items-center" aria-hidden="true">
-                <Avatar config={preview} crop={part === 'glasses' ? 'face' : part} className="h-[80%] w-full" />
+                <Avatar
+                  config={preview}
+                  crop={part === 'glasses' ? 'face' : part}
+                  className={part === 'body' ? 'h-[95%] w-full' : 'h-[80%] w-full'}
+                />
                 {selected && <SelectedMark />}
               </span>
               <span className={TILE_LABEL}>{t(optionKey)}</span>

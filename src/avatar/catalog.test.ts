@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import {
   AVATAR_PARTS,
   STYLE_PARTS,
+  applyCharacterPreset,
   applyOutfit,
+  characterPresetsFor,
   contrastRatio,
   customizerTabsFor,
   defaultAvatar,
@@ -26,6 +28,20 @@ import {
 
 describe('avatar catalog', () => {
   const starterAvatar = (memberId: number) => memberAvatar({ memberId, sex: 'MALE', avatar: null });
+
+  it('reference presets apply valid art colors and preserve the member’s chosen build', () => {
+    for (const rig of ['standard', 'women'] as const) {
+      const base = { ...defaultAvatar(), rig, styles: { ...stylesFor(), body: 'stocky' as const } };
+      const looks = characterPresetsFor(rig).map((id) => applyCharacterPreset(base, id));
+      expect(new Set(looks.map((look) => JSON.stringify(look))).size).toBe(looks.length);
+      for (const look of looks) {
+        expect(isValidAvatar(look)).toBe(true);
+        expect(look.styles?.body).toBe('stocky');
+        expect(look.colors).toMatchObject({ skin: 'light', eyes: 'dark-brown' });
+        expect(normalizeAvatar(look)).toEqual(look);
+      }
+    }
+  });
 
   it('default look is valid and reproduces the original art’s shades', () => {
     const d = defaultAvatar();
