@@ -22,8 +22,11 @@ const LOADERS = {
   goals: () => import('../pages/Goals'),
   newGoal: () => import('../pages/NewGoal'),
   character: () => import('../pages/Character'),
+  community: () => import('../pages/Community'),
   leaderboard: () => import('../pages/Leaderboard'),
+  member: () => import('../pages/MemberProfile'),
   profile: () => import('../pages/Profile'),
+  settings: () => import('../pages/Settings'),
 };
 
 const Home = withSuspense(lazy(LOADERS.home));
@@ -31,8 +34,12 @@ const Progress = withSuspense(lazy(LOADERS.progress));
 const Goals = withSuspense(lazy(LOADERS.goals));
 const NewGoal = withSuspense(lazy(LOADERS.newGoal));
 const Character = withSuspense(lazy(LOADERS.character));
+const Community = withSuspense(lazy(LOADERS.community));
 const Leaderboard = withSuspense(lazy(LOADERS.leaderboard));
+const MemberProfile = withSuspense(lazy(LOADERS.member));
 const Profile = withSuspense(lazy(LOADERS.profile));
+const Settings = withSuspense(lazy(LOADERS.settings));
+const Medals = withSuspense(lazy(() => import('../pages/Medals')));
 
 /**
  * Once the first tab has rendered and the browser is idle, fetch every other
@@ -67,9 +74,14 @@ const Tabs: React.FC = () => {
         <Route exact path="/tabs/progress" component={Progress} />
         <Route exact path="/tabs/goals" component={Goals} />
         <Route exact path="/tabs/goals/new" component={NewGoal} />
+        <Route exact path="/tabs/community" component={Community} />
+        <Route exact path="/tabs/community/leaderboard" component={Leaderboard} />
+        <Route exact path="/tabs/community/member/:id" component={MemberProfile} />
         <Route exact path="/tabs/leaderboard" component={Leaderboard} />
         <Route exact path="/tabs/profile" component={Profile} />
+        <Route exact path="/tabs/profile/settings" component={Settings} />
         <Route exact path="/tabs/profile/character" component={Character} />
+        <Route exact path="/tabs/profile/medals" component={Medals} />
         <Route exact path="/tabs">
           <Redirect to="/tabs/home" />
         </Route>

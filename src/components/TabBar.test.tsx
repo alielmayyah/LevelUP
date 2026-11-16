@@ -24,7 +24,7 @@ describe('TabBar', () => {
 
   it('tab bar has 5 tabs in order, named by their visible labels', () => {
     renderAt('/tabs/home');
-    expect(tabs().map((t) => t.textContent)).toEqual(['Home', 'Progress', 'Goals', 'Board', 'Profile']);
+    expect(tabs().map((t) => t.textContent)).toEqual(['Home', 'Progress', 'Goals', 'Community', 'Profile']);
     // No aria-label on the buttons: the visible label is the name (WCAG 2.5.3).
     expect(tabs().some((t) => t.hasAttribute('aria-label'))).toBe(false);
   });
@@ -56,6 +56,9 @@ describe('tabIndex / pillTransform', () => {
   it('matches a tab and its sub-pages', () => {
     expect(tabIndex('/tabs/home')).toBe(0);
     expect(tabIndex('/tabs/profile')).toBe(4);
+    expect(tabIndex('/tabs/profile/settings')).toBe(4);
+    expect(tabIndex('/tabs/community/leaderboard')).toBe(3);
+    expect(tabIndex('/tabs/leaderboard')).toBe(3);
     expect(tabIndex('/tabs/goals/12')).toBe(2);
     expect(tabIndex('/tabs/goalsx')).toBe(-1);
   });

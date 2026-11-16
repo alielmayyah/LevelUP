@@ -214,13 +214,15 @@
       inset 0 0 0 2px var(--lu-border),
       inset 0 -6px 0 var(--lu-surface-2);
 
+    /* Icon above the label, so long names ("Lowest Body Fat") keep to two lines on a phone. */
     button {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      min-block-size: 44px;
-      padding: 4px 4px 6px;
+      gap: 3px;
+      min-block-size: 52px;
+      padding: 6px 4px 8px;
       border-radius: 0;
       clip-path: px-corners(2px);
       font-size: 0.75rem;
@@ -297,5 +299,138 @@
     border-color: var(--ion-color-primary-shade);
     background: var(--ion-color-primary);
     color: var(--ion-color-primary-contrast);
+  }
+}
+
+/* Age group filter: a funnel button beside the board tabs, opening a small menu. */
+@layer components {
+  .lu-filter-button {
+    block-size: 100%;
+    min-block-size: 44px;
+
+    /* A dot when a bracket is applied. */
+    &[data-active='true']::after {
+      position: absolute;
+      inset-block-start: 6px;
+      inset-inline-end: 6px;
+      inline-size: 8px;
+      block-size: 8px;
+      border: 2px solid var(--lu-surface);
+      background: var(--ion-color-primary);
+      content: '';
+    }
+  }
+
+  .lu-filter-menu {
+    position: absolute;
+    z-index: 20;
+    inset-block-start: calc(100% + 6px);
+    inset-inline-end: 0;
+    display: grid;
+    gap: 2px;
+    inline-size: max-content;
+    min-inline-size: 190px;
+    padding: 6px;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-block-size: 44px;
+      padding: 6px 10px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--lu-text);
+      font-size: 0.88rem;
+      font-weight: 750;
+      text-align: start;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+
+      &:hover {
+        background: var(--lu-surface-2);
+      }
+
+      &[aria-checked='true'] {
+        background: color-mix(in srgb, var(--ion-color-primary) 14%, var(--lu-surface));
+        font-weight: 850;
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--ion-color-primary);
+        outline-offset: -2px;
+      }
+    }
+  }
+
+  .lu-filter-check {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 14px;
+    color: var(--ion-color-primary);
+  }
+
+  .lu-age-mine {
+    display: inline-grid;
+    color: var(--ion-color-primary);
+    font-size: 0.85rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-filter-menu button:active {
+      transform: none;
+    }
+  }
+}
+
+/* "You are here": docked above the tab bar while the member's own row is off screen. */
+@layer components {
+  .lu-me-dock {
+    position: fixed;
+    z-index: 15;
+    inset-inline: max(var(--lu-gutter), calc((100vw - 960px) / 2));
+    inset-block-end: calc(var(--lu-tabbar-height) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px));
+    min-block-size: 56px;
+    padding: 8px 12px;
+    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 70%, transparent);
+    border-radius: 10px;
+    background: var(--lu-surface);
+    box-shadow: 0 3px 0 color-mix(in srgb, var(--lu-pixel-shadow) 70%, transparent);
+    color: var(--lu-text);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    animation: lu-dock-in 160ms ease-out both;
+
+    &:active {
+      transform: translateY(2px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--lu-text);
+      outline-offset: 2px;
+    }
+  }
+
+  @keyframes lu-dock-in {
+    from {
+      transform: translateY(8px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-me-dock {
+      animation: none;
+
+      &:active {
+        transform: none;
+      }
+    }
   }
 }

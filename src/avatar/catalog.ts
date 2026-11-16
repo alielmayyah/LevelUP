@@ -10,7 +10,19 @@ import palettes from './palettes.json';
 
 export type { AvatarConfigDto, AvatarPart, AvatarRig };
 export const AVATAR_RIGS = ['standard', 'women'] as const satisfies readonly AvatarRig[];
-export const WOMEN_HAIR = ['high-ponytail', 'braided-ponytail', 'low-bun', 'puff'] as const;
+export const WOMEN_HAIR = [
+  'high-ponytail',
+  'braided-ponytail',
+  'low-bun',
+  'puff',
+  'double-braids',
+  'high-bun',
+] as const;
+export const isTiedHair = (style: ResolvedStyles['hair']): style is (typeof WOMEN_HAIR)[number] =>
+  WOMEN_HAIR.some((id) => id === style);
+export const HIJAB_STYLES = ['sport-hijab', 'wrap-hijab', 'longline-hijab'] as const;
+export type HijabStyle = (typeof HIJAB_STYLES)[number];
+export const isHijab = (style: string): style is HijabStyle => HIJAB_STYLES.some((id) => id === style);
 
 export type ResolvedStyles = Required<AvatarStyles>;
 export type StylePart = keyof ResolvedStyles;
@@ -30,13 +42,11 @@ export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
     'shaved',
     'spikes',
     'braids',
-    'high-ponytail',
-    'braided-ponytail',
-    'low-bun',
-    'puff',
-    'sport-hijab',
+    'tapered-curls',
+    ...WOMEN_HAIR,
+    ...HIJAB_STYLES,
   ],
-  body: ['balanced', 'lean', 'broad', 'compact', 'tall', 'stocky', 'athletic', 'relaxed'],
+  body: ['balanced', 'lean', 'broad', 'compact', 'tall', 'stocky', 'athletic', 'relaxed', 'long-limbed', 'power-build'],
   top: [
     'tank',
     'tee',
@@ -51,8 +61,24 @@ export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
     'longline-tank',
     'racerback-bra',
     'fitted-zip',
+    'hood-up',
+    'zip-hoodie',
+    'raglan-top',
+    'longline-training-top',
   ],
-  shoes: ['trainers', 'high-tops', 'runners', 'slip-ons', 'boots', 'canvas', 'lifters', 'cross-trainers', 'barefoot'],
+  shoes: [
+    'trainers',
+    'high-tops',
+    'runners',
+    'slip-ons',
+    'boots',
+    'canvas',
+    'lifters',
+    'cross-trainers',
+    'barefoot',
+    'flat-lifters',
+    'cushioned-runners',
+  ],
   pants: [
     'shorts',
     'joggers',
@@ -66,6 +92,9 @@ export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
     'warmup-pants',
     'high-rise-leggings',
     'capris',
+    'tapered-joggers',
+    'panel-tights',
+    'loose-training-shorts',
   ],
   beard: [
     'clean-shaven',
@@ -77,15 +106,29 @@ export const STYLES: { [K in StylePart]: readonly ResolvedStyles[K][] } = {
     'chin-strap',
     'fade-beard',
     'chin-tuft',
+    'boxed-beard',
+    'circle-beard',
   ],
-  socks: ['no-socks', 'ankle-socks', 'crew-socks', 'striped-socks', 'knee-highs', 'grip-socks', 'cushioned-socks'],
+  socks: [
+    'no-socks',
+    'ankle-socks',
+    'crew-socks',
+    'striped-socks',
+    'knee-highs',
+    'grip-socks',
+    'cushioned-socks',
+    'tab-socks',
+    'compression-socks',
+  ],
+  face: ['smile', 'focused', 'grin'],
+  glasses: ['no-glasses', 'round-glasses', 'rectangular-glasses', 'sport-glasses'],
 };
 
 // Older casual styles still render on saved characters.
-const CASUAL_STYLES: ReadonlySet<string> = new Set(['varsity', 'jeans', 'boots', 'canvas', 'slip-ons']);
+const CASUAL_STYLES: ReadonlySet<string> = new Set(['varsity', 'jeans', 'cargo', 'boots', 'canvas', 'slip-ons']);
 const WOMEN_ONLY_STYLES: ReadonlySet<string> = new Set([
   ...WOMEN_HAIR,
-  'sport-hijab',
+  ...HIJAB_STYLES,
   'longline-tank',
   'racerback-bra',
   'fitted-zip',
@@ -110,15 +153,25 @@ export function trainingStyles<K extends StylePart>(
   );
 }
 
+const WOMEN_TABS = CUSTOMIZER_TABS.filter((tab) => tab !== 'beard');
 export const customizerTabsFor = (rig: AvatarRig): readonly CustomizerTab[] =>
-  rig === 'women' ? CUSTOMIZER_TABS.filter((tab) => tab !== 'beard') : CUSTOMIZER_TABS;
+  rig === 'women' ? WOMEN_TABS : CUSTOMIZER_TABS;
 
 export const showsLowerLeg = (pants: ResolvedStyles['pants']): boolean =>
   pants === 'shorts' ||
   pants === 'bike-shorts' ||
   pants === 'liner-shorts' ||
   pants === 'split-shorts' ||
+  pants === 'loose-training-shorts' ||
   pants === 'capris';
+
+export const hasLongSleeves = (top: ResolvedStyles['top']): boolean =>
+  top !== 'tank' &&
+  top !== 'sleeveless-hoodie' &&
+  top !== 'tee' &&
+  top !== 'mesh-tee' &&
+  top !== 'longline-tank' &&
+  top !== 'racerback-bra';
 
 export const STYLE_PARTS = Object.keys(STYLES) as StylePart[];
 
@@ -136,6 +189,8 @@ export function stylesFor(value?: Partial<Record<StylePart, unknown>> | null): R
     pants: styleFor('pants', value?.pants),
     beard: styleFor('beard', value?.beard),
     socks: styleFor('socks', value?.socks),
+    face: styleFor('face', value?.face),
+    glasses: styleFor('glasses', value?.glasses),
   };
 }
 
@@ -162,7 +217,10 @@ export const OUTLINE: string = outline;
 
 export const MATCH_HAIR = 'match-hair';
 const OPTIONAL_COLORS = { beard: MATCH_HAIR, socks: 'off-white', hijab: 'navy' } as const;
-const OPTIONAL_STYLES: readonly StylePart[] = ['pants', 'beard', 'socks'];
+const OPTIONAL_STYLES: readonly StylePart[] = ['pants', 'beard', 'socks', 'face', 'glasses'];
+
+const isUncoveredHair = (value: unknown): value is ResolvedStyles['hair'] =>
+  STYLES.hair.some((style) => style === value && !isHijab(style));
 
 const palettePart = (part: ColorPart): AvatarPart => {
   if (part === 'beard') return 'hair';
@@ -197,6 +255,7 @@ export function isValidAvatar(value: unknown): value is AvatarConfigDto {
   if (!value || typeof value !== 'object') return false;
   const v = value as Partial<AvatarConfigDto>;
   if (v.schemaVersion !== AVATAR_SCHEMA_VERSION || !v.rig || !AVATAR_RIGS.includes(v.rig)) return false;
+  if (v.hairUnderHijab !== undefined && !isUncoveredHair(v.hairUnderHijab)) return false;
   if (!v.colors || typeof v.colors !== 'object') return false;
   const keys = Object.keys(v.colors);
   if (keys.some((k) => k !== 'smile' && !Object.hasOwn(OPTIONAL_COLORS, k) && !AVATAR_PARTS.includes(k as AvatarPart)))
@@ -233,12 +292,17 @@ export function normalizeAvatar(value: unknown): AvatarConfigDto {
     if (has('socks', saved.socks)) colors.socks = saved.socks;
     if (has('hijab', saved.hijab)) colors.hijab = saved.hijab;
   }
-  const config = value as { rig?: unknown; styles?: Partial<Record<StylePart, unknown>> } | null;
+  const config = value as {
+    rig?: unknown;
+    styles?: Partial<Record<StylePart, unknown>>;
+    hairUnderHijab?: unknown;
+  } | null;
   return {
     schemaVersion: AVATAR_SCHEMA_VERSION,
     rig: config?.rig === 'women' ? 'women' : 'standard',
     colors,
     styles: stylesFor(config?.styles),
+    ...(isUncoveredHair(config?.hairUnderHijab) ? { hairUnderHijab: config.hairUnderHijab } : {}),
   };
 }
 
@@ -275,22 +339,35 @@ function randomColors(random: () => number, keepStarterSequence = false): Avatar
   return colors;
 }
 
-export function randomAvatar(random: () => number = Math.random, rig: AvatarRig = 'standard'): AvatarConfigDto {
+export function randomAvatar(
+  random: () => number = Math.random,
+  rig: AvatarRig = 'standard',
+  current?: AvatarConfigDto,
+): AvatarConfigDto {
   const colors = randomColors(random);
   const pick = <T>(options: readonly T[]): T => options[Math.floor(random() * options.length) % options.length];
+  const currentHair = stylesFor(current?.styles).hair;
+  const covered = current && rig === 'women' && isHijab(currentHair);
+  if (covered) {
+    colors.hair = current.colors.hair;
+    colors.hijab = colorIdFor(current, 'hijab');
+  }
   return {
     schemaVersion: AVATAR_SCHEMA_VERSION,
     rig,
     colors,
     styles: {
-      hair: pick(trainingStyles('hair', rig).filter((style) => style !== 'sport-hijab')),
+      hair: covered ? currentHair : pick(trainingStyles('hair', rig).filter((style) => !isHijab(style))),
       body: pick(STYLES.body),
-      top: pick(trainingStyles('top', rig)),
+      top: pick(trainingStyles('top', rig).filter((top) => !covered || hasLongSleeves(top))),
       shoes: pick(trainingStyles('shoes', rig)),
-      pants: pick(trainingStyles('pants', rig)),
+      pants: pick(trainingStyles('pants', rig).filter((pants) => !covered || !showsLowerLeg(pants))),
       beard: pick(trainingStyles('beard', rig)),
       socks: pick(STYLES.socks),
+      face: pick(STYLES.face),
+      glasses: pick(STYLES.glasses),
     },
+    ...(covered && current.hairUnderHijab ? { hairUnderHijab: current.hairUnderHijab } : {}),
   };
 }
 
@@ -308,7 +385,7 @@ export function memberAvatar({
   sex,
   avatar,
 }: Pick<ProfileDto, 'memberId' | 'avatar'> & Partial<Pick<ProfileDto, 'sex'>>): AvatarConfigDto {
-  const config = avatar ?? starterAvatar(String(memberId));
+  const config = avatar ? normalizeAvatar(avatar) : starterAvatar(String(memberId));
   const rig = sex === undefined ? config.rig : sex === 'FEMALE' ? 'women' : 'standard';
   const styles = stylesFor(config.styles);
   const defaultHair = rig === 'women' ? 'high-ponytail' : 'curls';
@@ -326,12 +403,29 @@ export function sameAvatar(a: AvatarConfigDto, b: AvatarConfigDto): boolean {
   const second = stylesFor(b.styles);
   return (
     a.rig === b.rig &&
+    a.hairUnderHijab === b.hairUnderHijab &&
     AVATAR_PARTS.every((p) => a.colors[p] === b.colors[p]) &&
     colorIdFor(a, 'beard') === colorIdFor(b, 'beard') &&
     colorIdFor(a, 'socks') === colorIdFor(b, 'socks') &&
     colorIdFor(a, 'hijab') === colorIdFor(b, 'hijab') &&
     STYLE_PARTS.every((p) => first[p] === second[p])
   );
+}
+
+export function withHair(config: AvatarConfigDto, hair: ResolvedStyles['hair']): AvatarConfigDto {
+  const styles = stylesFor(config.styles);
+  const { hairUnderHijab, ...look } = config;
+  const remembered = isHijab(styles.hair) ? hairUnderHijab : styles.hair;
+  return {
+    ...look,
+    styles: { ...styles, hair },
+    ...(isHijab(hair) && remembered ? { hairUnderHijab: remembered } : {}),
+  };
+}
+
+export function removeHijab(config: AvatarConfigDto): AvatarConfigDto {
+  const hair = config.hairUnderHijab ?? 'high-ponytail';
+  return withHair(config, isStyleForRig('hair', hair, config.rig) ? hair : 'high-ponytail');
 }
 
 type Outfit = {
@@ -412,10 +506,45 @@ export const OUTFITS = {
     styles: { top: 'compression-top', pants: 'bike-shorts', shoes: 'lifters', socks: 'striped-socks' },
     colors: { tank: 'levelup-violet', shorts: 'charcoal', shoes: 'violet', socks: 'charcoal' },
   },
+  'hoodie-warmup': {
+    styles: { top: 'hood-up', pants: 'tapered-joggers', shoes: 'flat-lifters', socks: 'crew-socks' },
+    colors: { tank: 'plum', shorts: 'graphite', shoes: 'off-white', socks: 'off-white' },
+  },
+  conditioning: {
+    styles: { top: 'raglan-top', pants: 'loose-training-shorts', shoes: 'cushioned-runners', socks: 'tab-socks' },
+    colors: { tank: 'electric-blue', shorts: 'navy', shoes: 'off-white', socks: 'electric-blue' },
+  },
+  'zip-hoodie-session': {
+    styles: { top: 'zip-hoodie', pants: 'panel-tights', shoes: 'flat-lifters', socks: 'compression-socks' },
+    colors: { tank: 'sage', shorts: 'forest', shoes: 'charcoal', socks: 'charcoal' },
+  },
+  'covered-cardio': {
+    styles: {
+      hair: 'wrap-hijab',
+      top: 'longline-training-top',
+      pants: 'tapered-joggers',
+      shoes: 'cushioned-runners',
+      socks: 'compression-socks',
+    },
+    colors: { hijab: 'plum', tank: 'orchid', shorts: 'aubergine', shoes: 'off-white', socks: 'charcoal' },
+  },
+  'covered-strength': {
+    styles: {
+      hair: 'longline-hijab',
+      top: 'zip-hoodie',
+      pants: 'warmup-pants',
+      shoes: 'flat-lifters',
+      socks: 'crew-socks',
+    },
+    colors: { hijab: 'sage', tank: 'sage', shorts: 'graphite', shoes: 'charcoal', socks: 'charcoal' },
+  },
 } satisfies Record<string, Outfit>;
 
 export type OutfitId = keyof typeof OUTFITS;
 const SHARED_OUTFIT_IDS = [
+  'hoodie-warmup',
+  'conditioning',
+  'zip-hoodie-session',
   'strength-day',
   'circuit-training',
   'treadmill-run',
@@ -431,15 +560,25 @@ const SHARED_OUTFIT_IDS = [
 
 export function outfitsFor(rig: AvatarRig): readonly OutfitId[] {
   if (rig === 'standard') return SHARED_OUTFIT_IDS;
-  return ['hijab-training', 'violet-training', 'pilates-studio', 'run-club', 'lift-club', ...SHARED_OUTFIT_IDS];
+  return [
+    'hijab-training',
+    'covered-cardio',
+    'covered-strength',
+    'violet-training',
+    'pilates-studio',
+    'run-club',
+    'lift-club',
+    ...SHARED_OUTFIT_IDS,
+  ];
 }
 
 export function applyOutfit(config: AvatarConfigDto, id: OutfitId): AvatarConfigDto {
-  const outfit = OUTFITS[id];
+  const outfit: Outfit = OUTFITS[id];
+  const look = outfit.styles.hair ? withHair(config, outfit.styles.hair) : config;
   return {
-    ...config,
-    styles: { ...stylesFor(config.styles), ...outfit.styles },
-    colors: { ...config.colors, ...outfit.colors },
+    ...look,
+    styles: { ...stylesFor(look.styles), ...outfit.styles },
+    colors: { ...look.colors, ...outfit.colors },
   };
 }
 

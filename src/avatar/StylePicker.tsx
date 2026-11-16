@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { focusSibling, rovingTarget } from '../components/roving';
 import Avatar from './Avatar';
 import {
   applyOutfit,
+  isHijab,
   outfitsFor,
   trainingStyles,
   sameAvatar,
@@ -54,23 +56,17 @@ export function OutfitPicker({
       <h2 id="avatar-outfit-title" className={HEADING}>
         {t('avatar.outfitTitle')}
       </h2>
-      <div className="grid grid-cols-4 gap-2" role="group" aria-labelledby="avatar-outfit-title">
+      <div className={GRID} role="group" aria-labelledby="avatar-outfit-title">
         {outfitsFor(config.rig).map((id) => {
           const preview = applyOutfit(config, id);
           const selected = sameAvatar(config, preview);
           return (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={selected}
-              aria-label={t(`avatar.outfit.${id}`)}
-              onClick={() => onChange(preview)}
-              className={TILE}
-            >
+            <button key={id} type="button" aria-pressed={selected} onClick={() => onChange(preview)} className={TILE}>
               <span className="lu-style-thumb relative grid aspect-[3/4] place-items-center" aria-hidden="true">
                 <Avatar config={preview} crop="full" className="h-[88%] w-full" />
                 {selected && <SelectedMark />}
               </span>
+              <span className={TILE_LABEL}>{t(`avatar.outfit.${id}`)}</span>
             </button>
           );
         })}
@@ -82,9 +78,11 @@ export function OutfitPicker({
 /** Section label above each grid: small and quiet, so the pictures lead. */
 const HEADING = 'm-0 text-[0.78rem] font-extrabold text-muted uppercase ar:normal-case';
 
-/** A picture-only option tile. The name is its accessible label; the picked one gets a thick ring and a tick. */
+const GRID = 'grid grid-cols-3 gap-2 min-[400px]:grid-cols-4';
 const TILE =
-  'lu-style-card relative min-w-0 cursor-pointer overflow-hidden rounded-xl border-2 border-line bg-surface p-0 aria-checked:border-primary aria-pressed:border-primary';
+  'lu-style-card relative flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-xl border-2 border-line bg-surface p-0 aria-checked:border-primary aria-pressed:border-primary';
+const TILE_LABEL =
+  'grid flex-1 place-items-center px-1.5 py-1 text-center text-[0.75rem] leading-snug font-semibold text-ink';
 
 function SelectedMark() {
   return (
@@ -98,33 +96,41 @@ interface StylePickerProps<K extends StylePart> {
   part: K;
   config: AvatarConfigDto;
   onChange: (id: ResolvedStyles[K]) => void;
+  action?: ReactNode;
 }
 
-export function StylePicker<K extends StylePart>({ part, config, onChange }: StylePickerProps<K>) {
+export function StylePicker<K extends StylePart>({ part, config, onChange, action }: StylePickerProps<K>) {
   const { t, i18n } = useTranslation();
   const styles = stylesFor(config.styles);
-  const options = trainingStyles(part, config.rig, styles[part]);
+  const offered = trainingStyles(part, config.rig, styles[part]);
+  const options =
+    part === 'hair' && config.rig === 'women'
+      ? [...offered.filter(isHijab), ...offered.filter((id) => !isHijab(id))]
+      : offered;
   const labelId = `style-label-${part}`;
   const labelKey = part === 'hair' && config.rig === 'women' ? 'avatar.hairAndHeadwear' : `avatar.styleLabel.${part}`;
 
   return (
     <div className="grid gap-2">
-      <h2 id={labelId} className={HEADING}>
-        {t(labelKey)}
-      </h2>
-      <div role="radiogroup" aria-labelledby={labelId} className="grid grid-cols-4 gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <h2 id={labelId} className={HEADING}>
+          {t(labelKey)}
+        </h2>
+        {action}
+      </div>
+      <div role="radiogroup" aria-labelledby={labelId} className={GRID}>
         {options.map((id, i) => {
           const selected = styles[part] === id;
           const optionKey: `avatar.style.${ResolvedStyles[StylePart]}` = `avatar.style.${id}`;
           const preview = { ...config, styles: { ...styles, body: 'balanced' as const, [part]: id } };
           if (part === 'body') preview.styles.top = 'tank';
+          if (part === 'hair' && styles.top === 'hood-up') preview.styles.top = 'hoodie';
           return (
             <button
               key={id}
               type="button"
               role="radio"
               aria-checked={selected}
-              aria-label={t(optionKey)}
               tabIndex={selected ? 0 : -1}
               className={TILE}
               onClick={() => onChange(id)}
@@ -136,9 +142,10 @@ export function StylePicker<K extends StylePart>({ part, config, onChange }: Sty
               }}
             >
               <span className="lu-style-thumb relative grid aspect-square place-items-center" aria-hidden="true">
-                <Avatar config={preview} crop={part} className="h-[80%] w-full" />
+                <Avatar config={preview} crop={part === 'glasses' ? 'face' : part} className="h-[80%] w-full" />
                 {selected && <SelectedMark />}
               </span>
+              <span className={TILE_LABEL}>{t(optionKey)}</span>
             </button>
           );
         })}

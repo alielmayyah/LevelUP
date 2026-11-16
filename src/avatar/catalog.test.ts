@@ -7,6 +7,8 @@ import {
   contrastRatio,
   customizerTabsFor,
   defaultAvatar,
+  hasLongSleeves,
+  isHijab,
   isValidAvatar,
   memberAvatar,
   normalizeAvatar,
@@ -14,9 +16,12 @@ import {
   paintFor,
   presetsFor,
   randomAvatar,
+  removeHijab,
   sameAvatar,
+  showsLowerLeg,
   stylesFor,
   trainingStyles,
+  withHair,
 } from './catalog';
 
 describe('avatar catalog', () => {
@@ -138,6 +143,55 @@ describe('avatar catalog', () => {
         const styles = stylesFor(randomAvatar(() => roll, rig).styles);
         for (const part of STYLE_PARTS) expect(trainingStyles(part, rig)).toContain(styles[part]);
       }
+    }
+  });
+
+  it('keeps the underlying hairstyle through hijab changes, randomization and storage', () => {
+    const women = memberAvatar({ memberId: 102, sex: 'FEMALE', avatar: null });
+    const braided = withHair(women, 'double-braids');
+    const covered = applyOutfit(braided, 'covered-cardio');
+    const long = withHair(covered, 'longline-hijab');
+    expect(isValidAvatar(long)).toBe(true);
+    expect(isValidAvatar({ ...long, hairUnderHijab: 'wrap-hijab' })).toBe(false);
+    expect(removeHijab(normalizeAvatar(long))).toMatchObject({ styles: { hair: 'double-braids' } });
+    expect(removeHijab(long)).not.toHaveProperty('hairUnderHijab');
+    expect(trainingStyles('hair', 'standard').some(isHijab)).toBe(false);
+    expect(trainingStyles('pants', 'standard')).not.toContain('cargo');
+    const legacy = { ...women, styles: { ...stylesFor(women.styles), hair: 'sport-hijab' } } as const;
+    expect(removeHijab(legacy).styles?.hair).toBe('high-ponytail');
+    for (const roll of [0, 0.25, 0.5, 0.75, 0.99]) {
+      const mixed = randomAvatar(() => roll, 'women', long);
+      const styles = stylesFor(mixed.styles);
+      expect(styles.hair).toBe('longline-hijab');
+      expect(hasLongSleeves(styles.top)).toBe(true);
+      expect(showsLowerLeg(styles.pants)).toBe(false);
+      expect(mixed.colors.hijab).toBe(long.colors.hijab);
+      expect(removeHijab(mixed).colors.hair).toBe(braided.colors.hair);
+    }
+  });
+
+  it('defaults older saves to no glasses and keeps frames independent of outfits and expressions', () => {
+    for (const rig of ['standard', 'women'] as const) {
+      const legacy = {
+        ...defaultAvatar(),
+        rig,
+        styles: { hair: 'curls', body: 'balanced', top: 'tank', shoes: 'trainers' },
+      } as const;
+      const base = normalizeAvatar(legacy);
+      const styles = stylesFor(base.styles);
+      expect(isValidAvatar(legacy)).toBe(true);
+      expect(styles.glasses).toBe('no-glasses');
+      expect(sameAvatar(base, legacy)).toBe(true);
+
+      for (const glasses of trainingStyles('glasses', rig)) {
+        const look = { ...base, styles: { ...styles, glasses, face: 'grin' as const } };
+        expect(isValidAvatar(look)).toBe(true);
+        expect(normalizeAvatar(look)).toEqual(look);
+        expect(applyOutfit(look, 'hoodie-warmup').styles).toMatchObject({ glasses, face: 'grin' });
+      }
+      const round = { ...base, styles: { ...styles, glasses: 'round-glasses' as const } };
+      expect(sameAvatar(base, round)).toBe(false);
+      expect(isValidAvatar({ ...base, styles: { ...styles, glasses: 'unknown' } })).toBe(false);
     }
   });
 

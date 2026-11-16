@@ -5,7 +5,7 @@ import en from '../src/i18n/en.json' with { type: 'json' };
 import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
 
 const strings = { en, ar };
-const TABS = ['home', 'progress', 'goals', 'leaderboard', 'profile'] as const;
+const TABS = ['home', 'progress', 'goals', 'community', 'profile'] as const;
 
 for (const lang of LOCALES)
   for (const theme of THEMES)

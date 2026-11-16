@@ -11,6 +11,7 @@ import './progress/Progress.scss';
 import MetricInfo, { InfoButton, type InfoTopic } from './progress/MetricInfo';
 import ScanCalendar from './progress/ScanCalendar';
 import ScanHistory from './progress/ScanHistory';
+import { daysBetween, spanOf } from './progress/scanAge';
 
 // The chart is the heaviest part of the page, so it loads after it, behind a skeleton.
 const TrendChart = lazy(() => import('./progress/ProgressCharts'));
@@ -180,6 +181,25 @@ const Progress: React.FC = () => {
   const beforeIndex = before ? list.indexOf(before) : -1;
   const points = progress.status === 'ready' ? progress.data.assessments : [];
 
+  /** A length of time as words: "3 days", "يومين". */
+  const spanText = (days: number) => {
+    const s = spanOf(days);
+    return s ? t(`progress.age.${s.unit}`, { count: s.count }) : '';
+  };
+  /** How long ago a scan was taken: "Today", "3 days ago". */
+  const agoText = (iso: string) => {
+    const d = daysBetween(iso, new Date());
+    if (d <= 0) return t('progress.age.today');
+    if (d === 1) return t('progress.age.yesterday');
+    return t('progress.age.ago', { span: spanText(d) });
+  };
+  /** How far the compared scan sits from the one on screen: "4 weeks before". */
+  const gapText = (from: string, to: string) => {
+    const d = daysBetween(from, to);
+    if (d === 0) return t('progress.age.sameDay');
+    return t(d < 0 ? 'progress.age.before' : 'progress.age.after', { span: spanText(d) });
+  };
+
   const unit = (u?: Metric<string>['unit']) => (!u ? '' : u === '%' ? '%' : ` ${t(`units.${u}`)}`);
   /** The same, as plain text (for the info sheet). */
   const valueText = (m: Metric<string>, of: AssessmentDto) => {
@@ -307,6 +327,17 @@ const Progress: React.FC = () => {
                       <PixelIcon className="lu-tone-calendar flex-none text-[1.05rem]" name="calendar" />
                     </button>
                   </h2>
+                  {/* Tags: whether this is the newest scan, and how old it is. */}
+                  <div className="flex flex-wrap justify-center gap-1.5" data-testid="scan-tags">
+                    {index === 0 && (
+                      <span className="lu-chip lu-chip-primary" data-testid="scan-latest">
+                        {t('progress.latest')}
+                      </span>
+                    )}
+                    <span className="lu-chip text-muted" data-testid="scan-age">
+                      {agoText(scan.takenAt)}
+                    </span>
+                  </div>
                   {/* Just the date on screen; screen readers also hear which scan it is. */}
                   <span className="sr-only" data-testid="scan-date">
                     {t('progress.scanPosition', {
@@ -385,8 +416,13 @@ const Progress: React.FC = () => {
                   <PixelIcon className="lu-tone-calendar flex-none text-[1.4rem]" name="calendar" />
                   <p className="m-0 grid min-w-0 flex-1 leading-tight">
                     <span className="text-[0.72rem] font-bold text-muted">{t('progress.comparedWith')}</span>
-                    <span className="text-[0.9rem] font-extrabold text-ink">
+                    <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.9rem] font-extrabold text-ink">
                       {before ? scanDate(before.takenAt) : t('progress.compareOffShort')}
+                      {before && (
+                        <span className="lu-chip text-muted" data-testid="compare-gap">
+                          {gapText(scan.takenAt, before.takenAt)}
+                        </span>
+                      )}
                     </span>
                   </p>
                   <button

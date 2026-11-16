@@ -10,15 +10,17 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { mockServer, resetMockServer } from '../api/mock/server';
-import type { AssessmentDto, GoalsDto } from '../api/types';
+import type { AssessmentDto, GoalsDto, LeaderboardDto } from '../api/types';
 import { setToken } from '../auth/token';
 import { setLanguage } from '../i18n';
 import { resetSound } from '../sound/useSound';
+import Community from './Community';
 import Goals from './Goals';
 import Leaderboard from './Leaderboard';
 import NewGoal from './NewGoal';
 import Profile from './Profile';
 import Progress from './Progress';
+import Settings from './Settings';
 
 const NOW = new Date('2026-11-13T10:00:00Z');
 
@@ -122,7 +124,13 @@ describe('Progress', () => {
     await renderAs('101', Progress);
     await screen.findByTestId('latest-scan');
     expect(screen.getByTestId('scan-newer')).toBeDisabled();
+    // The newest scan is tagged Latest, with how long ago it was taken.
+    expect(screen.getByTestId('scan-latest')).toHaveTextContent('Latest');
+    expect(screen.getByTestId('scan-age')).toHaveTextContent(/^(Today|Yesterday|\d+ (day|week|month|year)s? ago)$/);
     await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
+    expect(screen.queryByTestId('scan-latest')).toBeNull();
+    // Oct 15 is compared with the scan 4 weeks before it.
+    expect(screen.getByTestId('compare-gap')).toHaveTextContent(/^\d+ (day|week|month)s? before$/);
     // The date is the title; only screen readers hear Scan 5 of 6.
     expect(screen.getByTestId('scan-title')).toHaveTextContent('Oct 15, 2026');
     expect(screen.getByTestId('scan-date')).toHaveTextContent('Scan 5 of 6');
@@ -373,18 +381,84 @@ describe('Leaderboard', () => {
   });
 });
 
+describe('Community', () => {
+  it('uses decorative guests to fill a sparse gym and puts only ranked members on the wall board', async () => {
+    const handle = mockServer.handle.bind(mockServer);
+    vi.spyOn(mockServer, 'handle').mockImplementation(async (...args) => {
+      const response = await handle(...args);
+      if (!args[1].startsWith('/leaderboard?')) return response;
+      const board = response.body as LeaderboardDto;
+      return { ...response, body: { ...board, rows: board.rows.slice(0, 2) } };
+    });
+
+    await renderAs('101', Community);
+    const gym = within(screen.getByRole('region', { name: 'Community gym' }));
+    expect(await gym.findAllByTestId('community-member')).toHaveLength(1);
+    expect(gym.getAllByTestId('community-guest')).toHaveLength(22);
+    expect(gym.getByRole('button')).toHaveAccessibleName(
+      gym.getByTestId('community-member').getAttribute('aria-label'),
+    );
+    const board = within(gym.getByTestId('community-wall-board'));
+    expect(board.getByRole('link', { name: 'Leaderboards' })).toBeInTheDocument();
+    expect(board.getAllByTestId('community-board-portrait')).toHaveLength(2);
+    expect(board.getAllByTestId('community-board-portrait')[0]).toHaveAttribute('title', 'Mohamed O.');
+  });
+
+  it('fills the first room before paging to any remaining ranked members', async () => {
+    const handle = mockServer.handle.bind(mockServer);
+    vi.spyOn(mockServer, 'handle').mockImplementation(async (...args) => {
+      const response = await handle(...args);
+      if (!args[1].startsWith('/leaderboard?')) return response;
+      const board = response.body as LeaderboardDto;
+      const extra = board.rows.slice(1, 7).map((row, index) => ({
+        ...row,
+        memberId: 200 + index,
+        rank: board.rows.length + index + 1,
+      }));
+      return { ...response, body: { ...board, rows: [...board.rows, ...extra] } };
+    });
+
+    await renderAs('101', Community);
+    expect(await screen.findAllByTestId('community-member')).toHaveLength(23);
+    expect(screen.queryAllByTestId('community-guest')).toHaveLength(0);
+    const first = screen.getAllByTestId('community-member')[0];
+    await userEvent.click(first);
+    expect(first).toHaveAttribute('aria-pressed', 'true');
+    const pager = within(screen.getByRole('navigation', { name: 'Gym rooms' }));
+    await userEvent.click(pager.getByRole('button', { name: 'Next page' }));
+    expect(screen.getAllByTestId('community-member')).toHaveLength(1);
+    expect(screen.queryByTestId('community-card')).not.toBeInTheDocument();
+  });
+});
+
 describe('Profile', () => {
-  it("shows Mohamed's name and Fit ID, and no personal details, membership, or coach", async () => {
+  it('shows the member identity, avatar, age, height, and earned medals', async () => {
     await renderAs('101', Profile);
     expect(await screen.findByTestId('profile-name')).toHaveTextContent('Mohamed Omran');
     expect(screen.getByText('Fit ID 101')).toBeInTheDocument();
-    expect(screen.queryByTestId('profile-age')).toBeNull();
+    expect(screen.getByTestId('profile-age')).toHaveTextContent(/\d+ years/);
+    expect(screen.getByTestId('profile-height')).toHaveTextContent(/\d+.* cm/);
+    expect(screen.getByTestId('profile-avatar')).toHaveAttribute('data-crop', 'full');
+    const medals = await screen.findByTestId('profile-medal-grid');
+    expect(within(medals).getAllByRole('listitem')).toHaveLength(10);
+    expect(within(medals).getByTestId('profile-medal-plank')).toHaveTextContent('Gold');
+    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/tabs/profile/settings');
     expect(screen.queryByText('Rami Saad')).toBeNull();
     expect(screen.queryByText(/Premium/)).toBeNull();
   });
 
+  it('shows the no-medals state for a new member', async () => {
+    await renderAs('102', Profile);
+    const medals = await screen.findByTestId('profile-medal-grid');
+    expect(await screen.findByTestId('profile-medal-count')).toHaveTextContent('Medals earned in 0 of 10 categories');
+    expect(within(medals).getAllByRole('button')).toHaveLength(10);
+    expect(within(medals).getByTestId('profile-medal-plank')).toHaveAttribute('data-unlocked', 'false');
+  });
+});
+
+describe('Settings', () => {
   it('the two FitScore settings save independently', async () => {
-    await renderAs('101', Profile);
+    await renderAs('101', Settings);
     const show = await screen.findByTestId('setting-show-fitscore');
     await userEvent.click(show);
     await waitFor(async () => {
@@ -396,7 +470,7 @@ describe('Profile', () => {
   });
 
   it('a failed save flips the switch back and says so', async () => {
-    await renderAs('101', Profile);
+    await renderAs('101', Settings);
     const lb = await screen.findByTestId('setting-leaderboard');
     vi.spyOn(mockServer, 'handle').mockResolvedValueOnce({ status: 500, body: null });
     await userEvent.click(lb);
@@ -404,7 +478,7 @@ describe('Profile', () => {
   });
 
   it('switching language to Arabic flips the whole app', async () => {
-    await renderAs('101', Profile);
+    await renderAs('101', Settings);
     const lang = await screen.findByTestId('setting-language');
     await userEvent.click(within(lang).getByRole('radio', { name: 'عربي' }));
     await waitFor(() => expect(document.documentElement.dir).toBe('rtl'));

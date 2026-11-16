@@ -57,6 +57,11 @@
         "id": "neutral-brown",
         "color": "#9c674f",
         "name": "Neutral brown"
+      },
+      {
+        "id": "warm-olive",
+        "color": "#ac7950",
+        "name": "Warm olive"
       }
     ]
   },
@@ -112,6 +117,11 @@
         "id": "platinum",
         "color": "#c7bdac",
         "name": "Platinum"
+      },
+      {
+        "id": "rosewood",
+        "color": "#6b3e49",
+        "name": "Rosewood"
       }
     ]
   },
@@ -192,6 +202,16 @@
         "id": "plum",
         "color": "#703e68",
         "name": "Plum"
+      },
+      {
+        "id": "mint",
+        "color": "#82bdab",
+        "name": "Mint"
+      },
+      {
+        "id": "berry",
+        "color": "#a43e71",
+        "name": "Berry"
       }
     ]
   },
@@ -252,6 +272,16 @@
         "id": "aubergine",
         "color": "#583a62",
         "name": "Aubergine"
+      },
+      {
+        "id": "storm",
+        "color": "#4e5564",
+        "name": "Storm gray"
+      },
+      {
+        "id": "ink-blue",
+        "color": "#344a72",
+        "name": "Ink blue"
       }
     ]
   },
@@ -322,6 +352,16 @@
         "id": "volt",
         "color": "#a0b857",
         "name": "Volt green"
+      },
+      {
+        "id": "ice-blue",
+        "color": "#a9d5ea",
+        "name": "Ice blue"
+      },
+      {
+        "id": "brick",
+        "color": "#a65148",
+        "name": "Brick red"
       }
     ]
   },
@@ -372,6 +412,11 @@
         "id": "steel-blue",
         "color": "#4a6875",
         "name": "Steel blue"
+      },
+      {
+        "id": "olive-eyes",
+        "color": "#72784a",
+        "name": "Olive green"
       }
     ]
   }

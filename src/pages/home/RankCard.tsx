@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import type { LeaderboardSummary } from '../../api/types';
 import PixelIcon from '../../components/PixelIcon';
-import { formatNumber, formatPercent, formatRank } from '../../i18n/format';
+import { formatCount, formatPercent, formatRank } from '../../i18n/format';
 
 /**
  * Where the member stands on the Top Score board, or why they aren't ranked yet.
@@ -45,7 +45,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
             type="button"
             className="lu-px-card flex items-center gap-3"
             data-testid="rank-card"
-            onClick={() => history.push('/tabs/profile')}
+            onClick={() => history.push('/tabs/community/leaderboard')}
           >
             {body}
             <PixelIcon className="lu-chevron" name="chevronForward" />
@@ -66,7 +66,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
         type="button"
         className="lu-px-card flex items-center gap-3"
         data-testid="rank-card"
-        onClick={() => history.push('/tabs/leaderboard')}
+        onClick={() => history.push('/tabs/community/leaderboard')}
       >
         <span className="lu-icon-tile lu-icon-tile-gold" aria-hidden="true">
           <PixelIcon name="trophy" />
@@ -78,7 +78,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
               className="font-display text-[1.75rem] leading-[1.1] font-normal text-ink ar:font-bold"
               data-testid="rank-number"
             >
-              {t('home.rank.ofTotal', { rank: formatRank(s.rank), total: formatNumber(s.totalMembers) })}
+              {t('home.rank.ofTotal', { rank: formatRank(s.rank), total: formatCount(s.totalMembers) })}
             </strong>
             <span id={`${ids}-top`} className="lu-chip lu-chip-primary">
               {t('home.rank.top', { percent: formatPercent(s.topPercent) })}

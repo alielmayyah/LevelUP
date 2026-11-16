@@ -13,32 +13,34 @@ export function Mirrored({ children }: { children: ReactNode }) {
   );
 }
 
-export function Hands({ paint: p, sleeves }: { paint: AvatarPaint; sleeves: boolean }) {
+export function Hands({ paint: p, sleeves, narrow }: { paint: AvatarPaint; sleeves: boolean; narrow: boolean }) {
   return (
     <g data-style-layer="hands">
       <Mirrored>
-        {sleeves && (
-          <>
-            <path fill={p.outline} d="M1153 614h70v23h8v18h-7v12h-10v11h-11v6h-28v-6h-12v-7h-10v-13h-6v-23h6z" />
-            <path fill={p.skin} d="M1163 629h46v8h11v17h-7v-6h-8v17h-6v9h-21v-6h-11v-8h-8v-23h4z" />
-          </>
-        )}
-        <path
-          fill={p.skinShade}
-          d={
-            sleeves
-              ? 'M1167 649h5v10h5v8h-5v-6h-5z M1179 650h5v13h4v10h-5v-8h-4z M1191 648h5v13h3v7h-5v-6h-3z M1204 641h9v5h-9z'
-              : 'M1170 634h5v12h5v9h-5v-7h-5z M1181 639h5v11h4v10h-5v-7h-4z M1193 637h5v13h3v6h-5v-7h-3z M1204 634h9v6h-9z'
-          }
-        />
-        <path
-          fill={p.skinLight}
-          d={
-            sleeves
-              ? 'M1163 638h12v4h-5v7h-7z M1178 639h15v4h-15z M1202 636h9v4h-9z'
-              : 'M1163 625h12v4h-5v8h-7z M1178 629h15v4h-15z M1202 627h9v4h-9z'
-          }
-        />
+        <g transform={narrow ? 'translate(1188 98) scale(.78 .85) translate(-1188 0)' : undefined}>
+          {sleeves && (
+            <>
+              <path fill={p.outline} d="M1153 614h70v23h8v18h-7v12h-10v11h-11v6h-28v-6h-12v-7h-10v-13h-6v-23h6z" />
+              <path fill={p.skin} d="M1163 629h46v8h11v17h-7v-6h-8v17h-6v9h-21v-6h-11v-8h-8v-23h4z" />
+            </>
+          )}
+          <path
+            fill={p.skinShade}
+            d={
+              sleeves
+                ? 'M1167 649h5v10h5v8h-5v-6h-5z M1179 650h5v13h4v10h-5v-8h-4z M1191 648h5v13h3v7h-5v-6h-3z M1204 641h9v5h-9z'
+                : 'M1170 634h5v12h5v9h-5v-7h-5z M1181 639h5v11h4v10h-5v-7h-4z M1193 637h5v13h3v6h-5v-7h-3z M1204 634h9v6h-9z'
+            }
+          />
+          <path
+            fill={p.skinLight}
+            d={
+              sleeves
+                ? 'M1163 638h12v4h-5v7h-7z M1178 639h15v4h-15z M1202 636h9v4h-9z'
+                : 'M1163 625h12v4h-5v8h-7z M1178 629h15v4h-15z M1202 627h9v4h-9z'
+            }
+          />
+        </g>
       </Mirrored>
     </g>
   );
@@ -99,25 +101,30 @@ export function TopDetails({ style, paint: p }: { style: ResolvedStyles['top']; 
           <path fill={p.topTrim} d="M1359 484h29v4h-29z M1363 512h5v3h-5z M1373 512h5v3h-5z M1383 512h4v3h-4z" />
         </g>
       );
-    case 'hoodie':
+    case 'raglan-top':
       return (
-        <g data-art-detail="stitched-hoodie">
+        <g data-art-detail="raglan-training-top">
+          <Mirrored>
+            <path
+              fill={p.topShade}
+              d="M1227 443h43v17h-11v26h-11v27h-10v31h-12v32h-13v35h-18v17h-11v-8h-22v-33h7v-42h13v-38h18v-31h10v-20h17z"
+            />
+            <path fill={p.topLight} d="M1271 445h6v25h-11v26h-10v24h-6v-24h10v-26h11z" />
+            <path fill={p.topTrim} d="M1168 607h42v5h-42z M1173 615h30v4h-30z" />
+          </Mirrored>
+          <path fill={p.topLight} d="M1292 448h15v7h50v-7h15v9h-13v5h-54v-5h-13z M1290 577h84v5h-84z" />
+        </g>
+      );
+    case 'longline-training-top':
+      return (
+        <g data-art-detail="longline-training-top">
           <LongSleeveDetails paint={p} />
-          <path
-            fill={p.topShade}
-            d="M1265 433h134v12h-15v13h-18v13h-68v-13h-18v-13h-15z M1295 531h74v9h13v14h7v20h-114v-20h7v-14h13z"
-          />
+          <path fill={p.outline} d="M1253 576h158v24h10v26h9v18h-32v8h-47v6h-38v-6h-47v-8h-32v-18h9v-26h10z" />
+          <path fill={p.tank} d="M1272 569h120v35h12v22h10v8h-22v7h-45v6h-30v-6h-45v-7h-22v-8h10v-22h12z" />
+          <path fill={p.topShade} d="M1262 621h10v10h25v8h-25v-5h-20v-9h10z M1392 621h10v4h10v9h-20v5h-25v-8h25z" />
           <path
             fill={p.topLight}
-            d="M1282 441h7v12h17v10h53v-10h16v-12h7v15h-16v12h-67v-12h-17z M1295 528h74v5h-74z M1282 545h6v12h-7v12h101v-12h-7v-12h6v10h7v19h-113v-19h7z M1276 584h112v5h-112z"
-          />
-          <path
-            fill={p.topTrim}
-            d="M1296 454h11v5h-11z M1358 454h11v5h-11z M1299 459h5v41h-5z M1361 459h5v47h-5z M1298 500h7v6h-7z M1360 506h7v6h-7z M1301 533h7v3h-7z M1315 533h7v3h-7z M1329 533h7v3h-7z M1343 533h7v3h-7z M1357 533h7v3h-7z M1379 480h7v11h-7z"
-          />
-          <path
-            fill={p.topShade}
-            d="M1282 591h4v7h-4z M1296 591h4v7h-4z M1310 591h4v7h-4z M1324 591h4v7h-4z M1338 591h4v7h-4z M1352 591h4v7h-4z M1366 591h4v7h-4z M1380 591h4v7h-4z"
+            d="M1288 440h13v11h12v6h39v-6h12v-11h13v14h-12v10h-66v-10h-11z M1280 625h8v5h-8z M1293 625h8v5h-8z M1306 625h8v5h-8z"
           />
         </g>
       );
@@ -222,35 +229,6 @@ export function TopDetails({ style, paint: p }: { style: ResolvedStyles['top']; 
             d="M1290 441h11v13h14v8h34v-8h14v-13h11v16h-13v11h-24v50h-6v-50h-28v-11h-13z M1336 470h7v12h-7z"
           />
           <path fill={p.topLight} d="M1278 576h108v5h-108z" />
-        </g>
-      );
-    case 'fitted-zip':
-      return (
-        <g data-art-detail="fitted-zip">
-          <LongSleeveDetails paint={p} />
-          <Mirrored>
-            <path fill={p.topShade} d="M1281 472h12v37h8v38h-9v27h-14v-35h8v-25h-5z M1282 547h15v8h-8v12h-7z" />
-            <path fill={p.topLight} d="M1280 477h5v34h8v27h-5v-25h-8z M1277 579h54v5h-54z" />
-          </Mirrored>
-          <path fill={p.topShade} d="M1279 427h106v21h-15v12h-19v9h-10v130h-18V469h-10v-9h-19v-12h-15z" />
-          <path
-            fill={p.topTrim}
-            d="M1291 434h6v9h17v12h36v-12h17v-9h6v12h-18v13h-20v137h-6V459h-20v-13h-18z M1335 466h8v13h-8z"
-          />
-        </g>
-      );
-    case 'sleeveless-hoodie':
-      return (
-        <g data-art-detail="sleeveless-hoodie">
-          <path
-            fill={p.topShade}
-            d="M1272 430h19v18h12v11h58v-11h12v-18h18v23h-14v15h-13v12h-64v-12h-14v-15h-14z M1295 532h74v10h11v10h7v23h-110v-23h7v-10h11z"
-          />
-          <path
-            fill={p.topLight}
-            d="M1273 451h6v52h-8v24h-5v-28h7z M1385 451h6v48h7v28h-5v-24h-8z M1296 535h72v5h-72z M1283 565h97v4h-97z M1279 577h107v5h-107z"
-          />
-          <path fill={p.topTrim} d="M1301 465h5v43h-5z M1358 465h5v49h-5z" />
         </g>
       );
   }

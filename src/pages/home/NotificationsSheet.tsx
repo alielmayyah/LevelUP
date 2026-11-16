@@ -6,7 +6,7 @@ import { api } from '../../api/client';
 import type { NotificationDto } from '../../api/types';
 import { useApi } from '../../api/useApi';
 import PixelIcon from '../../components/PixelIcon';
-import { formatNumber } from '../../i18n/format';
+import { formatCount } from '../../i18n/format';
 import { formatTimeAgo } from './homeText';
 
 interface Props {
@@ -101,7 +101,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
             <PixelIcon className="text-[1.05rem]" name={unread === 0 ? 'checkDouble' : 'bell'} />
             {unread === 0
               ? t('home.notifications.empty')
-              : t('home.notifications.unreadCount', { n: formatNumber(unread) })}
+              : t('home.notifications.unreadCount', { n: formatCount(unread) })}
           </span>
           <button
             type="button"

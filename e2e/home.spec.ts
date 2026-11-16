@@ -70,7 +70,7 @@ test('the rank card opens the leaderboard', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');
   await page.getByTestId('rank-card').click();
-  await expect(page).toHaveURL(/\/tabs\/leaderboard$/);
+  await expect(page).toHaveURL(/\/tabs\/community\/leaderboard$/);
 });
 
 test('the profile picture on Home opens Profile', async ({ page, loginAs }) => {
