@@ -20,7 +20,7 @@ export function formatNumber(n: number | null | undefined, digits?: number): str
 }
 
 /**
- * A whole count that may grow large (ranks, member totals, XP): exact below
+ * A whole count that may grow large (ranks, member totals): exact below
  * 1,000, then short, `1.2K`, `34K`, `1.5M`, so it never pushes a tight layout apart.
  */
 export function formatCount(n: number | null | undefined): string {

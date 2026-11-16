@@ -42,7 +42,7 @@
     "stat": {
       "unlocked": "مفتوحة",
       "locked": "مقفولة",
-      "xp": "XP"
+      "complete": "مكتمل"
     },
     "filter": "نوع الميداليات",
     "all": "الكل",
@@ -117,12 +117,10 @@
     "unlocked": "مفتوحة",
     "locked": "مقفولة",
     "unlockedOn": "اتفتحت {{date}}",
-    "xpReward": "+{{xp}} XP",
     "detail": {
       "requirement": "المطلوب",
       "progress": "إنت فين",
       "status": "الحالة",
-      "reward": "المكافأة",
       "close": "اقفل",
       "noProgress": "مفيش قياس ينفع نحسب منه لسه."
     },

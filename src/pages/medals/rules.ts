@@ -224,7 +224,6 @@ export function medalSummary(categories: MedalCategoryStatus[]) {
     total: medals.length,
     unlocked: unlocked.length,
     locked: medals.length - unlocked.length,
-    xp: unlocked.reduce((sum, m) => sum + m.xpReward, 0),
     percent: medals.length ? Math.round((unlocked.length / medals.length) * 100) : 0,
   };
 }

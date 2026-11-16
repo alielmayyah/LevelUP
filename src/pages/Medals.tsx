@@ -89,8 +89,8 @@ function Overview({ categories }: { categories: MedalCategoryStatus[] }) {
           <dd>{formatNumber(s.locked)}</dd>
         </div>
         <div>
-          <dt>{t('medals.stat.xp')}</dt>
-          <dd data-testid="medal-xp">{formatNumber(s.xp)}</dd>
+          <dt>{t('medals.stat.complete')}</dt>
+          <dd data-testid="medal-percent">{formatPercent(s.percent)}</dd>
         </div>
       </dl>
     </section>
