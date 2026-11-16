@@ -5,16 +5,7 @@ import {
   type MedalComparison,
   type MedalDefinition,
   type MedalMeasurement,
-  type MedalRarity,
 } from './types';
-
-export const XP_BY_RARITY: Record<MedalRarity, number> = {
-  bronze: 50,
-  silver: 100,
-  gold: 200,
-  epic: 350,
-  legendary: 500,
-};
 
 type Five = readonly [number, number, number, number, number];
 
@@ -110,7 +101,6 @@ export function categoryDefinitions(category: MedalCategory, sex: Sex | null): M
     unit: config.unit,
     comparison: config.comparison,
     measurementType: config.measurementType,
-    xpReward: XP_BY_RARITY[rarity],
     order,
   }));
 }

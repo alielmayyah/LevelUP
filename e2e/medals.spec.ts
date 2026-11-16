@@ -49,7 +49,7 @@ for (const lang of LOCALES) {
         await expect(panel.getByTestId('medal-count')).toHaveText(
           copy.count.replace('{{unlocked}}', '32').replace('{{total}}', '50'),
         );
-        await expect(panel.getByTestId('medal-xp')).toHaveText('4,650');
+        await expect(panel.getByTestId('medal-percent')).toContainText('64%');
         await expect(page.getByTestId('medal-celebration')).toHaveCount(0);
 
         await expect(panel.locator('[data-testid^="medal-"][data-unlocked]')).toHaveCount(50);
@@ -134,7 +134,7 @@ test.describe('unlock celebration', () => {
 
     const celebration = page.getByTestId('medal-celebration');
     await expect(page.getByTestId('medal-celebration-title')).toHaveText(copy.medal.growingStrong.title);
-    await expect(celebration).toContainText('+100 XP');
+    await expect(celebration).not.toContainText('XP');
     await celebration.getByRole('button', { name: copy.celebrate.continue }).click();
     await expect(page.getByTestId('medal-celebration-title')).toHaveText(copy.medal.muscleStarter.title);
     await celebration.getByRole('button', { name: copy.celebrate.continue }).click();

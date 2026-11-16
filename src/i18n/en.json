@@ -42,7 +42,7 @@
     "stat": {
       "unlocked": "Unlocked",
       "locked": "Locked",
-      "xp": "XP"
+      "complete": "Complete"
     },
     "filter": "Medal category",
     "all": "All",
@@ -117,12 +117,10 @@
     "unlocked": "Unlocked",
     "locked": "Locked",
     "unlockedOn": "Unlocked {{date}}",
-    "xpReward": "+{{xp}} XP",
     "detail": {
       "requirement": "Requirement",
       "progress": "Your progress",
       "status": "Status",
-      "reward": "Reward",
       "close": "Close",
       "noProgress": "No supported measurement yet."
     },

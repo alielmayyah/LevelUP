@@ -2,7 +2,6 @@ import { IonModal } from '@ionic/react';
 import { useTranslation } from 'react-i18next';
 
 import CtaButton from '../../components/CtaButton';
-import { formatCount } from '../../i18n/format';
 import { medalTarget, medalTitle } from './format';
 import MedalArt from './MedalArt';
 import type { MedalStatus } from './types';
@@ -48,9 +47,6 @@ const UnlockCelebration: React.FC<Props> = ({ queue, onSeen }) => {
           </h2>
           <p className="m-0 text-[0.85rem] text-[var(--lu-splash-text-muted)]">
             {t(`medals.rarity.${medal.rarity}`)} · <bdi>{medalTarget(t, medal)}</bdi>
-          </p>
-          <p className="m-0 text-[1.1rem] font-extrabold text-[var(--lu-rarity-gold)]">
-            {t('medals.xpReward', { xp: formatCount(medal.xpReward) })}
           </p>
           <CtaButton className="mt-1 w-full" onClick={() => onSeen([medal.id])}>
             {t('medals.celebrate.continue')}

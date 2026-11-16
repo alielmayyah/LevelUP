@@ -28,7 +28,6 @@ export interface MedalDefinition {
   unit: 'percent' | 'kg' | 'reps' | 'seconds' | 'months';
   comparison: MedalComparison;
   measurementType: MedalMeasurement;
-  xpReward: number;
   /** Position inside its category, 0 = first medal. */
   order: number;
 }

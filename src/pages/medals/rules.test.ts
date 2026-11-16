@@ -46,14 +46,13 @@ const unlockedIds = (inputs: MedalInputs, id: MedalCategory) =>
     .map((m) => m.id);
 
 describe('medal definitions', () => {
-  it('defines 50 medals, five rarities per category, with unique ids and rising XP', () => {
+  it('defines 50 medals, five rarities per category, with unique ids', () => {
     const all = MEDAL_CATEGORIES.flatMap((c) => categoryDefinitions(c, 'MALE')!);
     expect(all).toHaveLength(50);
     expect(new Set(all.map((m) => m.id)).size).toBe(50);
     for (const c of MEDAL_CATEGORIES) {
       const defs = categoryDefinitions(c, 'MALE')!;
       expect(defs.map((d) => d.rarity)).toEqual(['bronze', 'silver', 'gold', 'epic', 'legendary']);
-      expect(defs.map((d) => d.xpReward)).toEqual([50, 100, 200, 350, 500]);
     }
   });
 
@@ -233,8 +232,8 @@ describe('summary and celebrations', () => {
     lifts: [lift('BENCH_PRESS', 80, '2026-02-01')],
   };
 
-  it('totals unlocked medals and XP', () => {
-    expect(medalSummary(evaluateMedals(inputs))).toEqual({ total: 50, unlocked: 8, locked: 42, xp: 1100, percent: 16 });
+  it('totals unlocked and locked medals', () => {
+    expect(medalSummary(evaluateMedals(inputs))).toEqual({ total: 50, unlocked: 8, locked: 42, percent: 16 });
   });
 
   it('celebrates each unlock once, rarest first', () => {

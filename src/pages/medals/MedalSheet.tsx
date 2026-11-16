@@ -2,7 +2,7 @@ import { IonModal } from '@ionic/react';
 import { useTranslation } from 'react-i18next';
 
 import PixelIcon from '../../components/PixelIcon';
-import { formatCount, formatPercent } from '../../i18n/format';
+import { formatPercent } from '../../i18n/format';
 import { formatMedalDate, medalTitle, medalValue } from './format';
 import MedalArt from './MedalArt';
 import type { MedalStatus } from './types';
@@ -93,7 +93,6 @@ function Details({ medal, onClose }: { medal: MedalStatus; onClose: () => void }
             )}
           </Row>
         )}
-        <Row label={t('medals.detail.reward')}>{t('medals.xpReward', { xp: formatCount(medal.xpReward) })}</Row>
       </dl>
     </div>
   );

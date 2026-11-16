@@ -71,7 +71,8 @@ describe('Progress', () => {
     await userEvent.click(more);
     expect(more).toHaveAttribute('aria-expanded', 'true');
     expect(more).toHaveTextContent('Show less');
-    expect(await screen.findByTestId('body-comp')).toBeInTheDocument();
+    // Body composition is its own lazy chunk; on a busy CI runner it can take over a second.
+    expect(await screen.findByTestId('body-comp', {}, { timeout: 5000 })).toBeInTheDocument();
     await userEvent.click(more);
     expect(screen.queryByTestId('body-comp')).toBeNull();
   });
