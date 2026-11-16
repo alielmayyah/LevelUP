@@ -2,12 +2,13 @@ import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import PixelIcon, { PIXEL_ICONS, type PixelIconName } from './PixelIcon';
+import { DETAIL, detailed, scale2x } from './scale2x';
 
 describe('PixelIcon', () => {
-  it('draws every icon on a clean 12×12 grid of known pixels', () => {
+  it('draws every icon on a clean square grid (12 or 24) of known pixels', () => {
     for (const [name, rows] of Object.entries(PIXEL_ICONS)) {
-      expect(rows, name).toHaveLength(12);
-      for (const row of rows) expect(row, name).toMatch(/^[XOYHC.]{12}$/);
+      expect([12, 24], name).toContain(rows.length);
+      for (const row of rows) expect(row, name).toMatch(new RegExp(`^[XOYHC.]{${rows.length}}$`));
     }
   });
 
@@ -26,6 +27,36 @@ describe('PixelIcon', () => {
         rows.map((r) => [...r].reverse().join('')),
         name,
       ).toEqual(rows.map((r) => r));
+    }
+  });
+
+  it('renders at double resolution, smoothing diagonals but keeping straight edges', () => {
+    // A diagonal: the corners between the two pixels fill in.
+    expect(scale2x(['....', '.C..', '..C.', '....'])).toEqual([
+      '........',
+      '........',
+      '..CC....',
+      '..CCC...',
+      '...CCC..',
+      '....CC..',
+      '........',
+      '........',
+    ]);
+    // A straight bar stays a bar.
+    expect(scale2x(['CC', '..'])).toEqual(['CCCC', 'CCCC', '....', '....']);
+    for (const rows of Object.values(PIXEL_ICONS)) {
+      const big = detailed(rows);
+      expect(big).toHaveLength(DETAIL);
+      for (const row of big) expect(row).toHaveLength(DETAIL);
+    }
+  });
+
+  it('stays a light SVG at 96 × 96: runs merge across rows', () => {
+    for (const name of Object.keys(PIXEL_ICONS) as PixelIconName[]) {
+      const { container, unmount } = render(<PixelIcon name={name} />);
+      expect(container.querySelector('svg')).toHaveAttribute('viewBox', `0 0 ${DETAIL} ${DETAIL}`);
+      expect(container.querySelectorAll('rect').length, name).toBeLessThan(400);
+      unmount();
     }
   });
 

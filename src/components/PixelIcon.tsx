@@ -1,5 +1,7 @@
 /*
- * Pixel-art icons drawn on a 12×12 grid, to match the app's pixel style.
+ * Pixel-art icons drawn on a 12×12 or 24×24 grid, to match the app's pixel style.
+ * When drawn they are doubled with Scale2x up to a 96×96 grid (DETAIL), which
+ * rounds diagonals and curves while keeping straight edges and line weights.
  * Each character is one pixel:
  *   X outline   O fill   Y highlight   H hot spot   C text color   . empty
  * Colors come from CSS variables on the icon or an ancestor:
@@ -9,14 +11,21 @@
  */
 
 /** Flips an icon left to right. */
+import { DETAIL, detailed } from './scale2x';
+
 const mirror = (rows: readonly string[]) => rows.map((r) => [...r].reverse().join(''));
 /** Flips an icon top to bottom. */
 const flip = (rows: readonly string[]) => [...rows].reverse();
 /** Swaps rows and columns, turning a right-pointing shape into a down-pointing one. */
 const transpose = (rows: readonly string[]) => [...rows[0]].map((_, x) => rows.map((r) => r[x]).join(''));
 /** Draws a diagonal slash over an icon, with a clear pixel beside it so the slash reads on top. */
-const slashed = (rows: readonly string[]) =>
-  rows.map((r, y) => [...r].map((c, x) => (x === y ? 'C' : x === y + 1 ? '.' : c)).join(''));
+const slashed = (rows: readonly string[]) => {
+  // One pixel wide on the 12 grid, two on the 24 grid.
+  const w = rows.length / 12;
+  return rows.map((r, y) =>
+    [...r].map((c, x) => (x - y >= 0 && x - y < w ? 'C' : x - y >= w && x - y < 2 * w ? '.' : c)).join(''),
+  );
+};
 
 const CHEVRON_FORWARD = [
   '............',
@@ -63,19 +72,32 @@ const BELL = [
   '............',
 ];
 
+// Drawn on the 24×24 grid with 2-pixel strokes.
 const EYE = [
-  '............',
-  '............',
-  '....CCCC....',
-  '..CC....CC..',
-  '.C...CC...C.',
-  'C...CCCC...C',
-  'C...CCCC...C',
-  '.C...CC...C.',
-  '..CC....CC..',
-  '....CCCC....',
-  '............',
-  '............',
+  '........................',
+  '........................',
+  '........................',
+  '........................',
+  '........................',
+  '........................',
+  '......CCCCCCCCCCCC......',
+  '....CCCCCCCCCCCCCCCC....',
+  '...CCCC...CCCC...CCCC...',
+  '.CCCC....CCCCCC....CCCC.',
+  'CCC.....CCCCCCCC.....CCC',
+  'CC......CCCCCCCC......CC',
+  'CC......CCCCCCCC......CC',
+  'CCC.....CCCCCCCC.....CCC',
+  '.CCCC....CCCCCC....CCCC.',
+  '...CCCC...CCCC...CCCC...',
+  '....CCCCCCCCCCCCCCCC....',
+  '......CCCCCCCCCCCC......',
+  '........................',
+  '........................',
+  '........................',
+  '........................',
+  '........................',
+  '........................',
 ];
 
 const TREND_UP = [
@@ -361,6 +383,21 @@ const ICONS = {
     '............',
   ],
 
+  community: [
+    '............',
+    '..XXX..XXX..',
+    '.XOOOXXOOOX.',
+    '.XOYOXXOYOX.',
+    '.XOOOXXOOOX.',
+    '..XXX..XXX..',
+    '.XXXXX.XXXX.',
+    'XOYOOXXOYOOX',
+    'XOOOOXXOOOOX',
+    'XOOOOXXOOOOX',
+    '.XXXXXXXXXX.',
+    '............',
+  ],
+
   /* ---------- Interface icons, drawn in the text color ---------- */
 
   chevronForward: CHEVRON_FORWARD,
@@ -466,19 +503,32 @@ const ICONS = {
     '..CC....CC..',
     '....CCCC....',
   ],
+  // 24×24 with 2-pixel strokes, so it stays clear at small sizes.
   settings: [
-    '.....CC.....',
-    '.CC.CCCC.CC.',
-    '.CCCCCCCCCC.',
-    '..CCC..CCC..',
-    '.CCC....CCC.',
-    'CCCC....CCCC',
-    'CCCC....CCCC',
-    '.CCC....CCC.',
-    '..CCC..CCC..',
-    '.CCCCCCCCCC.',
-    '.CC.CCCC.CC.',
-    '.....CC.....',
+    '........................',
+    '..........CCCC..........',
+    '..........CCCC..........',
+    '.....C....CCCC....C.....',
+    '....CCC..CCCCCC..CCC....',
+    '...CCCCCCCCCCCCCCCCCC...',
+    '....CCCCCCCCCCCCCCCC....',
+    '.....CCCCCCCCCCCCCC.....',
+    '.....CCCCCC..CCCCCC.....',
+    '....CCCCC......CCCCC....',
+    '.CCCCCCCC......CCCCCCCC.',
+    '.CCCCCCC........CCCCCCC.',
+    '.CCCCCCC........CCCCCCC.',
+    '.CCCCCCCC......CCCCCCCC.',
+    '....CCCCC......CCCCC....',
+    '.....CCCCCC..CCCCCC.....',
+    '.....CCCCCCCCCCCCCC.....',
+    '....CCCCCCCCCCCCCCCC....',
+    '...CCCCCCCCCCCCCCCCCC...',
+    '....CCC..CCCCCC..CCC....',
+    '.....C....CCCC....C.....',
+    '..........CCCC..........',
+    '..........CCCC..........',
+    '........................',
   ],
   bell: BELL,
   bellOff: slashed(BELL),
@@ -496,47 +546,86 @@ const ICONS = {
     'CCCCC.......',
     '............',
   ],
+  // 24×24 with 2-pixel strokes, so it stays clear at small sizes.
   globe: [
-    '....CCCC....',
-    '..CC.CC.CC..',
-    '.C..C..C..C.',
-    '.C..C..C..C.',
-    'CCCCCCCCCCCC',
-    'C...C..C...C',
-    'C...C..C...C',
-    'CCCCCCCCCCCC',
-    '.C..C..C..C.',
-    '.C..C..C..C.',
-    '..CC.CC.CC..',
-    '....CCCC....',
+    '........................',
+    '.........CCCCCC.........',
+    '......CCCCCCCCCCCC......',
+    '.....CCCCCC..CCCCCC.....',
+    '....CCC.CC....CC.CCC....',
+    '...CCC..CC....CC..CCC...',
+    '..CCC...CC....CC...CCC..',
+    '..CC...CC......CC...CC..',
+    '..CC...CC......CC...CC..',
+    '.CC....CC......CC....CC.',
+    '.CC....CC......CC....CC.',
+    '.CCCCCCCCCCCCCCCCCCCCCC.',
+    '.CCCCCCCCCCCCCCCCCCCCCC.',
+    '.CC....CC......CC....CC.',
+    '.CC....CC......CC....CC.',
+    '..CC...CC......CC...CC..',
+    '..CC...CC......CC...CC..',
+    '..CCC...CC....CC...CCC..',
+    '...CCC..CC....CC..CCC...',
+    '....CCC.CC....CC.CCC....',
+    '.....CCCCCC..CCCCCC.....',
+    '......CCCCCCCCCCCC......',
+    '.........CCCCCC.........',
+    '........................',
   ],
+  // 24×24 with 2-pixel strokes, so it stays clear at small sizes.
   palette: [
-    '....CCCC....',
-    '..CC....CC..',
-    '.C.CC..CC.C.',
-    '.C.CC..CC.C.',
-    'C..........C',
-    'C.CC....CCC.',
-    'C.CC....C...',
-    'C.......CCC.',
-    '.C.........C',
-    '.C........C.',
-    '..CC....CC..',
-    '....CCCC....',
+    '........................',
+    '.........CCCCCC.........',
+    '......CCCCCCCCCCCC......',
+    '.....CCCC......CCCC.....',
+    '....CCC...CC.....CCC....',
+    '...CCC...CCCC.....CCC...',
+    '..CCC....CCCC..CC..CCC..',
+    '..CC......CC..CCCC..CC..',
+    '..CC..CC......CCCC..CC..',
+    '.CC..CCCC......CC....CC.',
+    '.CC..CCCC............CC.',
+    '.CC...CC.......CCC...CC.',
+    '.CC..........CCCCCCC.CC.',
+    '.CC.........CCC...CCCCC.',
+    '.CC...CCCC..CC.....CCCC.',
+    '..CC..CCCC.CC.......CC..',
+    '..CC..CCCC.CC.......CC..',
+    '..CCC......CC.......CC..',
+    '...CCC......CC.....CC...',
+    '....CCC.....CCC...CC....',
+    '.....CCCC....CCCCCC.....',
+    '......CCCCCCCCCCCC......',
+    '.........CCCCCC.........',
+    '........................',
   ],
+  // 24×24 with 2-pixel strokes, so it stays clear at small sizes.
   volume: [
-    '............',
-    '.....C......',
-    '....CC....C.',
-    '...C.C..C..C',
-    'CCC..C...C.C',
-    'C....C.C.C.C',
-    'C....C.C.C.C',
-    'CCC..C...C.C',
-    '...C.C..C..C',
-    '....CC....C.',
-    '.....C......',
-    '............',
+    '........................',
+    '........................',
+    '...........C............',
+    '..........CC.....CC.....',
+    '.........CCC.....CCC....',
+    '........CCCC......CCC...',
+    '.......CCCCC..C....CCC..',
+    '......CCCCCC..CCC...CC..',
+    '.CCCCCCCCCCC...CC...CC..',
+    '.CCCCCCCCCCC....CC...CC.',
+    '.CCCCCCCCCCC....CC...CC.',
+    '.CCCCCCCCCCC....CC...CC.',
+    '.CCCCCCCCCCC....CC...CC.',
+    '.CCCCCCCCCCC....CC...CC.',
+    '.CCCCCCCCCCC....CC...CC.',
+    '.CCCCCCCCCCC...CC...CC..',
+    '......CCCCCC..CCC...CC..',
+    '.......CCCCC..C....CCC..',
+    '........CCCC......CCC...',
+    '.........CCC.....CCC....',
+    '..........CC.....CC.....',
+    '...........C............',
+    '........................',
+    '........................',
   ],
   mute: [
     '............',
@@ -566,6 +655,21 @@ const ICONS = {
     '............',
     'CC.CCCCCCCCC',
     'CC.CCCCCCCCC',
+    '............',
+  ],
+  // Funnel: narrowing a list down.
+  filter: [
+    '............',
+    'CCCCCCCCCCCC',
+    'CCCCCCCCCCCC',
+    '.CCCCCCCCCC.',
+    '..CCCCCCCC..',
+    '...CCCCCC...',
+    '....CCCC....',
+    '....CCCC....',
+    '....CCCC....',
+    '....CCC.....',
+    '....CC......',
     '............',
   ],
   dice: [
@@ -624,19 +728,47 @@ const ICONS = {
     'CC..........',
     '............',
   ],
-  podium: [
-    '............',
-    '....CCCC....',
+  // Customize the character: a clothes hanger.
+  hanger: [
+    '.....CC.....',
     '....C..C....',
+    '.......C....',
+    '......C.....',
+    '.....CC.....',
     '....C..C....',
-    'CCCCC..C....',
-    'C...C..CCCCC',
-    'C...C..C...C',
-    'C...C..C...C',
-    'C...C..C...C',
-    'C...C..C...C',
+    '...C....C...',
+    '..C......C..',
+    '.C........C.',
+    'C..........C',
     'CCCCCCCCCCCC',
     '............',
+  ],
+  // 24×24 with 2-pixel strokes, so it stays clear at small sizes.
+  podium: [
+    '........................',
+    '........................',
+    '........CCCCCCCC........',
+    '........CCCCCCCC........',
+    '........CC....CC........',
+    '........CC....CC........',
+    '........CC....CC........',
+    '........CC....CC........',
+    'CCCCCCCCCC....CC........',
+    'CCCCCCCCCC....CC........',
+    'CC......CC....CC........',
+    'CC......CC....CC........',
+    'CC......CC....CCCCCCCCCC',
+    'CC......CC....CCCCCCCCCC',
+    'CC......CC....CC......CC',
+    'CC......CC....CC......CC',
+    'CC......CC....CC......CC',
+    'CC......CC....CC......CC',
+    'CC......CC....CC......CC',
+    'CC......CC....CC......CC',
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+    '........................',
+    '........................',
   ],
   pulse: [
     '............',
@@ -744,18 +876,37 @@ export type PixelIconName = keyof typeof ICONS;
 
 const LAYER: Record<string, string> = { X: 'px-line', O: 'px-fill', Y: 'px-hi', H: 'px-core', C: 'px-text' };
 
-/** Merges each row's runs of the same color into one rect, so an icon is a few dozen nodes. */
+/**
+ * Merges each row's runs of the same color into one rect, then stacks identical
+ * runs from consecutive rows into one taller rect, so even a 96-grid icon is a
+ * few dozen nodes.
+ */
 function rects(rows: readonly string[]) {
-  const out: { x: number; y: number; w: number; cls: string }[] = [];
+  const out: { x: number; y: number; w: number; h: number; cls: string }[] = [];
+  /** Rects still open from the row above, by "x:w:color", so the next row can extend them. */
+  let open = new Map<string, (typeof out)[number]>();
   rows.forEach((row, y) => {
+    const next = new Map<string, (typeof out)[number]>();
     let x = 0;
     while (x < row.length) {
       const c = row[x];
       let w = 1;
       while (row[x + w] === c) w++;
-      if (LAYER[c]) out.push({ x, y, w, cls: LAYER[c] });
+      if (LAYER[c]) {
+        const key = `${x}:${w}:${c}`;
+        const above = open.get(key);
+        if (above) {
+          above.h++;
+          next.set(key, above);
+        } else {
+          const r = { x, y, w, h: 1, cls: LAYER[c] };
+          out.push(r);
+          next.set(key, r);
+        }
+      }
       x += w;
     }
+    open = next;
   });
   return out;
 }
@@ -775,17 +926,20 @@ const PixelIcon: React.FC<{ name: PixelIconName; className?: string; label?: str
   label,
 }) => {
   let parts = CACHE.get(name);
-  if (!parts) CACHE.set(name, (parts = rects(ICONS[name])));
+  if (!parts) {
+    const rows = ICONS[name];
+    CACHE.set(name, (parts = rects(detailed(rows))));
+  }
   return (
     <svg
       className={['lu-pixel-icon', className].filter(Boolean).join(' ')}
-      viewBox="0 0 12 12"
+      viewBox={`0 0 ${DETAIL} ${DETAIL}`}
       shapeRendering="crispEdges"
       {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
       focusable="false"
     >
       {parts.map((r) => (
-        <rect key={`${r.x}-${r.y}`} className={r.cls} x={r.x} y={r.y} width={r.w} height={1} />
+        <rect key={`${r.x}-${r.y}`} className={r.cls} x={r.x} y={r.y} width={r.w} height={r.h} />
       ))}
     </svg>
   );
