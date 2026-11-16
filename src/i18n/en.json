@@ -561,6 +561,17 @@
     "preview": "Your character",
     "back": "Back to profile",
     "customize": "Customize your character",
+    "presetTitle": "Character presets",
+    "preset": {
+      "silver-sprinter": "Silver Sprinter",
+      "cloud-hoodie": "Cloud Hoodie",
+      "midnight-lift": "Midnight Lift",
+      "violet-hoodie": "Violet Hoodie",
+      "teal-studio": "Teal Studio",
+      "lilac-hijab": "Lilac Hijab",
+      "amber-hijab": "Amber Hijab",
+      "pearl-hijab": "Pearl Hijab"
+    },
     "outfitTitle": "Ready-made outfits",
     "outfit": {
       "hoodie-warmup": "Hoodie Warm-Up",

@@ -430,9 +430,11 @@ test.describe('Character', () => {
             .getByRole('radio', { name: copy.avatar.style.grin, exact: true })
             .click();
           await expect(preview.locator('[data-style-layer="face"]')).toHaveAttribute('data-variant', 'grin');
-          const eyes = preview.locator('[data-feature="eyes"] path');
-          await expect(eyes).toHaveCount(2);
-          expect(await eyes.first().getAttribute('fill')).not.toBe(await eyes.last().getAttribute('fill'));
+          const eyes = preview.locator('[data-feature="iris"]');
+          await expect(eyes.first()).toHaveAttribute('d', /M/);
+          expect(
+            new Set(await eyes.evaluateAll((paths) => paths.map((path) => path.getAttribute('fill')))).size,
+          ).toBeGreaterThan(1);
           await expect(preview.locator('[data-feature="smile"]')).toHaveCount(1);
           expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
           // No Save button: every change saves on its own.
@@ -597,6 +599,31 @@ test.describe('Character', () => {
       });
     }
   }
+
+  test('the reference preset and independent body proportions survive a reload', async ({ page, loginAs }) => {
+    await loginAs();
+    await page.goto('/tabs/profile/character');
+    const editor = page.getByTestId('page-character');
+    const sprite = editor.getByTestId('character-preview');
+    await expect(sprite).toHaveAttribute('data-art-style', 'sprite-32bit');
+
+    const preset = editor.getByRole('button', { name: en.avatar.preset['silver-sprinter'], exact: true });
+    await preset.click();
+    await expect(preset).toHaveAttribute('aria-pressed', 'true');
+    await expect(sprite.locator('[data-style-layer="hair"]')).toHaveAttribute('data-variant', 'spikes');
+    await expect(sprite.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'high-tops');
+
+    const lower = sprite.locator('[data-body-region="lower"]');
+    const before = (await lower.getAttribute('transform'))!;
+    await editor.getByRole('tab', { name: en.avatar.tab.body, exact: true }).click();
+    await editor.getByRole('radio', { name: en.avatar.style['long-limbed'], exact: true }).click();
+    await expect(lower).not.toHaveAttribute('transform', before);
+    await expect(editor.getByTestId('character-status')).toHaveText(en.avatar.saved);
+
+    await page.reload();
+    await expect(sprite.locator('[data-style-layer="body"]')).toHaveAttribute('data-variant', 'long-limbed');
+    await expect(sprite.locator('[data-style-layer="hair"]')).toHaveAttribute('data-variant', 'spikes');
+  });
 
   test('arrow keys move through a color group', async ({ page, loginAs }) => {
     await loginAs();

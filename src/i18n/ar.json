@@ -561,6 +561,17 @@
     "preview": "شخصيتك",
     "back": "ارجع للبروفايل",
     "customize": "ظبّط شخصيتك",
+    "presetTitle": "شخصيات جاهزة",
+    "preset": {
+      "silver-sprinter": "العدّاء الفضي",
+      "cloud-hoodie": "هودي فاتح",
+      "midnight-lift": "حديد بالليل",
+      "violet-hoodie": "هودي بنفسجي",
+      "teal-studio": "تمرين بالتركواز",
+      "lilac-hijab": "حجاب بنفسجي",
+      "amber-hijab": "طقم دهبي بالحجاب",
+      "pearl-hijab": "حجاب مع هودي فاتح"
+    },
     "outfitTitle": "أطقم جاهزة",
     "outfit": {
       "hoodie-warmup": "إحماء بالهودي",
