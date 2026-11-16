@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LevelUP Business Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Cairo:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --p:#7C3AED; --p2:#A855F7; --p3:#E9A8FF; --pd:#4C1D95; --pl:#F3EEFF;
+  --ink:#16112B; --mut:#6B6485; --line:#E7E2F3;
+  --dark:#0E0A1C; --card:#1B1533; --card2:#251D45;
+  --g:#10B981; --gl:#E7FAF3; --a:#F59E0B; --al:#FEF5E4; --r:#EF4444; --rl:#FDECEC;
+}
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#fff;color:var(--ink);font-family:Poppins,"Segoe UI",Arial,sans-serif;font-size:10.5pt;line-height:1.45;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;padding:16mm 15mm 18mm}
+.page:last-child{page-break-after:auto}
+svg.i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.125em}
+
+/* header / footer */
+.hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9mm}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:11pt;letter-spacing:.2px}
+.brand .mk{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--p3),var(--p) 55%,var(--pd));display:grid;place-items:center;color:#fff;font-size:12px}
+.brand b{background:linear-gradient(90deg,var(--p2),var(--p));-webkit-background-clip:text;color:transparent}
+.sec{font-size:8.5pt;color:var(--mut);text-transform:uppercase;letter-spacing:2px;font-weight:600}
+.ft{position:absolute;left:15mm;right:15mm;bottom:9mm;display:flex;justify-content:space-between;font-size:7.5pt;color:var(--mut);border-top:1px solid var(--line);padding-top:3mm}
+.num{display:inline-block;font-weight:800;color:var(--p);margin-right:6px}
+h1{font-size:25pt;line-height:1.1;font-weight:800;letter-spacing:-.5px}
+h2{font-size:13pt;font-weight:700;margin-bottom:3mm;display:flex;align-items:center;gap:8px}
+h2 .ic{width:28px;height:28px;border-radius:8px;background:var(--pl);color:var(--p);display:grid;place-items:center;font-size:15px}
+h3{font-size:10.5pt;font-weight:700;margin-bottom:1.5mm}
+.lead{font-size:11.5pt;color:var(--mut);margin:3mm 0 8mm;max-width:160mm}
+.grad{background:linear-gradient(90deg,var(--p2),var(--p));-webkit-background-clip:text;color:transparent}
+.muted{color:var(--mut)}
+.small{font-size:8.5pt}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6mm}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}
+.card{border:1px solid var(--line);border-radius:14px;padding:5mm;background:#fff}
+.card.soft{background:var(--pl);border-color:#E4D8FF}
+.tag{display:inline-block;font-size:7.5pt;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--pl);color:var(--p)}
+.tag.as{background:var(--al);color:#B45309}
+ul.ck{list-style:none}
+ul.ck li{display:flex;gap:8px;margin:1.6mm 0;align-items:flex-start}
+ul.ck li svg{color:var(--g);flex:none;margin-top:3px}
+.mt{margin-top:6mm}.mt2{margin-top:9mm}
+.kpi{border-radius:14px;padding:4.5mm;background:#fff;border:1px solid var(--line)}
+.kpi .v{font-size:19pt;font-weight:800;line-height:1.1}
+.kpi .l{font-size:8pt;color:var(--mut);margin-top:1mm}
+.kpi .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:16px;margin-bottom:3mm}
+
+/* cover */
+.cover{background:radial-gradient(120% 70% at 50% 0%,#3B1B7A 0%,var(--dark) 60%);color:#fff;padding:0;display:flex;flex-direction:column;align-items:center}
+.cover .stars{position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 20% 30%,#fff8,transparent),radial-gradient(1px 1px at 70% 20%,#fff6,transparent),radial-gradient(1.4px 1.4px at 85% 55%,#fff7,transparent),radial-gradient(1px 1px at 10% 70%,#fff5,transparent),radial-gradient(1.2px 1.2px at 40% 85%,#fff6,transparent),radial-gradient(1px 1px at 60% 45%,#fff4,transparent),radial-gradient(1.3px 1.3px at 30% 10%,#fff7,transparent),radial-gradient(1px 1px at 90% 85%,#fff5,transparent)}
+.cover .ring{position:absolute;top:34mm;left:50%;transform:translateX(-50%);width:150mm;height:150mm;border-radius:50%;background:radial-gradient(circle,#A855F755 0%,#7C3AED22 40%,transparent 70%)}
+.cover .logo{position:relative;width:120mm;margin-top:42mm}
+.cover .t{position:relative;margin-top:14mm;text-align:center}
+.cover .t .k{font-size:9pt;letter-spacing:5px;color:#C9B8F5;text-transform:uppercase}
+.cover .t h1{font-size:32pt;margin-top:3mm}
+.cover .t p{color:#B9AED6;margin-top:3mm;font-size:11pt}
+.cover .chips{position:relative;display:flex;gap:3mm;margin-top:10mm;flex-wrap:wrap;justify-content:center}
+.cover .chip{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:99px;background:#ffffff12;border:1px solid #ffffff22;font-size:9pt}
+.cover .chip svg{color:var(--p3)}
+.cover .bottom{position:absolute;bottom:14mm;left:15mm;right:15mm;display:flex;justify-content:space-between;color:#8E83B0;font-size:8.5pt}
+
+/* phone mockups */
+.phones{display:flex;justify-content:center;gap:8mm;align-items:flex-start}
+.phone{width:58mm;height:124mm;border-radius:26px;background:#0b0816;padding:6px;box-shadow:0 18px 40px #4C1D9533,0 0 0 1px #2a2147}
+.phone.mid{transform:translateY(-6mm)}
+.scr{width:100%;height:100%;border-radius:21px;overflow:hidden;position:relative;font-size:6.6pt;line-height:1.35}
+.scr.dk{background:linear-gradient(180deg,#1B1338,#0E0A1C 45%);color:#fff}
+.scr.lt{background:#F7F5FC;color:var(--ink)}
+.notch{width:24mm;height:5mm;background:#0b0816;border-radius:0 0 10px 10px;margin:0 auto}
+.sp{padding:2.5mm 3mm}
+.row{display:flex;align-items:center;justify-content:space-between}
+.av{width:7mm;height:7mm;border-radius:50%;background:linear-gradient(135deg,var(--p3),var(--p));display:grid;place-items:center;font-weight:700;font-size:6.5pt;color:#fff;flex:none}
+.mcard{border-radius:10px;padding:2.4mm;margin-top:2mm}
+.dk .mcard{background:#ffffff0d;border:1px solid #ffffff14}
+.lt .mcard{background:#fff;border:1px solid #ece7f7}
+.bar{height:5px;border-radius:9px;background:#ffffff1a;overflow:hidden;margin-top:1.4mm}
+.lt .bar{background:#ece7f7}
+.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--p3),var(--p))}
+.big{font-size:12pt;font-weight:800;line-height:1.1}
+.tabbar{position:absolute;left:3mm;right:3mm;bottom:3mm;height:9mm;border-radius:14px;display:flex;justify-content:space-around;align-items:center;font-size:10px}
+.dk .tabbar{background:#ffffff12;color:#9a90bd}
+.lt .tabbar{background:#fff;color:#a39cb8;box-shadow:0 4px 14px #4C1D9518}
+.tabbar .on{color:#fff;background:var(--p);width:7mm;height:7mm;border-radius:50%;display:grid;place-items:center}
+.dev{width:56mm;border-radius:24px;background:#0b0816;padding:5px;box-shadow:0 18px 40px #4C1D9540,0 0 0 1px #2a2147}
+.dev img{display:block;width:100%;border-radius:19px}
+.phones.real .mid{transform:translateY(-5mm)}
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm 4mm}
+.gal .dev{width:100%;border-radius:16px;padding:3px}
+.gal .dev img{border-radius:13px}
+.gal .cap{margin-top:2mm;font-size:8pt}
+.cap{text-align:center;margin-top:4mm;font-size:8.5pt;font-weight:600}
+.cap span{display:block;font-weight:400;color:var(--mut);font-size:7.5pt}
+.ar{font-family:Cairo,"Segoe UI",Tahoma,sans-serif}
+
+/* pricing */
+.price{border-radius:16px;padding:6mm 5mm;border:1px solid var(--line);position:relative;background:#fff}
+.price.hot{background:linear-gradient(160deg,#2A1758,#120C26);color:#fff;border:none;box-shadow:0 14px 34px #4C1D9540}
+.price .amt{font-size:21pt;white-space:nowrap;font-weight:800;line-height:1;margin:3mm 0 1mm}
+.price .amt small{font-size:9pt;font-weight:500;opacity:.7}
+.price ul.ck li{font-size:8.8pt}
+.price.hot ul.ck li svg{color:var(--p3)}
+.badge{position:absolute;top:-3mm;right:5mm;background:var(--a);color:#fff;font-size:7.5pt;font-weight:700;padding:3px 9px;border-radius:99px}
+.money{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:19px;background:var(--gl);color:var(--g)}
+.price.hot .money{background:#ffffff18;color:#7CF5C8}
+
+/* timeline / funnel */
+.tl{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
+.tl:before{content:"";position:absolute;top:15px;left:8%;right:8%;height:3px;background:linear-gradient(90deg,var(--p3),var(--p),var(--pd));border-radius:3px}
+.tl .st{position:relative;text-align:left}
+.tl .dot{width:32px;height:32px;border-radius:50%;background:var(--p);color:#fff;display:grid;place-items:center;font-size:15px;box-shadow:0 0 0 5px #fff,0 0 0 6px #E4D8FF;margin-bottom:4mm}
+.funnel{display:flex;flex-direction:column;gap:2.4mm}
+.fs{display:flex;align-items:center;gap:10px;color:#fff;border-radius:12px;padding:3.2mm 4.5mm;margin:0 auto}
+.fs .n{font-weight:800;font-size:12pt;width:7mm;opacity:.8}
+.fs svg{font-size:16px;flex:none}
+
+/* matrix */
+.matrix{position:relative;height:66mm;border-radius:14px;background:linear-gradient(135deg,#FAF8FF,#F1EAFF);border:1px solid #E4D8FF}
+.matrix .ax{position:absolute;background:#CDBEF0}
+.matrix .lbl{position:absolute;font-size:7.5pt;color:var(--mut);font-weight:600}
+.pt{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;font-size:7.8pt;font-weight:600;white-space:nowrap}
+.pt i{width:12px;height:12px;border-radius:50%;background:#B7AECF;margin-bottom:3px}
+.pt.us i{width:22px;height:22px;background:linear-gradient(135deg,var(--p3),var(--p));box-shadow:0 0 0 6px #7C3AED22}
+.pt.us{color:var(--p);font-size:9.5pt}
+
+table.t{width:100%;border-collapse:separate;border-spacing:0;font-size:8.8pt}
+table.t th{text-align:left;font-weight:600;color:var(--mut);font-size:7.8pt;text-transform:uppercase;letter-spacing:1px;padding:2mm 3mm;border-bottom:1px solid var(--line)}
+table.t td.yes,table.t td.no,table.t td.part{font-size:12pt;line-height:1;text-align:center}
+table.t th:not(:first-child){text-align:center}
+table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:top}
+.yes{color:var(--g);font-weight:700}.no{color:#C4BCD6}.part{color:var(--a);font-weight:700}
+
+.risk{display:flex;gap:4mm;align-items:flex-start;padding:4mm;border-radius:14px;border:1px solid var(--line);background:#fff}
+.risk .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px;flex:none}
+.lvl{font-size:7pt;font-weight:700;padding:2px 7px;border-radius:99px}
+.step{display:flex;gap:4mm;align-items:center;padding:3.2mm 4mm;border-radius:12px;background:#fff;border:1px solid var(--line);margin-bottom:2.5mm}
+.step .w{font-size:7.5pt;font-weight:700;color:var(--p);background:var(--pl);padding:3px 8px;border-radius:99px;white-space:nowrap}
+.closing{background:radial-gradient(120% 80% at 50% 100%,#3B1B7A 0%,var(--dark) 65%);color:#fff;border-radius:18px;padding:5mm 7mm;display:flex;align-items:center;gap:7mm}
+.closing img{width:30mm}
+.step{padding:2.6mm 4mm!important;margin-bottom:2mm!important}
+</style>
+</head>
+<body>
+
+<!-- ===================== 1. COVER ===================== -->
+<section class="page cover">
+  <div class="stars"></div><div class="ring"></div>
+  <img class="logo" src="logo.png" alt="LevelUP">
+  <div class="t">
+    <div class="k">Business Plan · 2026–2027</div>
+    <h1>Turning gym scans into<br><span style="color:var(--p3)">a game members keep playing</span></h1>
+    <p>A white-label, gamified member engagement app for gyms</p>
+  </div>
+  <div class="chips">
+    <div class="chip"><i data-i="palette"></i>White-label</div>
+    <div class="chip"><i data-i="trophy"></i>Gamified</div>
+    <div class="chip"><i data-i="globe"></i>Arabic + English</div>
+    <div class="chip"><i data-i="phone"></i>iOS · Android · Web</div>
+  </div>
+  <div class="bottom"><span>Confidential · For discussion</span><span>November 2026</span></div>
+</section>
+
+<!-- ===================== 2. SUMMARY ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">01 · Executive Summary</div></div>
+  <h1>Retention is the gym's<br><span class="grad">biggest revenue lever.</span></h1>
+  <p class="lead">LevelUP turns body composition scans into XP, levels, streaks, goals and leaderboards, so members stay motivated and gyms keep them longer. Every gym gets the app under its own name, logo and colors.</p>
+
+  <div class="grid4">
+    <div class="kpi"><div class="ic" style="background:var(--pl);color:var(--p)"><i data-i="building"></i></div><div class="v">15</div><div class="l">Gyms signed by month 12</div></div>
+    <div class="kpi"><div class="ic" style="background:var(--gl);color:var(--g)"><i data-i="banknote"></i></div><div class="v">EGP 56k</div><div class="l">Monthly revenue at month 12</div></div>
+    <div class="kpi"><div class="ic" style="background:var(--al);color:var(--a)"><i data-i="trend"></i></div><div class="v">Month 9</div><div class="l">Cash-flow positive</div></div>
+    <div class="kpi"><div class="ic" style="background:#E8F1FF;color:#2563EB"><i data-i="coins"></i></div><div class="v">EGP 675k</div><div class="l">Yearly run-rate, month 12</div></div>
+  </div>
+  <p class="small muted" style="margin-top:2mm"><span class="tag as">Assumption</span> Planning estimates in Egyptian pounds for the Cairo market, to validate with pilot gyms. 1 USD ≈ 54 EGP (Nov 2026).</p>
+
+  <div class="grid2 mt2">
+    <div class="card" style="border-left:4px solid var(--r)">
+      <h2><span class="ic" style="background:var(--rl);color:var(--r)"><i data-i="alert"></i></span>The problem</h2>
+      <ul class="ck">
+        <li><i data-i="x" style="color:var(--r)"></i><span>Gyms lose many members in the first months. Every lost member is lost monthly revenue.</span></li>
+        <li><i data-i="x" style="color:var(--r)"></i><span>Body composition scans produce numbers members don't understand or revisit.</span></li>
+        <li><i data-i="x" style="color:var(--r)"></i><span>Small gyms have no affordable, branded way to engage members between visits.</span></li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:4px solid var(--g)">
+      <h2><span class="ic" style="background:var(--gl);color:var(--g)"><i data-i="zap"></i></span>The solution</h2>
+      <ul class="ck">
+        <li><i data-i="check"></i><span><b>FitScore</b>: one private 0–100 score from every scan.</span></li>
+        <li><i data-i="check"></i><span><b>50 medals with XP</b> reward lifts and body-scan milestones.</span></li>
+        <li><i data-i="check"></i><span><b>Missions, leaderboards and a pixel avatar</b> give members a reason to come back.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="mt2"><span class="ic"><i data-i="activity"></i></span>How it works</h2>
+  <div class="grid4" style="gap:3mm">
+    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="scan"></i></div><h3 class="mt" style="margin-top:2mm">1 · Scan</h3><p class="small muted">Member does a body composition assessment at the gym.</p></div>
+    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="target"></i></div><h3 style="margin-top:2mm">2 · Score</h3><p class="small muted">App turns it into a FitScore and a mission the member picks.</p></div>
+    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="flame"></i></div><h3 style="margin-top:2mm">3 · Play</h3><p class="small muted">Lifts and scan milestones unlock medals and XP.</p></div>
+    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="users"></i></div><h3 style="margin-top:2mm">4 · Stay</h3><p class="small muted">Leaderboards and challenges keep members coming back.</p></div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>2</span></div>
+</section>
+
+<!-- ===================== 3. PRODUCT ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">02 · The Product</div></div>
+  <h1>One app, <span class="grad">every gym's brand.</span></h1>
+  <p class="lead" style="margin-bottom:10mm">Real screens from the LevelUP app today. Members sign in with a numeric Fit ID from the front desk, no password. Pixel-art game style, light and dark themes, Egyptian Arabic and English.</p>
+
+  <div class="phones real">
+    <div><div class="dev"><img src="shots/dashboard-dark.png"></div><div class="cap">Home<span>FitScore, rank, mission, monthly wins</span></div></div>
+    <div class="mid"><div class="dev"><img src="shots/progress-dark.png"></div><div class="cap">Progress<span>Compare any two body scans</span></div></div>
+    <div><div class="dev"><img src="shots/leaderboard-ar-dark.png"></div><div class="cap">Leaderboard<span>Arabic, right-to-left</span></div></div>
+  </div>
+
+  <div class="phones" style="display:none">
+    <!-- Dashboard EN dark -->
+    <div>
+      <div class="phone"><div class="scr dk">
+        <div class="notch"></div>
+        <div class="sp">
+          <div class="row"><div><div style="color:#B9AED6">Good evening,</div><div style="font-weight:700;font-size:8.5pt">Omar 👋</div></div><div class="av">OM</div></div>
+          <div class="mcard" style="background:linear-gradient(135deg,#7C3AED,#4C1D95);border:none">
+            <div class="row"><span style="opacity:.8">LevelUP Score</span><span class="tag" style="background:#ffffff26;color:#FDE68A;font-size:6pt">★ Gold</span></div>
+            <div class="row" style="margin-top:1mm"><span class="big">Level 7</span><span style="opacity:.8">2,340 / 3,000 XP</span></div>
+            <div class="bar" style="background:#ffffff30"><i style="width:78%;background:#fff"></i></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2mm">
+            <div class="mcard"><div style="color:#F59E0B;font-size:10px"><i data-i="flame"></i></div><div class="big">12</div><div style="opacity:.6">day streak</div></div>
+            <div class="mcard"><div style="color:#7CF5C8;font-size:10px"><i data-i="activity"></i></div><div class="big">78</div><div style="opacity:.6">FitScore · +2</div></div>
+          </div>
+          <div class="mcard"><div class="row"><span style="font-weight:600">Current mission</span><span style="color:var(--p3)">+500 XP</span></div><div style="opacity:.7;margin-top:.6mm">Lose 3 kg body fat</div><div class="bar"><i style="width:65%"></i></div><div class="row" style="opacity:.6;margin-top:.8mm"><span>65% done</span><span>~3 weeks left</span></div></div>
+          <div class="mcard"><div class="row"><span><b>#4</b> this month</span><span style="color:#7CF5C8">Top 8%</span></div></div>
+        </div>
+        <div class="tabbar"><span class="on"><i data-i="home"></i></span><i data-i="chart"></i><i data-i="target"></i><i data-i="users"></i><i data-i="user"></i></div>
+      </div></div>
+      <div class="cap">Dashboard<span>Dark mode · English</span></div>
+    </div>
+
+    <!-- Progress EN light -->
+    <div class="mid">
+      <div class="phone"><div class="scr lt">
+        <div class="notch"></div>
+        <div class="sp">
+          <div class="row"><span style="font-weight:700;font-size:9pt">Progress</span><span class="tag" style="font-size:6pt">Last 6 months</span></div>
+          <div class="mcard">
+            <div class="row"><span style="font-weight:600">FitScore</span><span style="color:var(--g);font-weight:700">▲ 14</span></div>
+            <svg viewBox="0 0 160 70" style="width:100%;height:24mm;margin-top:1mm">
+              <defs><linearGradient id="fa" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7C3AED" stop-opacity=".35"/><stop offset="1" stop-color="#7C3AED" stop-opacity="0"/></linearGradient></defs>
+              <path d="M5 58 L33 52 L61 46 L89 40 L117 30 L150 18 L150 66 L5 66Z" fill="url(#fa)"/>
+              <polyline points="5,58 33,52 61,46 89,40 117,30 150,18" fill="none" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="150" cy="18" r="4" fill="#7C3AED" stroke="#fff" stroke-width="2"/>
+              <g font-size="7" fill="#9a93b0"><text x="2" y="70">Jun</text><text x="140" y="70">Nov</text></g>
+            </svg>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2mm">
+            <div class="mcard"><div style="opacity:.6">Body fat</div><div class="big" style="font-size:10.5pt">18.2%</div><div style="color:var(--g)">▼ 3.1%</div></div>
+            <div class="mcard"><div style="opacity:.6">Muscle</div><div class="big" style="font-size:10.5pt">34.6 kg</div><div style="color:var(--g)">▲ 1.8 kg</div></div>
+          </div>
+          <div class="mcard"><div style="font-weight:600">Workouts per week</div>
+            <svg viewBox="0 0 160 46" style="width:100%;height:15mm;margin-top:1mm">
+              <g fill="#E4D8FF"><rect x="6" y="22" width="14" height="20" rx="3"/><rect x="28" y="16" width="14" height="26" rx="3"/><rect x="50" y="26" width="14" height="16" rx="3"/><rect x="72" y="12" width="14" height="30" rx="3"/><rect x="94" y="16" width="14" height="26" rx="3"/><rect x="116" y="8" width="14" height="34" rx="3"/></g>
+              <rect x="138" y="4" width="14" height="38" rx="3" fill="#7C3AED"/>
+            </svg>
+          </div>
+        </div>
+        <div class="tabbar"><i data-i="home"></i><span class="on"><i data-i="chart"></i></span><i data-i="target"></i><i data-i="users"></i><i data-i="user"></i></div>
+      </div></div>
+      <div class="cap">Progress<span>Light mode · English</span></div>
+    </div>
+
+    <!-- Leaderboard AR dark -->
+    <div>
+      <div class="phone"><div class="scr dk ar" dir="rtl">
+        <div class="notch"></div>
+        <div class="sp">
+          <div class="row"><span style="font-weight:800;font-size:9.5pt">ترتيب الجيم</span><span class="tag" style="background:#ffffff1a;color:var(--p3);font-size:6.5pt">الشهر ده</span></div>
+          <div style="display:flex;justify-content:center;align-items:flex-end;gap:2.5mm;margin-top:3mm">
+            <div style="text-align:center"><div class="av" style="margin:0 auto;background:linear-gradient(135deg,#E5E7EB,#9CA3AF)">س</div><div style="font-weight:700">سارة</div><div style="background:#ffffff14;border-radius:6px 6px 0 0;height:9mm;width:12mm;display:grid;place-items:center;font-weight:800">2</div></div>
+            <div style="text-align:center"><div style="color:#FDE68A;font-size:10px"><i data-i="trophy"></i></div><div class="av" style="margin:0 auto;width:9mm;height:9mm;background:linear-gradient(135deg,#FDE68A,#F59E0B)">م</div><div style="font-weight:700">محمد</div><div style="background:linear-gradient(180deg,#7C3AED,#4C1D95);border-radius:6px 6px 0 0;height:13mm;width:12mm;display:grid;place-items:center;font-weight:800">1</div></div>
+            <div style="text-align:center"><div class="av" style="margin:0 auto;background:linear-gradient(135deg,#FCD9B8,#C2410C)">ن</div><div style="font-weight:700">نور</div><div style="background:#ffffff14;border-radius:6px 6px 0 0;height:6mm;width:12mm;display:grid;place-items:center;font-weight:800">3</div></div>
+          </div>
+          <div class="mcard" style="border-color:#A855F7;background:#7C3AED26"><div class="row"><span><b>4</b> &nbsp; إنت · عمر</span><span>٨٬٤٢٠ XP</span></div></div>
+          <div class="mcard"><div class="row"><span><b>5</b> &nbsp; يوسف</span><span style="opacity:.7">٨٬١٠٠ XP</span></div></div>
+          <div class="mcard"><div class="row"><span><b>6</b> &nbsp; ليلى</span><span style="opacity:.7">٧٬٩٥٠ XP</span></div></div>
+          <div class="mcard" style="text-align:center;color:var(--p3);font-weight:700">فاضلك ٣٠٠ XP وتطلع المركز التالت 🔥</div>
+        </div>
+        <div class="tabbar"><i data-i="home"></i><i data-i="chart"></i><i data-i="target"></i><span class="on"><i data-i="users"></i></span><i data-i="user"></i></div>
+      </div></div>
+      <div class="cap">Leaderboard<span>Dark mode · Arabic (RTL)</span></div>
+    </div>
+  </div>
+
+  <div class="grid3 mt2">
+    <div class="card"><h3><span style="color:var(--p)"><i data-i="palette"></i></span> White-label in one file</h3><p class="small muted">Gym name, logo and colors come from a single config. New gym live in a day.</p></div>
+    <div class="card"><h3><span style="color:var(--p)"><i data-i="lock"></i></span> Private by default</h3><p class="small muted">FitScore can stay private. Joining the leaderboard is opt-in.</p></div>
+    <div class="card"><h3><span style="color:var(--p)"><i data-i="phone"></i></span> Built for phones</h3><p class="small muted">Ionic React + Capacitor app, NestJS + PostgreSQL backend, multi-tenant.</p></div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>3</span></div>
+</section>
+
+<!-- ===================== 3b. GALLERY ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">02 · Inside the App</div></div>
+  <h1>A game members <span class="grad">want to open.</span></h1>
+  <p class="lead" style="margin-bottom:7mm">Medals, a custom pixel character and a virtual gym room turn every scan and lift into progress members can see.</p>
+  <div class="gal">
+    <div><div class="dev"><img src="shots/splash-dark.png"></div><div class="cap">Splash<span>Tap to begin</span></div></div>
+    <div><div class="dev"><img src="shots/login-dark.png"></div><div class="cap">Fit ID login<span>No password</span></div></div>
+    <div><div class="dev"><img src="shots/medals-dark.png"></div><div class="cap">Trophy Room<span>50 medals, 10 categories</span></div></div>
+    <div><div class="dev"><img src="shots/medal-unlock-dark.png"></div><div class="cap">Medal unlocked<span>+XP celebration</span></div></div>
+    <div><div class="dev"><img src="shots/character-dark.png"></div><div class="cap">Your character<span>Custom pixel avatar</span></div></div>
+    <div><div class="dev"><img src="shots/community-dark.png"></div><div class="cap">Community<span>Virtual gym room</span></div></div>
+    <div><div class="dev"><img src="shots/goals-dark.png"></div><div class="cap">Goals<span>Members set their own</span></div></div>
+    <div><div class="dev"><img src="shots/dashboard-light.png"></div><div class="cap">Light mode<span>Every screen, both themes</span></div></div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>4</span></div>
+</section>
+
+<!-- ===================== 4. MARKET ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">03 · Market &amp; Competition</div></div>
+  <h1>Who we sell to, <span class="grad">and why we win.</span></h1>
+  <p class="lead" style="margin-bottom:5mm">Arabic-first fitness software is thin. Cairo gyms are priced out of global platforms that don't gamify body composition.</p>
+
+  <div class="grid2">
+    <div class="card soft">
+      <h2><span class="ic" style="background:#fff"><i data-i="building"></i></span>The buyer</h2>
+      <p><b>Owners of independent gyms and small chains</b> (1–10 branches) that already run body composition scans.</p>
+      <ul class="ck small" style="margin-top:2mm">
+        <li><i data-i="check"></i>Cares about renewals and referrals</li>
+        <li><i data-i="check"></i>Has a scanner but no engagement tool</li>
+        <li><i data-i="check"></i>Wants a branded app without building one</li>
+      </ul>
+    </div>
+    <div class="card soft">
+      <h2><span class="ic" style="background:#fff"><i data-i="users"></i></span>The user</h2>
+      <p><b>Gym members, mostly 18–40</b>, smartphone-first, Arabic- and English-speaking.</p>
+      <ul class="ck small" style="margin-top:2mm">
+        <li><i data-i="check"></i>Wants to see real progress</li>
+        <li><i data-i="check"></i>Motivated by medals and ranking</li>
+        <li><i data-i="check"></i>Free to use, no password to remember</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="mt"><span class="ic"><i data-i="building"></i></span>Cairo market at a glance</h2>
+  <div class="grid3" style="gap:4mm">
+    <div class="kpi" style="padding:3.5mm"><div class="v" style="font-size:15pt">1,200+</div><div class="l">Fitness centers in Egypt (market report estimate)</div></div>
+    <div class="kpi" style="padding:3.5mm"><div class="v" style="font-size:15pt">EGP 500–4,000</div><div class="l">Monthly membership, neighbourhood to premium gyms in Cairo</div></div>
+    <div class="kpi" style="padding:3.5mm"><div class="v" style="font-size:15pt">~1 in 3</div><div class="l">Gym members who leave every year (global benchmark)</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:3mm;margin-top:4mm">
+    <div class="card" style="flex:1;text-align:center;background:linear-gradient(135deg,#7C3AED,#4C1D95);color:#fff;border:none;padding:3mm"><div style="font-size:8pt;opacity:.8">Year 1 · Beachhead</div><div style="font-size:12pt;font-weight:800">Cairo</div></div>
+    <div style="color:var(--p);font-size:18px"><i data-i="arrow"></i></div>
+    <div class="card" style="flex:1;text-align:center;background:var(--pl);border-color:#E4D8FF;padding:3mm"><div style="font-size:8pt;color:var(--mut)">Year 2</div><div style="font-size:12pt;font-weight:800">Alexandria &amp; Egypt</div></div>
+    <div style="color:var(--p);font-size:18px"><i data-i="arrow"></i></div>
+    <div class="card" style="flex:1;text-align:center;padding:3mm"><div style="font-size:8pt;color:var(--mut)">Year 3+</div><div style="font-size:12pt;font-weight:800">Gulf &amp; MENA</div></div>
+  </div>
+
+  <div class="grid2 mt" style="grid-template-columns:1.05fr 1fr">
+    <div>
+      <h2><span class="ic"><i data-i="target"></i></span>Positioning</h2>
+      <div class="matrix">
+        <div class="ax" style="left:50%;top:6mm;bottom:6mm;width:1px"></div>
+        <div class="ax" style="top:50%;left:6mm;right:6mm;height:1px"></div>
+        <div class="lbl" style="top:2mm;left:50%;transform:translateX(-50%)">Arabic-first · white-label</div>
+        <div class="lbl" style="bottom:2mm;left:50%;transform:translateX(-50%)">English-first · one brand</div>
+        <div class="lbl" style="left:2mm;top:50%;transform:translateY(-130%)">Generic</div>
+        <div class="lbl" style="right:2mm;top:50%;transform:translateY(-130%);text-align:right">Body-comp<br>gamified</div>
+        <div class="pt us" style="left:78%;top:24%"><i></i>LevelUP</div>
+        <div class="pt" style="left:24%;top:74%"><i></i>Mindbody</div>
+        <div class="pt" style="left:33%;top:62%"><i></i>Glofox</div>
+        <div class="pt" style="left:40%;top:83%"><i></i>Trainerize</div>
+        <div class="pt" style="left:72%;top:76%"><i></i>Scanner apps</div>
+      </div>
+      <p class="small muted" style="margin-top:1.5mm">Qualitative view, not a measured survey. Table: ● full &nbsp;◐ partial &nbsp;○ none</p>
+    </div>
+    <div>
+      <h2><span class="ic"><i data-i="chart"></i></span>Feature comparison</h2>
+      <table class="t">
+        <tr><th></th><th style="color:var(--p)">LevelUP</th><th>Gym apps</th><th>Scanner apps</th></tr>
+        <tr><td>Body-comp gamification</td><td class="yes">●</td><td class="no">○</td><td class="part">◐</td></tr>
+        <tr><td>White-label branding</td><td class="yes">●</td><td class="part">◐</td><td class="no">○</td></tr>
+        <tr><td>Arabic + RTL</td><td class="yes">●</td><td class="no">○</td><td class="part">◐</td></tr>
+        <tr><td>Leaderboards &amp; challenges</td><td class="yes">●</td><td class="part">◐</td><td class="no">○</td></tr>
+        <tr><td>Small-gym pricing</td><td class="yes">●</td><td class="no">○</td><td class="part">◐</td></tr>
+        <tr><td>Booking &amp; payments</td><td class="no">○</td><td class="yes">●</td><td class="no">○</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>4</span></div>
+</section>
+
+<!-- ===================== 5. BUSINESS MODEL ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">04 · Business Model</div></div>
+  <h1>Gyms pay. <span class="grad">Members play free.</span></h1>
+  <p class="lead">B2B SaaS billed per gym per month, plus a one-time setup fee. <span class="tag as">Assumption</span> Prices to validate in pilots.</p>
+
+  <div class="grid3" style="align-items:stretch;margin-top:10mm">
+    <div class="price">
+      <div class="money"><i data-i="banknote"></i></div>
+      <h3 style="margin-top:3mm">Starter</h3>
+      <div class="amt"><small style="font-size:11pt;font-weight:700;opacity:1">EGP</small> 2,500<small> /month</small></div>
+      <p class="small muted">Single-branch gyms</p>
+      <ul class="ck mt" style="margin-top:4mm">
+        <li><i data-i="check"></i>Up to 300 members</li>
+        <li><i data-i="check"></i>1 branch</li>
+        <li><i data-i="check"></i>Standard branding</li>
+        <li><i data-i="check"></i>FitScore, goals, medals</li>
+      </ul>
+    </div>
+    <div class="price hot">
+      <div class="badge">Most popular</div>
+      <div class="money"><i data-i="wallet"></i></div>
+      <h3 style="margin-top:3mm">Growth</h3>
+      <div class="amt"><small style="font-size:11pt;font-weight:700;opacity:1">EGP</small> 4,500<small> /month</small></div>
+      <p class="small" style="opacity:.7">Busy single-branch gyms</p>
+      <ul class="ck" style="margin-top:4mm">
+        <li><i data-i="check"></i>Unlimited members</li>
+        <li><i data-i="check"></i>Body scan tracking</li>
+        <li><i data-i="check"></i>Challenges &amp; leaderboards</li>
+        <li><i data-i="check"></i>Full gym branding</li>
+      </ul>
+    </div>
+    <div class="price">
+      <div class="money"><i data-i="coins"></i></div>
+      <h3 style="margin-top:3mm">Chain</h3>
+      <div class="amt"><small style="font-size:11pt;font-weight:700;opacity:1">EGP</small> 9,000<small> /month</small></div>
+      <p class="small muted">Up to 3 branches</p>
+      <ul class="ck" style="margin-top:4mm">
+        <li><i data-i="check"></i>Everything in Growth</li>
+        <li><i data-i="check"></i>EGP 2,500 per extra branch</li>
+        <li><i data-i="check"></i>Custom branding</li>
+        <li><i data-i="check"></i>Dedicated support</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mt2" style="display:flex;align-items:center;gap:5mm;background:var(--gl);border-color:#C7F0E0">
+    <div class="money" style="background:#fff"><i data-i="gift"></i></div>
+    <div style="flex:1"><h3>One-time setup fee · EGP 5,000</h3><p class="small muted">Branding, member import and staff onboarding. Waived for pilot gyms.</p></div>
+    <div style="text-align:right"><div style="font-size:16pt;font-weight:800;color:var(--g)">EGP 3,750</div><div class="small muted">expected avg. per gym / month<br>(60% Starter · 30% Growth · 10% Chain)</div></div>
+  </div>
+
+  <div class="grid2 mt2">
+    <div class="card">
+      <h2><span class="ic"><i data-i="chart"></i></span>Year-1 revenue mix</h2>
+      <div style="display:flex;align-items:center;gap:6mm">
+        <div id="donut"></div>
+        <div class="small" id="donutLegend"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2><span class="ic"><i data-i="trend"></i></span>Value for the gym</h2>
+      <p class="small muted">A typical Cairo membership is about <b>EGP 1,261 a month</b>. A 300-member gym loses about 8 members a month; keeping <b>just 2</b> of them pays for Starter.</p>
+      <div style="display:flex;gap:3mm;margin-top:4mm">
+        <div style="flex:1;text-align:center;padding:3mm;border-radius:12px;background:var(--rl)"><div class="small muted">Cost</div><div style="font-weight:800;font-size:13pt;color:var(--r)">EGP 2,500</div></div>
+        <div style="display:grid;place-items:center;color:var(--mut)"><i data-i="arrow"></i></div>
+        <div style="flex:1;text-align:center;padding:3mm;border-radius:12px;background:var(--gl)"><div class="small muted">Kept revenue</div><div style="font-weight:800;font-size:13pt;color:var(--g)">2 members ≈ EGP 2,522</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>5</span></div>
+</section>
+
+<!-- ===================== 6. GTM + ROADMAP ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">05 · Go-to-Market &amp; Roadmap</div></div>
+  <h1>Prove it with pilots, <span class="grad">then sell the proof.</span></h1>
+  <p class="lead">Founder-led sales, where the demo is the prospect's own gym branded live in the app.</p>
+
+  <div class="grid2" style="grid-template-columns:1.1fr 1fr;align-items:start">
+    <div>
+      <h2><span class="ic"><i data-i="rocket"></i></span>Sales funnel</h2>
+      <div class="funnel">
+        <div class="fs" style="width:100%;background:#C4A5FA"><span class="n">1</span><i data-i="handshake"></i><div><b>Free pilots</b><div class="small" style="opacity:.9">2–3 friendly gyms, 3 months free</div></div></div>
+        <div class="fs" style="width:92%;background:#A87BF6"><span class="n">2</span><i data-i="phone"></i><div><b>Branded live demo</b><div class="small" style="opacity:.9">Prospect's logo in the app, on the spot</div></div></div>
+        <div class="fs" style="width:84%;background:#8E55F0"><span class="n">3</span><i data-i="chart"></i><div><b>Publish proof</b><div class="small" style="opacity:.9">Pilot retention &amp; engagement case study</div></div></div>
+        <div class="fs" style="width:76%;background:#7C3AED"><span class="n">4</span><i data-i="gift"></i><div><b>Referrals</b><div class="small" style="opacity:.9">1 month free per referred gym</div></div></div>
+        <div class="fs" style="width:68%;background:#4C1D95"><span class="n">5</span><i data-i="scan"></i><div><b>Channel partners</b><div class="small" style="opacity:.9">Body-scanner distributors</div></div></div>
+      </div>
+    </div>
+    <div>
+      <h2><span class="ic"><i data-i="chart"></i></span>Gyms signed</h2>
+      <div class="card" style="padding:4mm"><div id="gymsChart"></div>
+      <div class="small muted" style="display:flex;gap:5mm;margin-top:1mm"><span><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:#E4D8FF"></span> Pilot (free)</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:var(--p)"></span> Paying</span></div></div>
+      <p class="small muted" style="margin-top:2mm"><span class="tag as">Assumption</span> Pilots convert to paid from month 4; no gym cancels in year 1.</p>
+    </div>
+  </div>
+
+  <h2 class="mt2"><span class="ic"><i data-i="calendar"></i></span>Product roadmap</h2>
+  <div class="tl mt">
+    <div class="st"><div class="dot"><i data-i="rocket"></i></div><div class="tag">Now – Q1 2027</div><h3 style="margin-top:2mm">MVP · Pilot-ready</h3><p class="small muted">Built: login, home, FitScore, scans, goals, medals, leaderboards, avatar, community. Next: live backend and pilot gyms.</p></div>
+    <div class="st"><div class="dot"><i data-i="trophy"></i></div><div class="tag">Q2 2027</div><h3 style="margin-top:2mm">V1 · Retention</h3><p class="small muted">Visit streaks, gym-wide challenges, push notifications, scanner data import.</p></div>
+    <div class="st"><div class="dot"><i data-i="building"></i></div><div class="tag">Q3–Q4 2027</div><h3 style="margin-top:2mm">V2 · Self-serve</h3><p class="small muted">Gym admin panel, coach tools for recording lifts, owner analytics.</p></div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>6</span></div>
+</section>
+
+<!-- ===================== 7. FINANCIALS ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">06 · Financials</div></div>
+  <h1>Lean costs, <span class="grad">cash-positive in month 9.</span></h1>
+  <p class="lead" style="margin-bottom:6mm">12-month projection in EGP. <span class="tag as">Assumption</span> EGP 3,750 average per paying gym; costs grow from 15k to 39k a month.</p>
+
+  <div class="grid4">
+    <div class="kpi"><div class="ic" style="background:var(--gl);color:var(--g)"><i data-i="banknote"></i></div><div class="v" style="color:var(--g)">EGP 285k</div><div class="l">Subscription revenue, year 1</div></div>
+    <div class="kpi"><div class="ic" style="background:var(--pl);color:var(--p)"><i data-i="coins"></i></div><div class="v">EGP 60k</div><div class="l">Setup fees, year 1</div></div>
+    <div class="kpi"><div class="ic" style="background:var(--rl);color:var(--r)"><i data-i="wallet"></i></div><div class="v">EGP 353k</div><div class="l">Total costs, year 1</div></div>
+    <div class="kpi"><div class="ic" style="background:var(--al);color:var(--a)"><i data-i="building"></i></div><div class="v">11</div><div class="l">Paying gyms to cover costs from fees alone</div></div>
+  </div>
+
+  <div class="card mt">
+    <div class="row"><h2 style="margin:0"><span class="ic"><i data-i="chart"></i></span>Monthly revenue vs. costs</h2>
+      <div class="small muted" style="display:flex;gap:4mm"><span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--p)"></span> MRR</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--g)"></span> Setup fees</span><span><span style="display:inline-block;width:14px;height:2px;background:var(--r);vertical-align:middle"></span> Costs</span></div></div>
+    <div id="mrrChart" style="margin-top:3mm"></div>
+  </div>
+
+  <div class="grid2 mt">
+    <div class="card">
+      <h2><span class="ic"><i data-i="trend"></i></span>Cumulative cash</h2>
+      <div id="cumChart"></div>
+      <p class="small muted">Plan to fund about EGP 75k: the gap peaks at EGP 72k in month 8. Cumulative cash is back near zero (−EGP 7.8k) by month 12 and turns positive early in month 13.</p>
+    </div>
+    <div class="card">
+      <h2><span class="ic"><i data-i="wallet"></i></span>Where the money goes</h2>
+      <div id="costBars"></div>
+    </div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>7</span></div>
+</section>
+
+<!-- ===================== 8. RISKS + NEXT ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">07 · Risks &amp; Next Steps</div></div>
+  <h1>Know the risks. <span class="grad">Move in 90 days.</span></h1>
+
+  <div class="grid2 mt" style="gap:4mm">
+    <div class="risk"><div class="ic" style="background:var(--rl);color:var(--r)"><i data-i="building"></i></div><div><div class="row"><h3>Slow gym adoption</h3><span class="lvl" style="background:var(--rl);color:var(--r)">High</span></div><p class="small muted">Free pilots, low entry price, and retention data that proves the return.</p></div></div>
+    <div class="risk"><div class="ic" style="background:var(--al);color:var(--a)"><i data-i="scan"></i></div><div><div class="row"><h3>Scan data entry friction</h3><span class="lvl" style="background:var(--al);color:#B45309">Medium</span></div><p class="small muted">Simple front-desk flow, bulk import, manual entry fallback.</p></div></div>
+    <div class="risk"><div class="ic" style="background:var(--al);color:var(--a)"><i data-i="user"></i></div><div><div class="row"><h3>One-founder bandwidth</h3><span class="lvl" style="background:var(--al);color:#B45309">Medium</span></div><p class="small muted">Tight MVP scope; white-label config instead of custom builds.</p></div></div>
+    <div class="risk"><div class="ic" style="background:var(--gl);color:var(--g)"><i data-i="shield"></i></div><div><div class="row"><h3>Member data privacy</h3><span class="lvl" style="background:var(--gl);color:var(--g)">Low</span></div><p class="small muted">FitScore private by default, minimal personal data, clear consent.</p></div></div>
+  </div>
+
+  <h2 class="mt"><span class="ic"><i data-i="calendar"></i></span>Next 90 days</h2>
+  <div class="step"><span class="w">Weeks 1–4</span><i data-i="rocket" style="color:var(--p)"></i><span><b>Connect the app to the live backend</b> and ship the Android build to pilots.</span></div>
+  <div class="step"><span class="w">Weeks 3–6</span><i data-i="handshake" style="color:var(--p)"></i><span><b>Sign 2–3 pilot gyms</b> and brand the app for each.</span></div>
+  <div class="step"><span class="w">Weeks 6–12</span><i data-i="chart" style="color:var(--p)"></i><span><b>Track weekly active members</b> and visit frequency from day one.</span></div>
+  <div class="step"><span class="w">Week 10</span><i data-i="target" style="color:var(--p)"></i><span><b>Write a one-page case study</b> from pilot results.</span></div>
+  <div class="step"><span class="w">Week 12</span><i data-i="dollar" style="color:var(--g)"></i><span><b>Set final pricing</b> from real willingness to pay, then launch paid plans.</span></div>
+
+  <h2 class="mt"><span class="ic"><i data-i="users"></i></span>Team</h2>
+  <div class="grid4" style="gap:3mm">
+    <div class="card" style="text-align:center;padding:4mm 2mm"><div class="av" style="margin:0 auto;width:11mm;height:11mm;font-size:11pt"><i data-i="user"></i></div><h3 style="margin-top:2mm">Founder</h3><p class="small muted">Product, engineering, sales</p></div>
+    <div class="card" style="text-align:center;border-style:dashed;padding:4mm 2mm"><div class="av" style="margin:0 auto;width:11mm;height:11mm;font-size:11pt;background:#E4D8FF;color:var(--p)"><i data-i="palette"></i></div><h3 style="margin-top:2mm">UI/UX designer</h3><p class="small muted">Part-time · from month 1</p></div>
+    <div class="card" style="text-align:center;border-style:dashed;padding:4mm 2mm"><div class="av" style="margin:0 auto;width:11mm;height:11mm;font-size:11pt;background:#E4D8FF;color:var(--p)"><i data-i="handshake"></i></div><h3 style="margin-top:2mm">Customer success</h3><p class="small muted">Part-time · from month 4</p></div>
+    <div class="card" style="text-align:center;border-style:dashed;padding:4mm 2mm"><div class="av" style="margin:0 auto;width:11mm;height:11mm;font-size:11pt;background:#E4D8FF;color:var(--p)"><i data-i="phone"></i></div><h3 style="margin-top:2mm">Junior developer</h3><p class="small muted">Part-time · from month 7</p></div>
+  </div>
+
+  <div class="closing mt">
+    <img src="logo.png" alt="LevelUP">
+    <div><div style="font-size:15pt;font-weight:800">Track. Improve. Transform.</div><p style="color:#B9AED6;margin-top:2mm">LevelUP gives every gym a branded game that keeps members coming back, and gives every member a reason to.</p></div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>8</span></div>
+</section>
+
+<!-- ===================== 9. APPENDIX ===================== -->
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">Appendix · Model &amp; Sources</div></div>
+  <h1>The numbers <span class="grad">behind the plan.</span></h1>
+  <p class="lead">Month-by-month model in Egyptian pounds. 3 free pilot gyms in months 1–3 convert to paid in month 4; each new gym pays a EGP 5,000 setup fee; no gym cancels.</p>
+  <table class="t" id="modelTable"></table>
+  <div class="grid3 mt2">
+    <div class="kpi"><div class="v" style="font-size:15pt;color:var(--r)">EGP 75k</div><div class="l">Funding to plan for (peak gap EGP 72k, month 8)</div></div>
+    <div class="kpi"><div class="v" style="font-size:15pt;color:var(--a)">Month 9</div><div class="l">First month with positive cash flow</div></div>
+    <div class="kpi"><div class="v" style="font-size:15pt;color:var(--g)">Month 13</div><div class="l">Cumulative cash back above zero</div></div>
+  </div>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>9</span></div>
+</section>
+
+<section class="page">
+  <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">Appendix · Sources</div></div>
+  <h2><span class="ic"><i data-i="globe"></i></span>Market sources (checked Nov 2026)</h2>
+  <table class="t small">
+    <tr><th>Figure</th><th>Value</th><th>Source</th></tr>
+    <tr><td>USD → EGP rate</td><td>≈ 54 (CBE sell 55.5, 2 Nov 2026)</td><td>moneyexchangerate.org · bankygate.com · Egyptian Streets</td></tr>
+    <tr><td>Mid-range Cairo gym</td><td>EGP 1,261 / month</td><td>expatistan.com</td></tr>
+    <tr><td>Cairo price tiers by chain</td><td>EGP 500 – 4,000+ / month</td><td>gymnavigator.com</td></tr>
+    <tr><td>Fitness centers in Egypt</td><td>1,200+</td><td>SPER Market Research</td></tr>
+    <tr><td>Member retention</td><td>66.4% stay per year</td><td>HFA 2025 Benchmarking (via GymMaster)</td></tr>
+    <tr><td>Junior developer, Cairo</td><td>EGP 12,000 – 18,000 / month</td><td>Payscale · Sprints.ai</td></tr>
+    <tr><td>UI/UX designer, Cairo</td><td>≈ EGP 12,700 / month</td><td>Visulry</td></tr>
+    <tr><td>Customer service, fluent English</td><td>≈ EGP 13,500 / month</td><td>Wuzzuf</td></tr>
+    <tr><td>Managed Postgres</td><td>from $15 / month</td><td>DigitalOcean pricing</td></tr>
+    <tr><td>Meta ads in Egypt</td><td>CPM ≈ $1.6 – 1.8</td><td>Lebesgue · Vaizle</td></tr>
+  </table>
+  <p class="small muted" style="margin-top:3mm"><b>Not yet verified:</b> InBody scan prices at Cairo gyms, Egyptian gym-software prices (global benchmarks used), part-time rates (estimated at half of full-time). Taxes (14% VAT), payment fees (~2–3%), founder salary and exchange-rate risk on USD costs are not modelled.</p>
+  <div class="ft"><span>LevelUP · Business Plan</span><span>10</span></div>
+</section>
+
+<script>
+const P={
+ dollar:'<line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+ trend:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+ users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+ user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+ target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+ trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+ flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+ zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+ shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+ rocket:'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+ calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+ check:'<polyline points="20 6 9 17 4 12"/>',
+ x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+ building:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/>',
+ globe:'<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+ phone:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+ wallet:'<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>',
+ coins:'<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>',
+ banknote:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+ alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+ chart:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+ activity:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+ lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+ gift:'<polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>',
+ palette:'<circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.55-2.5 5.55-5.55C21.97 6.01 17.46 2 12 2z"/>',
+ home:'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+ scan:'<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><polyline points="7 12 10 12 12 8 14 16 16 12 17 12"/>',
+ arrow:'<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+ up:'<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>',
+ handshake:'<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/>'
+};
+document.querySelectorAll('i[data-i]').forEach(el=>{
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('class','i'); s.innerHTML=P[el.dataset.i]||'';
+  if(el.getAttribute('style')) s.setAttribute('style',el.getAttribute('style'));
+  el.replaceWith(s);
+});
+
+/* ---- model (assumptions) ---- */
+const M=['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'];
+const pilots=[3,3,3,0,0,0,0,0,0,0,0,0];
+const paying=[0,0,0,3,4,5,7,8,10,11,13,15];
+const mrr=paying.map(g=>g*3750);
+const newPaidNonPilot=paying.map((g,i)=>i<4?0:Math.max(0,g-paying[i-1]));
+const setup=newPaidNonPilot.map(n=>n*5000);
+const cost=[15150,15150,15150,25150,25150,25150,38650,38650,38650,38650,38650,38650];
+const k=v=>(v/1000).toFixed(v%1000?1:0).replace('.0','')+'k';
+const sum=a=>a.reduce((x,y)=>x+y,0);
+
+const C=(w,h,inner)=>`<svg viewBox="0 0 ${w} ${h}" style="width:100%;display:block" font-family="Poppins,Segoe UI,sans-serif">${inner}</svg>`;
+
+/* MRR + setup stacked bars, cost line */
+(()=>{
+  const W=640,H=195,l=40,r=10,t=14,b=24,max=80000,cw=(W-l-r)/12,y=v=>t+(H-t-b)*(1-v/max);
+  let s='';
+  for(let v=0;v<=max;v+=20000){s+=`<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="#EEE9F7"/><text x="${l-6}" y="${y(v)+3}" font-size="9" fill="#9a93b0" text-anchor="end">${v?k(v):'0'}</text>`}
+  M.forEach((m,i)=>{
+    const x=l+i*cw+cw*.2,bw=cw*.6;
+    const h1=y(0)-y(mrr[i]),h2=y(0)-y(setup[i]);
+    if(mrr[i])s+=`<rect x="${x}" y="${y(mrr[i])}" width="${bw}" height="${h1}" rx="4" fill="${i===8?'#4C1D95':'#7C3AED'}"/>`;
+    if(setup[i])s+=`<rect x="${x}" y="${y(mrr[i]+setup[i])}" width="${bw}" height="${h2}" rx="4" fill="#10B981" opacity=".85"/>`;
+    s+=`<text x="${x+bw/2}" y="${H-8}" font-size="9" fill="#9a93b0" text-anchor="middle">${m}</text>`;
+    if(mrr[i])s+=`<text x="${x+bw/2}" y="${y(mrr[i]+setup[i])-4}" font-size="8.5" fill="#4C1D95" font-weight="600" text-anchor="middle">${k(mrr[i])}</text>`;
+  });
+  s+=`<text x="${l}" y="${t-3}" font-size="8" fill="#9a93b0">EGP</text>`;
+  const pts=cost.map((c,i)=>`${l+i*cw+cw/2},${y(c)}`).join(' ');
+  s+=`<polyline points="${pts}" fill="none" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="6 4"/>`;
+  const bx=l+8*cw+cw/2;
+  s+=`<g transform="translate(${bx},${y(74000)})"><rect x="-50" y="-14" width="100" height="20" rx="10" fill="#F59E0B"/><text y="0" font-size="9" fill="#fff" font-weight="700" text-anchor="middle">Cash-positive</text></g><line x1="${bx}" x2="${bx}" y1="${y(74000)+6}" y2="${y(mrr[8]+setup[8])-14}" stroke="#F59E0B" stroke-width="1.5"/>`;
+  document.getElementById('mrrChart').innerHTML=C(W,H,s);
+})();
+
+/* cumulative cash */
+(()=>{
+  let acc=0;const cum=M.map((_,i)=>acc+=mrr[i]+setup[i]-cost[i]);
+  const W=300,H=140,l=34,r=8,t=10,b=20,mn=-80000,mx=10000,cw=(W-l-r)/11,y=v=>t+(H-t-b)*(1-(v-mn)/(mx-mn));
+  let s='';
+  [-80000,-60000,-40000,-20000,0].forEach(v=>{s+=`<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="${v===0?'#CDBEF0':'#EEE9F7'}"/><text x="${l-5}" y="${y(v)+3}" font-size="8" fill="#9a93b0" text-anchor="end">${v<0?'−'+(-v/1000)+'k':'0'}</text>`});
+  s+=`<text x="${l+11*cw-2}" y="${y(cum[11])-7}" font-size="8.5" fill="#10B981" font-weight="700" text-anchor="end">−7.8k</text>`;
+  const pts=cum.map((v,i)=>`${l+i*cw},${y(v)}`);
+  s+=`<defs><linearGradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7C3AED" stop-opacity=".05"/><stop offset="1" stop-color="#7C3AED" stop-opacity=".3"/></linearGradient></defs>`;
+  s+=`<path d="M${l},${y(0)} L${pts.join(' L')} L${l+11*cw},${y(0)}Z" fill="url(#cg)"/>`;
+  s+=`<polyline points="${pts.join(' ')}" fill="none" stroke="#7C3AED" stroke-width="2.5" stroke-linejoin="round"/>`;
+  const lo=cum.indexOf(Math.min(...cum));
+  s+=`<circle cx="${l+lo*cw}" cy="${y(cum[lo])}" r="4" fill="#EF4444" stroke="#fff" stroke-width="2"/><text x="${l+lo*cw}" y="${y(cum[lo])+14}" font-size="8.5" fill="#EF4444" font-weight="700" text-anchor="middle">−${(-cum[lo]/1000).toFixed(0)}k</text>`;
+  ['M1','M6','M12'].forEach(m=>{const i=M.indexOf(m);s+=`<text x="${l+i*cw}" y="${H-4}" font-size="8" fill="#9a93b0" text-anchor="middle">${m}</text>`});
+  document.getElementById('cumChart').innerHTML=C(W,H,s);
+})();
+
+/* gyms stacked bars */
+(()=>{
+  const W=300,H=130,l=20,r=6,t=8,b=18,max=16,cw=(W-l-r)/12,y=v=>t+(H-t-b)*(1-v/max);
+  let s='';
+  [0,5,10,15].forEach(v=>{s+=`<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="#EEE9F7"/><text x="${l-4}" y="${y(v)+3}" font-size="8" fill="#9a93b0" text-anchor="end">${v}</text>`});
+  M.forEach((m,i)=>{const x=l+i*cw+cw*.18,bw=cw*.64;
+    if(pilots[i])s+=`<rect x="${x}" y="${y(pilots[i])}" width="${bw}" height="${y(0)-y(pilots[i])}" rx="3" fill="#E4D8FF"/>`;
+    if(paying[i])s+=`<rect x="${x}" y="${y(paying[i])}" width="${bw}" height="${y(0)-y(paying[i])}" rx="3" fill="#7C3AED"/>`;
+    if(i%2===0||i===11)s+=`<text x="${x+bw/2}" y="${H-5}" font-size="7.5" fill="#9a93b0" text-anchor="middle">${m}</text>`;});
+  s+=`<text x="${l+11*cw+cw/2}" y="${y(15)-4}" font-size="9" font-weight="700" fill="#4C1D95" text-anchor="middle">15</text>`;
+  document.getElementById('gymsChart').innerHTML=C(W,H,s);
+})();
+
+/* donut */
+(()=>{
+  const a=sum(mrr),bb=sum(setup),tot=a+bb,R=42,c=2*Math.PI*R,f=a/tot;
+  document.getElementById('donut').innerHTML=`<svg viewBox="0 0 110 110" style="width:34mm"><circle cx="55" cy="55" r="${R}" fill="none" stroke="#10B981" stroke-width="16"/><circle cx="55" cy="55" r="${R}" fill="none" stroke="#7C3AED" stroke-width="16" stroke-dasharray="${c*f} ${c}" transform="rotate(-90 55 55)"/><text x="55" y="46" text-anchor="middle" font-size="7" fill="#6B6485" font-family="Poppins">EGP</text><text x="55" y="59" text-anchor="middle" font-size="13" font-weight="800" fill="#16112B" font-family="Poppins">${k(tot)}</text><text x="55" y="70" text-anchor="middle" font-size="7" fill="#6B6485" font-family="Poppins">year 1</text></svg>`;
+  document.getElementById('donutLegend').innerHTML=`<div style="margin-bottom:3mm"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#7C3AED"></span> <b>Subscriptions</b><div class="muted">EGP ${a.toLocaleString()} · ${Math.round(f*100)}%</div></div><div><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#10B981"></span> <b>Setup fees</b><div class="muted">EGP ${bb.toLocaleString()} · ${Math.round((1-f)*100)}%</div></div>`;
+})();
+
+document.querySelectorAll('section.page').forEach((p,i)=>{const s=p.querySelector('.ft span:last-child');if(s)s.textContent=i+1});
+
+/* model table */
+(()=>{
+  const f=v=>v===0?'–':(v<0?'−':'')+Math.abs(v).toLocaleString();
+  let acc=0,rows='<tr><th>Month</th><th>Paying gyms</th><th>Monthly fees</th><th>Setup fees</th><th>Costs</th><th>Net</th><th>Cumulative</th></tr>';
+  M.forEach((m,i)=>{const n=mrr[i]+setup[i]-cost[i];acc+=n;
+    rows+=`<tr${i===8?' style="background:#FEF5E4"':''}><td><b>${m}</b></td><td>${paying[i]||'3 pilots'}</td><td>${f(mrr[i])}</td><td>${f(setup[i])}</td><td>${f(cost[i])}</td><td style="color:${n<0?'#EF4444':'#10B981'};font-weight:600">${f(n)}</td><td>${f(acc)}</td></tr>`});
+  rows+=`<tr style="font-weight:700"><td>Total</td><td>15</td><td>${f(sum(mrr))}</td><td>${f(sum(setup))}</td><td>${f(sum(cost))}</td><td>${f(sum(mrr)+sum(setup)-sum(cost))}</td><td></td></tr>`;
+  document.getElementById('modelTable').innerHTML=rows;
+})();
+
+/* cost breakdown bars (assumption, month-12 run rate $800) */
+(()=>{
+  const items=[['Marketing & transport',12000,'#10B981'],['Junior developer (part-time)',8000,'#7C3AED'],['Customer success (part-time)',7000,'#8E55F0'],['UI/UX designer (part-time)',6000,'#A855F7'],['Hosting & database',3500,'#C4A5FA'],['Tools & services',1500,'#D9C6FB'],['App stores & domain',650,'#E4D8FF']];
+  const max=12000;
+  document.getElementById('costBars').innerHTML=items.map(([n,v,col])=>`<div style="margin:1.5mm 0"><div class="row small"><span>${n}</span><b>EGP ${v.toLocaleString()}</b></div><div style="height:7px;border-radius:9px;background:#F3EEFF;margin-top:.8mm"><div style="height:100%;width:${v/max*100}%;border-radius:9px;background:${col}"></div></div></div>`).join('')+`<div class="row small" style="margin-top:2mm;border-top:1px solid var(--line);padding-top:2mm"><span class="muted">Monthly costs from month 7</span><b>EGP 38,650</b></div>`;
+})();
+</script>
+</body>
+</html>
