@@ -3,10 +3,16 @@
   "name": "LevelUP",
   "icons": [
     {
-      "src": "brand/logo.png",
+      "src": "brand/icon-192.png",
       "type": "image/png",
-      "sizes": "833x719",
+      "sizes": "192x192",
       "purpose": "any"
+    },
+    {
+      "src": "brand/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",

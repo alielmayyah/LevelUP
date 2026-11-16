@@ -31,16 +31,16 @@ type Filter = 'all' | MedalCategory;
 const FILTERS: Filter[] = ['all', ...MEDAL_CATEGORIES];
 
 const ICONS: Record<MedalCategory, PixelIconName> = {
-  bodyFat: 'flame',
+  bodyFat: 'bodyFat',
   muscle: 'muscle',
-  bench: 'dumbbell',
-  squat: 'dumbbell',
-  deadlift: 'dumbbell',
-  militaryPress: 'dumbbell',
-  pushUps: 'muscle',
-  pullUps: 'muscle',
-  plank: 'clock',
-  bmi: 'scale',
+  bench: 'barbell',
+  squat: 'barbell',
+  deadlift: 'barbell',
+  militaryPress: 'barbell',
+  pushUps: 'pushUp',
+  pullUps: 'pullUp',
+  plank: 'stopwatch',
+  bmi: 'gauge',
 };
 
 function Overview({ categories }: { categories: MedalCategoryStatus[] }) {

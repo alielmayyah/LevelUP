@@ -206,10 +206,11 @@ button.lu-px-card:active {
 }
 
 .lu-icon-tile-gold {
-  --px-fill: var(--lu-accent);
+  --px-fill: currentColor;
   --px-hi: var(--lu-fat-core);
-  border-color: color-mix(in srgb, var(--lu-accent) 45%, var(--lu-border));
-  background: color-mix(in srgb, var(--lu-accent) 16%, var(--lu-surface));
+  color: var(--lu-gold);
+  border-color: color-mix(in srgb, currentColor 45%, var(--lu-border));
+  background: color-mix(in srgb, currentColor 16%, var(--lu-surface));
   font-size: 30px;
 }
 

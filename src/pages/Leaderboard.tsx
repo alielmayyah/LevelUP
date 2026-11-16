@@ -38,8 +38,8 @@ const PAGE_SIZE = 10;
 
 const BOARD_ICONS: Record<LeaderboardBoard, PixelIconName> = {
   score: 'trophy',
-  muscle: 'dumbbell',
-  bodyFat: 'flame',
+  muscle: 'muscle',
+  bodyFat: 'bodyFat',
 };
 
 const isBoard = (v: unknown): v is LeaderboardBoard => LEADERBOARD_BOARDS.includes(v as LeaderboardBoard);

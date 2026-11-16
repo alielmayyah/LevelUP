@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../../api/client';
 import type { NotificationDto } from '../../api/types';
 import { useApi } from '../../api/useApi';
-import PixelIcon from '../../components/PixelIcon';
+import HomeIcon from './HomeIcon';
 import { formatCount } from '../../i18n/format';
 import { formatTimeAgo } from './homeText';
 
@@ -88,7 +88,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
           {t('home.notifications.title')}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('home.notifications.close')} onClick={onClose}>
-          <PixelIcon name="close" />
+          <HomeIcon name="close" />
         </button>
       </div>
 
@@ -98,7 +98,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
             className={`lu-notif-count inline-flex items-center gap-1.5 rounded-lg border-2 px-2.5 py-1 text-[0.85rem] font-extrabold text-ink ${unread === 0 ? 'is-clear' : ''}`}
             data-testid="unread-count"
           >
-            <PixelIcon className="text-[1.05rem]" name={unread === 0 ? 'checkDouble' : 'bell'} />
+            <HomeIcon className="text-[1.05rem]" name={unread === 0 ? 'checkDouble' : 'bell'} />
             {unread === 0
               ? t('home.notifications.empty')
               : t('home.notifications.unreadCount', { n: formatCount(unread) })}
@@ -109,7 +109,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
             onClick={markAll}
             disabled={unread === 0}
           >
-            <PixelIcon className="text-[1.1rem]" name="checkDouble" />
+            <HomeIcon className="text-[1.1rem]" name="checkDouble" />
             {t('home.notifications.markAll')}
           </button>
         </div>
@@ -140,7 +140,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
 
       {items && items.length === 0 && (
         <div className="lu-state">
-          <PixelIcon name="bellOff" />
+          <HomeIcon name="bellOff" />
           <p>{t('home.notifications.empty')}</p>
         </div>
       )}
@@ -172,7 +172,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                             className={`lu-notif-icon grid size-11 flex-none place-items-center rounded-lg border-2 ${mission ? 'is-mission text-[30px]' : 'text-[22px]'}`}
                             aria-hidden="true"
                           >
-                            {mission ? <PixelIcon name="trophy" /> : <PixelIcon name="scan" />}
+                            {mission ? <HomeIcon name="trophy" /> : <HomeIcon name="scan" />}
                           </span>
                           <span className="grid min-w-0 flex-1 gap-0.5">
                             <span className={isUnread ? 'font-extrabold' : 'font-semibold'}>
@@ -180,7 +180,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                             </span>
                             <span className="text-[0.9rem] text-muted">{t(n.body.key, n.body.params ?? {})}</span>
                             <span className="inline-flex items-center gap-1 text-[0.78rem] font-semibold text-muted">
-                              <PixelIcon className="text-[0.9rem]" name="clock" />
+                              <HomeIcon className="text-[0.9rem]" name="clock" />
                               {formatTimeAgo(n.createdAt)}
                             </span>
                           </span>
@@ -190,7 +190,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                               <span className="sr-only">{t('home.notifications.unread')}</span>
                             </>
                           ) : (
-                            <PixelIcon
+                            <HomeIcon
                               className="flex-none text-[1.1rem] text-success"
                               name="check"
                               label={t('home.notifications.read')}

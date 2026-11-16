@@ -14,6 +14,7 @@ import {
 import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
 import { focusSibling, rovingTarget } from '../../components/roving';
 import { formatNumber, formatSigned, numberLocale } from '../../i18n/format';
+import BodyScanFigure from './BodyScanFigure';
 import './BodyComposition.scss';
 
 type Better = 'up' | 'down' | null;
@@ -154,144 +155,6 @@ const Bar: React.FC<BarProps> = (p) => {
   );
 };
 
-/*
- * The hologram figure, viewed from behind like the InBody sheet: the member's
- * left side is on the left. Drawn as the left half of a 20 × 41 pixel grid and
- * mirrored, so both sides always match:
- *   h head   t trunk   L arm   l leg   p projector base   . empty
- */
-const HALF_BODY = [
-  '........hh',
-  '.......hhh',
-  '.......hhh',
-  '.......hhh',
-  '.......hhh',
-  '........hh',
-  '.........h',
-  '....LLtttt',
-  '...LLLtttt',
-  '...LLLtttt',
-  '..LLL.tttt',
-  '..LLL.tttt',
-  '..LLL.tttt',
-  '..LL..tttt',
-  '..LL...ttt',
-  '..LL...ttt',
-  '.LLL...ttt',
-  '.LLL..tttt',
-  '.LL...tttt',
-  '.LL...tttt',
-  '......llll',
-  '......llll',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '......lll.',
-  '.....llll.',
-  '..........',
-  '...ppppppp',
-  '.....ppppp',
-];
-
-type FigurePart = BodySegment | 'head' | 'base';
-
-const PART: Record<string, FigurePart> = {
-  h: 'head',
-  t: 'trunk',
-  p: 'base',
-  L: 'leftArm',
-  l: 'leftLeg',
-  R: 'rightArm',
-  r: 'rightLeg',
-};
-
-/** The full grid: each row's left half, then the same half mirrored with the right-side parts. */
-const BODY_ROWS = HALF_BODY.map(
-  (half) =>
-    half +
-    [...half]
-      .reverse()
-      .map((c) => (c === 'L' ? 'R' : c === 'l' ? 'r' : c))
-      .join(''),
-);
-const FIGURE_W = BODY_ROWS[0].length;
-const FIGURE_H = BODY_ROWS.length;
-
-/** Each part as a few rects: one per run of pixels on a row, so the figure stays a couple hundred nodes. */
-const FIGURE_RUNS = (() => {
-  const out: Record<FigurePart, { x: number; y: number; w: number }[]> = {
-    head: [],
-    base: [],
-    leftArm: [],
-    rightArm: [],
-    trunk: [],
-    leftLeg: [],
-    rightLeg: [],
-  };
-  BODY_ROWS.forEach((row, y) => {
-    let x = 0;
-    while (x < row.length) {
-      let w = 1;
-      while (row[x + w] === row[x]) w++;
-      const part = PART[row[x]];
-      if (part) out[part].push({ x, y, w });
-      x += w;
-    }
-  });
-  return out;
-})();
-
-/**
- * A glowing pixel hologram of the body on a faint grid. Each segment is tinted
- * by its zone; every other row is dimmer, like scan lines. A light bar sweeps
- * down it unless the device asks for reduced motion. Decorative: the callouts
- * around it carry every value in text.
- */
-const Figure: React.FC<{ statuses: Record<BodySegment, Status>; kind: 'lean' | 'fat' }> = ({ statuses, kind }) => (
-  <div className="lu-holo relative grid place-items-center overflow-hidden rounded-[10px] px-2.5 pt-3 pb-1">
-    <svg
-      className={`lu-holo-figure lu-figure-${kind} h-[188px] w-auto`}
-      viewBox={`0 0 ${FIGURE_W} ${FIGURE_H}`}
-      shapeRendering="crispEdges"
-      aria-hidden="true"
-      focusable="false"
-      data-testid="segments-figure"
-    >
-      {(Object.keys(FIGURE_RUNS) as FigurePart[]).map((part) => (
-        <g
-          key={part}
-          className={`lu-holo-${part} ${part === 'head' || part === 'base' ? '' : `lu-seg lu-seg-${statuses[part]}`}`}
-          data-part={part}
-          data-status={part === 'head' || part === 'base' ? undefined : statuses[part]}
-        >
-          {FIGURE_RUNS[part].map((r) => (
-            <rect
-              key={`${r.x}-${r.y}`}
-              className={r.y % 2 ? 'is-scan' : undefined}
-              x={r.x}
-              y={r.y}
-              width={r.w}
-              height={1}
-            />
-          ))}
-        </g>
-      ))}
-    </svg>
-    <span className="lu-holo-sweep" aria-hidden="true" />
-  </div>
-);
-
 const Callout: React.FC<{
   segment: BodySegment;
   reading: SegmentReading;
@@ -385,7 +248,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     {
       testId: 'bar-fat',
       label: t('bodyComp.bar.fat'),
-      icon: 'flame',
+      icon: 'bodyFat',
       tone: 'lu-tone-fat',
       scale: SCALES.fat,
       position: ofStd(scan.bodyFatKg, std.fatKg),
@@ -405,7 +268,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     {
       testId: 'bar-bmi',
       label: t('bodyComp.bar.bmi'),
-      icon: 'ruler',
+      icon: 'gauge',
       tone: 'lu-tone-bmi',
       scale: SCALES.bmi,
       position: scan.bmi,
@@ -422,7 +285,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     {
       testId: 'bar-pbf',
       label: t('bodyComp.bar.pbf'),
-      icon: 'flame',
+      icon: 'bodyFat',
       tone: 'lu-tone-fat',
       scale: pbf,
       position: scan.bodyFatPct,
@@ -448,7 +311,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     },
     {
       key: 'protein',
-      icon: 'drumstick',
+      icon: 'protein',
       tone: 'lu-tone-protein',
       of: (a: AssessmentDto) => a.proteinKg,
       std: std.proteinKg,
@@ -544,7 +407,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                   aria-checked={kind === k}
                   tabIndex={kind === k ? 0 : -1}
                   data-testid={`segments-${k}`}
-                  className="min-h-11 cursor-pointer rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-extrabold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+                  className="flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-extrabold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
                   onClick={() => setKind(k)}
                   onKeyDown={(e) => {
                     const to = rovingTarget(e, i, kinds.length, rtl);
@@ -553,12 +416,16 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                     focusSibling(e, to);
                   }}
                 >
+                  <PixelIcon className="shrink-0 text-base" name={k === 'lean' ? 'muscle' : 'bodyFat'} />
                   {t(k === 'lean' ? 'bodyComp.lean' : 'bodyComp.fatView')}
                 </button>
               ))}
             </div>
             {/* Laid out left to right in both languages, like the scan sheet: the figure is a picture of the body. */}
-            <div dir="ltr" className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-4">
+            <div
+              dir="ltr"
+              className="mx-auto grid w-full max-w-[32rem] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-4"
+            >
               <div className="col-start-1 row-start-1">
                 <Callout
                   segment="leftArm"
@@ -580,7 +447,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                 />
               </div>
               <div className="col-start-2 row-span-2 row-start-1 grid justify-items-center">
-                <Figure statuses={statuses} kind={kind} />
+                <BodyScanFigure statuses={statuses} kind={kind} />
               </div>
               <div className="col-start-3 row-start-1">
                 <Callout

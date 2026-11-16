@@ -39,7 +39,7 @@ const fullDate = (iso: string) =>
 const STATS: { key: string; icon: PixelIconName; tone: string; value: (a: AssessmentDto) => string }[] = [
   { key: 'weight', icon: 'scale', tone: 'lu-tone-weight', value: (a) => formatNumber(a.weightKg, 1) },
   { key: 'muscle', icon: 'muscle', tone: 'lu-tone-muscle', value: (a) => formatNumber(a.skeletalMuscleKg, 1) },
-  { key: 'bodyFat', icon: 'flame', tone: 'lu-tone-fat', value: (a) => `${formatNumber(a.bodyFatPct, 1)}%` },
+  { key: 'bodyFat', icon: 'bodyFat', tone: 'lu-tone-fat', value: (a) => `${formatNumber(a.bodyFatPct, 1)}%` },
 ];
 
 /** The open sheet's content. It mounts on each open, so it starts on the page with the scan in use. */

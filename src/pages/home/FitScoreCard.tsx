@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import type { FitScoreSummary, FitScoreTier } from '../../api/types';
 import { formatNumber, formatSigned } from '../../i18n/format';
 import { tierKey } from './homeText';
-import PixelIcon from '../../components/PixelIcon';
+import HomeIcon from './HomeIcon';
 
 gsap.registerPlugin(useGSAP);
 
@@ -51,11 +51,11 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
     >
       <header className="lu-card-head justify-between">
         <h2 id="fitscore-title" className="lu-card-title">
-          <PixelIcon name="pulse" />
+          <HomeIcon name="pulse" />
           {t('home.fitScore.title')}
         </h2>
         <span className="inline-flex items-center gap-1 text-[0.78rem] font-bold text-muted">
-          <PixelIcon name="lock" />
+          <HomeIcon name="lock" />
           {t('home.fitScore.private')}
         </span>
       </header>
@@ -71,7 +71,7 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
           </span>
           <span className="grid justify-items-start gap-2">
             <span className={`lu-chip lu-chip-tier lu-tier-${TIERS.indexOf(fitScore.tier) + 1}`}>
-              <PixelIcon name="bolt" />
+              <HomeIcon name="bolt" />
               {t(tierKey(fitScore.tier))}
             </span>
             <span
@@ -81,7 +81,7 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
               {trend === 'up' || trend === 'down' ? (
                 <>
                   {/* Trend arrows are never mirrored: up means better in both languages. */}
-                  <PixelIcon name={trend === 'up' ? 'trendUp' : 'trendDown'} />
+                  <HomeIcon name={trend === 'up' ? 'trendUp' : 'trendDown'} />
                   {formatSigned(change)} {t('home.fitScore.since')}
                 </>
               ) : (

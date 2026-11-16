@@ -81,8 +81,6 @@ test('the tabs sit above the home indicator on every tab', async ({ page, loginA
 test('every tab label is shown in full, never cut off', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');
-  const width = page.viewportSize()!.width;
-  test.skip(width < 360, 'Below 360 px the bar shows icons only.');
   const cut = await page
     .locator('.lu-tabbar ion-label')
     .evaluateAll((labels) => labels.filter((l) => l.scrollWidth > l.clientWidth + 1).map((l) => l.textContent));

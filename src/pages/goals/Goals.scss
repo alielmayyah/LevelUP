@@ -16,21 +16,16 @@
   .lu-goal-fat {
     --metric: var(--lu-fat);
     --px-fill: var(--lu-fat);
-    --px-hi: var(--lu-fat-hi);
-    --px-core: var(--lu-fat-core);
   }
 
   .lu-goal-muscle {
     --metric: var(--lu-muscle);
     --px-fill: var(--lu-muscle);
-    --px-hi: var(--lu-muscle-hi);
   }
 
   .lu-goal-weight {
     --metric: var(--ion-color-secondary);
     --px-fill: var(--ion-color-primary);
-    --px-hi: var(--lu-surface);
-    --px-core: var(--lu-accent);
   }
 
   .lu-goal-icon {
