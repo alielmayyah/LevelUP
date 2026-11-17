@@ -59,6 +59,7 @@ export function OutfitPicker({
                 label={t(`avatar.preset.${id}`)}
                 selected={sameAvatar(config, preview)}
                 onSelect={() => onChange(preview)}
+                portrait
               />
             );
           })}
@@ -99,16 +100,21 @@ function LookTile({
   label,
   selected,
   onSelect,
+  portrait = false,
 }: {
   preview: AvatarConfigDto;
   label: string;
   selected: boolean;
   onSelect: () => void;
+  portrait?: boolean;
 }) {
   return (
     <button type="button" aria-pressed={selected} onClick={onSelect} className={TILE}>
-      <span className="lu-style-thumb relative grid aspect-[3/4] place-items-center" aria-hidden="true">
-        <Avatar config={preview} crop="full" className="h-[94%] w-full" />
+      <span
+        className={`lu-style-thumb relative grid place-items-center ${portrait ? 'aspect-square' : 'aspect-[3/4]'}`}
+        aria-hidden="true"
+      >
+        <Avatar config={preview} crop={portrait ? 'hair' : 'full'} className="h-[94%] max-h-60 w-full" />
         {selected && <SelectedMark />}
       </span>
       <span className={TILE_LABEL}>{label}</span>
@@ -133,7 +139,7 @@ interface StylePickerProps<K extends StylePart> {
 
 export function StylePicker<K extends StylePart>({ part, config, onChange, action }: StylePickerProps<K>) {
   const { t, i18n } = useTranslation();
-  const styles = stylesFor(config.styles);
+  const styles = stylesFor(config.styles, config.rig);
   const offered = trainingStyles(part, config.rig, styles[part]);
   const options =
     part === 'hair' && config.rig === 'women'

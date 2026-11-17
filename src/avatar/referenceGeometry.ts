@@ -5,7 +5,7 @@ export type SpriteSource = keyof typeof rawAtlas;
 export type SpriteRegion = 'head' | 'top' | 'legs' | 'shoes';
 export type Foot = 0 | 1;
 export type Paint =
-  'ink' | 'skin' | 'hair' | 'hijab' | 'top' | 'pants' | 'socks' | 'shoes' | 'iris' | 'mouth' | 'beard';
+  'ink' | 'skin' | 'hair' | 'hijab' | 'top' | 'crest' | 'pants' | 'socks' | 'shoes' | 'iris' | 'mouth' | 'beard';
 type Point = readonly [x: number, y: number];
 type Frame = {
   w: number;
@@ -42,9 +42,6 @@ const SOCK_TOP = {
 
 export const sockTop = (style: keyof typeof SOCK_TOP) => SOCK_TOP[style];
 
-const hasScarf = (source: SpriteSource) =>
-  source === 'lilac' || source === 'violetWrap' || source === 'paleWrap' || source === 'amber';
-
 function waistFit(source: SpriteSource, tailored: boolean) {
   const { belt } = atlas[source];
   return {
@@ -68,7 +65,8 @@ export function artworkGeometry(
 
   if (region === 'head') {
     const scale = 20 / (face.eyes[1][0] - face.eyes[0][0]);
-    const y = hasScarf(source) ? ART_NECK + 2 - neck * scale : ART_NECK - 8 - face.jaw[1] * scale;
+    const jaw = source === 'lilac' || source === 'violetWrap' || source === 'paleWrap' ? ART_NECK - 13 : ART_NECK - 6;
+    const y = jaw - face.jaw[1] * scale;
     return `translate(${ART_CENTER - face.jaw[0] * scale} ${y}) scale(${scale})`;
   }
 
@@ -76,7 +74,7 @@ export function artworkGeometry(
   const [start, end, top, bottom] = {
     top: [neck, waist, ART_NECK, ART_WAIST + 2],
     legs: [waist, ankle, ART_WAIST, ART_ANKLE],
-    shoes: [ankle, h, ART_ANKLE - 1, ART_FLOOR],
+    shoes: [ankle, h, ART_ANKLE - 2, ART_FLOOR],
   }[region];
   const scaleY = (bottom - top) / (end - start);
   const scaleX = region === 'shoes' ? 205 / h : fit.scale;
@@ -134,6 +132,8 @@ export function pickLegs(style: ResolvedStyles, tailored: boolean): SpriteSource
     case 'track-pants':
     case 'tapered-joggers':
       return tailored ? 'lilac' : 'cloud';
+    case 'high-rise-leggings':
+      return 'amber';
     case 'capris':
       return 'lilac';
     default:

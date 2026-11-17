@@ -3,10 +3,12 @@ import type { AvatarPaint, ResolvedStyles, WOMEN_HAIR } from './catalog';
 export function RaisedHood({ paint: p }: { paint: AvatarPaint }) {
   return (
     <g data-art-detail="raised-hood" shapeRendering="crispEdges">
-      <path d="M40 79V69h-5V44h3V29h5V20h8v-5h12v-3h13v3h9v6h7v10h5v16h4v23h-7v10H82l-9 7H55l-7-8Z" fill={p.outline} />
-      <path d="M43 77V67h-5V45h3V30h6V22h8v-4h9v-3h11v3h8v6h6v9h5v16h4v18h-8v10H81l-9 7H56l-7-7Z" fill={p.topShade} />
-      <path d="M41 44V31h6v-9h8v-4h9v-3h11v3H65v4h-9v5h-8v17Z" fill={p.topLight} />
-      <path d="M53 82h3v10h-3Zm20 0h3v9h-3Z" fill={p.topTrim} />
+      <path d="M38 81v-6h4V53h4V42h5v-7h7v-4h16v2h7v5h5v7h5v12h3v17h4v7H83l-7 6H55l-6-6Z" fill={p.outline} />
+      <path d="M42 79v-4h3V54h4V43h5v-6h6v-3h14v2h6v5h5v7h4v10h3v17h3v4H82l-7 5H56l-6-5Z" fill={p.tank} />
+      <path d="M48 70V55h4V45h5v-6h7v-3h9v2h6v5h5v7h4v10h3v13l-7 5h-9l-4 4H59l-4-4h-5Z" fill={p.topShade} />
+      <path d="M50 52h4v-7h5v-5h7v-3h8v3h-6v4h-7v4h-5v8h-6Z" fill={p.topLight} />
+      <path d="M46 77h7l6 5h12l7-5h11v2H82l-7 5H56l-6-5h-4Z" fill={p.topLight} />
+      <path d="M56 80h2v12h-2Zm17 0h2v10h-2Z" fill={p.topTrim} />
     </g>
   );
 }
@@ -76,7 +78,12 @@ export function TopDetails({ style, paint: p }: { style: ResolvedStyles['top']; 
     case 'longline-training-top':
       return <path d="M-15 36h30v8h-30Z" fill={p.topShade} />;
     case 'longline-tank':
-      return <path d="M-15 32h30v15h-30Z" fill={p.tank} />;
+      return (
+        <>
+          <path d="M-15 29h30v8l2 3v7h-34v-7l2-3Z" fill={p.tank} />
+          <path d="M-15 33h3v8l-2 3h26v-2h4v5h-33v-6l2-4Z" fill={p.topShade} />
+        </>
+      );
     case 'varsity':
       return <path d="M-11 14h6v8h-6Z M-17 40h34v3h-34Z" fill={p.topTrim} />;
     case 'hoodie':

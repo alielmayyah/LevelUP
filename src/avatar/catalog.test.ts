@@ -9,7 +9,6 @@ import {
   contrastRatio,
   customizerTabsFor,
   defaultAvatar,
-  hasLongSleeves,
   isHijab,
   isValidAvatar,
   memberAvatar,
@@ -140,10 +139,20 @@ describe('avatar catalog', () => {
     const hijab = applyOutfit(women, 'hijab-training');
     expect(outfitsFor('women')[0]).toBe('hijab-training');
     expect(outfitsFor('standard')).not.toContain('hijab-training');
+    expect(outfitsFor('standard')).not.toContain('hijab-tank');
+    expect(applyOutfit(women, 'hijab-tank').styles).toMatchObject({ hair: 'sport-hijab', top: 'longline-tank' });
+    expect(applyOutfit(defaultAvatar(), 'hijab-tank')).toEqual(defaultAvatar());
+    expect(applyCharacterPreset(defaultAvatar(), 'lilac-hijab')).toEqual(defaultAvatar());
+    expect(withHair(defaultAvatar(), 'sport-hijab')).toEqual(defaultAvatar());
     expect(customizerTabsFor('women')).not.toContain('beard');
     expect(trainingStyles('hair', 'standard', 'sport-hijab')).not.toContain('sport-hijab');
     expect(trainingStyles('hair', 'women')).not.toContain('fade');
     expect(isValidAvatar(hijab)).toBe(true);
+    const legacyMale = { ...hijab, rig: 'standard', hairUnderHijab: 'waves' } as const;
+    expect(memberAvatar({ memberId: 101, sex: 'MALE', avatar: legacyMale })).toMatchObject({
+      styles: { hair: 'waves', pants: 'track-pants' },
+      colors: hijab.colors,
+    });
     expect(normalizeAvatar(hijab)).toEqual(hijab);
     expect(isValidAvatar({ ...hijab, colors: { ...hijab.colors, hijab: 'unknown' } })).toBe(false);
     const sage = { ...hijab, colors: { ...hijab.colors, hijab: 'sage' } };
@@ -179,11 +188,12 @@ describe('avatar catalog', () => {
       const mixed = randomAvatar(() => roll, 'women', long);
       const styles = stylesFor(mixed.styles);
       expect(styles.hair).toBe('longline-hijab');
-      expect(hasLongSleeves(styles.top)).toBe(true);
+      expect(trainingStyles('top', 'women')).toContain(styles.top);
       expect(showsLowerLeg(styles.pants)).toBe(false);
       expect(mixed.colors.hijab).toBe(long.colors.hijab);
       expect(removeHijab(mixed).colors.hair).toBe(braided.colors.hair);
     }
+    expect(randomAvatar(() => 0, 'women', long).styles).toMatchObject({ hair: 'longline-hijab', top: 'tank' });
   });
 
   it('defaults older saves to no glasses and keeps frames independent of outfits and expressions', () => {

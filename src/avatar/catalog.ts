@@ -165,14 +165,6 @@ export const showsLowerLeg = (pants: ResolvedStyles['pants']): boolean =>
   pants === 'loose-training-shorts' ||
   pants === 'capris';
 
-export const hasLongSleeves = (top: ResolvedStyles['top']): boolean =>
-  top !== 'tank' &&
-  top !== 'sleeveless-hoodie' &&
-  top !== 'tee' &&
-  top !== 'mesh-tee' &&
-  top !== 'longline-tank' &&
-  top !== 'racerback-bra';
-
 export const STYLE_PARTS = Object.keys(STYLES) as StylePart[];
 
 function styleFor<K extends StylePart>(part: K, value: unknown): ResolvedStyles[K] {
@@ -180,9 +172,10 @@ function styleFor<K extends StylePart>(part: K, value: unknown): ResolvedStyles[
   return options.find((id) => id === value) ?? options[0];
 }
 
-export function stylesFor(value?: Partial<Record<StylePart, unknown>> | null): ResolvedStyles {
+export function stylesFor(value?: Partial<Record<StylePart, unknown>> | null, rig?: AvatarRig): ResolvedStyles {
+  const hair = styleFor('hair', value?.hair);
   return {
-    hair: styleFor('hair', value?.hair),
+    hair: rig === 'standard' && isHijab(hair) ? 'curls' : hair,
     body: styleFor('body', value?.body),
     top: styleFor('top', value?.top),
     shoes: styleFor('shoes', value?.shoes),
@@ -359,7 +352,7 @@ export function randomAvatar(
     styles: {
       hair: covered ? currentHair : pick(trainingStyles('hair', rig).filter((style) => !isHijab(style))),
       body: pick(STYLES.body),
-      top: pick(trainingStyles('top', rig).filter((top) => !covered || hasLongSleeves(top))),
+      top: pick(trainingStyles('top', rig)),
       shoes: pick(trainingStyles('shoes', rig)),
       pants: pick(trainingStyles('pants', rig).filter((pants) => !covered || !showsLowerLeg(pants))),
       beard: pick(trainingStyles('beard', rig)),
@@ -390,12 +383,14 @@ export function memberAvatar({
   const styles = stylesFor(config.styles);
   const defaultHair = rig === 'women' ? 'high-ponytail' : 'curls';
   if (!isStyleForRig('hair', styles.hair, rig) || (rig !== config.rig && styles.hair === 'curls')) {
-    styles.hair = defaultHair;
+    const remembered = isHijab(styles.hair) ? config.hairUnderHijab : undefined;
+    styles.hair = remembered && isStyleForRig('hair', remembered, rig) ? remembered : defaultHair;
   }
   if (!isStyleForRig('top', styles.top, rig)) styles.top = 'tee';
   if (!isStyleForRig('pants', styles.pants, rig)) styles.pants = 'track-pants';
   if (!isStyleForRig('beard', styles.beard, rig)) styles.beard = 'clean-shaven';
-  return { ...config, rig, styles };
+  const { hairUnderHijab, ...look } = config;
+  return { ...look, rig, styles, ...(hairUnderHijab && isHijab(styles.hair) ? { hairUnderHijab } : {}) };
 }
 
 export function sameAvatar(a: AvatarConfigDto, b: AvatarConfigDto): boolean {
@@ -413,6 +408,7 @@ export function sameAvatar(a: AvatarConfigDto, b: AvatarConfigDto): boolean {
 }
 
 export function withHair(config: AvatarConfigDto, hair: ResolvedStyles['hair']): AvatarConfigDto {
+  if (!isStyleForRig('hair', hair, config.rig)) return config;
   const styles = stylesFor(config.styles);
   const { hairUnderHijab, ...look } = config;
   const remembered = isHijab(styles.hair) ? hairUnderHijab : styles.hair;
@@ -445,6 +441,16 @@ export const OUTFITS = {
       socks: 'crew-socks',
     },
     colors: { hijab: 'navy', tank: 'cloud-blue', shorts: 'charcoal', shoes: 'off-white', socks: 'charcoal' },
+  },
+  'hijab-tank': {
+    styles: {
+      hair: 'sport-hijab',
+      top: 'longline-tank',
+      pants: 'high-rise-leggings',
+      shoes: 'runners',
+      socks: 'ankle-socks',
+    },
+    colors: { hijab: 'navy', tank: 'coral', shorts: 'charcoal', shoes: 'teal', socks: 'off-white' },
   },
   'violet-training': {
     styles: { top: 'longline-tank', pants: 'high-rise-leggings', shoes: 'cross-trainers', socks: 'ankle-socks' },
@@ -562,6 +568,7 @@ export function outfitsFor(rig: AvatarRig): readonly OutfitId[] {
   if (rig === 'standard') return SHARED_OUTFIT_IDS;
   return [
     'hijab-training',
+    'hijab-tank',
     'covered-cardio',
     'covered-strength',
     'violet-training',
@@ -573,6 +580,7 @@ export function outfitsFor(rig: AvatarRig): readonly OutfitId[] {
 }
 
 export function applyOutfit(config: AvatarConfigDto, id: OutfitId): AvatarConfigDto {
+  if (!outfitsFor(config.rig).includes(id)) return config;
   const outfit: Outfit = OUTFITS[id];
   const look = outfit.styles.hair ? withHair(config, outfit.styles.hair) : config;
   return {
@@ -642,6 +650,7 @@ export function characterPresetsFor(rig: AvatarRig): readonly CharacterPresetId[
 }
 
 export function applyCharacterPreset(config: AvatarConfigDto, id: CharacterPresetId): AvatarConfigDto {
+  if (!characterPresetsFor(config.rig).includes(id)) return config;
   const preset = CHARACTER_PRESETS[id];
   const look = withHair(config, preset.styles.hair);
   return {

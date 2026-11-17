@@ -67,7 +67,7 @@ interface Props {
 
 export default memo(function Avatar({ config, crop = 'portrait', label, className, testId }: Props) {
   const paint = useMemo(() => paintFor(config), [config]);
-  const styles = stylesFor(config.styles);
+  const styles = stylesFor(config.styles, config.rig);
   const tailored = config.rig === 'women';
   const { body, top, hair, pants, shoes, socks } = styles;
   const hijab = isHijab(hair);
@@ -79,7 +79,7 @@ export default memo(function Avatar({ config, crop = 'portrait', label, classNam
   const showHead = full || crop === 'portrait' || crop === 'hair' || crop === 'face' || crop === 'beard';
   const showShoes = full || crop === 'shoes';
   const current = pose(full ? body : 'balanced');
-  const sourceHead = raised && !hijab ? 'lilac' : pickHead(styles);
+  const sourceHead = raised && !hijab ? 'curlyHead' : pickHead(styles);
   const sourceLegs = pickLegs(styles, tailored);
   const ankles = ([0, 1] as const).map((side) => alignedAnkle(sourceLegs, side, tailored));
   const viewBox = topOnly && raised ? '0 0 128 162' : VIEW[crop];
@@ -142,10 +142,15 @@ export default memo(function Avatar({ config, crop = 'portrait', label, classNam
           </g>
         )}
         {crop === 'socks' && <SpriteSocks style={socks} paint={paint} />}
-        {!hijab && !raised && showHead && showTop && (
-          <g transform={current.head}>
-            <path d="M56 69h16v10l5 5-13 5-13-5 5-5z" fill={paint.skin} stroke={paint.outline} strokeWidth="2" />
-            <path d="M57 72h14v7l-14-2z" fill={paint.skinShade} />
+        {!raised && showHead && showTop && (
+          <g transform={current.head} shapeRendering="crispEdges">
+            <path
+              d="M56 68h16v13h3v7H53v-7h3Z"
+              fill={hijab ? paint.hijabShade : paint.skin}
+              stroke={paint.outline}
+              strokeWidth="2"
+            />
+            {!hijab && <path d="M57 72h14v6H57Z" fill={paint.skinShade} />}
           </g>
         )}
         {showTop && (
@@ -181,12 +186,7 @@ export default memo(function Avatar({ config, crop = 'portrait', label, classNam
             <ReferenceFace source={sourceHead} styles={styles} paint={paint} tailored={tailored} />
           </g>
         )}
-        {topOnly && raised && (
-          <>
-            <RaisedHood paint={paint} />
-            <ReferenceLayer source="lilac" region="head" {...layerProps} hood="raised" />
-          </>
-        )}
+        {topOnly && raised && <RaisedHood paint={paint} />}
       </g>
     </svg>
   );

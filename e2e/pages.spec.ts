@@ -327,6 +327,26 @@ test.describe('Character', () => {
         test('previews and saves styles and colors', async ({ page, loginAs }) => {
           const copy = lang === 'ar' ? ar : en;
           await loginAs();
+          await page.addInitScript(
+            (legacy) => {
+              const key = 'CapacitorStorage.lu.mock.avatar.101';
+              if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(legacy));
+            },
+            {
+              schemaVersion: 1,
+              rig: 'standard',
+              styles: { hair: 'sport-hijab', body: 'balanced', top: 'zip-hoodie', shoes: 'trainers' },
+              colors: {
+                skin: 'warm-tan',
+                hair: 'espresso',
+                eyes: 'dark-brown',
+                tank: 'levelup-violet',
+                shorts: 'deep-violet',
+                shoes: 'off-white',
+              },
+              hairUnderHijab: 'waves',
+            },
+          );
           await page.goto('/tabs/profile');
           await page.getByRole('link', { name: copy.profile.customize }).click();
           const editor = page.locator(tab('character'));
@@ -347,11 +367,16 @@ test.describe('Character', () => {
           );
           const outfits = editor.getByRole('group', { name: copy.avatar.outfitTitle });
           await expect(preview).toHaveAttribute('data-rig', 'standard');
+          await expect(preview.locator('[data-style-layer="hair"]')).toHaveAttribute('data-variant', 'waves');
+          await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'zip-hoodie');
+          await expect(preview.locator('[data-paint="hijab-fabric"]')).toHaveCount(0);
           await expect(outfits.getByRole('button', { name: copy.avatar.outfit['hijab-training'] })).toHaveCount(0);
+          await expect(outfits.getByRole('button', { name: copy.avatar.outfit['hijab-tank'] })).toHaveCount(0);
           await expect(outfits.getByRole('button', { name: copy.avatar.outfit['violet-training'] })).toHaveCount(0);
           const hoodUp = outfits.getByRole('button', { name: copy.avatar.outfit['hoodie-warmup'], exact: true });
           await hoodUp.click();
           await expect(preview.locator('[data-art-detail="raised-hood"]')).toHaveCount(1);
+          await expect(preview.locator('[data-paint="hijab-fabric"], [data-art-detail="hijab-face"]')).toHaveCount(0);
           await expect(preview.locator('[data-style-layer="hair"]')).toHaveCount(0);
           await expect(preview.locator('[data-art-detail="folded-hood"]')).toHaveCount(0);
           await selectTab('top');
@@ -548,6 +573,11 @@ test.describe('Character', () => {
             'data-variant',
             'track-pants',
           );
+          const tankOutfit = editor.getByRole('button', { name: copy.avatar.outfit['hijab-tank'], exact: true });
+          await tankOutfit.click();
+          await expect(tankOutfit).toHaveAttribute('aria-pressed', 'true');
+          await expect(preview.locator('[data-style-layer="top"]')).toHaveAttribute('data-variant', 'longline-tank');
+          await expect(preview.locator('[data-paint="hijab-fabric"]')).toHaveCount(1);
           await selectTab('hair');
           await expect(editor.getByRole('radio', { name: copy.avatar.style.fade, exact: true })).toHaveCount(0);
           const hijab = editor.getByRole('radio', { name: copy.avatar.style['sport-hijab'], exact: true });
@@ -574,7 +604,7 @@ test.describe('Character', () => {
             )
             .toMatchObject({
               rig: 'women',
-              styles: { body: 'athletic', hair: 'longline-hijab', top: 'fitted-zip' },
+              styles: { body: 'athletic', hair: 'longline-hijab', top: 'longline-tank' },
               colors: { hijab: 'sage' },
               hairUnderHijab: 'braided-ponytail',
             });

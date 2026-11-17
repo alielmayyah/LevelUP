@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import Avatar from './Avatar';
-import { applyCharacterPreset, defaultAvatar, stylesFor } from './catalog';
+import { applyCharacterPreset, applyOutfit, defaultAvatar, stylesFor } from './catalog';
 
 describe('avatar artwork', () => {
   it('keeps preset artwork when changing an unrelated part or the body proportions', () => {
@@ -40,5 +40,22 @@ describe('avatar artwork', () => {
 
     rerender(<Avatar config={{ ...config, styles: { ...styles, socks: 'no-socks' } }} crop="full" />);
     expect(sock()).toBeNull();
+  });
+
+  it('draws hijab fabric only on the women’s rig and uses its own face for a raised hood', () => {
+    const config = applyOutfit({ ...defaultAvatar(), rig: 'women' }, 'hijab-tank');
+    const { container, rerender } = render(<Avatar config={config} crop="full" />);
+    const fabric = () => container.querySelector('[data-paint="hijab-fabric"]');
+    expect(fabric()).not.toBeNull();
+    expect(container.querySelector('[data-style-layer="top"]')?.getAttribute('data-variant')).toBe('longline-tank');
+
+    rerender(<Avatar config={{ ...config, rig: 'standard' }} crop="full" />);
+    expect(fabric()).toBeNull();
+    expect(container.querySelector('[data-style-layer="hair"]')?.getAttribute('data-variant')).toBe('curls');
+
+    rerender(<Avatar config={applyOutfit(defaultAvatar(), 'hoodie-warmup')} crop="full" />);
+    expect(fabric()).toBeNull();
+    expect(container.querySelector('[data-art-detail="hijab-face"]')).toBeNull();
+    expect(container.querySelector('[data-art-detail="raised-hood"]')).not.toBeNull();
   });
 });

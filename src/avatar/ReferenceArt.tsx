@@ -17,47 +17,45 @@ import { PantsDetails, ShoeDetails, TopDetails } from './SpriteDetails';
 type Layer = { paint: Paint; color: string; shade: number; path: string };
 const CACHE = new Map<SpriteSource, Record<SpriteRegion, Layer[]>>();
 
+// Follow the material boundary where a reference head meets its original clothing.
+// This keeps the folds of each scarf and excludes the baked-in hoodie shoulders.
+const HEAD_CUTS: Partial<Record<SpriteSource, string>> = {
+  cloud: 'M0 0H105V64H73V68H68V72H48V70H41V67H36V64H0Z',
+  silver: 'M0 0H112V72H73V76H48V73H35V69H0Z',
+  teal: 'M0 0H105V77H75V75H50V74H43V67H39V59H35V49H29V43H0Z',
+  lilac: 'M0 0H86V53H69V57H63V61H58V64H51V67H35V65H29V61H24V57H20V53H0Z',
+  violetWrap: 'M0 0H95V53H63V57H60V61H55V64H50V67H40V64H33V61H28V58H23V54H18V51H0Z',
+  paleWrap: 'M0 0H93V53H62V57H57V61H54V65H48V67H37V64H31V61H26V57H20V54H17V50H0Z',
+};
+const HOOD_FACE = 'M45 49H80V54H85V66H90V75H83V83H77V89H69V94H52V91H44V85H38V78H32V65H37V58H42V53H45Z';
+const STUDIO_TOP = 'M46 76H75V80H79V84H84V91H105V219H0V94H27V89H31V85H36V81H41V78H46Z';
+
 function layers(source: SpriteSource) {
   const cached = CACHE.get(source);
   if (cached) return cached;
 
-  const { w, h, neck, waist, ankle, palette, pixels } = atlas[source];
+  const { w, h, palette, pixels } = atlas[source];
   const indices = atob(pixels);
+  const stride = Math.ceil(w / 3) * 3;
   const rows = palette.map(() => [] as string[]);
-  let start = 0;
-  let offset = 0;
-  [neck, waist, ankle, h]
-    .map((y) => Math.min(y, h))
-    .forEach((endY, region) => {
-      const step = region === 0 && !source.endsWith('Head') ? 1 : 2;
-      const stride = Math.ceil(w / step);
-      for (let y = start; y < endY; y += step) {
-        const height = Math.min(step, endY - y);
-        // Avoid loose hair pixels left in the shoulders of the studio top.
-        const studioCollar = source === 'teal' && region === 1 && y < neck + 12;
-        const left = studioCollar ? 17 : 0;
-        const right = studioCollar ? 42 : stride;
-        for (let x = left; x < right;) {
-          const index = indices.charCodeAt(offset + x);
-          let endX = x + 1;
-          while (endX < right && indices.charCodeAt(offset + endX) === index) endX++;
-          const length = Math.min(endX * step, w) - x * step;
-          if (index) rows[index - 1].push(`M${x * step} ${y}h${length}v${height}h-${length}z`);
-          x = endX;
-        }
-        offset += stride;
-      }
-      start = endY;
-    });
+  for (let y = 0; y < h; y++) {
+    const offset = y * stride;
+    for (let x = 0; x < w;) {
+      const index = indices.charCodeAt(offset + x);
+      let end = x + 1;
+      while (end < w && indices.charCodeAt(offset + end) === index) end++;
+      const width = end - x;
+      if (index) rows[index - 1].push(`M${x} ${y}h${width}v1h-${width}z`);
+      x = end;
+    }
+  }
   const output: Record<SpriteRegion, Layer[]> = { head: [], top: [], legs: [], shoes: [] };
   palette.forEach(([region, paint, color, shade], index) => {
     if (!rows[index].length) return;
-    // Pink cheek highlights were picked up by the pale scarf's fabric mask.
-    const cheek = source === 'paleWrap' && paint === 'hijab' && (color === 'f1bcc1' || color === 'b07b93');
     output[region].push({
-      paint: cheek ? 'skin' : paint,
+      paint,
       color: `#${color}`,
-      shade: cheek ? (color === 'f1bcc1' ? 11 : -28) : shade,
+      shade,
       path: rows[index].join(''),
     });
   });
@@ -90,10 +88,11 @@ const COLOR_PART = {
   socks: 'socks',
   shoes: 'shoes',
   beard: 'beard',
-} as const satisfies Record<Exclude<Paint, 'ink' | 'iris' | 'mouth'>, ColorPart>;
+} as const satisfies Record<Exclude<Paint, 'ink' | 'iris' | 'mouth' | 'crest'>, ColorPart>;
 function fillFor(layer: Layer, source: SpriteSource, config: AvatarConfigDto, p: AvatarPaint) {
   const { paint, shade, color } = layer;
   if (paint === 'ink') return color;
+  if (paint === 'crest') return config.styles?.top === 'tank' ? color : p.topShade;
   if (paint === 'iris') return config.colors.eyes === 'dark-brown' ? color : shade < 0 ? p.outline : p.eyes;
   if (paint === 'mouth') {
     if (config.styles?.face && config.styles.face !== 'smile') return p.skin;
@@ -102,7 +101,7 @@ function fillFor(layer: Layer, source: SpriteSource, config: AvatarConfigDto, p:
   if (paint === 'beard' && config.colors.beard && config.colors.beard !== 'match-hair')
     return shade < 0 ? p.beardShade : p.beard;
   if (paint === 'beard') return color;
-  const original = paint === 'skin' ? 'light' : PALETTES[source][paint];
+  const original = paint === 'skin' && source !== 'paleWrap' ? 'light' : PALETTES[source][paint];
   const part = COLOR_PART[paint];
   // Exposed ankles are skin until the selected sock is painted over them.
   const bareAnkle = paint === 'socks';
@@ -166,7 +165,7 @@ export function ReferenceLayer({
   const detailShape =
     top || legs
       ? entries
-          .filter(({ paint }) => paint === fabric || (top && paint === 'skin' && (sleeves || shirt)))
+          .filter(({ paint }) => paint === fabric || (top && (paint === 'crest' || (paint === 'skin' && (sleeves || shirt)))))
           .map(({ path }) => path)
           .join('')
       : '';
@@ -178,10 +177,12 @@ export function ReferenceLayer({
           .join('')
       : '';
   const cuffStart = capris ? Math.max(hem, cuff) : cuff;
-  const shoeOrHeadClip = shoe || (region === 'head' && (hood || source === 'teal'));
+  const materialCut =
+    hood ? HOOD_FACE : region === 'head' ? HEAD_CUTS[source] : top && source === 'teal' ? STUDIO_TOP : undefined;
+  const hasClip = shoe || materialCut;
   return (
     <g transform={artworkGeometry(source, region, tailored, shoe)} shapeRendering="crispEdges">
-      {shoeOrHeadClip && (
+      {hasClip && (
         <clipPath id={clip}>
           {shoe ? (
             <rect
@@ -190,22 +191,17 @@ export function ReferenceLayer({
               width={shoe.side === 0 ? middle : frame.w - middle}
               height={frame.h - frame.ankle}
             />
-          ) : hood ? (
-            <rect x="0" y="0" width={frame.w} height={frame.neck - 5} />
           ) : (
-            // The studio reference has loose hair below its bun.
-            <path d={`M0 0H${frame.w}V74H43V67H39V59H35V49H29V43H0Z`} />
+            <path d={materialCut} />
           )}
         </clipPath>
       )}
-      <g clipPath={shoeOrHeadClip ? `url(#${clip})` : undefined}>
+      <g clipPath={hasClip ? `url(#${clip})` : undefined}>
         {entries.map((layer, i) => (
           <path
             key={i}
             fill={fillFor(
-              layer.paint === 'hijab' && hood
-                ? { ...layer, paint: 'top' }
-                : layer.paint === 'hair' && styles.hair === 'shaved' && region === 'head'
+              layer.paint === 'hair' && styles.hair === 'shaved' && region === 'head' && !hood
                   ? { ...layer, paint: 'skin', color: paint.skin }
                   : layer,
               source,
@@ -233,7 +229,7 @@ export function ReferenceLayer({
       )}
       {(top || legs) && (
         <>
-          <clipPath id={detail}>
+          <clipPath id={detail} clipPath={hasClip ? `url(#${clip})` : undefined}>
             <path d={detailShape} />
           </clipPath>
           <g clipPath={`url(#${detail})`}>
@@ -242,7 +238,7 @@ export function ReferenceLayer({
               transform={`translate(${waistCenter} ${top ? frame.neck : frame.waist}) scale(${(beltEnd - beltStart) / 43} ${top ? (frame.waist - frame.neck) / 47 : (frame.ankle - frame.waist) / 51})`}
             >
               {sleeves && <path d="M-42 0h84v19H-42Z" fill={paint.tank} />}
-              {shirt && <path d="M-15 31h30v16h-30Z" fill={paint.tank} />}
+              {shirt && styles.top === 'tank' && <path d="M-15 31h30v16h-30Z" fill={paint.tank} />}
               {top ? (
                 <TopDetails style={styles.top} paint={paint} />
               ) : (
@@ -265,6 +261,9 @@ export function ReferenceLayer({
               height={frame.ankle - cuffStart}
               fill={paint.socks}
             />
+            {frame.feet.map((x) => (
+              <rect key={x} x={x - 10} y={cuffStart} width="4" height={frame.ankle - cuffStart} fill={paint.sockShade} />
+            ))}
             {(styles.socks === 'striped-socks' || styles.socks === 'knee-highs') && (
               <rect y={capris ? Math.max(hem, cuff + 3) : cuff + 3} width={frame.w} height="2" fill={paint.sockTrim} />
             )}

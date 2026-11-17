@@ -243,7 +243,7 @@ function trace(name, [sheet, bounds, landmarks, hips]) {
       const pixel = at(x, y);
       colors.push(pixel);
       // The panels are almost uniform, while the sprite's ink is darker.
-      if (distance(pixel, bg) > (y > ankle + 19 ? 15 : 8)) body[(y - y0) * w + x - x0] = 1;
+      if (distance(pixel, bg) > (y > ankle + 19 ? 15 : 11)) body[(y - y0) * w + x - x0] = 1;
     }
   }
 
@@ -313,11 +313,12 @@ function trace(name, [sheet, bounds, landmarks, hips]) {
         const mouth = Math.abs(localX - mx) <= dx * 1.65 && Math.abs(localY - my) <= dy * 0.7;
         const inFace =
           localY >= face.brow && localY <= face.jaw[1] && localX >= face.cheeks[0] && localX <= face.cheeks[1];
+        const paleCheek = name === 'paleWrap' && p[0] > 130 && p[0] > p[2] + 6 && p[0] > p[1] + 10;
         const beard = name === 'cap' && localY >= 55 && localX >= 40 && localX <= 78 && !isSkin(p);
         if (eye && light < 80 && Math.max(...p) - Math.min(...p) < 60) paint = 'iris';
         else if (!beard && mouth && p[0] > p[1] + 27 && light < 154) paint = 'mouth';
         else if (beard) paint = 'beard';
-        else if (inFace && !backHair && isSkin(p)) paint = 'skin';
+        else if (inFace && !backHair && (isSkin(p) || paleCheek)) paint = 'skin';
         else if (eyeSocket && (light < 57 || (light > 159 && Math.max(...p) - Math.min(...p) < 44))) paint = 'ink';
         else if (name === 'amber' && light > 90 && p[1] > p[2] + 35) paint = 'top';
         else if (light > 32 || p[2] > p[0] + 9) paint = covered ? 'hijab' : 'hair';
@@ -328,7 +329,9 @@ function trace(name, [sheet, bounds, landmarks, hips]) {
         const bareNeck = bareTop && Math.abs(localX - face.jaw[0]) < 16 && localY < neck - y0 + 10;
         const midriff = name === 'teal' && localY >= 112 && localY < 122 && !outsideHips;
         if (isSkin(p) && (wrist || arm || bareNeck || midriff)) paint = 'skin';
-        else if (!(name === 'silver' && p[1] > 115 && p[0] > 145 && p[2] < 110)) paint = 'top';
+        else if (name === 'silver' && !outsideHips && localY < 111 && p[1] > 115 && p[0] > 145 && p[2] < 110)
+          paint = 'crest';
+        else paint = 'top';
       } else if (region === 'legs') {
         if ((name === 'silver' || name === 'teal') && localY > (name === 'silver' ? 155 : 144) && warm) paint = 'skin';
         else if (localY >= sockRow && light > 104 && Math.max(...p) - Math.min(...p) < 68) paint = 'socks';
@@ -343,32 +346,33 @@ function trace(name, [sheet, bounds, landmarks, hips]) {
   }
 
   const entries = [];
-  const pixels = Buffer.alloc(w * h);
+  // A common base64 boundary keeps matching runs compressible across rows.
+  const stride = Math.ceil(w / 3) * 3;
+  const pixels = Buffer.alloc(stride * h);
   for (const [key, group] of groups) {
     const [region, paint] = key.split('/');
     const centerLight = luminance(average(group.map(({ rgb }) => rgb)));
-    const shadeCount = region === 'head' ? 16 : paint === 'ink' ? 8 : 10;
-    for (const cluster of paletteFor(group, shadeCount)) {
-      const color = average(cluster.map(({ rgb }) => rgb));
+    const shadeCount = paint === 'skin' || paint === 'hair' || paint === 'hijab' ? 8 : paint === 'ink' ? 4 : 5;
+    const colors = paletteFor(group, shadeCount).map((cluster) => average(cluster.map(({ rgb }) => rgb)));
+    const first = entries.length + 1;
+    for (const color of colors) {
       const hex = color.map((channel) => channel.toString(16).padStart(2, '0')).join('');
       entries.push([region, paint, hex, Math.round(luminance(color) - centerLight)]);
-      for (const { i } of cluster) pixels[i] = entries.length;
+    }
+    for (const { i, rgb } of group) {
+      let nearest = 0;
+      let smallest = Infinity;
+      colors.forEach((color, index) => {
+        const error = color.reduce((sum, channel, k) => sum + (channel - rgb[k]) ** 2, 0);
+        if (error < smallest) {
+          nearest = index;
+          smallest = error;
+        }
+      });
+      pixels[Math.floor(i / w) * stride + (i % w)] = first + nearest;
     }
   }
   if (entries.length > 255) throw new Error('Palette index overflow: ' + name);
-  // Keep full detail around faces in the full poses. Wardrobe and large
-  // standalone heads use a two-pixel pitch at their in-app display sizes.
-  // Restart at each joint so the edges of neighboring layers meet.
-  const sampled = [];
-  const joints = [neck - y0, waist - y0, ankle - y0, h].map((y) => Math.min(y, h));
-  let start = 0;
-  joints.forEach((end, region) => {
-    const step = region === 0 && !name.endsWith('Head') ? 1 : 2;
-    for (let y = start; y < end; y += step) {
-      for (let x = 0; x < w; x += step) sampled.push(pixels[y * w + x]);
-    }
-    start = end;
-  });
   return {
     w,
     h,
@@ -380,7 +384,7 @@ function trace(name, [sheet, bounds, landmarks, hips]) {
     feet,
     face: { eyes: face.eyes, mouth: face.mouth, jaw: face.jaw },
     palette: entries,
-    pixels: Buffer.from(sampled).toString('base64'),
+    pixels: pixels.toString('base64'),
   };
 }
 
