@@ -10,7 +10,6 @@ import {
   type LeaderboardBoard,
   type LeaderboardDto,
   type LeaderboardRow,
-  type Sex,
 } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
@@ -158,7 +157,6 @@ function AgeFilter({ value, mine, onChange }: AgeFilterProps) {
 
 interface RowProps {
   row: LeaderboardRow;
-  division: Sex;
   board: LeaderboardBoard;
   value: string;
   you: string;
@@ -166,7 +164,7 @@ interface RowProps {
 }
 
 /** Memoized so a long board re-renders only the rows that changed. */
-const Row = memo(function Row({ row, division, board, value, you, rowRef }: RowProps) {
+const Row = memo(function Row({ row, board, value, you, rowRef }: RowProps) {
   const medal = row.rank <= 3 ? `lu-medal-${row.rank}` : '';
   return (
     <li
@@ -180,7 +178,7 @@ const Row = memo(function Row({ row, division, board, value, you, rowRef }: RowP
       </span>
       <span className="flex min-w-0 items-center gap-2 font-bold">
         <span className="lu-avatar-frame block size-9 flex-none overflow-hidden rounded-[10px]">
-          <Avatar config={rowAvatar(row, division)} className="block size-full" />
+          <Avatar config={rowAvatar(row)} className="block size-full" />
         </span>
         <span className="truncate" dir="auto">
           {row.name}
@@ -318,7 +316,7 @@ const Leaderboard: React.FC = () => {
           >
             {/* The face only where there is room: on a phone the title needs the width. */}
             <span className="lu-avatar-frame hidden size-10 flex-none overflow-hidden rounded-[10px] min-[420px]:block">
-              <Avatar config={rowAvatar(me, d.division)} className="block size-full" />
+              <Avatar config={rowAvatar(me)} className="block size-full" />
             </span>
             <span className="grid leading-none">
               <strong className="lu-display text-[1.6rem] text-ink">{formatRank(me.rank)}</strong>
@@ -434,7 +432,6 @@ const Leaderboard: React.FC = () => {
           {d && d.rows.length > 0 && (
             <Podium
               rows={d.rows.slice(0, 3)}
-              division={d.division}
               board={d.board}
               format={(v) => format(v, d.board)}
               you={t('leaderboard.you')}
@@ -458,7 +455,6 @@ const Leaderboard: React.FC = () => {
                   <Row
                     key={r.memberId}
                     row={r}
-                    division={d.division}
                     board={d.board}
                     value={format(r.value, d.board)}
                     you={t('leaderboard.you')}
@@ -483,7 +479,7 @@ const Leaderboard: React.FC = () => {
             </span>
             <span className="flex min-w-0 items-center gap-2 font-bold">
               <span className="lu-avatar-frame block size-9 flex-none overflow-hidden rounded-[10px]">
-                <Avatar config={rowAvatar(me, d.division)} className="block size-full" />
+                <Avatar config={rowAvatar(me)} className="block size-full" />
               </span>
               <span className="truncate" dir="auto">
                 {me.name}

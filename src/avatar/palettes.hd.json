@@ -1,0 +1,59 @@
+{
+  "skin": {
+    "default": "medium",
+    "presets": [
+      { "id": "porcelain", "swatch": "#f3cfb3", "hue": 0, "sat": 0.8, "light": 1.32 },
+      { "id": "light", "swatch": "#e9b48f", "hue": 0, "sat": 0.9, "light": 1.16 },
+      { "id": "medium", "swatch": "#c98a5e", "hue": 0, "sat": 1, "light": 1 },
+      { "id": "tan", "swatch": "#a86c45", "hue": -4, "sat": 1.05, "light": 0.84 },
+      { "id": "brown", "swatch": "#7d4c2e", "hue": -6, "sat": 1.1, "light": 0.66 },
+      { "id": "deep", "swatch": "#4f2f1d", "hue": -8, "sat": 1.1, "light": 0.48 }
+    ]
+  },
+  "hair": {
+    "default": "chestnut",
+    "presets": [
+      { "id": "chestnut", "swatch": "#7a4526", "hue": 0, "sat": 1, "light": 1 },
+      { "id": "black", "swatch": "#231a17", "hue": 0, "sat": 0.35, "light": 0.42 },
+      { "id": "darkBrown", "swatch": "#4a2c1c", "hue": 0, "sat": 0.85, "light": 0.68 },
+      { "id": "auburn", "swatch": "#8c3420", "hue": -14, "sat": 1.45, "light": 1 },
+      { "id": "blonde", "swatch": "#c9a066", "hue": 12, "sat": 0.9, "light": 1.7 },
+      { "id": "grey", "swatch": "#9a9590", "hue": 0, "sat": 0, "light": 1.45 }
+    ]
+  },
+  "top": {
+    "default": "crimson",
+    "presets": [
+      { "id": "crimson", "swatch": "#8e1f33", "hue": 0, "sat": 1, "light": 1 },
+      { "id": "royal", "swatch": "#2b4aa8", "hue": 235, "sat": 1, "light": 1.1 },
+      { "id": "forest", "swatch": "#2c6b3f", "hue": 150, "sat": 0.9, "light": 1.05 },
+      { "id": "violet", "swatch": "#6436a8", "hue": 285, "sat": 1, "light": 1.1 },
+      { "id": "orange", "swatch": "#c4561c", "hue": 35, "sat": 1.1, "light": 1.25 },
+      { "id": "teal", "swatch": "#1f7a80", "hue": 195, "sat": 0.9, "light": 1.05 },
+      { "id": "charcoal", "swatch": "#3a3740", "hue": 0, "sat": 0, "light": 0.75 },
+      { "id": "heather", "swatch": "#a9a6ae", "hue": 0, "sat": 0, "light": 1.7 }
+    ]
+  },
+  "bottom": {
+    "default": "slate",
+    "presets": [
+      { "id": "slate", "swatch": "#3d3646", "hue": 0, "sat": 1, "light": 1 },
+      { "id": "black", "swatch": "#1e1c22", "hue": 0, "sat": 0, "light": 0.62 },
+      { "id": "navy", "swatch": "#26304f", "hue": -40, "sat": 2, "light": 0.95 },
+      { "id": "khaki", "swatch": "#8a7754", "hue": 135, "sat": 1.6, "light": 1.7 },
+      { "id": "olive", "swatch": "#55593a", "hue": 170, "sat": 1.8, "light": 1.25 },
+      { "id": "grey", "swatch": "#77747c", "hue": 0, "sat": 0, "light": 1.5 }
+    ]
+  },
+  "shoes": {
+    "default": "red",
+    "presets": [
+      { "id": "red", "swatch": "#a3253a", "hue": 0, "sat": 1, "light": 1 },
+      { "id": "black", "swatch": "#2a272d", "hue": 0, "sat": 0, "light": 0.55 },
+      { "id": "blue", "swatch": "#2f55b5", "hue": 230, "sat": 1, "light": 1.1 },
+      { "id": "green", "swatch": "#2f7a45", "hue": 145, "sat": 0.9, "light": 1.05 },
+      { "id": "purple", "swatch": "#6a3bb0", "hue": 280, "sat": 1, "light": 1.1 },
+      { "id": "orange", "swatch": "#cc5f22", "hue": 30, "sat": 1.1, "light": 1.25 }
+    ]
+  }
+}

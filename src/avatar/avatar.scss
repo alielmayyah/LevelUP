@@ -1,24 +1,16 @@
-/* Character frames and the editor's swatches: gradients and outlines utilities can't say cleanly. */
+/* Character frames and the editor: gradients and pieces utilities can't say cleanly. */
 @layer components {
-  /* Dusk stage behind the character, from the splash palette, in both themes. */
+  /* Soft stage behind the character, from the splash palette, in both themes. */
   .lu-avatar-stage {
     background: radial-gradient(ellipse at 50% 40%, var(--lu-splash-bg-2), var(--lu-splash-bg) 78%);
     border-color: color-mix(in srgb, var(--lu-splash-bg-2) 60%, var(--lu-border));
   }
 
-  /* Portrait tile in Profile: the same stage, framed like a pixel badge. */
+  /* Portrait tile (Home, Profile, rows): the same stage in a rounded frame. */
   .lu-avatar-frame {
-    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border));
+    border: 1px solid color-mix(in srgb, var(--ion-color-primary) 35%, var(--lu-border));
     background: radial-gradient(ellipse at 50% 35%, var(--lu-splash-bg-2), var(--lu-splash-bg) 80%);
-    box-shadow: 0 3px 0 var(--ion-color-primary-shade);
-  }
-
-  .lu-style-thumb {
-    background: radial-gradient(
-      ellipse at 50% 42%,
-      color-mix(in srgb, var(--lu-splash-text) 31%, var(--lu-splash-bg-2)),
-      color-mix(in srgb, var(--lu-splash-text) 12%, var(--lu-splash-bg)) 95%
-    );
+    box-shadow: var(--lu-shadow);
   }
 
   /* Editor: the stage fills the top with no frame; a soft floor shadow grounds the character. */
@@ -37,12 +29,12 @@
     position: absolute;
     inset-block-end: 0;
     inset-inline: 50%;
-    inline-size: 82%;
+    inline-size: 60%;
     block-size: 4%;
     translate: -50% 0;
     border-radius: 50%;
     background: color-mix(in srgb, var(--lu-splash-bg) 70%, transparent);
-    filter: blur(2px);
+    filter: blur(4px);
 
     &:dir(rtl) {
       translate: 50% 0;
@@ -56,7 +48,7 @@
 
   /* The panel slides up over the stage like a sheet. */
   .lu-editor-panel {
-    border-block-start: 2px solid var(--lu-border);
+    border-block-start: 1px solid var(--lu-border);
     border-start-start-radius: 20px;
     border-start-end-radius: 20px;
     background: var(--lu-surface);
@@ -66,7 +58,7 @@
 
   @media (orientation: landscape) and (max-height: 480px), (min-width: 900px) {
     .lu-editor-panel {
-      border: 2px solid var(--lu-border);
+      border: 1px solid var(--lu-border);
       border-radius: 20px;
       margin-block-start: 0;
     }
@@ -75,28 +67,23 @@
   .lu-customizer-tab {
     background: transparent;
     color: var(--lu-text-muted);
+    transition: background-color 180ms var(--ease-soft, ease-out);
   }
 
   .lu-customizer-tab[aria-selected='true'] {
-    background: var(--ion-color-primary);
-    color: var(--ion-color-primary-contrast);
-    box-shadow: 0 3px 0 var(--ion-color-primary-shade);
+    background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
+    color: var(--ion-color-primary);
   }
 
-  .lu-style-card:active {
-    transform: scale(0.96);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .lu-style-card:active {
-      transform: none;
-    }
+  :root.ion-palette-dark .lu-customizer-tab[aria-selected='true'] {
+    color: var(--ion-color-secondary);
   }
 
   .lu-swatch {
-    box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+    box-shadow: var(--lu-shadow);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    transition: transform 120ms var(--ease-soft, ease-out);
   }
 
   .lu-swatch[aria-checked='true'] {
@@ -104,14 +91,13 @@
     outline-offset: 2px;
   }
 
-  :is(.lu-swatch, .lu-style-card, .lu-customizer-tab):focus-visible {
+  :is(.lu-swatch, .lu-customizer-tab):focus-visible {
     outline: 3px dashed var(--lu-text);
     outline-offset: 3px;
   }
 
   .lu-swatch:active {
-    transform: translateY(2px);
-    box-shadow: none;
+    transform: scale(0.94);
   }
 
   /* White tick with a dark ring reads on every swatch, light or dark. */
@@ -121,6 +107,11 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .lu-swatch,
+    .lu-customizer-tab {
+      transition: none;
+    }
+
     .lu-swatch:active {
       transform: none;
     }

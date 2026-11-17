@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { LeaderboardBoard, LeaderboardRow, Sex } from '../../api/types';
+import type { LeaderboardBoard, LeaderboardRow } from '../../api/types';
 import Avatar from '../../avatar/Avatar';
 import Icon from '../../components/Icon';
 import { formatCount } from '../../i18n/format';
@@ -29,7 +29,6 @@ const FIGURE: Record<number, string> = {
 
 interface Props {
   rows: LeaderboardRow[];
-  division: Sex;
   board: LeaderboardBoard;
   format: (value: number) => string;
   you: string;
@@ -41,7 +40,7 @@ interface Props {
  * In the DOM they stay in rank order (1, 2, 3) for screen readers; CSS order
  * puts 1st in the middle.
  */
-const Podium: React.FC<Props> = ({ rows, division, board, format, you, myRef }) => {
+const Podium: React.FC<Props> = ({ rows, board, format, you, myRef }) => {
   const { t } = useTranslation();
   return (
     <section className="lu-podium mb-3 px-3 pt-3 pb-3" aria-label={t('leaderboard.podium')}>
@@ -55,7 +54,7 @@ const Podium: React.FC<Props> = ({ rows, division, board, format, you, myRef }) 
           >
             {r.rank === 1 && <Icon name="crown" className="text-[1.35rem] text-gold" />}
             <Avatar
-              config={rowAvatar(r, division)}
+              config={rowAvatar(r)}
               crop="full"
               className={`lu-podium-figure block w-auto ${FIGURE[r.rank]}`}
             />

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { onAvatarSaved } from '../api/avatar';
-import type { LeaderboardDto, ProfileDto, Sex } from '../api/types';
+import type { LeaderboardDto, ProfileDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import Avatar from '../avatar/Avatar';
 import { memberAvatar } from '../avatar/catalog';
@@ -29,8 +29,7 @@ const PLACES = FLOOR_ROWS.flatMap(([depth, positions]) =>
   positions.map((x) => ({ insetInlineStart: `${x}%`, insetBlockStart: `${depth}%` })),
 );
 // Filler gym-goers for empty spots, in the viewer's division: men see men, women see women.
-const guestsFor = (sex: Sex) => PLACES.map((_, index) => memberAvatar({ memberId: -1 - index, sex, avatar: null }));
-const GUESTS: Record<Sex, ReturnType<typeof guestsFor>> = { MALE: guestsFor('MALE'), FEMALE: guestsFor('FEMALE') };
+const GUESTS = PLACES.map((_, index) => memberAvatar({ memberId: -1 - index, avatar: null }));
 const FRAME_COLORS = ['order-2 border-gold', 'order-1 border-silver', 'order-3 border-bronze'];
 
 const Community: React.FC = () => {
@@ -52,7 +51,7 @@ const Community: React.FC = () => {
   const [requestedRoom, setRoom] = useState(0);
   const [selectedMember, selectMember] = useState<number | null>(null);
   const ranked = useMemo(
-    () => roster?.rows.map((row) => ({ row, avatar: rowAvatar(row, roster.division) })) ?? [],
+    () => roster?.rows.map((row) => ({ row, avatar: rowAvatar(row) })) ?? [],
     [roster],
   );
   // Only members shared by the leaderboard get interactive spots on the floor.
@@ -128,7 +127,7 @@ const Community: React.FC = () => {
                     aria-hidden="true"
                     data-testid="community-guest"
                   >
-                    <Avatar config={GUESTS[roster.division][index]} crop="full" className="block size-full" />
+                    <Avatar config={GUESTS[index]} crop="full" className="block size-full" />
                   </span>
                 );
               }

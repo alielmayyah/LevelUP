@@ -446,16 +446,8 @@ describe('notifications', () => {
 describe('avatar', () => {
   const put = (body: unknown, fitId: string) => mockServer.handle('PUT', '/me/avatar', body, `mock.${fitId}`);
   const look = {
-    schemaVersion: 1,
-    rig: 'standard',
-    colors: {
-      skin: 'deep-brown',
-      hair: 'silver',
-      eyes: 'hazel',
-      tank: 'teal',
-      shorts: 'navy',
-      shoes: 'amber',
-    },
+    schemaVersion: 2,
+    colors: { skin: 'brown', hair: 'black', top: 'teal', bottom: 'navy', shoes: 'orange' },
   };
 
   it('starts null, saves a valid look, and keeps it after a reload', async () => {
@@ -470,34 +462,13 @@ describe('avatar', () => {
     expect((await get<ProfileDto>('/me', '102')).body.avatar).toBeNull();
   });
 
-  it('accepts the old smile field on a saved avatar', async () => {
-    const legacy = { ...look, colors: { ...look.colors, smile: 'brown' } };
-    expect((await put(legacy, '101')).status).toBe(200);
+  it('reads an older drawn-character save as no saved look', async () => {
+    await Preferences.set({
+      key: 'lu.mock.avatar.101',
+      value: JSON.stringify({ schemaVersion: 1, rig: 'standard', colors: { skin: 'deep-brown' } }),
+    });
     resetMockServer(NOW);
-    expect((await get<ProfileDto>('/me', '101')).body.avatar).toEqual(legacy);
-  });
-
-  it('saves all styles and returns them after a reload', async () => {
-    const styled = {
-      ...look,
-      colors: { ...look.colors, beard: 'silver', socks: 'violet' },
-      styles: {
-        hair: 'locs',
-        body: 'broad',
-        top: 'hoodie',
-        shoes: 'high-tops',
-        pants: 'cargo',
-        beard: 'goatee',
-        socks: 'striped-socks',
-      },
-    };
-    expect(await put(styled, '101')).toEqual({ status: 200, body: styled });
-    resetMockServer(NOW);
-    expect((await get<ProfileDto>('/me', '101')).body.avatar).toEqual(styled);
-    expect(await put({ ...styled, styles: { ...styled.styles, top: 'cape' } }, '101')).toMatchObject({ status: 400 });
-    expect(await put({ ...styled, styles: { ...styled.styles, hat: 'cap' } }, '101')).toMatchObject({ status: 400 });
-    expect(await put({ ...styled, styles: { hair: 'locs' } }, '101')).toMatchObject({ status: 400 });
-    expect(await put({ ...styled, colors: { ...styled.colors, beard: 'neon' } }, '101')).toMatchObject({ status: 400 });
+    expect((await get<ProfileDto>('/me', '101')).body.avatar).toBeNull();
   });
 
   it('rejects unknown presets, missing parts, extra fields, and wrong versions', async () => {
@@ -506,7 +477,7 @@ describe('avatar', () => {
       { ...look, colors: { ...look.colors, hair: 'neon' } },
       { ...look, colors: { ...look.colors, shoes: undefined } },
       { ...look, colors: { ...look.colors, hat: 'red' } },
-      { ...look, schemaVersion: 2 },
+      { ...look, schemaVersion: 1 },
       { ...look, colors: { ...look.colors, skin: '#ff0000' } },
     ]) {
       expect((await put(bad, '101')).status).toBe(400);
@@ -531,3 +502,4 @@ describe('avatar', () => {
     expect((await mockServer.handle('PUT', '/me/avatar', look, null)).status).toBe(401);
   });
 });
+
