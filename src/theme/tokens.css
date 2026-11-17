@@ -118,6 +118,8 @@
 body {
   background: var(--lu-bg);
   color: var(--lu-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Arabic script needs about 10% more line height. */

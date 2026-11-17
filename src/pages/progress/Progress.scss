@@ -3,19 +3,39 @@
  * only in its icon, which sits in a soft round badge of the same hue.
  */
 @layer components {
-  .lu-scan-tile,
+  /* The three key numbers sit straight on the scan card: no boxes inside the card. */
+  .lu-scan-tile {
+    --tone: var(--ion-color-primary);
+  }
+
+  /* The six smaller cards (in the full scan) sit back a little: hairline, no shadow. */
   .lu-more-card {
     --tone: var(--ion-color-primary);
     border: 1px solid var(--lu-border);
     border-radius: 14px;
-    background: var(--lu-surface);
-    box-shadow: var(--lu-shadow);
+    background: color-mix(in srgb, var(--lu-surface-2) 55%, var(--lu-surface));
   }
 
-  /* The six smaller cards sit back a little so the big three lead. */
-  .lu-more-card {
-    background: color-mix(in srgb, var(--lu-surface-2) 55%, var(--lu-surface));
-    box-shadow: none;
+  /* Belly-fat verdict: a neutral chip with a dot in the verdict's color. */
+  .lu-verdict {
+    --verdict: var(--lu-tier-4);
+    color: var(--lu-text);
+
+    &::before {
+      content: '';
+      inline-size: 6px;
+      block-size: 6px;
+      border-radius: 50%;
+      background: var(--verdict);
+    }
+  }
+
+  .lu-verdict-high {
+    --verdict: var(--lu-tier-2);
+  }
+
+  .lu-verdict-veryHigh {
+    --verdict: var(--lu-tier-1);
   }
 
   .lu-scan-tile > dt > .lu-icon,
@@ -107,23 +127,6 @@
     }
   }
 
-  /* The ⓘ button: a quiet icon that lights up on hover and focus. */
-  .lu-info-button {
-    border-radius: 50%;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .lu-info-button:hover,
-  .lu-info-button:active {
-    color: var(--ion-color-primary);
-  }
-
-  .lu-info-button:focus-visible {
-    outline: 2px solid var(--ion-color-primary);
-    outline-offset: -4px;
-  }
-
   /* "All scans" in the page header: a rounded chip button with a soft shadow. */
   .lu-all-scans {
     border: 1px solid var(--lu-border);
@@ -157,11 +160,11 @@
     --icon-color: var(--ion-color-primary);
   }
 
-  /* The latest-scan card: a rounded card with a brand hairline, a faint brand tint and a soft shadow. */
+  /* The scan card: a neutral card like every other (hairline, surface, soft shadow). */
   .lu-scan-card {
-    border: 1px solid color-mix(in srgb, var(--ion-color-primary) 35%, var(--lu-border));
+    border: 1px solid var(--lu-border);
     border-radius: 16px;
-    background: color-mix(in srgb, var(--ion-color-primary) 6%, var(--lu-surface));
+    background: var(--lu-surface);
     box-shadow: var(--lu-shadow);
   }
 
@@ -207,36 +210,6 @@
       &:active {
         transform: none;
       }
-    }
-  }
-
-  /* One flat row under the tiles: which scan the changes are against, and a small button to switch. */
-  .lu-compare {
-    border: 1px solid var(--lu-border);
-    background: var(--lu-surface-2);
-  }
-
-  .lu-compare-button {
-    border: 1px solid color-mix(in srgb, var(--ion-color-primary) 60%, var(--lu-border));
-    background: var(--lu-surface);
-    color: var(--lu-text);
-    box-shadow: var(--lu-shadow);
-    transition:
-      transform 150ms var(--ease-soft, ease-out),
-      box-shadow 150ms var(--ease-soft, ease-out);
-
-    &:active {
-      transform: scale(0.97);
-      box-shadow: var(--lu-shadow-pressed);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--ion-color-primary);
-      outline-offset: 3px;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
     }
   }
 

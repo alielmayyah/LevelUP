@@ -9,7 +9,7 @@ import { formatNumber, formatPercent } from '../../i18n/format';
 const RADIUS = 26;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-/** The active goal with a progress ring. Opens the Goals tab. */
+/** The active goal with a progress ring; opens the Goals tab. With no goal, it opens New goal. */
 const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -19,11 +19,11 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
 
   const head = (
     <span className="lu-card-head">
-      <span className="lu-card-kicker">
+      <span className="lu-card-title">
         <Icon name="flag" />
         {t('home.mission.title')}
       </span>
-      {mission && <Icon className="lu-chevron" name="chevronForward" />}
+      <Icon className="lu-chevron" name="chevronForward" />
     </span>
   );
   // A heading for heading navigation. The visible label stays in the button so its name matches what is shown (WCAG 2.5.3).
@@ -33,14 +33,23 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
     </h2>
   );
 
+  // No goal yet: the whole card is the way to set one.
   if (!mission)
     return (
       <section className="grid" aria-labelledby={headingId}>
         {heading}
-        <div className="lu-card grid gap-2.5" data-testid="mission-card">
+        <button
+          type="button"
+          className="lu-card grid gap-2.5"
+          data-testid="mission-card"
+          onClick={() => history.push('/tabs/goals/new')}
+        >
           {head}
-          <p className="m-0 text-muted">{t('home.mission.empty')}</p>
-        </div>
+          <span className="flex items-center gap-2 font-semibold text-ink" data-testid="mission-empty">
+            <Icon name="add" />
+            {t('home.mission.empty')}
+          </span>
+        </button>
       </section>
     );
 
@@ -49,7 +58,6 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
     '--lu-ring-full': CIRCUMFERENCE,
     '--lu-ring-offset': CIRCUMFERENCE * (1 - percent / 100),
   } as CSSProperties;
-  const bar = { '--lu-bar': `${percent}%` } as CSSProperties;
 
   return (
     <section className="grid" aria-labelledby={headingId}>
@@ -82,30 +90,19 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
               {formatPercent(percent)}
             </span>
           </span>
-          <span className="grid min-w-0 gap-1 text-[0.95rem] font-semibold text-ink">
-            <strong id={`${ids}-title`} className="text-[1.1rem] leading-[1.25] font-bold">
+          <span className="grid min-w-0 gap-1 text-ink">
+            <strong id={`${ids}-title`} className="text-[1.125rem] leading-[1.25] font-semibold">
               {mission.title}
             </strong>
-            <span id={`${ids}-details`} className="grid gap-1.5">
-              {/* Read out as one sentence; drawn as a big number, a progress bar, and what's left. */}
+            <span id={`${ids}-details`} className="grid gap-1">
+              {/* The ring and "kg to go" are drawn; the full done/total is read out as one sentence. */}
               <span className="sr-only">
                 {t('home.mission.progress', {
                   done: formatNumber(mission.doneKg, 1),
                   total: formatNumber(mission.doneKg + mission.remainingKg, 1),
                 })}
               </span>
-              <span className="flex items-baseline gap-1.5" aria-hidden="true" data-testid="mission-amount">
-                <strong className="lu-display text-[1.75rem] leading-none text-ink">
-                  {formatNumber(mission.doneKg, 1)}
-                </strong>
-                <span className="text-[0.9rem] font-bold text-muted">
-                  / {formatNumber(mission.doneKg + mission.remainingKg, 1)} {t('units.kg')}
-                </span>
-              </span>
-              <span className="lu-bar block h-2" style={bar} aria-hidden="true">
-                <span />
-              </span>
-              <span className="text-[0.8rem] font-bold text-muted" data-testid="mission-left">
+              <span className="text-[0.9375rem] font-normal text-muted" data-testid="mission-left">
                 {mission.remainingKg > 0
                   ? t('home.mission.toGo', { left: formatNumber(mission.remainingKg, 1) })
                   : t('home.mission.reached')}

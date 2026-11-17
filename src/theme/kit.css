@@ -95,10 +95,8 @@ button.lu-card:active {
   align-items: center;
   gap: 6px;
   color: var(--lu-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 .lu-card-kicker .lu-icon {
@@ -230,7 +228,15 @@ button.lu-card:active {
   box-shadow: var(--lu-shadow);
   font-size: 22px;
   cursor: pointer;
-  transition: transform 120ms var(--ease-soft, ease-out);
+  transition:
+    transform 120ms var(--ease-soft, ease-out),
+    box-shadow 120ms var(--ease-soft, ease-out);
+}
+
+.lu-icon-button:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+  cursor: default;
 }
 
 .lu-link-button {
@@ -287,7 +293,8 @@ button.lu-card:active {
   transition:
     background-color 180ms var(--ease-soft, ease-out),
     color 180ms var(--ease-soft, ease-out),
-    box-shadow 180ms var(--ease-soft, ease-out);
+    box-shadow 180ms var(--ease-soft, ease-out),
+    transform 120ms var(--ease-soft, ease-out);
 }
 
 .lu-segment button .lu-icon {
@@ -325,13 +332,12 @@ button.lu-card:active {
   block-size: 100%;
   inline-size: var(--lu-bar, 0%);
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: var(--ion-color-primary);
   transition: inline-size 500ms var(--ease-soft, ease-out);
 }
 
-/* The bar fills from the start side, so its gradient runs the other way in RTL. */
-.lu-bar:dir(rtl) > span {
-  background: linear-gradient(270deg, var(--ion-color-primary), var(--ion-color-secondary));
+:root.ion-palette-dark .lu-bar > span {
+  background: var(--ion-color-secondary);
 }
 
 /* ---------- Toggle switch ---------- */
@@ -346,7 +352,9 @@ button.lu-card:active {
   border-radius: 999px;
   background: var(--lu-border);
   cursor: pointer;
-  transition: background-color 180ms var(--ease-soft, ease-out);
+  transition:
+    background-color 180ms var(--ease-soft, ease-out),
+    transform 120ms var(--ease-soft, ease-out);
 }
 
 .lu-switch::after {
@@ -474,7 +482,14 @@ button.lu-card:active {
   user-select: none;
 }
 
-:is(.lu-icon-button, .lu-notif-item):active,
+.lu-notif-item,
+.lu-goal {
+  transition:
+    transform 120ms var(--ease-soft, ease-out),
+    box-shadow 120ms var(--ease-soft, ease-out);
+}
+
+:is(.lu-icon-button:not(:disabled), .lu-notif-item):active,
 .lu-goal:has(.lu-goal-row:active) {
   transform: scale(0.97);
   box-shadow: var(--lu-shadow-pressed);
@@ -503,4 +518,69 @@ button.lu-card:active {
 
 :root.ion-palette-dark .lu-title-icon {
   color: var(--ion-color-secondary);
+}
+
+/* ---------- Enter motion for overlays ---------- */
+
+/* Dialog panels pop in; toasts rise. Both appear from their resting state with no motion when reduced. */
+.lu-pop {
+  transition:
+    opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    scale 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  @starting-style {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+
+.lu-rise {
+  transition:
+    opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    translate 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  @starting-style {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+dialog::backdrop {
+  transition: opacity 200ms ease-out;
+
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lu-pop,
+  .lu-rise,
+  dialog::backdrop {
+    transition: none;
+  }
+}
+
+/* ---------- Info button (Home and Progress) ---------- */
+
+/* The ⓘ button: a quiet icon that lights up on hover and focus. */
+.lu-info-button {
+  border-radius: 50%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lu-info-button:active {
+  color: var(--ion-color-primary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lu-info-button:hover {
+    color: var(--ion-color-primary);
+  }
+}
+
+.lu-info-button:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: -4px;
 }

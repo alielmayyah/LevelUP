@@ -144,12 +144,12 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
       {/* The headline: where you are now and how far you've come since the first scan. */}
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1" data-testid="trend-headline">
         <strong className="lu-display text-[2rem] leading-none text-ink">{withUnit(last)}</strong>
-        <span className={`text-[0.85rem] font-bold ${tone}`}>
-          {diff !== 0 && <span aria-hidden="true">{diff > 0 ? '▲ ' : '▼ '}</span>}
+        <span className={`inline-flex items-center gap-1 text-[0.85rem] font-semibold ${tone}`}>
+          {diff !== 0 && <Icon className="flex-none" name={diff > 0 ? 'trendUp' : 'trendDown'} />}
           {since}
         </span>
       </div>
-      <p className="m-0 text-[0.75rem] font-bold text-muted" aria-hidden="true">
+      <p className="m-0 text-[0.75rem] font-normal text-muted" aria-hidden="true">
         {s.unit || t('home.fitScore.title')}
       </p>
       <LineChart

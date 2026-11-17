@@ -6,10 +6,8 @@
  */
 @layer components {
   .lu-zone-head {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 600;
   }
 
   .lu-zone-cap {
@@ -38,11 +36,7 @@
   /* A smooth fill in the measurement's hue (--tone, Progress.scss), deeper toward the end. */
   .lu-scale-fill {
     border-radius: 999px;
-    background: linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--tone) 82%, var(--lu-surface)),
-      var(--tone)
-    );
+    background: linear-gradient(90deg, color-mix(in srgb, var(--tone) 82%, var(--lu-surface)), var(--tone));
     box-shadow: none;
     transition: width 0.3s ease-out;
   }
@@ -85,7 +79,7 @@
     background: color-mix(in srgb, var(--status) 14%, var(--lu-surface));
     color: var(--lu-text);
     font-size: 0.7rem;
-    font-weight: 700;
+    font-weight: 600;
     white-space: nowrap;
   }
 

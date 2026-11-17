@@ -38,12 +38,6 @@
     "link": "Medals",
     "overview": "Medal collection",
     "count": "{{unlocked}} of {{total}} medals unlocked",
-    "complete": "{{percent}} complete",
-    "stat": {
-      "unlocked": "Unlocked",
-      "locked": "Locked",
-      "complete": "Complete"
-    },
     "filter": "Medal category",
     "all": "All",
     "category": {
@@ -60,10 +54,10 @@
     },
     "hint": {
       "pushUps": "Your best verified set of consecutive push-ups.",
-      "bench": "Your coach-verified one-rep max on the bench press.",
-      "squat": "Your coach-verified one-rep max on the squat.",
-      "deadlift": "Your coach-verified one-rep max lifting the barbell from the floor.",
-      "militaryPress": "Stand and press the barbell from shoulder height to overhead. Medals use your verified one-rep max.",
+      "bench": "Your heaviest single lift on the bench press, checked by your coach.",
+      "squat": "Your heaviest single lift on the squat, checked by your coach.",
+      "deadlift": "Your heaviest single lift of the barbell from the floor, checked by your coach.",
+      "militaryPress": "Stand and press the barbell from shoulder height to overhead. Medals use your heaviest single lift, checked by your coach.",
       "pullUps": "Your best verified set of consecutive pull-ups.",
       "plank": "Your longest verified forearm plank hold.",
       "muscle": "Muscle gained since your first scan.",
@@ -89,7 +83,7 @@
       "noScans": "No scan yet. Medals unlock from your InBody scans.",
       "needsSecondScan": "Muscle gain needs a second scan to compare with your first.",
       "needsProfile": "Your profile has no sex set, so body fat medals can’t be judged yet.",
-      "noLifts": "No verified one-rep max yet. Ask your coach to record one.",
+      "noLifts": "No heaviest single lift on record yet. Ask your coach to record one.",
       "noWorkoutRecord": "Ask your coach to verify a set or timed hold.",
       "noWorkoutSource": "Workout records aren’t available in this version.",
       "missingBmiProfile": "Your height and date of birth are needed to calculate these medals.",
@@ -116,13 +110,14 @@
     "remaining": "{{value}} to go",
     "unlocked": "Unlocked",
     "locked": "Locked",
-    "unlockedOn": "Unlocked {{date}}",
     "detail": {
       "requirement": "Requirement",
       "progress": "Your progress",
       "status": "Status",
       "close": "Close",
-      "noProgress": "No supported measurement yet."
+      "noProgress": "No supported measurement yet.",
+      "records": "Your records",
+      "about": "About"
     },
     "celebrate": {
       "title": "Medal unlocked!",
@@ -209,21 +204,28 @@
       "muscle": "Muscle",
       "bodyFat": "Body fat",
       "bmi": "BMI",
-      "visceral": "Visceral fat",
+      "visceral": "Belly fat (around organs)",
       "water": "Water",
       "protein": "Protein",
       "minerals": "Minerals",
       "bmr": "Resting calories"
     },
-    "empty": "No scans yet. Book one at the front desk.",
+    "empty": "No scans yet.",
+    "emptyNext": "Book your first scan at the front desk.",
     "secondScan": "Your trends appear after your second scan.",
     "summary": "{{metric}} went from {{from}} to {{to}} between {{first}} and {{last}}.",
     "error": "Couldn't load your progress.",
+    "refreshError": "Couldn't refresh your progress. You're seeing what loaded before.",
     "noChange": "No change",
     "changeUp": "Up {{amount}} since the scan before",
     "changeDown": "Down {{amount}} since the scan before",
     "changeLater": "After 2nd scan",
-    "more": "More from this scan",
+    "more": "Other measurements",
+    "visceralLevel": {
+      "ok": "Healthy",
+      "high": "High",
+      "veryHigh": "Very high"
+    },
     "trend": "Your trend",
     "trendPick": "Show trend for",
     "trendOf": "{{metric}} over time",
@@ -296,16 +298,17 @@
     },
     "journey": "Your body journey",
     "infoYours": "in this scan",
-    "compareChange": "Change",
+    "compareChange": "Pick scan",
     "compareOff": "Not comparing with another scan",
-    "comparePick": "Compare",
+    "comparePick": "Pick scan",
+    "comparedPrevious": "Compared with your previous scan",
     "compareTitle": "Compare with",
     "compareNone": "Don't compare",
     "compareHint": "Pick an earlier or later scan to see what changed.",
     "comparing": "Comparing",
     "comparedWith": "Compared with",
     "compareOffShort": "No scan",
-    "moreDetails": "View more details",
+    "moreDetails": "See full scan",
     "lessDetails": "Show less",
     "scanPages": "Scan pages",
     "calendarTitle": "Your scans",
@@ -360,7 +363,8 @@
     "new": "New goal",
     "emptyCta": "Set your first goal",
     "reached": "Goal reached",
-    "doneOf": "{{done}} of {{total}} kg done"
+    "doneOf": "{{done}} of {{total}} kg done",
+    "created": "Goal set! It counts from your last scan."
   },
   "leaderboard": {
     "subtitle": "Gym rankings",
@@ -435,11 +439,12 @@
     "sound": "Sound",
     "soundHint": "Play app sounds",
     "showFitScore": "Show FitScore",
-    "showFitScoreHint": "On your own screens",
+    "showFitScoreHint": "Turn off to hide your FitScore in the app",
     "leaderboard": "Show my FitScore on the leaderboard",
     "leaderboardHint": "Let other members see your results",
     "signOut": "Sign out",
     "signOutConfirm": "Sign out of {{name}}?",
+    "signOutNote": "You'll need your Fit ID to sign back in.",
     "cancel": "Cancel",
     "saveFailed": "Couldn't save. Try again.",
     "error": "Couldn't load your profile.",
@@ -452,18 +457,36 @@
   "home": {
     "fitScore": {
       "title": "FitScore",
-      "private": "Private",
+      "about": "About FitScore",
       "since": "since last scan",
       "noChange": "No change since last scan",
       "firstScan": "Your first scan",
-      "empty": "Your FitScore appears after your first scan."
+      "empty": "Your FitScore appears after your first scan.",
+      "emptyNext": "Book your first scan at the front desk."
+    },
+    "fitScoreInfo": {
+      "title": "What is FitScore?",
+      "what": "A number from 0 to 100. It compares your muscle and body fat with a healthy standard for your body. Higher is better.",
+      "tiersTitle": "The five levels",
+      "you": "You're here",
+      "range": {
+        "elite": "80 and up",
+        "strong": "70 to 79",
+        "onTrack": "60 to 69",
+        "building": "50 to 59",
+        "gettingStarted": "Under 50"
+      },
+      "tipTitle": "How to raise it",
+      "tip": "Lift weights about 3 times a week and eat enough protein. More muscle and less fat both raise your score.",
+      "privacy": "Only you can see it.",
+      "close": "Close"
     },
     "tier": {
       "elite": "Elite",
       "strong": "Strong",
       "onTrack": "On Track",
       "building": "Building",
-      "needsImprovement": "Needs Improvement"
+      "gettingStarted": "Getting started"
     },
     "rank": {
       "title": "Gym leaderboard",
@@ -489,7 +512,7 @@
     "mission": {
       "title": "Current mission",
       "progress": "{{done}} of {{total}} kg",
-      "empty": "No active mission. Set a goal to start one.",
+      "empty": "Set your first goal",
       "toGo": "{{left}} kg to go",
       "reached": "Goal reached!"
     },
@@ -497,7 +520,10 @@
       "title": "{{month}} wins",
       "bodyFat": "Body fat",
       "muscle": "Muscle",
-      "bmi": "BMI"
+      "bmi": "BMI",
+      "none": "No scan this month yet. Your wins show after your next scan.",
+      "good": "Good progress",
+      "bad": "Went the wrong way"
     },
     "notifications": {
       "bell": "Notifications",
@@ -518,7 +544,7 @@
   },
   "login": {
     "fitId": "Fit ID",
-    "help": "Ask the front desk if you don't have one.",
+    "help": "Your Fit ID is {{min}}–{{max}} numbers. Ask the front desk if you don't have one.",
     "submit": "Sign in",
     "signingIn": "Signing in…",
     "notFound": "We couldn't find that Fit ID. Check with the front desk.",
@@ -609,7 +635,7 @@
   "bodyComp": {
     "kicker": "From your InBody scan",
     "muscleFat": "Muscle & fat analysis",
-    "obesity": "Obesity analysis",
+    "obesity": "Weight & fat check",
     "segmental": "Where your muscle and fat are",
     "composition": "What your body is made of",
     "zone": {
@@ -620,7 +646,7 @@
     "normalRange": "Normal {{range}}",
     "bar": {
       "weight": "Weight",
-      "smm": "Skeletal muscle",
+      "smm": "Muscle",
       "fat": "Body fat mass",
       "bmi": "BMI",
       "pbf": "Body fat %"
@@ -664,8 +690,8 @@
       "MUSCLE_KG": "How much muscle to gain?",
       "WEIGHT_KG": "Your target weight"
     },
-    "less": "Less",
-    "more": "More",
+    "less": "Less (−{{step}} kg)",
+    "more": "More (+{{step}} kg)",
     "fromScan": "{{change}} kg from your last scan",
     "name": {
       "BODY_FAT_KG": "Lose {{amount}} kg of body fat",

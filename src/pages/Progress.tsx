@@ -1,6 +1,8 @@
-import { lazy, Suspense, useCallback, useState } from 'react';
+import { Preferences } from '@capacitor/preferences';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { api } from '../api/client';
 import type { AssessmentDto, ProfileDto, ProgressDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
@@ -17,6 +19,9 @@ import { daysBetween, spanOf } from './progress/scanAge';
 const TrendChart = lazy(() => import('./progress/ProgressCharts'));
 // The InBody-style analysis sits below the fold, so it loads in its own chunk too.
 const BodyComposition = lazy(() => import('./progress/BodyComposition'));
+
+/** Whether the full scan is open, remembered per device. */
+const DETAILS_KEY = 'lu.progress.details';
 
 /** What the scan on screen is compared with: the scan before it, a scan the member picked (by id), or nothing. */
 type CompareChoice = 'previous' | 'none' | number;
@@ -76,7 +81,7 @@ const MAIN: MainMetric[] = [
   },
 ];
 
-/** The rest of the scan: small cards with an icon, name, and value; the ⓘ sheet explains each one. */
+/** The rest of the scan, behind "See full scan": small cards with an icon, name, and value; the ⓘ sheet explains each one. */
 const MORE: MoreMetric[] = [
   {
     key: 'water',
@@ -117,6 +122,10 @@ const MORE: MoreMetric[] = [
   },
 ];
 
+/** A plain verdict for the belly-fat level: under 10 is healthy, 10–14 high, 15 and up very high. */
+const visceralLevel = (level: number): 'ok' | 'high' | 'veryHigh' =>
+  level < 10 ? 'ok' : level < 15 ? 'high' : 'veryHigh';
+
 const scanDate = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
 
@@ -124,9 +133,10 @@ const STEP =
   'lu-scan-step grid size-11 flex-none cursor-pointer place-items-center rounded-full bg-surface font-inherit text-[1.15rem] text-ink disabled:cursor-default disabled:opacity-40';
 
 /**
- * Progress tab: one scan at a time (the latest by default, earlier ones a tap
- * away), its three key numbers with their change, the other six with icons,
- * and one trend chart.
+ * Progress tab, simple by default: the scan on screen (the latest, earlier ones
+ * a tap away) and its three key numbers with their change since the scan
+ * before. "See full scan" opens the rest: the other six measurements, the
+ * compare picker, body composition, and the trend chart.
  */
 const Progress: React.FC = () => {
   const { t } = useTranslation();
@@ -139,32 +149,87 @@ const Progress: React.FC = () => {
   const [calendar, setCalendar] = useState(false);
   const [picking, setPicking] = useState(false);
   const [compareChoice, setCompareChoice] = useState<CompareChoice>('previous');
-  /** The page opens on the key numbers; body composition and trends wait behind View more. */
+  /** The page opens on the key numbers; everything else waits behind See full scan. */
   const [details, setDetails] = useState(false);
+  /** Set once the member taps the toggle, so a slow Preferences read can't undo the tap. */
+  const touched = useRef(false);
   const [info, setInfo] = useState<InfoTopic | null>(null);
   const closeInfo = useCallback(() => setInfo(null), []);
+  /** The last refresh failed; what is on screen is from before it. */
+  const [stale, setStale] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const { reload: reloadProgress } = progress;
-  const { reload: reloadScans } = scans;
-  const { reload: reloadMe } = me;
-  const reloadAll = useCallback(
-    () => Promise.all([reloadProgress(), reloadScans(), reloadMe()]),
-    [reloadProgress, reloadScans, reloadMe],
-  );
-  useRefreshOnEnter(reloadAll);
+  useEffect(() => {
+    let live = true;
+    void Preferences.get({ key: DETAILS_KEY }).then(({ value }) => {
+      if (live && !touched.current && value === 'open') setDetails(true);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
-  const failed = [progress, scans, me].some((r) => r.status === 'error');
-  const loading = [progress, scans, me].some((r) => r.status === 'loading');
+  const toggleDetails = () => {
+    touched.current = true;
+    const next = !details;
+    setDetails(next);
+    void Preferences.set({ key: DETAILS_KEY, value: next ? 'open' : 'closed' });
+  };
+
+  const { status: progressStatus, reload: reloadProgress, setData: setProgress } = progress;
+  const { status: scansStatus, reload: reloadScans, setData: setScans } = scans;
+  const { status: meStatus, reload: reloadMe, setData: setMe } = me;
+  /**
+   * Pull to refresh and coming back to the tab. Data already on screen stays
+   * when a request fails, and the page says so with a Retry above it.
+   */
+  const refresh = useCallback(async () => {
+    const one = async <T,>(
+      status: string,
+      path: string,
+      reload: () => Promise<void>,
+      setData: (update: (d: T) => T) => void,
+    ) => {
+      // Nothing on screen yet: a plain reload shows the result or the error.
+      if (status !== 'ready') {
+        await reload();
+        return true;
+      }
+      try {
+        const data = await api<T>(path);
+        setData(() => data);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+    setRefreshing(true);
+    const ok = await Promise.all([
+      one(progressStatus, '/me/progress', reloadProgress, setProgress),
+      one(scansStatus, '/me/assessments', reloadScans, setScans),
+      one(meStatus, '/me', reloadMe, setMe),
+    ]);
+    setRefreshing(false);
+    setStale(ok.includes(false));
+  }, [progressStatus, scansStatus, meStatus, reloadProgress, reloadScans, reloadMe, setProgress, setScans, setMe]);
+  useRefreshOnEnter(refresh);
+
+  const all = [progress, scans, me];
+  const failed = all.some((r) => r.status === 'error');
+  const loading = all.some((r) => r.status === 'loading');
   const list = scans.status === 'ready' ? scans.data : [];
   const index = Math.min(picked, Math.max(list.length - 1, 0));
   const scan = list[index] ?? null;
   const previous = list[index + 1] ?? null;
   const chosen =
     typeof compareChoice === 'number' ? list.find((s) => s.id === compareChoice && s.id !== scan?.id) : null;
-  /** The scan every change on the page is measured against; null when comparing is off. */
-  const before = compareChoice === 'none' ? null : (chosen ?? previous);
+  /** The scan every change is measured against: the one before while collapsed, the member's pick in the full scan. */
+  const before = !details ? previous : compareChoice === 'none' ? null : (chosen ?? previous);
   const beforeIndex = before ? list.indexOf(before) : -1;
   const points = progress.status === 'ready' ? progress.data.assessments : [];
+
+  const empty = scans.status === 'ready' && list.length === 0;
+  const hasContent = scan !== null && me.status === 'ready';
 
   /** A length of time as words: "3 days", "يومين". */
   const spanText = (days: number) => {
@@ -199,12 +264,12 @@ const Progress: React.FC = () => {
       <>
         {formatNumber(v, m.digits)}
         {/* The unit is smaller than the number, after a thin space, so the value fits a narrow tile. */}
-        <span className="text-[0.7em]">{unit(m.unit).replace(' ', '\u2009')}</span>
+        <span className="text-[0.7em]">{unit(m.unit).replace(' ', ' ')}</span>
       </>
     );
   };
 
-  /** "▲ 0.8 kg", colored by whether that direction is good news. Null when there is no earlier scan. */
+  /** "↗ 0.8 kg", colored by whether that direction is good news. Null when there is no earlier scan. */
   const change = (m: MainMetric | MoreMetric) => {
     if (!scan || !before) return null;
     if (!Number.isFinite(m.value(scan)) || !Number.isFinite(m.value(before))) return null;
@@ -212,7 +277,7 @@ const Progress: React.FC = () => {
     if (diff === 0)
       return {
         text: t('progress.noChange'),
-        arrow: '',
+        icon: null,
         signed: '±0',
         tone: 'text-muted',
         label: t('progress.noChange'),
@@ -222,7 +287,7 @@ const Progress: React.FC = () => {
     const amount = `${formatNumber(Math.abs(diff), m.digits)}${unit(m.unit)}`;
     return {
       text: amount,
-      arrow: up ? '▲' : '▼',
+      icon: (up ? 'trendUp' : 'trendDown') as IconName,
       /** For the small cards: a plain sign, "+0.4 kg" or "−0.2 kg". */
       signed: `${up ? '+' : '−'}${amount}`,
       tone: good === null ? 'text-muted' : good ? 'text-success' : 'text-danger',
@@ -230,12 +295,17 @@ const Progress: React.FC = () => {
     };
   };
 
+  const retryFailed = () => {
+    setStale(false);
+    void Promise.all(all.filter((r) => r.status === 'error').map((r) => r.retry()));
+  };
+
   return (
     <TabPage
       testId="page-progress"
       title={t('tabs.progress')}
       subtitle={t('progress.journey')}
-      onRefresh={reloadAll}
+      onRefresh={refresh}
       titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="chart" />}
       actions={
         // The scan card names the scan on screen; the header only offers the full list.
@@ -253,32 +323,51 @@ const Progress: React.FC = () => {
         )
       }
     >
-      {failed && !loading && (
-        <div className="lu-state" role="alert">
+      {/* Nothing to show yet and it failed: the whole page is the error. */}
+      {failed && !loading && !hasContent && !empty && (
+        <div className="lu-state" role="alert" data-testid="progress-error">
           <p>{t('progress.error')}</p>
-          <CtaButton onClick={() => void Promise.all([progress.retry(), scans.retry(), me.retry()])}>
-            {t('common.retry')}
-          </CtaButton>
+          <CtaButton onClick={retryFailed}>{t('common.retry')}</CtaButton>
         </div>
       )}
 
-      {loading && !failed && (
+      {/* Something is on screen: say what failed above it and keep it. */}
+      {(failed || stale) && (hasContent || empty) && (
+        <div
+          className="mb-3.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.875rem] text-muted"
+          role="alert"
+          data-testid="progress-refresh-error"
+        >
+          <p className="m-0 min-w-0 flex-1">{t(failed ? 'progress.error' : 'progress.refreshError')}</p>
+          <button
+            type="button"
+            className="lu-link-button font-semibold"
+            disabled={refreshing}
+            onClick={() => (failed ? retryFailed() : void refresh())}
+          >
+            {t('common.retry')}
+          </button>
+        </div>
+      )}
+
+      {loading && !hasContent && !empty && (
         <div className="grid gap-3.5" aria-busy="true">
           <div className="lu-skeleton-card min-h-[140px]" />
           <div className="lu-skeleton-card min-h-60" />
         </div>
       )}
 
-      {!loading && !failed && !scan && (
+      {empty && (
         <div className="lu-card lu-state" data-testid="progress-empty">
           <Icon className="lu-tone-calendar text-[3rem]" name="chart" />
-          <p>{t('progress.empty')}</p>
+          <p className="font-semibold text-ink">{t('progress.empty')}</p>
+          <p data-testid="progress-empty-next">{t('progress.emptyNext')}</p>
         </div>
       )}
 
-      {!loading && !failed && scan && me.status === 'ready' && (
+      {scan && me.status === 'ready' && (
         <div className="grid gap-3.5 wide:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] wide:items-start">
-          <div className="grid gap-5">
+          <div className="grid gap-3">
             <section
               className="lu-scan-card relative grid gap-3 p-3.5 md:p-5"
               aria-labelledby="latest-scan"
@@ -290,7 +379,7 @@ const Progress: React.FC = () => {
                   type="button"
                   className={STEP}
                   onClick={() => setPicked(index + 1)}
-                  disabled={!before}
+                  disabled={!previous}
                   aria-label={t('progress.olderScan')}
                   data-testid="scan-older"
                 >
@@ -317,7 +406,7 @@ const Progress: React.FC = () => {
                         {t('progress.latest')}
                       </span>
                     )}
-                    <span className="lu-chip text-muted" data-testid="scan-age">
+                    <span className="lu-chip font-normal text-muted" data-testid="scan-age">
                       {agoText(scan.takenAt)}
                     </span>
                   </div>
@@ -347,7 +436,7 @@ const Progress: React.FC = () => {
                   return (
                     <div
                       key={m.key}
-                      className={`lu-scan-tile relative grid content-start justify-items-center gap-1 rounded-lg px-1 pt-2.5 pb-2 text-center ${m.tone}`}
+                      className={`lu-scan-tile relative grid content-start justify-items-center gap-1 px-1 pt-2.5 pb-1 text-center ${m.tone}`}
                       data-testid={`metric-${m.key}`}
                     >
                       <dt className="grid justify-items-center gap-1.5 text-[0.75rem] font-semibold text-muted">
@@ -365,23 +454,21 @@ const Progress: React.FC = () => {
                         {value(m, scan)}
                       </dd>
                       <dd
-                        className="m-0 min-h-[1.2em] text-[0.78rem] leading-tight font-bold"
+                        className="m-0 min-h-[1.2em] text-[0.78rem] leading-tight font-semibold"
                         data-testid={`change-${m.key}`}
                       >
                         {c ? (
-                          <span className={c.tone}>
-                            <bdi aria-hidden="true">
-                              {c.arrow && `${c.arrow} `}
-                              {c.text}
-                            </bdi>
+                          <span className={`inline-flex items-center gap-1 ${c.tone}`}>
+                            {c.icon && <Icon className="flex-none text-[1em]" name={c.icon} />}
+                            <bdi aria-hidden="true">{c.text}</bdi>
                             {/* Screen readers hear the full sentence instead of an arrow. */}
                             <span className="sr-only">{c.label}</span>
                           </span>
                         ) : (
-                          <span className="font-semibold text-muted">
+                          <span className="font-normal text-muted">
                             {list.length === 1
                               ? t('progress.changeLater')
-                              : compareChoice === 'none'
+                              : details && compareChoice === 'none'
                                 ? ''
                                 : t('progress.firstScan')}
                           </span>
@@ -391,90 +478,50 @@ const Progress: React.FC = () => {
                   );
                 })}
               </dl>
-              {list.length > 1 && (
-                <div
-                  className="lu-compare flex items-center gap-2.5 rounded-lg py-1.5 ps-2.5 pe-1.5"
-                  data-testid="change-caption"
-                >
-                  <Icon className="lu-tone-calendar flex-none text-[1.4rem]" name="calendar" />
-                  <p className="m-0 grid min-w-0 flex-1 leading-tight">
-                    <span className="text-[0.72rem] font-bold text-muted">{t('progress.comparedWith')}</span>
-                    <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.9rem] font-bold text-ink">
-                      {before ? scanDate(before.takenAt) : t('progress.compareOffShort')}
+
+              {/* Collapsed: one quiet line. Open: which scan the changes are against, and a way to pick another. */}
+              {list.length > 1 &&
+                (details ? (
+                  <div
+                    id="progress-compare"
+                    className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1"
+                    data-testid="change-caption"
+                  >
+                    <p className="m-0 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.875rem] text-muted">
+                      {t('progress.comparedWith')}
+                      <span className="font-semibold text-ink">
+                        {before ? scanDate(before.takenAt) : t('progress.compareOffShort')}
+                      </span>
                       {before && (
-                        <span className="lu-chip text-muted" data-testid="compare-gap">
+                        <span className="lu-chip font-normal text-muted" data-testid="compare-gap">
                           {gapText(scan.takenAt, before.takenAt)}
                         </span>
                       )}
-                    </span>
-                  </p>
-                  <button
-                    type="button"
-                    className="lu-compare-button min-h-11 flex-none cursor-pointer rounded-md px-3.5 font-inherit text-[0.85rem] font-bold"
-                    onClick={() => setPicking(true)}
-                    data-testid="compare-open"
-                  >
-                    {before ? t('progress.compareChange') : t('progress.comparePick')}
-                  </button>
-                </div>
-              )}
-            </section>
-
-            <section className="grid gap-3" aria-labelledby="more-title" data-testid="more-metrics">
-              <h2
-                id="more-title"
-                className="lu-display m-0 flex items-center gap-2 text-[1.7rem] leading-none text-ink"
-              >
-                <Icon className="lu-title-icon flex-none text-[0.8em]" name="chart" />
-                {t('progress.more')}
-              </h2>
-              <dl className="m-0 grid grid-cols-2 gap-2.5 md:grid-cols-3">
-                {MORE.map((m) => (
-                  <div
-                    key={m.key}
-                    className={`lu-more-card relative grid grid-cols-[auto_1fr] content-start items-baseline gap-x-2 gap-y-1.5 rounded-lg p-2.5 pe-9 ${m.tone}`}
-                    data-testid={`metric-${m.key}`}
-                  >
-                    <dt className="col-span-full grid gap-1">
-                      {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
-                      <InfoButton
-                        className="absolute -end-1 -top-1"
-                        label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
-                        onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
-                        testId={`info-${m.key}`}
-                      />
-                      <span className="lu-metric-name flex items-center gap-2 text-[0.85rem] font-semibold text-ink">
-                        <Icon className="flex-none text-[1rem]" name={m.icon} />
-                        {t(`progress.metric.${m.key}`)}
-                      </span>
-                    </dt>
-                    <dd className="lu-display m-0 text-[1.45rem] leading-none whitespace-nowrap text-ink">
-                      {value(m, scan)}
-                    </dd>
-                    {(() => {
-                      // The change since the scan before, with a sign; nothing on the first scan.
-                      const c = change(m);
-                      return c ? (
-                        <dd
-                          className={`m-0 text-[0.78rem] font-bold whitespace-nowrap ${c.tone}`}
-                          data-testid={`change-${m.key}`}
-                        >
-                          <bdi aria-hidden="true">{c.signed}</bdi>
-                          <span className="sr-only">{c.label}</span>
-                        </dd>
-                      ) : null;
-                    })()}
+                    </p>
+                    <button
+                      type="button"
+                      className="lu-link-button flex-none font-semibold"
+                      onClick={() => setPicking(true)}
+                      data-testid="compare-open"
+                    >
+                      {before ? t('progress.compareChange') : t('progress.comparePick')}
+                    </button>
                   </div>
+                ) : (
+                  previous && (
+                    <p className="m-0 text-center text-[0.8125rem] text-muted" data-testid="change-caption">
+                      {t('progress.comparedPrevious')}
+                    </p>
+                  )
                 ))}
-              </dl>
             </section>
 
             <button
               type="button"
-              className="lu-compare-button flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 font-inherit text-[0.95rem] font-bold"
+              className="lu-link-button flex w-full items-center justify-center gap-2 font-semibold"
               aria-expanded={details}
-              aria-controls="progress-details"
-              onClick={() => setDetails((d) => !d)}
+              aria-controls={details ? 'progress-compare progress-details' : 'progress-details'}
+              onClick={toggleDetails}
               data-testid="progress-more"
             >
               {details ? t('progress.lessDetails') : t('progress.moreDetails')}
@@ -488,10 +535,65 @@ const Progress: React.FC = () => {
           <div id="progress-details" className="grid gap-[18px] [&[hidden]]:hidden" hidden={!details}>
             {details && (
               <>
+                <section className="grid" aria-labelledby="more-title" data-testid="more-metrics">
+                  {/* The button above already names this part; the heading is for screen readers. */}
+                  <h2 id="more-title" className="sr-only">
+                    {t('progress.more')}
+                  </h2>
+                  <dl className="m-0 grid grid-cols-2 gap-2.5 md:grid-cols-3">
+                    {MORE.map((m) => {
+                      // The change since the compared scan, with a sign; nothing on the first scan.
+                      const c = change(m);
+                      const level = m.key === 'visceral' && Number.isFinite(m.value(scan)) ? m.value(scan) : null;
+                      return (
+                        <div
+                          key={m.key}
+                          className={`lu-more-card relative grid grid-cols-[auto_1fr] content-start items-baseline gap-x-2 gap-y-1.5 rounded-lg p-2.5 pe-9 ${m.tone}`}
+                          data-testid={`metric-${m.key}`}
+                        >
+                          <dt className="col-span-full grid gap-1">
+                            {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
+                            <InfoButton
+                              className="absolute -end-1 -top-1"
+                              label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
+                              onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
+                              testId={`info-${m.key}`}
+                            />
+                            <span className="lu-metric-name flex items-center gap-2 text-[0.85rem] font-semibold text-ink">
+                              <Icon className="flex-none text-[1rem]" name={m.icon} />
+                              {t(`progress.metric.${m.key}`)}
+                            </span>
+                          </dt>
+                          <dd className="lu-display m-0 text-[1.45rem] leading-none font-semibold whitespace-nowrap text-ink">
+                            {value(m, scan)}
+                          </dd>
+                          {c ? (
+                            <dd
+                              className={`m-0 text-[0.78rem] font-semibold whitespace-nowrap ${c.tone}`}
+                              data-testid={`change-${m.key}`}
+                            >
+                              <bdi aria-hidden="true">{c.signed}</bdi>
+                              <span className="sr-only">{c.label}</span>
+                            </dd>
+                          ) : null}
+                          {level !== null && (
+                            <dd className="col-span-full m-0" data-testid="visceral-verdict">
+                              <span className={`lu-chip lu-verdict lu-verdict-${visceralLevel(level)}`}>
+                                {t(`progress.visceralLevel.${visceralLevel(level)}`)}
+                              </span>
+                            </dd>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </dl>
+                </section>
                 <Suspense fallback={<div className="lu-skeleton-card min-h-96" data-testid="body-comp-loading" />}>
                   <BodyComposition scan={scan} compare={before} heightCm={me.data.heightCm} sex={me.data.sex} />
                 </Suspense>
-                {points.length < 2 ? (
+                {progress.status === 'loading' ? (
+                  <div className="lu-skeleton-card min-h-60" data-testid="charts-loading" />
+                ) : progress.status === 'error' ? null : points.length < 2 ? (
                   <p className="lu-card lu-state" data-testid="second-scan">
                     {t('progress.secondScan')}
                   </p>

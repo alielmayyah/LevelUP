@@ -20,7 +20,7 @@ const Toast: React.FC<{ message: string | null; onDone: () => void; duration?: n
     >
       {message && (
         <p
-          className="m-0 max-w-[420px] rounded-full bg-ink px-4 py-2.5 text-[0.9rem] font-semibold text-page shadow-raised"
+          className="lu-rise m-0 max-w-[420px] rounded-full bg-ink px-4 py-2.5 text-[0.9rem] font-semibold text-page shadow-raised"
           data-testid="toast"
         >
           {message}

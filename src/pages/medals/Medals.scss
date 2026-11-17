@@ -50,73 +50,53 @@
     }
   }
 
-  .lu-trophy-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
+  /* ---------- Filters: one row of chips that scrolls sideways ---------- */
 
-    > div {
-      display: grid;
-      gap: 2px;
-      padding: 8px 6px;
-      border-radius: 12px;
-      background: color-mix(in srgb, var(--lu-splash-text) 9%, transparent);
-      text-align: center;
+  /* The strip's edge fade blends into the page, not a card. Two classes so chunk order can't undo it. */
+  .lu-strip-wrap.lu-trophy-filters-wrap {
+    --lu-strip-bg: var(--lu-bg);
+  }
+
+  .lu-trophy-filters button {
+    flex: none;
+    min-block-size: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--lu-border);
+    border-radius: 999px;
+    background: var(--lu-surface);
+    color: var(--lu-text-muted);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      transform 150ms var(--ease-soft, ease-out),
+      background-color 180ms ease-out,
+      color 180ms ease-out,
+      border-color 180ms ease-out;
+
+    &[aria-checked='true'] {
+      border-color: var(--ion-color-primary);
+      background: var(--ion-color-primary);
+      color: var(--ion-color-primary-contrast);
     }
 
-    dt {
-      color: var(--lu-splash-text-muted);
-      font-size: 0.72rem;
-      font-weight: 700;
+    &:active {
+      transform: scale(0.97);
     }
 
-    dd {
-      margin: 0;
-      font-size: 1.15rem;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
+    &:focus-visible {
+      outline: 2px solid var(--lu-text);
+      outline-offset: 2px;
     }
   }
 
-  /* ---------- Filters ---------- */
-
-  .lu-trophy-filters {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-    gap: 4px;
-    padding: 4px;
-    border: 1px solid var(--lu-border);
-    border-radius: 14px;
-    background: var(--lu-surface-2);
-
-    button {
-      min-block-size: 44px;
-      min-inline-size: 0;
-      padding: 5px 4px;
-      border: 0;
-      border-radius: 10px;
-      background: transparent;
-      color: var(--lu-text-muted);
-      font-size: 0.8rem;
-      font-weight: 600;
-      line-height: 1.2;
-      cursor: pointer;
-      transition: transform 150ms var(--ease-soft, ease-out);
-
-      &[aria-checked='true'] {
-        background: var(--ion-color-primary);
-        color: var(--ion-color-primary-contrast);
-        box-shadow: var(--lu-shadow);
-      }
-
-      &:active {
-        transform: scale(0.97);
-      }
-
-      &:focus-visible {
-        outline: 2px solid var(--lu-text);
-        outline-offset: 2px;
-      }
+  @media (hover: hover) and (pointer: fine) {
+    .lu-trophy-filters button[aria-checked='false']:hover {
+      border-color: var(--lu-text-muted);
+      color: var(--lu-text);
     }
   }
 
@@ -197,10 +177,14 @@
     font: inherit;
     text-align: center;
     cursor: pointer;
-    transition: transform 120ms ease-out;
+    transition:
+      transform 120ms ease-out,
+      background-color 150ms ease-out;
 
-    &:hover {
-      background: color-mix(in srgb, var(--lu-text) 4%, transparent);
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: color-mix(in srgb, var(--lu-text) 4%, transparent);
+      }
     }
 
     &:active {
@@ -221,10 +205,8 @@
     --m: var(--lu-rarity-bronze);
     /* Mostly text color, tinted by the rarity: pale metals stay readable on light cards. */
     color: color-mix(in srgb, var(--m) 38%, var(--lu-text));
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
 
     &[data-rarity='silver'] {
       --m: var(--lu-rarity-silver);
@@ -282,8 +264,10 @@
       inline-size: min(100%, 3.5rem);
     }
 
-    &:hover {
-      border-color: var(--ion-color-primary);
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        border-color: var(--ion-color-primary);
+      }
     }
 
     &:active {

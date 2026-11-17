@@ -11,12 +11,18 @@ test.describe('Progress', () => {
     await page.goto('/tabs/progress');
     const p = page.locator(tab('progress'));
     await expect(p.getByTestId('metric-weight')).toContainText(/80\.0\s?kg/);
-    await expect(p.getByTestId('change-muscle')).toContainText('▲ 0.9 kg');
-    // Trends sit behind View more details.
+    await expect(p.getByTestId('change-muscle')).toContainText('0.9 kg');
+    await expect(p.getByTestId('change-muscle').locator('[data-icon="trendUp"]')).toBeVisible();
+    // Simple by default: the other six, the compare picker and the trends sit behind See full scan.
     await expect(p.getByTestId('trend-headline')).toHaveCount(0);
+    await expect(p.getByTestId('more-metrics')).toHaveCount(0);
+    await expect(p.getByTestId('compare-open')).toHaveCount(0);
+    await expect(p.getByTestId('change-caption')).toHaveText(en.progress.comparedPrevious);
     await p.getByTestId('progress-more').click();
+    await expect(p.getByTestId('progress-more')).toHaveAttribute('aria-expanded', 'true');
     await expect(p.getByTestId('trend-headline')).toContainText(/80\.0\s?kg/);
-    // All nine measurements show; the six smaller cards keep just a name and value.
+    // All nine measurements show; the six smaller cards keep just a name, value and (belly fat) a verdict.
+    await expect(p.getByTestId('visceral-verdict')).toHaveText(en.progress.visceralLevel.ok);
     await expect(p.getByTestId('metric-visceral')).toContainText(en.progress.metric.visceral);
     await expect(p.getByTestId('metric-visceral')).not.toContainText(en.progress.info.visceral.what);
     // Each measurement explains itself in a pop-up.
@@ -127,6 +133,8 @@ test.describe('Goals', () => {
     await loginAs('103');
     await page.goto('/tabs/goals');
     const g = page.locator(tab('goals'));
+    // One primary button on the empty screen: the empty state's.
+    await expect(g.getByTestId('goal-new')).toHaveCount(0);
     await g.getByTestId('goal-new-empty').click();
 
     const n = page.locator(tab('new-goal'));
@@ -139,6 +147,7 @@ test.describe('Goals', () => {
     await n.getByTestId('goal-create').click();
 
     await expect(page).toHaveURL(/\/tabs\/goals$/);
+    await expect(page.getByTestId('toast')).toHaveText(en.goals.created);
     await expect(g.getByTestId('section-active').getByTestId('goal')).toContainText('Gain 2.5 kg of muscle');
     // It is also today's mission on Home.
     await page.goto('/tabs/home');
@@ -322,6 +331,7 @@ test.describe('Profile', () => {
     await loginAs();
     await page.goto('/tabs/profile/settings');
     await page.getByRole('button', { name: en.profile.signOut }).click();
+    await expect(page.getByRole('dialog')).toContainText(en.profile.signOutNote);
     await page.getByRole('dialog').getByRole('button', { name: en.profile.cancel }).click();
     await expect(page).toHaveURL(/\/tabs\/profile\/settings$/);
   });

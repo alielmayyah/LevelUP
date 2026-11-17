@@ -10,6 +10,7 @@ import Icon, { type IconName } from '../components/Icon';
 import Toast from '../components/Toast';
 import { focusSibling, rovingTarget } from '../components/roving';
 import { formatNumber, formatSigned } from '../i18n/format';
+import { markGoalCreated } from './goals/created';
 import './goals/Goals.scss';
 
 const STEP = 0.5;
@@ -99,7 +100,7 @@ function Choice<T extends string | number>({
 }
 
 const SECTION = 'lu-card grid gap-3 p-3.5';
-const QUESTION = 'm-0 text-[1rem] font-bold text-ink';
+const QUESTION = 'm-0 text-[1rem] font-semibold text-ink';
 
 /**
  * The member sets their own goal: what to change and by how much. No due date.
@@ -139,7 +140,7 @@ const NewGoal: React.FC = () => {
         <h1 className="lu-display m-0 text-[clamp(2rem,9vw,2.75rem)] leading-[1.05] wrap-anywhere text-ink">
           {t('newGoal.title')}
         </h1>
-        <p className="mx-0 mt-1 mb-0 text-[0.9rem] text-muted">{t('newGoal.subtitle')}</p>
+        <p className="mx-0 mt-1 mb-0 text-[0.9rem] font-normal text-muted">{t('newGoal.subtitle')}</p>
       </div>
     </div>
   );
@@ -181,6 +182,7 @@ const NewGoal: React.FC = () => {
       setSaving(true);
       try {
         await createGoal({ metric, targetValue: target });
+        markGoalCreated();
         leave();
       } catch {
         setFailed(true);
@@ -214,8 +216,8 @@ const NewGoal: React.FC = () => {
                   <Icon name={LOOK[m].icon} />
                 </span>
                 <span className="grid min-w-0 flex-1 gap-0.5">
-                  <span className="leading-tight font-bold">{t(`newGoal.metric.${m}`)}</span>
-                  <span className="text-[0.8rem] font-bold text-muted">
+                  <span className="leading-tight font-semibold">{t(`newGoal.metric.${m}`)}</span>
+                  <span className="text-[0.8rem] font-normal text-muted">
                     {t('newGoal.now', { value: formatNumber(current(scan, m), 1) })}
                   </span>
                 </span>
@@ -237,7 +239,7 @@ const NewGoal: React.FC = () => {
               className="lu-icon-button size-12"
               onClick={() => step(-1)}
               disabled={value - STEP < r.min - 0.01}
-              aria-label={t('newGoal.less')}
+              aria-label={t('newGoal.less', { step: formatNumber(STEP, 1) })}
               data-testid="goal-less"
             >
               <Icon name="remove" />
@@ -248,20 +250,20 @@ const NewGoal: React.FC = () => {
               data-testid="goal-amount"
             >
               {formatNumber(amount, 1)}
-              <span className="ms-1.5 text-[1.25rem] text-muted">{t('units.kg')}</span>
+              <span className="ms-1.5 text-[1.25rem] font-normal text-muted">{t('units.kg')}</span>
             </output>
             <button
               type="button"
               className="lu-icon-button size-12"
               onClick={() => step(1)}
               disabled={value + STEP > r.max + 0.01}
-              aria-label={t('newGoal.more')}
+              aria-label={t('newGoal.more', { step: formatNumber(STEP, 1) })}
               data-testid="goal-more"
             >
               <Icon name="add" />
             </button>
           </div>
-          <p className="m-0 text-center text-[0.875rem] font-bold text-muted" data-testid="goal-change">
+          <p className="m-0 text-center text-[0.875rem] font-normal text-muted" data-testid="goal-change">
             {t('newGoal.fromScan', { change: formatSigned(change) })}
           </p>
         </section>
@@ -271,7 +273,7 @@ const NewGoal: React.FC = () => {
           aria-labelledby="new-goal-summary"
           data-testid="goal-summary"
         >
-          <h2 id="new-goal-summary" className="m-0 text-[0.8rem] font-bold text-muted">
+          <h2 id="new-goal-summary" className="m-0 text-[0.75rem] font-semibold text-muted">
             {t('newGoal.summary')}
           </h2>
           <div className="flex items-center gap-3">
@@ -282,10 +284,10 @@ const NewGoal: React.FC = () => {
               <Icon name={icon} />
             </span>
             <span className="grid min-w-0 gap-0.5">
-              <span className="text-[1.1rem] leading-tight font-bold text-ink" data-testid="goal-name">
+              <span className="text-[1.1rem] leading-tight font-semibold text-ink" data-testid="goal-name">
                 {t(`newGoal.name.${metric}`, { amount: formatNumber(amount) })}
               </span>
-              <span className="text-[0.875rem] font-bold text-muted" data-testid="goal-starts">
+              <span className="text-[0.875rem] font-normal text-muted" data-testid="goal-starts">
                 {t('newGoal.startsNow')}
               </span>
             </span>

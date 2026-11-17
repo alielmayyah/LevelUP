@@ -28,7 +28,6 @@ const TabPage: React.FC<TabPageProps> = ({
   subtitle,
   onRefresh,
   actions,
-  titleIcon,
   backTo,
   fill,
   children,
@@ -59,11 +58,11 @@ const TabPage: React.FC<TabPageProps> = ({
               </button>
             )}
             <div className="min-w-0 flex-1">
-              <h1 className="lu-display m-0 flex items-center gap-2.5 text-[clamp(1.5rem,5vw,2rem)] leading-[1.15] wrap-break-word text-ink">
-                {titleIcon}
+              {/* No icon before the title: the tab bar already shows it. */}
+              <h1 className="lu-display m-0 text-[clamp(1.5rem,5vw,2rem)] leading-[1.15] wrap-break-word text-ink">
                 {title}
               </h1>
-              {subtitle && <p className="mx-0 mt-1.5 mb-0 text-[0.9rem] text-muted">{subtitle}</p>}
+              {subtitle && <p className="mx-0 mt-1 mb-0 text-[0.875rem] text-muted">{subtitle}</p>}
             </div>
             {actions}
           </div>

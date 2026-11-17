@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
               </div>
               <div className="min-w-0">
                 <h2
-                  className="lu-display m-0 text-[2rem] leading-[1.1] wrap-anywhere"
+                  className="m-0 text-[1.5rem] leading-[1.2] font-semibold wrap-anywhere"
                   id="profile-name"
                   data-testid="profile-name"
                 >
@@ -82,7 +82,7 @@ const Profile: React.FC = () => {
                     {member.firstName} {member.lastName}
                   </bdi>
                 </h2>
-                <p className="mx-0 mt-1 mb-0 flex items-center gap-1.5 text-[0.85rem] font-bold text-muted">
+                <p className="mx-0 mt-1 mb-0 flex items-center gap-1.5 text-[0.85rem] font-normal text-muted">
                   <Icon className="flex-none" name="idCard" />
                   {t('profile.fitId', { id: member.fitId })}
                 </p>
@@ -93,7 +93,7 @@ const Profile: React.FC = () => {
                       <Icon className="flex-none text-[1.05rem] text-primary" name="calendar" />
                       <span className="sr-only">{t('profile.age')}</span>
                     </dt>
-                    <dd className="m-0 font-bold whitespace-nowrap text-ink" data-testid="profile-age">
+                    <dd className="m-0 font-semibold whitespace-nowrap text-ink" data-testid="profile-age">
                       {Number.isFinite(age) && age >= 0
                         ? t('profile.ageValue', { value: formatNumber(age) })
                         : t('profile.unknown')}
@@ -104,7 +104,7 @@ const Profile: React.FC = () => {
                       <Icon className="flex-none text-[1.05rem] text-accent" name="ruler" />
                       <span className="sr-only">{t('profile.height')}</span>
                     </dt>
-                    <dd className="m-0 font-bold whitespace-nowrap text-ink" data-testid="profile-height">
+                    <dd className="m-0 font-semibold whitespace-nowrap text-ink" data-testid="profile-height">
                       {typeof height === 'number' && Number.isFinite(height) && height > 0
                         ? t('profile.heightValue', { value: formatNumber(height), unit: t('units.cm') })
                         : t('profile.unknown')}

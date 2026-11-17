@@ -17,6 +17,7 @@ import { resetSound } from '../sound/useSound';
 import Community from './Community';
 import Goals from './Goals';
 import Leaderboard from './Leaderboard';
+import { markGoalCreated, takeGoalCreated } from './goals/created';
 import NewGoal from './NewGoal';
 import Profile from './Profile';
 import Progress from './Progress';
@@ -63,29 +64,63 @@ describe('Progress', () => {
     expect(screen.getByTestId('scan-title')).toHaveTextContent('Oct 15, 2026');
   });
 
-  it('opens on the key numbers; body composition and trends wait behind View more details', async () => {
+  it('opens on the key numbers; everything else waits behind See full scan, remembered per device', async () => {
     await renderAs('101', Progress);
     const more = await screen.findByTestId('progress-more');
     expect(more).toHaveAttribute('aria-expanded', 'false');
+    expect(more).toHaveAttribute('aria-controls', 'progress-details');
+    expect(more).toHaveTextContent('See full scan');
     expect(screen.queryByTestId('body-comp')).toBeNull();
+    expect(screen.queryByTestId('more-metrics')).toBeNull();
+    expect(screen.queryByTestId('compare-open')).toBeNull();
+    // Collapsed, the changes are always against the scan before: one quiet line, no button.
+    expect(screen.getByTestId('change-caption')).toHaveTextContent('Compared with your previous scan');
     await userEvent.click(more);
     expect(more).toHaveAttribute('aria-expanded', 'true');
     expect(more).toHaveTextContent('Show less');
+    expect(screen.getByTestId('compare-open')).toHaveTextContent('Pick scan');
+    expect((await Preferences.get({ key: 'lu.progress.details' })).value).toBe('open');
     // Body composition is its own lazy chunk; on a busy CI runner it can take over a second.
     expect(await screen.findByTestId('body-comp', {}, { timeout: 5000 })).toBeInTheDocument();
     await userEvent.click(more);
     expect(screen.queryByTestId('body-comp')).toBeNull();
+    expect((await Preferences.get({ key: 'lu.progress.details' })).value).toBe('closed');
   });
 
-  it("shows Mohamed's 3 key numbers with their change, and the other 6 under More", async () => {
+  it('opens the full scan straight away when the member left it open', async () => {
+    await Preferences.set({ key: 'lu.progress.details', value: 'open' });
+    await renderAs('101', Progress);
+    expect(await screen.findByTestId('more-metrics')).toBeInTheDocument();
+    expect(screen.getByTestId('progress-more')).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('a failed refresh keeps the scan on screen, with the error and Retry above it', async () => {
+    await renderAs('101', Progress);
+    await screen.findByTestId('latest-scan');
+    const handle = mockServer.handle.bind(mockServer);
+    const spy = vi.spyOn(mockServer, 'handle').mockResolvedValue({ status: 500, body: null });
+    window.dispatchEvent(new Event('online'));
+    const alert = await screen.findByTestId('progress-refresh-error');
+    expect(alert).toHaveTextContent("Couldn't refresh your progress");
+    expect(screen.getByTestId('metric-weight')).toHaveTextContent(/80\.0\s?kg/);
+    spy.mockImplementation(handle);
+    await userEvent.click(within(alert).getByRole('button', { name: 'Retry' }));
+    await waitFor(() => expect(screen.queryByTestId('progress-refresh-error')).toBeNull());
+    expect(screen.getByTestId('metric-weight')).toHaveTextContent(/80\.0\s?kg/);
+  });
+
+  it("shows Mohamed's 3 key numbers with their change, and the other 6 in the full scan", async () => {
     await renderAs('101', Progress);
     const scan = await screen.findByTestId('latest-scan');
     expect(within(scan).getAllByRole('term')).toHaveLength(3);
+    await userEvent.click(screen.getByTestId('progress-more'));
     const more = screen.getByTestId('more-metrics');
     expect(within(more).getAllByRole('term')).toHaveLength(6);
     expect(within(scan).getByTestId('metric-weight')).toHaveTextContent(/80\.0\s?kg/);
     expect(within(scan).getByTestId('metric-bodyFat')).toHaveTextContent('8.0%');
-    expect(within(more).getByTestId('metric-visceral')).toHaveTextContent(/^Visceral fat3/);
+    expect(within(more).getByTestId('metric-visceral')).toHaveTextContent(/^Belly fat \(around organs\)3/);
+    // Level 3 is under 10: a plain verdict beside it.
+    expect(within(more).getByTestId('visceral-verdict')).toHaveTextContent('Healthy');
     expect(within(more).getByTestId('metric-bmr')).toHaveTextContent(/1,\d{3}\s?kcal/);
     // The six smaller cards show the change since the scan before, with a sign.
     for (const key of ['water', 'protein', 'minerals', 'bmr', 'bmi', 'visceral'])
@@ -94,6 +129,9 @@ describe('Progress', () => {
     expect(within(scan).getByText('Up 0.9 kg since the scan before').parentElement).toHaveClass('text-success');
     expect(within(scan).getByText('Down 1.1% since the scan before').parentElement).toHaveClass('text-success');
     expect(within(scan).getByText('Up 0.7 kg since the scan before').parentElement).toHaveClass('text-muted');
+    // The direction is an icon, not a text arrow.
+    expect(within(scan).getByTestId('change-muscle').querySelector('[data-icon="trendUp"]')).toBeInTheDocument();
+    expect(within(scan).getByTestId('change-bodyFat').querySelector('[data-icon="trendDown"]')).toBeInTheDocument();
   });
 
   it('draws one trend at a time, with a screen-reader summary, and switches metric', async () => {
@@ -130,7 +168,9 @@ describe('Progress', () => {
     expect(screen.getByTestId('scan-age')).toHaveTextContent(/^(Today|Yesterday|\d+ (day|week|month|year)s? ago)$/);
     await userEvent.click(screen.getByRole('button', { name: 'Older scan' }));
     expect(screen.queryByTestId('scan-latest')).toBeNull();
-    // Oct 15 is compared with the scan 4 weeks before it.
+    expect(screen.getByTestId('change-caption')).toHaveTextContent('Compared with your previous scan');
+    // Oct 15 is compared with the scan 4 weeks before it (shown in the full scan).
+    await userEvent.click(screen.getByTestId('progress-more'));
     expect(screen.getByTestId('compare-gap')).toHaveTextContent(/^\d+ (day|week|month)s? before$/);
     // The date is the title; only screen readers hear Scan 5 of 6.
     expect(screen.getByTestId('scan-title')).toHaveTextContent('Oct 15, 2026');
@@ -157,8 +197,11 @@ describe('Progress', () => {
   it('every measurement has an info button that explains it', async () => {
     await renderAs('101', Progress);
     await screen.findByTestId('latest-scan');
+    // Only the three key numbers by default; all nine in the full scan.
+    expect(screen.getAllByRole('button', { name: /^About / })).toHaveLength(3);
+    await userEvent.click(screen.getByTestId('progress-more'));
     expect(screen.getAllByRole('button', { name: /^About / })).toHaveLength(9);
-    await userEvent.click(screen.getByRole('button', { name: 'About Visceral fat' }));
+    await userEvent.click(screen.getByRole('button', { name: 'About Belly fat (around organs)' }));
     const dialog = screen.getByTestId('metric-info');
     expect(dialog).toHaveTextContent('Fat stored deep in your belly');
     expect(dialog).toHaveTextContent('What to do');
@@ -223,7 +266,7 @@ describe('Progress', () => {
     expect(page2).toHaveLength(2);
     await userEvent.click(page2[1]);
     // Now every change is since the first scan: 36.4 → 41.3 kg of muscle.
-    expect(screen.getByTestId('change-muscle')).toHaveTextContent('▲ 4.9 kg');
+    expect(screen.getByTestId('change-muscle')).toHaveTextContent('4.9 kg');
     expect(screen.getByTestId('bar-smm-delta')).toHaveTextContent('+4.9 kg');
     await userEvent.click(screen.getByTestId('compare-open'));
     await userEvent.click(await screen.findByTestId('compare-none'));
@@ -235,7 +278,9 @@ describe('Progress', () => {
 
   it('Lina sees the empty state', async () => {
     await renderAs('102', Progress);
-    expect(await screen.findByText('No scans yet. Book one at the front desk.')).toBeInTheDocument();
+    expect(await screen.findByText('No scans yet.')).toBeInTheDocument();
+    // The next step, as text: there is nowhere in the app to book a scan.
+    expect(screen.getByTestId('progress-empty-next')).toHaveTextContent('Book your first scan at the front desk.');
   });
 
   it('Omar (one scan, FitScore hidden) sees when changes and trends will appear, and no FitScore trend', async () => {
@@ -292,11 +337,20 @@ describe('Goals', () => {
     expect(await screen.findByText('Nothing here yet')).toBeInTheDocument();
     expect(screen.queryByTestId('journey')).toBeNull();
     expect(screen.getByTestId('goal-new-empty')).toHaveTextContent('Set your first goal');
+    // One primary button on screen: no header New goal while the empty state offers one.
+    expect(screen.queryByTestId('goal-new')).toBeNull();
   });
 
-  it('always offers a New goal button in the header', async () => {
+  it('offers a New goal button in the header once there are goals', async () => {
     await renderAs('101', Goals);
     expect(await screen.findByTestId('goal-new')).toHaveTextContent('New goal');
+  });
+
+  it('confirms a goal just created with a toast, once', async () => {
+    markGoalCreated();
+    await renderAs('101', Goals);
+    expect(await screen.findByTestId('toast')).toHaveTextContent('Goal set! It counts from your last scan.');
+    expect(takeGoalCreated()).toBe(false);
   });
 });
 
@@ -310,6 +364,9 @@ describe('New goal', () => {
     await userEvent.click(await screen.findByTestId('goal-type-MUSCLE_KG'));
     expect(screen.getByTestId('goal-type-MUSCLE_KG')).toHaveAttribute('aria-checked', 'true');
     expect(screen.getByTestId('goal-amount')).toHaveTextContent('2');
+    // The stepper buttons say how much each press moves.
+    expect(screen.getByTestId('goal-less')).toHaveAccessibleName('Less (−0.5 kg)');
+    expect(screen.getByTestId('goal-more')).toHaveAccessibleName('More (+0.5 kg)');
     await userEvent.click(screen.getByTestId('goal-more'));
     expect(screen.getByTestId('goal-amount')).toHaveTextContent('2.5');
     expect(screen.getByTestId('goal-name')).toHaveTextContent('Gain 2.5 kg of muscle');
@@ -326,6 +383,8 @@ describe('New goal', () => {
         targetValue: Math.round((scan.skeletalMuscleKg + 2.5) * 10) / 10,
       });
     });
+    // Goals shows "Goal set!" when the member lands back on it.
+    await waitFor(() => expect(takeGoalCreated()).toBe(true));
   });
 
   it('a fat goal cannot go below half a kilo, and starts today even with others in progress', async () => {
@@ -356,6 +415,7 @@ describe('New goal', () => {
     await renderAs('103', NewGoal);
     expect(await screen.findByText('عايز تعمل إيه؟')).toBeInTheDocument();
     expect(screen.getByTestId('goal-create')).toHaveTextContent('اعمل الهدف');
+    expect(screen.getByTestId('goal-more')).toHaveAccessibleName('أكتر (+0.5 كجم)');
   });
 });
 
@@ -487,6 +547,25 @@ describe('Settings', () => {
     vi.spyOn(mockServer, 'handle').mockResolvedValueOnce({ status: 500, body: null });
     await userEvent.click(lb);
     await waitFor(() => expect(lb).toHaveAttribute('aria-checked', 'true'));
+  });
+
+  it('language, theme and sound work even when the profile fails to load; only FitScore waits', async () => {
+    vi.spyOn(mockServer, 'handle').mockResolvedValue({ status: 500, body: null });
+    await renderAs('101', Settings);
+    expect(screen.getByTestId('setting-language')).toBeInTheDocument();
+    expect(screen.getByTestId('setting-theme')).toBeInTheDocument();
+    expect(screen.getByTestId('setting-sound')).toBeInTheDocument();
+    expect(await screen.findByTestId('settings-fitscore-error')).toHaveTextContent("Couldn't load your profile.");
+    expect(screen.queryByTestId('setting-show-fitscore')).toBeNull();
+    expect(screen.getByTestId('sign-out')).toBeInTheDocument();
+  });
+
+  it('explains the FitScore switch and warns about the Fit ID before signing out', async () => {
+    await renderAs('101', Settings);
+    await screen.findByTestId('setting-show-fitscore');
+    expect(screen.getByText('Turn off to hide your FitScore in the app')).toBeInTheDocument();
+    await userEvent.click(screen.getByTestId('sign-out'));
+    expect(await screen.findByText(/You'll need your Fit ID to sign back in\./)).toBeInTheDocument();
   });
 
   it('switching language to Arabic flips the whole app', async () => {

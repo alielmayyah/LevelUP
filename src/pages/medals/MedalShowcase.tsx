@@ -24,15 +24,15 @@ function ShowcaseCard({ medal, next, onOpen }: { medal: MedalStatus; next?: Meda
       data-unlocked={medal.unlocked}
       onClick={onOpen}
     >
-      <span className="text-[0.8rem] leading-tight font-bold">{t(`medals.category.${medal.category}`)}</span>
+      <span className="text-[0.8rem] leading-tight font-semibold">{t(`medals.category.${medal.category}`)}</span>
       <MedalArt category={medal.category} rarity={medal.rarity} locked={!medal.unlocked} />
       {MEDAL_CONFIG[medal.category].ids && (
-        <span className="text-[0.72rem] leading-tight font-bold">{medalTitle(t, medal)}</span>
+        <span className="text-[0.72rem] leading-tight font-semibold">{medalTitle(t, medal)}</span>
       )}
       <span className="lu-rarity" data-rarity={medal.rarity}>
         {t(`medals.rarity.${medal.rarity}`)}
       </span>
-      <bdi className="text-[0.75rem] leading-tight font-bold text-muted">{medalTarget(t, medal)}</bdi>
+      <bdi className="text-[0.75rem] leading-tight font-normal text-muted">{medalTarget(t, medal)}</bdi>
       {!medal.unlocked && <span className="text-[0.7rem] leading-tight text-muted">{t('medals.locked')}</span>}
       {next && next.current !== null && (
         <span className="mt-auto grid w-full gap-1 pt-1" data-testid="profile-medal-progress">
@@ -41,7 +41,7 @@ function ShowcaseCard({ medal, next, onOpen }: { medal: MedalStatus; next?: Meda
               <span style={{ inlineSize: `${percent}%` }} />
             </span>
           )}
-          <span className="text-[0.7rem] leading-tight font-semibold text-muted">
+          <span className="text-[0.7rem] leading-tight font-normal text-muted">
             {medal.unlocked ? t('profile.medalNext', { target: medalTarget(t, next) }) : t('profile.medalProgress')}
             {' · '}
             <bdi>
@@ -90,7 +90,7 @@ export default function MedalShowcase({
         </div>
       ) : summary ? (
         <>
-          <p className="m-0 text-[0.85rem] font-bold text-muted" data-testid="profile-medal-count">
+          <p className="m-0 text-[0.85rem] font-normal text-muted" data-testid="profile-medal-count">
             {t('profile.medalCategoryCount', {
               unlocked: formatNumber(summary.unlocked),
               total: formatNumber(summary.slots.length),
@@ -107,7 +107,13 @@ export default function MedalShowcase({
       ) : (
         <div className="lu-skeleton-card" aria-busy="true" />
       )}
-      {selected && <MedalSheet medal={selected} onClose={() => setOpen(null)} />}
+      {selected && (
+        <MedalSheet
+          medal={selected}
+          status={categories?.find((c) => c.category === selected.category)}
+          onClose={() => setOpen(null)}
+        />
+      )}
     </section>
   );
 }

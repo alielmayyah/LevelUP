@@ -56,6 +56,14 @@ const Dashboard: React.FC = () => {
         <div className="lu-page-body lu-tab-body" data-testid="page-body">
           <div className="mb-4">
             <div className="flex items-start gap-3">
+              {/* Same size as the picture, so the greeting doesn't jump when it loads. */}
+              {!d && dashboard.status === 'loading' && (
+                <span
+                  className="lu-skeleton-card block size-14 min-h-0 flex-none rounded-[12px]"
+                  aria-hidden="true"
+                  data-testid="home-avatar-skeleton"
+                />
+              )}
               {d && (
                 <Link
                   to="/tabs/profile"
@@ -67,11 +75,11 @@ const Dashboard: React.FC = () => {
                 </Link>
               )}
               <div className="min-w-0 flex-1">
-                <p className="m-0 mb-1 text-[0.875rem] font-bold text-muted" data-testid="today">
+                <p className="m-0 mb-1 text-[0.875rem] font-normal text-muted" data-testid="today">
                   {formatToday(today)}
                 </p>
                 <h1
-                  className="lu-display m-0 text-[clamp(2.25rem,10vw,3rem)] leading-none wrap-anywhere text-ink"
+                  className="m-0 text-[clamp(1.5rem,6vw,1.75rem)] leading-tight font-semibold wrap-anywhere text-ink"
                   data-testid="greeting"
                 >
                   {d ? t('home.hello', { name: d.member.firstName }) : <span className="lu-skeleton h-[1em] w-[70%]" />}

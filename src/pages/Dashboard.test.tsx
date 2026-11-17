@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockServer, resetMockServer } from '../api/mock/server';
 import { setToken } from '../auth/token';
 import { setLanguage } from '../i18n';
+import { features } from '../features';
 import Dashboard from './Dashboard';
 
 const NOW = new Date('2026-11-13T10:00:00Z');
@@ -17,9 +18,10 @@ const renderHome = async (fitId = '101') => {
     <MemoryRouter initialEntries={['/tabs/home']}>
       <Route exact path="/tabs/home" component={Dashboard} />
       <Route path="/tabs/community/leaderboard" render={() => <p>leaderboard page</p>} />
+      <Route path="/tabs/goals/new" render={() => <p>new goal page</p>} />
     </MemoryRouter>,
   );
-  return screen.findByTestId('fitscore-card').catch(() => screen.findByTestId('rank-card'));
+  return screen.findByTestId('mission-card');
 };
 
 describe('Home', () => {
@@ -45,11 +47,32 @@ describe('Home', () => {
     expect(within(card).getByTestId('fitscore-value')).toHaveTextContent('91');
     expect(within(card).getByText('Elite')).toBeInTheDocument();
     expect(within(card).getByTestId('fitscore-change')).toHaveTextContent(/\+2/);
-    expect(within(card).getByText('Private')).toBeInTheDocument();
-    // Elite is the top tier: all 5 blocks lit, the 5th marked current.
-    const blocks = within(card).getByTestId('tier-meter').children;
-    expect([...blocks].filter((b) => b.classList.contains('is-on'))).toHaveLength(5);
-    expect(blocks[4]).toHaveClass('is-current');
+    // The tiers live in the info sheet now, not on the card.
+    expect(within(card).queryByTestId('tier-meter')).toBeNull();
+    expect(within(card).queryByText('Private')).toBeNull();
+  });
+
+  it('the info button explains FitScore, its five tiers, and who sees it', async () => {
+    await renderHome();
+    await userEvent.click(screen.getByRole('button', { name: 'About FitScore' }));
+    const sheet = screen.getByTestId('fitscore-info');
+    expect(within(sheet).getByRole('heading', { name: 'What is FitScore?' })).toBeInTheDocument();
+    expect(sheet).toHaveTextContent(/0 to 100/);
+    const tiers = within(within(sheet).getByTestId('fitscore-tiers')).getAllByRole('listitem');
+    expect(tiers.map((li) => li.textContent)).toEqual([
+      expect.stringMatching(/^Elite.*80 and up$/),
+      'Strong70 to 79',
+      'On Track60 to 69',
+      'Building50 to 59',
+      'Getting startedUnder 50',
+    ]);
+    // Mohamed is Elite: his row is marked.
+    expect(tiers[0]).toHaveAttribute('aria-current', 'true');
+    expect(tiers[0]).toHaveTextContent("You're here");
+    expect(sheet).toHaveTextContent('How to raise it');
+    expect(sheet).toHaveTextContent('Only you can see it.');
+    await userEvent.click(within(sheet).getByRole('button', { name: 'Close' }));
+    expect(within(screen.getByTestId('fitscore-info')).queryByText('What is FitScore?')).toBeNull();
   });
 
   it('shows rank, top percent, and the nudge; tapping opens the leaderboard', async () => {
@@ -68,7 +91,11 @@ describe('Home', () => {
     const card = screen.getByTestId('mission-card');
     expect(card).toHaveTextContent('Gain 3 kg of muscle');
     expect(card).toHaveTextContent('67%');
-    expect(card).toHaveTextContent('2.0 of 3.0 kg');
+    expect(card).toHaveTextContent('1.0 kg to go');
+    // Read out in full, drawn only as the ring and what is left.
+    expect(within(card).getByText('2.0 of 3.0 kg')).toHaveClass('sr-only');
+    expect(within(card).queryByTestId('mission-amount')).toBeNull();
+    expect(card.querySelector('.lu-bar')).toBeNull();
     // The coach's note is not on Home (it is in the goal's details on the Goals tab).
     expect(screen.queryByText('Keep protein high on training days.')).toBeNull();
   });
@@ -82,22 +109,35 @@ describe('Home', () => {
     expect(screen.getByTestId('tile-bmi')).toHaveTextContent('BMI');
     expect(screen.getByTestId('tile-bmi')).toHaveTextContent(/[+−±]?\d+\.\d/);
     expect(screen.queryByTestId('tile-member-since')).toBeNull();
+    // Good or bad is said in words too, not by color alone.
+    expect(screen.getByTestId('tile-body-fat')).toHaveTextContent('Good progress');
+    expect(screen.queryByTestId('wins-empty')).toBeNull();
   });
 
-  it('a new member sees the empty FitScore, the join prompt, and dashes', async () => {
+  it('a new member sees empty states with a next step, never dashes', async () => {
     await renderHome('102');
     expect(await screen.findByText('Your FitScore appears after your first scan.')).toBeInTheDocument();
-    expect(screen.getByText('Join the FitScore leaderboard')).toBeInTheDocument();
-    expect(screen.getByText('No active mission. Set a goal to start one.')).toBeInTheDocument();
-    expect(screen.getByTestId('tile-body-fat')).toHaveTextContent('—');
+    expect(screen.getByText('Book your first scan at the front desk.')).toBeInTheDocument();
+    if (features.community) expect(screen.getByText('Join the FitScore leaderboard')).toBeInTheDocument();
+    else expect(screen.queryByTestId('rank-card')).toBeNull();
+    expect(screen.getByTestId('wins-empty')).toHaveTextContent(
+      'No scan this month yet. Your wins show after your next scan.',
+    );
+    expect(screen.queryByTestId('tile-body-fat')).toBeNull();
+    expect(screen.getByTestId('page-body')).not.toHaveTextContent('—');
     expect(screen.queryByTestId('bell-dot')).toBeNull();
-    await userEvent.click(screen.getByTestId('rank-card'));
-    expect(await screen.findByText('leaderboard page')).toBeInTheDocument();
+  });
+
+  it('with no goal, the whole mission card opens New goal', async () => {
+    await renderHome('102');
+    const card = await screen.findByRole('button', { name: /Set your first goal/ });
+    expect(card).toHaveAttribute('data-testid', 'mission-card');
+    await userEvent.click(card);
+    expect(await screen.findByText('new goal page')).toBeInTheDocument();
   });
 
   it('hides the FitScore card when the member turned it off', async () => {
     await renderHome('103');
-    await screen.findByTestId('rank-card');
     expect(screen.queryByTestId('fitscore-card')).toBeNull();
   });
 
@@ -126,7 +166,7 @@ describe('Home', () => {
     await setLanguage('ar');
     await renderHome();
     expect(screen.getByTestId('greeting')).toHaveTextContent(/Mohamed/);
-    expect(screen.getByText('خاص')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'عن الـ FitScore' })).toBeInTheDocument();
     expect(screen.getByText('دهون الجسم')).toBeInTheDocument();
   });
 });

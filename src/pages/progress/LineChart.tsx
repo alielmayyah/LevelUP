@@ -246,7 +246,7 @@ const LineChart: React.FC<Props> = ({
             <button
               key={s.key}
               type="button"
-              className={`lu-chart-key inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-line bg-surface-2 px-2.5 py-1 font-inherit text-[0.78rem] font-bold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-[pressed=false]:text-muted aria-[pressed=false]:line-through aria-[pressed=false]:opacity-60 ${s.colorClass}`}
+              className={`lu-chart-key inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-line bg-surface-2 px-2.5 py-1 font-inherit text-[0.78rem] font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-[pressed=false]:text-muted aria-[pressed=false]:line-through aria-[pressed=false]:opacity-60 ${s.colorClass}`}
               aria-pressed={!hidden.has(s.key)}
               onClick={() => toggle(s.key)}
             >

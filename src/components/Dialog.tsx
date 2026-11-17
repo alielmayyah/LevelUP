@@ -6,6 +6,8 @@ const BUTTON =
 interface Props {
   open: boolean;
   title: string;
+  /** Optional plain line under the title: what happens next. */
+  message?: string;
   confirmLabel: string;
   cancelLabel: string;
   /** Styles the confirm button as a destructive action (sign out). */
@@ -19,9 +21,10 @@ interface Props {
  * focus, closes with Escape (and the Android back gesture in the web view), and
  * costs a few hundred bytes instead of Ionic's alert overlay.
  */
-const Dialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, destructive, onConfirm, onCancel }) => {
+const Dialog: React.FC<Props> = ({ open, title, message, confirmLabel, cancelLabel, destructive, onConfirm, onCancel }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  const messageId = useId();
 
   // Android back closes the open dialog first, before Ionic navigates
   // (priority 150 beats the router's 0 and matches Ionic's own overlays).
@@ -50,6 +53,7 @@ const Dialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, destr
       ref={ref}
       className="w-[min(calc(100%-32px),360px)] border-0 bg-transparent p-0 text-ink backdrop:bg-scrim/55"
       aria-labelledby={titleId}
+      aria-describedby={message ? messageId : undefined}
       onCancel={(e) => {
         e.preventDefault();
         onCancel();
@@ -60,10 +64,15 @@ const Dialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, destr
       }}
     >
       {open && (
-        <div className="grid gap-[18px] rounded-[20px] border border-line bg-surface p-5 shadow-raised ar:font-arabic">
+        <div className="lu-pop grid gap-4 rounded-[20px] border border-line bg-surface p-5 shadow-raised ar:font-arabic">
           <h2 id={titleId} className="m-0 text-[1.15rem] leading-[1.3] font-semibold">
             {title}
           </h2>
+          {message && (
+            <p id={messageId} className="m-0 -mt-2 text-[0.9rem] text-muted">
+              {message}
+            </p>
+          )}
           <div className="grid grid-cols-2 gap-2.5">
             <button type="button" className={`${BUTTON} border-line bg-surface-2 text-ink`} onClick={onCancel}>
               {cancelLabel}

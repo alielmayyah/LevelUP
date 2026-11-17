@@ -6,10 +6,17 @@ const TIER_KEYS: Record<FitScoreTier, string> = {
   Strong: 'strong',
   'On Track': 'onTrack',
   Building: 'building',
-  'Needs Improvement': 'needsImprovement',
+  'Needs Improvement': 'gettingStarted',
 };
 
+/** FitScore tiers, lowest to highest. */
+export const TIERS: FitScoreTier[] = ['Needs Improvement', 'Building', 'On Track', 'Strong', 'Elite'];
+
+/** The tier's i18n name, e.g. `home.tier.gettingStarted`. */
 export const tierKey = (tier: FitScoreTier): string => `home.tier.${TIER_KEYS[tier]}`;
+
+/** The tier's score range in words, e.g. `home.fitScoreInfo.range.strong`. */
+export const tierRangeKey = (tier: FitScoreTier): string => `home.fitScoreInfo.range.${TIER_KEYS[tier]}`;
 
 /** "Friday, 13 November" in the app's language. */
 export const formatToday = (date: Date): string =>

@@ -12,7 +12,7 @@ const CTA = [
 ].join(' ');
 
 /**
- * The app's main call-to-action button: a rounded brand-gradient button with a
+ * The app's main call-to-action button: a rounded, solid brand-color button with a
  * soft shadow. Use it for the one primary action on a screen.
  */
 const CtaButton: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({ className, type = 'button', ...rest }) => (

@@ -60,7 +60,7 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
       data-testid="scan-calendar"
     >
       <div className="flex items-center gap-2 px-4 pt-[18px] pb-1">
-        <h2 id="calendar-title" className="lu-display m-0 flex-1 text-[2.1rem] leading-none">
+        <h2 id="calendar-title" className="m-0 flex-1 text-[1.25rem] leading-tight font-semibold">
           {t('progress.calendarTitle')}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
@@ -82,10 +82,10 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
             <Icon className="rtl:-scale-x-100" name="chevronBack" />
           </button>
           <p className="m-0 grid flex-1 text-center" aria-live="polite">
-            <strong className="text-[1.05rem] font-bold" data-testid="calendar-month">
+            <strong className="text-[1.05rem] font-semibold" data-testid="calendar-month">
               {monthName}
             </strong>
-            <span className="text-[0.78rem] font-bold text-muted">
+            <span className="text-[0.78rem] font-normal text-muted">
               {t('progress.scansInMonth', { n: formatNumber(scansThisMonth) })}
             </span>
           </p>
@@ -103,7 +103,7 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
 
         <div className="grid grid-cols-7 gap-1 text-center" aria-hidden="true">
           {heads.map((h, i) => (
-            <span key={i} className="text-[0.72rem] font-bold text-muted">
+            <span key={i} className="text-[0.72rem] font-normal text-muted">
               {h}
             </span>
           ))}
@@ -123,7 +123,7 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
                 ) : (
                   <button
                     type="button"
-                    className={`lu-cal-day grid cursor-pointer place-items-center rounded-lg border p-0 font-inherit text-[0.9rem] font-bold ${scan === current ? 'is-current' : ''}`}
+                    className={`lu-cal-day grid cursor-pointer place-items-center rounded-lg border p-0 font-inherit text-[0.9rem] font-semibold ${scan === current ? 'is-current' : ''}`}
                     aria-label={t('progress.scanOn', { date: longDate.format(date) })}
                     aria-current={scan === current ? 'date' : undefined}
                     onClick={() => {

@@ -21,27 +21,37 @@ interface TileProps {
   metric: 'fat' | 'muscle' | 'bmi';
   icon: IconName;
   label: string;
-  value: string;
+  /** The change this month; never null here (null tiles are not drawn). */
+  change: number;
+  unit: string;
   tone?: Tone;
   testId: string;
 }
 
-const Tile: React.FC<TileProps> = ({ metric, icon, label, value, tone: tileTone = 'none', testId }) => (
-  <div
-    className={`lu-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative grid justify-items-center gap-1 overflow-hidden px-2 pt-4 pb-3 text-center`}
-    data-testid={testId}
-  >
-    <span className="lu-tile-badge mb-1.5 grid size-11 place-items-center rounded-full text-[1.35rem]">
-      <Icon name={icon} />
-    </span>
-    <span
-      className={`lu-display text-[clamp(1.55rem,6.8vw,2.1rem)] leading-[1.1] whitespace-nowrap ${VALUE_COLOR[tileTone]}`}
+const Tile: React.FC<TileProps> = ({ metric, icon, label, change, unit, tone: tileTone = 'none', testId }) => {
+  const { t } = useTranslation();
+  return (
+    <div
+      className={`lu-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative grid justify-items-center gap-1 overflow-hidden px-2 pt-4 pb-3 text-center`}
+      data-testid={testId}
     >
-      {value}
-    </span>
-    <span className="text-[0.78rem] font-semibold text-muted">{label}</span>
-  </div>
-);
+      <span className="lu-tile-badge mb-1.5 grid size-11 place-items-center rounded-full text-[1.35rem]">
+        <Icon name={icon} />
+      </span>
+      <span
+        className={`lu-display text-[clamp(1.55rem,6.8vw,2.1rem)] leading-[1.1] whitespace-nowrap ${VALUE_COLOR[tileTone]}`}
+      >
+        {formatSigned(change, unit, { digits: 1 })}
+      </span>
+      <span className="inline-flex items-center gap-1 text-[0.8125rem] font-normal text-muted">
+        {/* Which way it moved, not by color alone. Never mirrored: up is up in both languages. */}
+        {change !== 0 && <Icon className={VALUE_COLOR[tileTone]} name={change > 0 ? 'trendUp' : 'trendDown'} />}
+        {label}
+      </span>
+      {tileTone !== 'none' && <span className="sr-only">{t(`home.wins.${tileTone}`)}</span>}
+    </div>
+  );
+};
 
 /**
  * BMI has no single good direction: above the 18.5–25 range, down is good
@@ -54,41 +64,61 @@ const bmiTone = (change: number | null, bmi: number | null): Tone => {
   return 'none';
 };
 
-/** This month's body-fat, muscle, and BMI change. */
+/**
+ * This month's body-fat, muscle, and BMI change. Tiles without a value this
+ * month are left out; with none at all, one line says when they show up.
+ */
 const StatTiles: React.FC<{ wins: MonthlyWins; today: Date }> = ({ wins, today }) => {
   const { t } = useTranslation();
+  const kg = t('units.kg');
+  const tiles: TileProps[] = [];
+  if (wins.bodyFatChangePct !== null)
+    tiles.push({
+      metric: 'fat',
+      icon: 'bodyFat',
+      label: t('home.wins.bodyFat'),
+      change: wins.bodyFatChangePct,
+      unit: '%',
+      tone: tone(wins.bodyFatChangePct, 'down'),
+      testId: 'tile-body-fat',
+    });
+  if (wins.muscleGainedKg !== null)
+    tiles.push({
+      metric: 'muscle',
+      icon: 'muscle',
+      label: t('home.wins.muscle'),
+      change: wins.muscleGainedKg,
+      unit: kg,
+      tone: tone(wins.muscleGainedKg, 'up'),
+      testId: 'tile-muscle',
+    });
+  if (wins.bmiChange !== null)
+    tiles.push({
+      metric: 'bmi',
+      icon: 'ruler',
+      label: t('home.wins.bmi'),
+      change: wins.bmiChange,
+      unit: '',
+      tone: bmiTone(wins.bmiChange, wins.bmi),
+      testId: 'tile-bmi',
+    });
+
   return (
     <section aria-labelledby="wins-title">
       <h2 id="wins-title" className="lu-section-title">
-        <Icon name="sparkles" />
         {t('home.wins.title', { month: formatMonth(today) })}
       </h2>
-      <div className={TILES}>
-        <Tile
-          metric="fat"
-          icon="bodyFat"
-          label={t('home.wins.bodyFat')}
-          value={formatSigned(wins.bodyFatChangePct, '%', { digits: 1 })}
-          tone={tone(wins.bodyFatChangePct, 'down')}
-          testId="tile-body-fat"
-        />
-        <Tile
-          metric="muscle"
-          icon="muscle"
-          label={t('home.wins.muscle')}
-          value={formatSigned(wins.muscleGainedKg, t('units.kg'), { digits: 1 })}
-          tone={tone(wins.muscleGainedKg, 'up')}
-          testId="tile-muscle"
-        />
-        <Tile
-          metric="bmi"
-          icon="ruler"
-          label={t('home.wins.bmi')}
-          value={formatSigned(wins.bmiChange, '', { digits: 1 })}
-          tone={bmiTone(wins.bmiChange, wins.bmi)}
-          testId="tile-bmi"
-        />
-      </div>
+      {tiles.length > 0 ? (
+        <div className={TILES}>
+          {tiles.map((tile) => (
+            <Tile key={tile.testId} {...tile} />
+          ))}
+        </div>
+      ) : (
+        <p className="m-0 font-normal text-muted" data-testid="wins-empty">
+          {t('home.wins.none')}
+        </p>
+      )}
     </section>
   );
 };

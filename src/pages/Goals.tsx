@@ -1,5 +1,5 @@
-import { useIonRouter } from '@ionic/react';
-import type { CSSProperties } from 'react';
+import { useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { GoalMetric, GoalsDto, GoalView } from '../api/types';
@@ -7,7 +7,9 @@ import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
 import Icon, { type IconName } from '../components/Icon';
 import TabPage from '../components/TabPage';
+import Toast from '../components/Toast';
 import { formatNumber, formatPercent } from '../i18n/format';
+import { goalJustCreated, takeGoalCreated } from './goals/created';
 import './goals/Goals.scss';
 
 const LIST = 'm-0 grid list-none gap-3 p-0 md:grid-cols-[1fr_1fr] md:items-start';
@@ -52,9 +54,9 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
           <Icon name={icon} />
         </span>
         <div className="grid min-w-0 flex-1 gap-0.5">
-          <h3 className="m-0 text-[1.05rem] leading-[1.25] font-bold text-ink">{goal.title}</h3>
+          <h3 className="m-0 text-[1.05rem] leading-[1.25] font-semibold text-ink">{goal.title}</h3>
           <span
-            className={`text-[0.85rem] font-bold ${kind === 'completed' ? 'text-success' : 'text-muted'}`}
+            className={`text-[0.85rem] ${kind === 'completed' ? 'font-semibold text-success' : 'font-normal text-muted'}`}
             data-testid="goal-meta"
           >
             {status}
@@ -74,7 +76,7 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
 
       {/* One line: where the goal started, the bar, and the target at the end. */}
       <div className="flex items-center gap-2.5" data-testid="goal-stats">
-        <span className="text-[0.85rem] font-bold whitespace-nowrap text-muted">
+        <span className="text-[0.85rem] font-normal whitespace-nowrap text-muted">
           <span className="sr-only">{t('goals.start')} </span>
           {amount(goal.startValue)}
         </span>
@@ -89,7 +91,7 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
         >
           <span />
         </div>
-        <span className="lu-goal-target text-[0.85rem] font-bold whitespace-nowrap">
+        <span className="lu-goal-target text-[0.85rem] font-semibold whitespace-nowrap">
           <span className="sr-only">{t('goals.target')} </span>
           {amount(goal.targetValue)}
         </span>
@@ -106,6 +108,17 @@ const Goals: React.FC = () => {
   const newGoal = () => router.push('/tabs/goals/new', 'forward');
   useRefreshOnEnter(goals.reload);
 
+  // "Goal set!" once, when New goal sends the member back here: read on first
+  // render if this page is new, or when Ionic shows the page again.
+  const [created, setCreated] = useState(goalJustCreated);
+  const clearCreated = useCallback(() => setCreated(false), []);
+  useEffect(() => {
+    takeGoalCreated();
+  }, []);
+  useIonViewWillEnter(() => {
+    if (takeGoalCreated()) setCreated(true);
+  }, []);
+
   const data = goals.status === 'ready' ? goals.data : null;
   const total = data ? data.active.length + data.completed.length : 0;
 
@@ -116,15 +129,18 @@ const Goals: React.FC = () => {
       titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="target" />}
       subtitle={t('goals.subtitle')}
       onRefresh={goals.reload}
+      // One primary button per screen: with no goals, the empty state's button is the one.
       actions={
-        <CtaButton
-          className="min-h-11 flex-none gap-1 px-3 pt-1 pb-2 text-[1.05rem]"
-          onClick={newGoal}
-          data-testid="goal-new"
-        >
-          <Icon className="text-[1.1rem]" name="add" />
-          {t('goals.new')}
-        </CtaButton>
+        total > 0 ? (
+          <CtaButton
+            className="min-h-11 flex-none gap-1 px-4 py-2 text-[1rem]"
+            onClick={newGoal}
+            data-testid="goal-new"
+          >
+            <Icon className="text-[1.1rem]" name="add" />
+            {t('goals.new')}
+          </CtaButton>
+        ) : undefined
       }
     >
       {goals.status === 'loading' && (
@@ -158,7 +174,7 @@ const Goals: React.FC = () => {
               <section key={kind} aria-labelledby={`goals-${kind}`} data-testid={`section-${kind}`}>
                 <h2 id={`goals-${kind}`} className="lu-section-title mt-0">
                   {t(`goals.section.${kind}`)}{' '}
-                  <span className="box-border inline-grid h-[22px] min-w-[22px] place-items-center rounded-full bg-surface-2 px-[7px] text-[0.78rem] text-muted">
+                  <span className="box-border inline-grid h-[22px] min-w-[22px] place-items-center rounded-full bg-surface-2 px-[7px] text-[0.78rem] font-normal text-muted">
                     {formatNumber(data[kind].length)}
                   </span>
                 </h2>
@@ -172,6 +188,7 @@ const Goals: React.FC = () => {
           )}
         </div>
       )}
+      <Toast message={created ? t('goals.created') : null} onDone={clearCreated} />
     </TabPage>
   );
 };

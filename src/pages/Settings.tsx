@@ -9,7 +9,6 @@ import { clearToken } from '../auth/token';
 import Icon, { type IconName } from '../components/Icon';
 import { brand } from '../brand.config';
 import { features } from '../features';
-import CtaButton from '../components/CtaButton';
 import Dialog from '../components/Dialog';
 import Toast from '../components/Toast';
 import { focusSibling, rovingTarget } from '../components/roving';
@@ -18,14 +17,13 @@ import { currentLanguage, setLanguage, type Lang } from '../i18n';
 import { useSound } from '../sound/useSound';
 import { getThemeMode, setTheme, type ThemeMode } from '../theme/theme';
 
-const GRID = 'mx-auto grid w-full max-w-[620px] gap-3.5';
 /** One settings line: label on one side, value or control on the other; wraps on narrow screens. */
 const ROW = 'flex min-h-[52px] flex-wrap items-center justify-between gap-x-3 gap-y-2 py-2 font-semibold';
 /** Rows are split by a thin rule, except the last one. */
 const RULED = '[border-block-end:1px_solid_var(--lu-border)] last:[border-block-end:0]';
-const LABEL = 'flex min-w-0 items-center gap-2.5 font-bold';
+const LABEL = 'flex min-w-0 items-center gap-2.5 font-semibold';
 const LABEL_ICON = 'flex-none text-[1.2rem]';
-const HINT = 'text-[0.8rem] font-semibold text-muted';
+const HINT = 'text-[0.8rem] font-normal text-muted';
 
 /** A label with an icon, and optionally a one-line hint under it. */
 const RowLabel: React.FC<{ icon: IconName; children: React.ReactNode; hint?: { id: string; text: string } }> = ({
@@ -49,8 +47,7 @@ const RowLabel: React.FC<{ icon: IconName; children: React.ReactNode; hint?: { i
   </span>
 );
 
-const SECTION =
-  'mx-0 mt-3 mb-1 flex items-center gap-2 text-[0.8rem] font-bold tracking-[0.08em] text-primary uppercase dark:text-secondary ar:text-[0.9rem] ar:tracking-normal';
+const SECTION = 'mx-0 mt-3 mb-1 text-[0.75rem] font-semibold text-muted';
 
 interface SwitchProps {
   checked: boolean;
@@ -97,7 +94,7 @@ function Choice<T extends string>({ label, value, options, onChange, testId }: C
           key={o.value}
           type="button"
           role="radio"
-          className="min-h-9 min-w-11 cursor-pointer rounded-full border-0 bg-transparent px-3 py-0 font-inherit text-[0.8rem] font-semibold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+          className="min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-transparent px-3 py-0 font-inherit text-[0.8rem] font-semibold text-muted transition-colors duration-[180ms] ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast motion-reduce:transition-none"
           lang={o.lang}
           aria-checked={value === o.value}
           tabIndex={value === o.value ? 0 : -1}
@@ -150,73 +147,77 @@ const Settings: React.FC = () => {
 
   return (
     <TabPage testId="page-settings" title={t('profile.settings')} backTo="/tabs/profile" onRefresh={me.reload} fill>
-      {me.status === 'loading' && (
-        <div className={GRID} aria-busy="true">
-          <div className="lu-skeleton-card" />
-          <div className="lu-skeleton-card" />
-        </div>
-      )}
+      {/*
+       * Language, theme and sound live on this device, so they show at once,
+       * even while /me loads or after it fails. Only the FitScore switches wait for it.
+       * Fills the screen: the settings card grows, its rows share the height evenly, and Sign out sits at the bottom.
+       */}
+      <div className="mx-auto flex w-full max-w-[620px] flex-1 flex-col gap-3.5">
+        <section className="lu-card flex flex-1 flex-col py-1.5 [&>div]:flex-1" aria-labelledby="sec-settings">
+          <h2 id="sec-settings" className={SECTION}>
+            {t('profile.preferences')}
+          </h2>
 
-      {me.status === 'error' && (
-        <div className="lu-state" role="alert">
-          <p>{t('profile.error')}</p>
-          <CtaButton onClick={() => void me.retry()}>{t('common.retry')}</CtaButton>
-        </div>
-      )}
+          <div className={`${ROW} ${RULED} text-muted`}>
+            <RowLabel icon="globe">{t('settings.language')}</RowLabel>
+            <Choice
+              testId="setting-language"
+              label={t('settings.language')}
+              value={lang}
+              options={[
+                { value: 'en', label: 'English', lang: 'en' },
+                { value: 'ar', label: 'عربي', lang: 'ar' },
+              ]}
+              onChange={(l) => {
+                setLang(l);
+                void setLanguage(l);
+              }}
+            />
+          </div>
 
-      {p && (
-        // Fills the screen: the settings card grows, its rows share the height evenly, and Sign out sits at the bottom.
-        <div className="mx-auto flex w-full max-w-[620px] flex-1 flex-col gap-3.5">
-          <section className="lu-card flex flex-1 flex-col py-1.5 [&>div]:flex-1" aria-labelledby="sec-settings">
-            <h2 id="sec-settings" className={SECTION}>
-              <Icon name="settings" />
-              {t('profile.preferences')}
-            </h2>
+          <div className={`${ROW} ${RULED} text-muted`}>
+            <RowLabel icon="palette">{t('settings.theme')}</RowLabel>
+            <Choice
+              testId="setting-theme"
+              label={t('settings.theme')}
+              value={theme}
+              options={(['system', 'light', 'dark'] as const).map((m) => ({ value: m, label: t(`theme.${m}`) }))}
+              onChange={(m) => {
+                setThemeState(m);
+                void setTheme(m);
+              }}
+            />
+          </div>
 
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon="globe">{t('settings.language')}</RowLabel>
-              <Choice
-                testId="setting-language"
-                label={t('settings.language')}
-                value={lang}
-                options={[
-                  { value: 'en', label: 'English', lang: 'en' },
-                  { value: 'ar', label: 'عربي', lang: 'ar' },
-                ]}
-                onChange={(l) => {
-                  setLang(l);
-                  void setLanguage(l);
-                }}
-              />
+          <div className={`${ROW} ${RULED} text-muted`}>
+            <RowLabel icon="volume" hint={{ id: 'hint-sound', text: t('profile.soundHint') }}>
+              {t('profile.sound')}
+            </RowLabel>
+            <Switch
+              testId="setting-sound"
+              hintId="hint-sound"
+              label={t('profile.sound')}
+              checked={sound.enabled}
+              onChange={sound.toggle}
+            />
+          </div>
+
+          {me.status === 'loading' && (
+            <div className={`${ROW} ${RULED}`} aria-busy="true" data-testid="settings-fitscore-loading">
+              <span className="lu-skeleton-card min-h-10 w-full" />
             </div>
+          )}
 
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon="palette">{t('settings.theme')}</RowLabel>
-              <Choice
-                testId="setting-theme"
-                label={t('settings.theme')}
-                value={theme}
-                options={(['system', 'light', 'dark'] as const).map((m) => ({ value: m, label: t(`theme.${m}`) }))}
-                onChange={(m) => {
-                  setThemeState(m);
-                  void setTheme(m);
-                }}
-              />
+          {me.status === 'error' && (
+            <div className={`${ROW} ${RULED}`} role="alert" data-testid="settings-fitscore-error">
+              <span className="min-w-0 flex-1 text-[0.875rem] font-normal text-muted">{t('profile.error')}</span>
+              <button type="button" className="lu-link-button flex-none" onClick={() => void me.retry()}>
+                {t('common.retry')}
+              </button>
             </div>
+          )}
 
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon="volume" hint={{ id: 'hint-sound', text: t('profile.soundHint') }}>
-                {t('profile.sound')}
-              </RowLabel>
-              <Switch
-                testId="setting-sound"
-                hintId="hint-sound"
-                label={t('profile.sound')}
-                checked={sound.enabled}
-                onChange={sound.toggle}
-              />
-            </div>
-
+          {p && (
             <div className={`${ROW} ${RULED} text-muted`}>
               <RowLabel icon="eye" hint={{ id: 'hint-show-fitscore', text: t('profile.showFitScoreHint') }}>
                 {t('profile.showFitScore')}
@@ -229,42 +230,43 @@ const Settings: React.FC = () => {
                 onChange={() => void toggle('showFitScore')}
               />
             </div>
+          )}
 
-            {features.community && (
-              <div className={`${ROW} ${RULED} text-muted`}>
-                <RowLabel icon="podium" hint={{ id: 'hint-leaderboard', text: t('profile.leaderboardHint') }}>
-                  {t('profile.leaderboard')}
-                </RowLabel>
-                <Switch
-                  testId="setting-leaderboard"
-                  hintId="hint-leaderboard"
-                  label={t('profile.leaderboard')}
-                  checked={p.fitScoreOnLeaderboard}
-                  onChange={() => void toggle('fitScoreOnLeaderboard')}
-                />
-              </div>
-            )}
-          </section>
+          {p && features.community && (
+            <div className={`${ROW} ${RULED} text-muted`}>
+              <RowLabel icon="podium" hint={{ id: 'hint-leaderboard', text: t('profile.leaderboardHint') }}>
+                {t('profile.leaderboard')}
+              </RowLabel>
+              <Switch
+                testId="setting-leaderboard"
+                hintId="hint-leaderboard"
+                label={t('profile.leaderboard')}
+                checked={p.fitScoreOnLeaderboard}
+                onChange={() => void toggle('fitScoreOnLeaderboard')}
+              />
+            </div>
+          )}
+        </section>
 
-          {/* Sign out stands on its own, below the settings. */}
-          <button
-            type="button"
-            className="lu-card lu-signout flex min-h-[52px] w-full cursor-pointer items-center justify-between gap-3 px-4 py-2 font-inherit font-semibold text-danger"
-            onClick={() => setConfirmOut(true)}
-            data-testid="sign-out"
-          >
-            <span className={`${LABEL} text-danger`}>
-              <Icon className={`${LABEL_ICON} text-danger rtl:-scale-x-100`} name="logout" />
-              {t('profile.signOut')}
-            </span>
-            <Icon className="lu-chevron text-danger" name="chevronForward" />
-          </button>
-        </div>
-      )}
+        {/* Sign out stands on its own, below the settings. */}
+        <button
+          type="button"
+          className="lu-card lu-signout flex min-h-[52px] w-full cursor-pointer items-center justify-between gap-3 px-4 py-2 font-inherit font-semibold text-danger"
+          onClick={() => setConfirmOut(true)}
+          data-testid="sign-out"
+        >
+          <span className={`${LABEL} text-danger`}>
+            <Icon className={`${LABEL_ICON} text-danger rtl:-scale-x-100`} name="logout" />
+            {t('profile.signOut')}
+          </span>
+          <Icon className="lu-chevron text-danger" name="chevronForward" />
+        </button>
+      </div>
 
       <Dialog
         open={confirmOut}
         title={t('profile.signOutConfirm', { name: brand.name })}
+        message={t('profile.signOutNote')}
         cancelLabel={t('profile.cancel')}
         confirmLabel={t('profile.signOut')}
         destructive

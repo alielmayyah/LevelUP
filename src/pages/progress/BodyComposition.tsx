@@ -52,7 +52,7 @@ const Delta: React.FC<{ now: number; then: number; digits: number; unit: string;
   const tone = good === null ? 'text-muted' : good ? 'text-success' : 'text-danger';
   const amount = `${formatNumber(Math.abs(diff), digits)}${unit === '%' ? '%' : unit ? ` ${unit}` : ''}`;
   return (
-    <span className={`text-[0.75rem] font-bold whitespace-nowrap ${tone}`} data-testid={testId}>
+    <span className={`text-[0.75rem] font-semibold whitespace-nowrap ${tone}`} data-testid={testId}>
       <bdi aria-hidden="true">{diff === 0 ? '±0' : formatSigned(diff, unit, { digits })}</bdi>
       <span className="sr-only">
         {diff === 0 ? t('progress.noChange') : t(diff > 0 ? 'bodyComp.upSince' : 'bodyComp.downSince', { amount })}
@@ -116,12 +116,12 @@ const Bar: React.FC<BarProps> = (p) => {
   return (
     <div className={`grid gap-1.5 ${p.tone}`} data-testid={p.testId}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-        <span className="flex min-w-0 items-center gap-1.5 text-[0.85rem] font-bold text-ink">
+        <span className="flex min-w-0 items-center gap-1.5 text-[0.85rem] font-semibold text-ink">
           <Icon className="flex-none text-[1.1rem]" name={p.icon} />
           {p.label}
         </span>
         <span className="flex items-baseline gap-2">
-          <strong className="lu-display text-[1.35rem] leading-none whitespace-nowrap text-ink">
+          <strong className="lu-display text-[1.35rem] leading-none font-semibold whitespace-nowrap text-ink">
             {formatNumber(p.value, p.digits)}
             <span className="text-[0.7em]">{suffix}</span>
           </strong>
@@ -147,7 +147,7 @@ const Bar: React.FC<BarProps> = (p) => {
           <span className="lu-scale-then absolute -inset-y-1" style={{ insetInlineStart: `calc(${then}% - 1.5px)` }} />
         )}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 text-[0.72rem] font-bold text-muted">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-[0.72rem] font-normal text-muted">
         <span>{t('bodyComp.normalRange', { range: ltr(rangeText) })}</span>
         <StatusChip status={p.status} badOver={p.badOver} />
       </div>
@@ -174,12 +174,12 @@ const Callout: React.FC<{
         : 'text-center justify-items-center';
   return (
     <div dir={i18n.dir()} className={`grid gap-0.5 ${alignClass}`} data-testid={`seg-${segment}`}>
-      <span className="text-[0.72rem] font-bold text-muted">{t(`bodyComp.segment.${segment}`)}</span>
-      <strong className="lu-display text-[1.2rem] leading-none whitespace-nowrap text-ink">
+      <span className="text-[0.72rem] font-normal text-muted">{t(`bodyComp.segment.${segment}`)}</span>
+      <strong className="lu-display text-[1.2rem] leading-none font-semibold whitespace-nowrap text-ink">
         {formatNumber(reading.kg, digits)}
         <span className="text-[0.7em]">{`${THIN}${t('units.kg')}`}</span>
       </strong>
-      <span className="text-[0.7rem] font-bold whitespace-nowrap text-muted">
+      <span className="text-[0.7rem] font-normal whitespace-nowrap text-muted">
         <bdi>{pct(reading.pct)}</bdi>
       </span>
       <StatusChip status={status} badOver={kind === 'fat'} />
@@ -353,7 +353,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
 
   const legend = compare && (
     <p
-      className="m-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.72rem] font-bold text-muted"
+      className="m-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.72rem] font-normal text-muted"
       data-testid="compare-legend"
     >
       <span className="flex items-center gap-1.5">
@@ -407,7 +407,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                   aria-checked={kind === k}
                   tabIndex={kind === k ? 0 : -1}
                   data-testid={`segments-${k}`}
-                  className="flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-bold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+                  className="flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-normal text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
                   onClick={() => setKind(k)}
                   onKeyDown={(e) => {
                     const to = rovingTarget(e, i, kinds.length, rtl);

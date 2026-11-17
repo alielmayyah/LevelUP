@@ -1,19 +1,22 @@
 import { IonModal } from '@ionic/react';
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import Icon from '../../components/Icon';
-import { formatPercent } from '../../i18n/format';
+import { formatNumber, formatPercent } from '../../i18n/format';
 import { formatMedalDate, medalTitle, medalValue } from './format';
 import MedalArt from './MedalArt';
-import type { MedalStatus } from './types';
+import type { MedalCategoryStatus, MedalStatus } from './types';
 
 interface Props {
   medal: MedalStatus | null;
+  /** The medal's category: the member's records in it, for the "Your records" lines. */
+  status?: MedalCategoryStatus;
   onClose: () => void;
 }
 
 /** Medal details in a sheet: swipe down, the ✕, the backdrop, Escape, or Android back close it. */
-const MedalSheet: React.FC<Props> = ({ medal, onClose }) => {
+const MedalSheet: React.FC<Props> = ({ medal, status, onClose }) => {
   const { t } = useTranslation();
   return (
     <IonModal
@@ -29,14 +32,49 @@ const MedalSheet: React.FC<Props> = ({ medal, onClose }) => {
           ?.setAttribute('aria-label', medalTitle(t, medal))
       }
     >
-      {medal && <Details medal={medal} onClose={onClose} />}
+      {medal && <Details medal={medal} status={status} onClose={onClose} />}
     </IonModal>
   );
 };
 
-function Details({ medal, onClose }: { medal: MedalStatus; onClose: () => void }) {
+/**
+ * The detail lines kept off the Trophy Room page for members who want them:
+ * the best verified record in precise terms, the best working set, and lifts
+ * still waiting for the coach.
+ */
+function records(t: TFunction, status: MedalCategoryStatus | undefined, medal: MedalStatus): string[] {
+  if (!status) return [];
+  const kg = (n: number) => `${formatNumber(n)} ${t('units.kg')}`;
+  const lines: string[] = [];
+  if (!status.unavailable && status.current !== null)
+    lines.push(
+      t(`medals.current.${medal.measurementType}`, {
+        value: medalValue(t, medal.category, medal.unit, status.current),
+      }),
+    );
+  if (status.bestWorkingSet)
+    lines.push(
+      t('medals.workingSet', {
+        weight: kg(status.bestWorkingSet.weightKg),
+        reps: formatNumber(status.bestWorkingSet.reps),
+      }),
+    );
+  if (status.pendingLifts) lines.push(t('medals.pending', { count: status.pendingLifts }));
+  return lines;
+}
+
+function Details({
+  medal,
+  status,
+  onClose,
+}: {
+  medal: MedalStatus;
+  status: MedalCategoryStatus | undefined;
+  onClose: () => void;
+}) {
   const { t } = useTranslation();
   const value = (n: number) => medalValue(t, medal.category, medal.unit, n);
+  const lines = records(t, status, medal);
   const requirement =
     medal.measurementType === 'BMI_MAINTENANCE' && medal.threshold === 0
       ? t('medals.requirement.BMI_ENTRY')
@@ -53,7 +91,7 @@ function Details({ medal, onClose }: { medal: MedalStatus; onClose: () => void }
       <div className="grid justify-items-center gap-2 text-center" data-testid="medal-detail">
         <MedalArt category={medal.category} rarity={medal.rarity} locked={!medal.unlocked} />
         <h2 className="lu-display m-0 text-[2rem] leading-none text-ink">{medalTitle(t, medal)}</h2>
-        <p className="m-0 text-[0.85rem] font-bold text-muted">
+        <p className="m-0 text-[0.85rem] font-normal text-muted">
           {t(`medals.category.${medal.category}`)} ·{' '}
           <span className="lu-rarity" data-rarity={medal.rarity}>
             {t(`medals.rarity.${medal.rarity}`)}
@@ -93,6 +131,20 @@ function Details({ medal, onClose }: { medal: MedalStatus; onClose: () => void }
             )}
           </Row>
         )}
+        {lines.length > 0 && (
+          <Row label={t('medals.detail.records')}>
+            <ul className="m-0 grid list-none gap-1 p-0" data-testid="medal-detail-records">
+              {lines.map((line) => (
+                <li key={line}>
+                  <bdi>{line}</bdi>
+                </li>
+              ))}
+            </ul>
+          </Row>
+        )}
+        <Row label={t('medals.detail.about')}>
+          <span className="font-normal">{t(`medals.hint.${medal.category}`)}</span>
+        </Row>
       </dl>
     </div>
   );
@@ -101,7 +153,7 @@ function Details({ medal, onClose }: { medal: MedalStatus; onClose: () => void }
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="grid gap-0.5">
-      <dt className="text-[0.75rem] font-bold text-muted">{label}</dt>
+      <dt className="text-[0.75rem] font-semibold text-muted">{label}</dt>
       <dd className="m-0 text-[0.92rem] font-semibold text-ink">{children}</dd>
     </div>
   );

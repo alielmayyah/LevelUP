@@ -12,6 +12,7 @@ import CtaButton from '../components/CtaButton';
 import LanguageToggle from '../components/LanguageToggle';
 import SoundToggle from '../components/SoundToggle';
 import { CORNER_BUTTON, CORNER_CONTROLS, CORNER_START } from '../components/cornerControl';
+import { formatNumber } from '../i18n/format';
 import { useSound } from '../sound/useSound';
 import Icon from '../components/Icon';
 import './Login.scss';
@@ -110,7 +111,7 @@ const Login: React.FC = () => {
             noValidate
           >
             <label
-              className="mb-2 flex items-center gap-1.5 text-[0.9rem] font-bold text-splash-muted"
+              className="mb-2 flex items-center gap-1.5 text-[0.9rem] font-semibold text-splash-muted"
               htmlFor={inputId}
             >
               <Icon className="text-[1.15rem]" name="idCard" />
@@ -163,7 +164,7 @@ const Login: React.FC = () => {
                     transition={{ duration: 0.16 }}
                   >
                     <Icon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
-                    {t('login.help')}
+                    {t('login.help', { min: formatNumber(MIN_DIGITS), max: formatNumber(MAX_DIGITS) })}
                   </m.p>
                 )}
               </AnimatePresence>

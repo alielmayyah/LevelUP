@@ -32,7 +32,9 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
           <Icon name="podium" />
         </span>
         <span className="grid min-w-0 gap-0.5 text-[0.85rem] text-muted">
-          <strong className="text-[1rem] text-ink">{t(joinable ? 'home.rank.join' : 'home.rank.title')}</strong>
+          <strong className="text-[1rem] font-semibold text-ink">
+            {t(joinable ? 'home.rank.join' : 'home.rank.title')}
+          </strong>
           <span>{t(joinable ? 'home.rank.joinHint' : 'home.rank.noScan')}</span>
         </span>
       </>
@@ -86,7 +88,7 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
           </span>
           <span id={`${ids}-more`} className="grid gap-0.5">
             <span>{t('home.rank.behind', { count: s.membersBehind })}</span>
-            <span className="font-bold text-ink">
+            <span className="font-semibold text-ink">
               {s.pointsToNextRank === null
                 ? t('home.rank.first')
                 : t('home.rank.toClimb', { count: s.pointsToNextRank, rank: formatRank(s.rank - 1) })}

@@ -1,5 +1,5 @@
 /*
- * Home's custom pieces: the FitScore card's soft brand wash, the tier meter,
+ * Home's custom pieces: the FitScore card's soft brand wash, its info sheet,
  * the mission's progress ring, metric tiles, and the notification rows' tints.
  * Layout and type are Tailwind classes in the components.
  * Shared building blocks (cards, chips, bars, states) live in src/theme/kit.css.
@@ -21,18 +21,54 @@
     );
   }
 
-  /* Five rounded segments; the ones up to the member's tier fill in their tier's color. */
-  .lu-tier-block {
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--tier) 14%, var(--lu-surface-2));
+  /* The ⓘ: a quiet icon that lights up on hover and focus. */
+  .lu-fitscore-info {
+    border-radius: 50%;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 
-    &.is-on {
-      background: color-mix(in srgb, var(--tier) 70%, var(--lu-surface));
+    &:hover,
+    &:active {
+      color: var(--ion-color-primary);
     }
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: -4px;
+    }
+  }
+
+  /* ---------- FitScore info sheet (FitScoreInfo.tsx) ---------- */
+
+  .lu-fs-sheet {
+    max-height: none;
+  }
+
+  .lu-fs-panel {
+    border-radius: 18px 18px 0 0;
+    box-shadow:
+      inset 0 4px 0 var(--ion-color-primary),
+      var(--lu-shadow-raised);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .lu-fs-sheet[open] .lu-fs-panel {
+      animation: lu-fs-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+  }
+
+  /* One row per tier; the member's own row gets a light wash of its tier color. */
+  .lu-fs-tier {
+    background: var(--lu-surface-2);
 
     &.is-current {
-      background: var(--tier);
+      background: color-mix(in srgb, var(--tier) 16%, var(--lu-surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tier) 55%, var(--lu-border));
     }
+  }
+
+  .lu-fs-tier-dot {
+    background: var(--tier);
   }
 
   /* ---------- Mission ---------- */
@@ -158,5 +194,12 @@
 @keyframes lu-ring-fill {
   from {
     stroke-dashoffset: var(--lu-ring-full);
+  }
+}
+
+@keyframes lu-fs-up {
+  from {
+    transform: translateY(32px);
+    opacity: 0;
   }
 }

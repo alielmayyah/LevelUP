@@ -95,12 +95,12 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
               <Icon className="text-[2rem]" name={topic.icon} />
             </span>
             <div className="grid min-w-0 flex-1 gap-1">
-              <h2 id={titleId} className="lu-display m-0 text-[1.9rem] leading-none text-ink">
+              <h2 id={titleId} className="m-0 text-[1.25rem] leading-tight font-semibold text-ink">
                 {t(`progress.metric.${topic.key}`)}
               </h2>
               {topic.value && (
-                <p className="m-0 flex flex-wrap items-baseline gap-x-2 text-[0.85rem] font-semibold text-muted">
-                  <strong className="lu-display text-[1.6rem] font-normal text-ink" data-testid="metric-info-value">
+                <p className="m-0 flex flex-wrap items-baseline gap-x-2 text-[0.85rem] font-normal text-muted">
+                  <strong className="lu-display text-[1.6rem] text-ink" data-testid="metric-info-value">
                     {topic.value}
                   </strong>
                   {t('progress.infoYours')}
@@ -124,7 +124,7 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
                   <Icon name={icon} />
                 </span>
                 <div className="grid min-w-0 gap-0.5">
-                  <h3 className="m-0 text-[0.9rem] font-bold text-ink">{t(`progress.infoHead.${part}`)}</h3>
+                  <h3 className="m-0 text-[0.9rem] font-semibold text-ink">{t(`progress.infoHead.${part}`)}</h3>
                   <p className="m-0 text-[0.9rem] leading-relaxed text-muted">
                     {t(`progress.info.${topic.key}.${part}`)}
                   </p>

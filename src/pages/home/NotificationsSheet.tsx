@@ -150,10 +150,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
           {groups.map(([group, rows]) =>
             rows.length === 0 ? null : (
               <section key={group} className="not-first:mt-2" aria-labelledby={`notif-${group}`}>
-                <h3
-                  id={`notif-${group}`}
-                  className="mx-0 my-2 text-[0.8rem] font-bold tracking-[0.08em] text-muted uppercase ar:text-[0.9rem] ar:tracking-normal"
-                >
+                <h3 id={`notif-${group}`} className="mx-0 my-2 text-[0.875rem] font-semibold text-muted">
                   {t(`home.notifications.${group}`)}
                 </h3>
                 <ul className={LIST}>
@@ -179,7 +176,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                               {t(n.title.key, n.title.params ?? {})}
                             </span>
                             <span className="text-[0.9rem] text-muted">{t(n.body.key, n.body.params ?? {})}</span>
-                            <span className="inline-flex items-center gap-1 text-[0.78rem] font-semibold text-muted">
+                            <span className="inline-flex items-center gap-1 text-[0.8125rem] font-normal text-muted">
                               <Icon className="text-[0.9rem]" name="clock" />
                               {formatTimeAgo(n.createdAt)}
                             </span>
