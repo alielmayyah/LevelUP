@@ -43,7 +43,9 @@ describe('Login', () => {
     expect(field()).toHaveAttribute('inputmode', 'numeric');
     expect(field()).toHaveAttribute('dir', 'ltr');
     expect(document.querySelector('input[type="password"]')).toBeNull();
-    expect(screen.getByText("Ask the front desk if you don't have one.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Your Fit ID is 3–8 numbers. Ask the front desk if you don't have one."),
+    ).toBeInTheDocument();
   });
 
   it('keeps digits only, at most 8', async () => {
@@ -140,5 +142,7 @@ describe('Login', () => {
     renderLogin();
     expect(screen.getByLabelText('رقم العضوية')).toHaveAttribute('dir', 'ltr');
     expect(screen.getByRole('button', { name: 'ادخل' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'ارجع' })).toBeInTheDocument();
+    expect(screen.getByText('رقم العضوية من 3 لـ 8 أرقام. اسأل الريسبشن لو معندكش.')).toBeInTheDocument();
   });
 });

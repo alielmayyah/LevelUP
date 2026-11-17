@@ -1,20 +1,20 @@
 import type { LeaderboardBoard } from '../../api/types';
-import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
+import Icon, { type IconName } from '../../components/Icon';
 
-/** The pixel icon that says what a board's number measures: FitScore, muscle, or body fat. */
-const ICON: Record<LeaderboardBoard, { name: PixelIconName; colors: string }> = {
-  score: { name: 'trophy', colors: '[--px-fill:var(--lu-gold)] [--px-hi:var(--lu-fat-core)]' },
-  muscle: { name: 'muscle', colors: '[--px-fill:var(--lu-muscle)] [--px-hi:var(--lu-muscle-hi)]' },
+/** The icon that says what a board's number measures: FitScore, muscle, or body fat. */
+const ICON: Record<LeaderboardBoard, { name: IconName; colors: string }> = {
+  score: { name: 'trophy', colors: '[--icon-color:var(--lu-gold)]' },
+  muscle: { name: 'muscle', colors: '[--icon-color:var(--lu-muscle)]' },
   bodyFat: {
-    name: 'flame',
-    colors: '[--px-core:var(--lu-fat-core)] [--px-fill:var(--lu-fat)] [--px-hi:var(--lu-fat-hi)]',
+    name: 'bodyFat',
+    colors: '[--icon-color:var(--lu-fat)]',
   },
 };
 
 /** Decorative: the value next to it is always read with its unit or column name. */
 const MetricIcon: React.FC<{ board: LeaderboardBoard; className?: string }> = ({ board, className = '' }) => (
   <span className={`inline-grid place-items-center ${ICON[board].colors} ${className}`} aria-hidden="true">
-    <PixelIcon name={ICON[board].name} />
+    <Icon name={ICON[board].name} />
   </span>
 );
 

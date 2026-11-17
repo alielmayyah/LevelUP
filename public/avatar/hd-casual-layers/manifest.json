@@ -1,0 +1,146 @@
+{
+  "width": 1024,
+  "height": 1536,
+  "view": "front-three-quarter-right",
+  "slots": {
+    "hair": [
+      "hair"
+    ],
+    "top": [
+      "hoodie"
+    ],
+    "bottom": [
+      "cargo-pants"
+    ],
+    "footwear": [
+      "shoe-left",
+      "shoe-right"
+    ],
+    "backpack": [
+      "backpack-rear",
+      "backpack-straps"
+    ]
+  },
+  "anchors": {
+    "crown": [
+      518,
+      61
+    ],
+    "neck": [
+      501,
+      288
+    ],
+    "shoulders": [
+      [
+        353,
+        383
+      ],
+      [
+        637,
+        370
+      ]
+    ],
+    "wrists": [
+      [
+        298,
+        745
+      ],
+      [
+        720,
+        736
+      ]
+    ],
+    "waist": [
+      517,
+      724
+    ],
+    "ankles": [
+      [
+        354,
+        1315
+      ],
+      [
+        588,
+        1305
+      ]
+    ],
+    "floor": [
+      535,
+      1499
+    ]
+  },
+  "layers": [
+    {
+      "id": "backpack-rear",
+      "file": "backpack-rear.png",
+      "x": 223,
+      "y": 327,
+      "width": 188,
+      "height": 264
+    },
+    {
+      "id": "body",
+      "file": "body.png",
+      "x": 251,
+      "y": 281,
+      "width": 503,
+      "height": 1176
+    },
+    {
+      "id": "cargo-pants",
+      "file": "cargo-pants.png",
+      "x": 279,
+      "y": 706,
+      "width": 406,
+      "height": 631
+    },
+    {
+      "id": "shoe-left",
+      "file": "shoe-left.png",
+      "x": 265,
+      "y": 1306,
+      "width": 198,
+      "height": 196
+    },
+    {
+      "id": "shoe-right",
+      "file": "shoe-right.png",
+      "x": 503,
+      "y": 1294,
+      "width": 275,
+      "height": 189
+    },
+    {
+      "id": "hoodie",
+      "file": "hoodie.png",
+      "x": 214,
+      "y": 247,
+      "width": 545,
+      "height": 555
+    },
+    {
+      "id": "head",
+      "file": "head.png",
+      "x": 432,
+      "y": 82,
+      "width": 166,
+      "height": 243
+    },
+    {
+      "id": "hair",
+      "file": "hair.png",
+      "x": 365,
+      "y": 23,
+      "width": 266,
+      "height": 227
+    },
+    {
+      "id": "backpack-straps",
+      "file": "backpack-straps.png",
+      "x": 339,
+      "y": 313,
+      "width": 323,
+      "height": 441
+    }
+  ]
+}

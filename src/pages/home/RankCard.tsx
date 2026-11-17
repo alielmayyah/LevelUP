@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import type { LeaderboardSummary } from '../../api/types';
-import PixelIcon from '../../components/PixelIcon';
+import Icon from '../../components/Icon';
 import { formatCount, formatPercent, formatRank } from '../../i18n/format';
 
 /**
@@ -29,10 +29,12 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
     const body = (
       <>
         <span className="lu-icon-tile" aria-hidden="true">
-          <PixelIcon name="podium" />
+          <Icon name="podium" />
         </span>
         <span className="grid min-w-0 gap-0.5 text-[0.85rem] text-muted">
-          <strong className="text-[1rem] text-ink">{t(joinable ? 'home.rank.join' : 'home.rank.title')}</strong>
+          <strong className="text-[1rem] font-semibold text-ink">
+            {t(joinable ? 'home.rank.join' : 'home.rank.title')}
+          </strong>
           <span>{t(joinable ? 'home.rank.joinHint' : 'home.rank.noScan')}</span>
         </span>
       </>
@@ -43,15 +45,15 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
         {joinable ? (
           <button
             type="button"
-            className="lu-px-card flex items-center gap-3"
+            className="lu-card flex items-center gap-3"
             data-testid="rank-card"
             onClick={() => history.push('/tabs/community/leaderboard')}
           >
             {body}
-            <PixelIcon className="lu-chevron" name="chevronForward" />
+            <Icon className="lu-chevron" name="chevronForward" />
           </button>
         ) : (
-          <div className="lu-px-card flex items-center gap-3" data-testid="rank-card">
+          <div className="lu-card flex items-center gap-3" data-testid="rank-card">
             {body}
           </div>
         )}
@@ -64,18 +66,18 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
       {heading}
       <button
         type="button"
-        className="lu-px-card flex items-center gap-3"
+        className="lu-card flex items-center gap-3"
         data-testid="rank-card"
         onClick={() => history.push('/tabs/community/leaderboard')}
       >
-        <span className="lu-icon-tile lu-icon-tile-gold" aria-hidden="true">
-          <PixelIcon name="trophy" />
+        <span className="lu-icon-tile lu-icon-tile-gold" aria-hidden="true" data-testid="rank-trophy">
+          <Icon name="trophy" />
         </span>
         <span className="grid min-w-0 gap-0.5 text-[0.85rem] text-muted">
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <strong
               id={`${ids}-num`}
-              className="font-display text-[1.75rem] leading-[1.1] font-normal text-ink ar:font-bold"
+              className="font-display text-[1.75rem] leading-[1.1] font-bold text-ink tabular-nums"
               data-testid="rank-number"
             >
               {t('home.rank.ofTotal', { rank: formatRank(s.rank), total: formatCount(s.totalMembers) })}
@@ -86,14 +88,14 @@ const RankCard: React.FC<{ leaderboard: LeaderboardSummary }> = ({ leaderboard }
           </span>
           <span id={`${ids}-more`} className="grid gap-0.5">
             <span>{t('home.rank.behind', { count: s.membersBehind })}</span>
-            <span className="font-bold text-ink">
+            <span className="font-semibold text-ink">
               {s.pointsToNextRank === null
                 ? t('home.rank.first')
                 : t('home.rank.toClimb', { count: s.pointsToNextRank, rank: formatRank(s.rank - 1) })}
             </span>
           </span>
         </span>
-        <PixelIcon className="lu-chevron" name="chevronForward" />
+        <Icon className="lu-chevron" name="chevronForward" />
       </button>
     </section>
   );

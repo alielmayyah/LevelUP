@@ -16,8 +16,10 @@ import Splash from './pages/Splash';
 /* LevelUP tokens (must load after Ionic's palettes) */
 import './theme/tokens.css';
 
-/* Pixel-style display type and building blocks shared by every tab. The font only downloads when text uses it. */
-import '@fontsource/jersey-10/latin-400.css';
+/* Latin text in three real weights (IBM Plex Sans), matching the Arabic family below. */
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import '@fontsource/ibm-plex-sans/latin-600.css';
+import '@fontsource/ibm-plex-sans/latin-700.css';
 /* Arabic text in three real weights, so regular text is not drawn from the bold file. */
 import '@fontsource/ibm-plex-sans-arabic/arabic-400.css';
 import '@fontsource/ibm-plex-sans-arabic/arabic-600.css';

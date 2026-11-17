@@ -42,7 +42,7 @@ const UnlockCelebration: React.FC<Props> = ({ queue, onSeen }) => {
           </p>
           {/* Keyed so the pop-in replays for each medal in the queue. */}
           <MedalArt key={medal.id} category={medal.category} rarity={medal.rarity} locked={false} />
-          <h2 className="m-0 text-[1.3rem] leading-tight font-extrabold" data-testid="medal-celebration-title">
+          <h2 className="m-0 text-[1.3rem] leading-tight font-bold" data-testid="medal-celebration-title">
             {medalTitle(t, medal)}
           </h2>
           <p className="m-0 text-[0.85rem] text-[var(--lu-splash-text-muted)]">

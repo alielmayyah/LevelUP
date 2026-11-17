@@ -8,13 +8,13 @@ Use Ionic for structure, navigation, scrolling, and gestures. It already handles
 | Router | `IonReactRouter` + `IonRouterOutlet` | react-router v5 under the hood; `useHistory().replace` for auth hops |
 | A screen | `IonPage` | Every routed component's root. Tab pages use `TabPage` |
 | Scrolling body | `IonContent` | The only scroll container on a page. Never wrap a page in your own `overflow: auto` div |
-| Header | Own header inside `IonContent` (`TabPage`, Home) | The pixel design draws titles in the body; the body pads the top safe area itself (`.lu-tab-body`) |
+| Header | Own header inside `IonContent` (`TabPage`, Home) | The design draws titles in the body; the body pads the top safe area itself (`.lu-tab-body`) |
 | Tabs | `IonTabs` + `IonRouterOutlet` + custom `TabBar` | `TabBar` wraps `IonTabBar` in a `<nav>`; do not put `aria-label` on `IonTabButton` (see `ui-standards` → Accessibility) |
 | Pull to refresh | `IonRefresher` + `IonRefresherContent` | `slot="fixed"`, first child of `IonContent`; `complete()` in `finally` |
 | Bottom sheet | `IonModal` with `breakpoints` / `initialBreakpoint` | Notifications. Name the inner dialog (see `NotificationsSheet.tsx`) |
-| Confirm dialog | `PixelDialog` (native `<dialog>`) | Not `IonAlert` — bundle cost. Closes on Escape, backdrop, Android back |
-| Short message | `PixelToast` | Not `IonToast` — bundle cost |
-| Choice list / menu | A `PixelDialog`-style sheet or inline `.lu-choice` | Not `IonActionSheet` / `IonPopover` — bundle cost |
+| Confirm dialog | `Dialog` (native `<dialog>`) | Not `IonAlert` — bundle cost. Closes on Escape, backdrop, Android back |
+| Short message | `Toast` | Not `IonToast` — bundle cost |
+| Choice list / menu | A `Dialog`-style sheet or inline `.lu-choice` | Not `IonActionSheet` / `IonPopover` — bundle cost |
 | Long list | Plain list + `content-visibility: auto` rows | `IonInfiniteScroll` only once an API pages its results |
 | Side menu | None today | If added: `IonMenu` with `menuId`, `IonMenuToggle` around items so it closes on select |
 | Page lifecycle | `useIonViewWillEnter` / `DidEnter` / `WillLeave` | Ionic keeps tab pages mounted, so `useEffect` runs once; use these for "every time the tab shows" |

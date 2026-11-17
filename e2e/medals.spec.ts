@@ -49,7 +49,9 @@ for (const lang of LOCALES) {
         await expect(panel.getByTestId('medal-count')).toHaveText(
           copy.count.replace('{{unlocked}}', '32').replace('{{total}}', '50'),
         );
-        await expect(panel.getByTestId('medal-percent')).toContainText('64%');
+        // The overview is the count and one bar: no percent line, no stats row.
+        await expect(panel.getByTestId('medal-bar')).toHaveAttribute('aria-valuenow', '64');
+        await expect(panel.getByTestId('medal-overview').locator('dl')).toHaveCount(0);
         await expect(page.getByTestId('medal-celebration')).toHaveCount(0);
 
         await expect(panel.locator('[data-testid^="medal-"][data-unlocked]')).toHaveCount(50);
@@ -66,14 +68,17 @@ for (const lang of LOCALES) {
         await filters.getByRole('radio', { name: copy.category.bench }).click();
         await expect(panel.getByTestId('medal-section-bodyFat')).toHaveCount(0);
         await expect(panel.getByTestId('medal-section-bench')).toBeVisible();
-        await expect(panel.getByTestId('medal-status-bench')).toContainText('82.5');
+        // With data, the section is just its medals; the lift records wait in the sheet.
+        await expect(panel.getByTestId('medal-status-bench')).toHaveCount(0);
+        await expect(panel.getByTestId('medal-benchLegend').locator('.lu-rarity')).toHaveCount(0);
 
-        // Locked medal details: honest progress toward 100 kg.
+        // Locked medal details: honest progress toward 100 kg, and the records for detail lovers.
         await panel.getByTestId('medal-benchLegend').click();
         const detail = page.getByTestId('medal-detail');
         await expect(detail).toBeVisible();
         await expect(page.getByTestId('medal-detail-status')).toHaveText(copy.locked);
         await expect(page.getByTestId('medal-detail-progress')).toContainText('83%');
+        await expect(page.getByTestId('medal-detail-records')).toContainText('82.5');
         await page.getByRole('button', { name: copy.detail.close }).click();
         await expect(detail).toHaveCount(0);
 

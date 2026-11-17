@@ -1,11 +1,13 @@
 import { useEffect, useId, useRef } from 'react';
 
 const BUTTON =
-  'min-h-[46px] cursor-pointer rounded-[10px] border-2 font-inherit font-extrabold shadow-px-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:translate-y-0.5 active:shadow-px-pressed';
+  'min-h-[46px] cursor-pointer rounded-[12px] border font-inherit font-semibold transition-transform duration-[120ms] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100';
 
 interface Props {
   open: boolean;
   title: string;
+  /** Optional plain line under the title: what happens next. */
+  message?: string;
   confirmLabel: string;
   cancelLabel: string;
   /** Styles the confirm button as a destructive action (sign out). */
@@ -15,13 +17,14 @@ interface Props {
 }
 
 /**
- * A confirm dialog in the pixel style, built on the native <dialog>: it traps
+ * A confirm dialog in the app style, built on the native <dialog>: it traps
  * focus, closes with Escape (and the Android back gesture in the web view), and
  * costs a few hundred bytes instead of Ionic's alert overlay.
  */
-const PixelDialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, destructive, onConfirm, onCancel }) => {
+const Dialog: React.FC<Props> = ({ open, title, message, confirmLabel, cancelLabel, destructive, onConfirm, onCancel }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  const messageId = useId();
 
   // Android back closes the open dialog first, before Ionic navigates
   // (priority 150 beats the router's 0 and matches Ionic's own overlays).
@@ -48,8 +51,9 @@ const PixelDialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, 
   return (
     <dialog
       ref={ref}
-      className="w-[min(calc(100%-32px),360px)] border-0 bg-transparent p-0 text-ink backdrop:bg-pixel-ink/55"
+      className="w-[min(calc(100%-32px),360px)] border-0 bg-transparent p-0 text-ink backdrop:bg-scrim/55"
       aria-labelledby={titleId}
+      aria-describedby={message ? messageId : undefined}
       onCancel={(e) => {
         e.preventDefault();
         onCancel();
@@ -60,10 +64,15 @@ const PixelDialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, 
       }}
     >
       {open && (
-        <div className="grid gap-[18px] rounded-xl border-2 border-line bg-surface p-5 shadow-[0_5px_0_var(--lu-pixel-shadow)] ar:font-arabic">
-          <h2 id={titleId} className="m-0 text-[1.15rem] leading-[1.3] font-extrabold">
+        <div className="lu-pop grid gap-4 rounded-[20px] border border-line bg-surface p-5 shadow-raised ar:font-arabic">
+          <h2 id={titleId} className="m-0 text-[1.15rem] leading-[1.3] font-semibold">
             {title}
           </h2>
+          {message && (
+            <p id={messageId} className="m-0 -mt-2 text-[0.9rem] text-muted">
+              {message}
+            </p>
+          )}
           <div className="grid grid-cols-2 gap-2.5">
             <button type="button" className={`${BUTTON} border-line bg-surface-2 text-ink`} onClick={onCancel}>
               {cancelLabel}
@@ -82,4 +91,4 @@ const PixelDialog: React.FC<Props> = ({ open, title, confirmLabel, cancelLabel, 
   );
 };
 
-export default PixelDialog;
+export default Dialog;

@@ -1,79 +1,95 @@
 /*
- * Progress cards: each measurement has its own hue (--tone) for the border and
- * a faint tint, plus the colors of its pixel icon.
+ * Progress cards: calm, neutral cards; each measurement's hue (--tone) shows
+ * only in its icon, which sits in a soft round badge of the same hue.
  */
 @layer components {
-  .lu-scan-tile,
-  .lu-more-card {
+  /* The three key numbers sit straight on the scan card: no boxes inside the card. */
+  .lu-scan-tile {
     --tone: var(--ion-color-primary);
-    border: 2px solid color-mix(in srgb, var(--tone) 40%, var(--lu-border));
-    background: color-mix(in srgb, var(--tone) 8%, var(--lu-surface));
-    box-shadow: 0 3px 0 color-mix(in srgb, var(--tone) 25%, var(--lu-pixel-shadow));
   }
 
-  /* The six smaller cards sit back a little so the big three lead. */
+  /* The six smaller cards (in the full scan) sit back a little: hairline, no shadow. */
   .lu-more-card {
-    border-color: color-mix(in srgb, var(--tone) 22%, var(--lu-border));
-    background: color-mix(in srgb, var(--tone) 4%, var(--lu-surface));
-    box-shadow: none;
+    --tone: var(--ion-color-primary);
+    border: 1px solid var(--lu-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--lu-surface-2) 55%, var(--lu-surface));
+  }
+
+  /* Belly-fat verdict: a neutral chip with a dot in the verdict's color. */
+  .lu-verdict {
+    --verdict: var(--lu-tier-4);
+    color: var(--lu-text);
+
+    &::before {
+      content: '';
+      inline-size: 6px;
+      block-size: 6px;
+      border-radius: 50%;
+      background: var(--verdict);
+    }
+  }
+
+  .lu-verdict-high {
+    --verdict: var(--lu-tier-2);
+  }
+
+  .lu-verdict-veryHigh {
+    --verdict: var(--lu-tier-1);
+  }
+
+  .lu-scan-tile > dt > .lu-icon,
+  .lu-more-card .lu-metric-name > .lu-icon {
+    box-sizing: content-box;
+    padding: 0.3em;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--icon-color) 15%, transparent);
   }
 
   .lu-tone-weight {
     --tone: var(--ion-color-primary);
-    --px-fill: var(--lu-metal);
-    --px-hi: var(--lu-metal-hi);
+    --icon-color: var(--ion-color-primary);
   }
 
   .lu-tone-muscle {
     --tone: var(--lu-tier-4);
-    --px-fill: var(--lu-muscle);
-    --px-hi: var(--lu-muscle-hi);
+    --icon-color: var(--lu-muscle);
   }
 
   .lu-tone-fat {
     --tone: var(--lu-fat);
-    --px-fill: var(--lu-fat);
-    --px-hi: var(--lu-fat-hi);
-    --px-core: var(--lu-fat-core);
+    --icon-color: var(--lu-fat);
   }
 
   .lu-tone-water {
     --tone: var(--lu-muscle);
-    --px-fill: var(--lu-muscle);
-    --px-hi: var(--lu-muscle-hi);
+    --icon-color: var(--lu-muscle);
   }
 
-  /* Drumstick: golden-brown meat, pale bone. */
+  /* Protein uses the warm nutrition accent. */
   .lu-tone-protein {
     --tone: var(--lu-fat);
-    --px-fill: var(--lu-bronze);
-    --px-hi: var(--lu-gold);
-    --px-core: var(--lu-metal-hi);
+    --icon-color: var(--lu-bronze);
   }
 
   .lu-tone-minerals {
     --tone: var(--lu-tier-5);
-    --px-fill: var(--lu-tier-5);
-    --px-hi: var(--lu-metal-hi);
+    --icon-color: var(--lu-tier-5);
   }
 
   .lu-tone-bmr {
     --tone: var(--lu-gold);
-    --px-fill: var(--lu-gold);
-    --px-hi: var(--lu-fat-core);
+    --icon-color: var(--lu-gold);
   }
 
   .lu-tone-bmi {
     --tone: var(--lu-tier-3);
-    --px-fill: var(--lu-tier-3);
-    --px-hi: var(--lu-fat-core);
+    --icon-color: var(--lu-tier-3);
   }
 
   .lu-tone-visceral {
     --tone: var(--lu-tier-1);
-    --px-fill: var(--lu-tier-1);
-    --px-hi: color-mix(in srgb, var(--lu-tier-1) 35%, var(--lu-splash-star));
-    --px-core: color-mix(in srgb, var(--lu-tier-1) 62%, var(--lu-pixel-ink));
+    --icon-color: var(--lu-tier-1);
   }
 
   /*
@@ -88,24 +104,11 @@
     border-radius: 18px 18px 0 0;
     box-shadow:
       inset 0 4px 0 var(--tone),
-      0 -8px 24px color-mix(in srgb, var(--lu-pixel-ink) 30%, transparent);
+      var(--lu-shadow-raised);
   }
 
   .lu-info-icon {
-    clip-path: polygon(
-      0 4px,
-      4px 4px,
-      4px 0,
-      calc(100% - 4px) 0,
-      calc(100% - 4px) 4px,
-      100% 4px,
-      100% calc(100% - 4px),
-      calc(100% - 4px) calc(100% - 4px),
-      calc(100% - 4px) 100%,
-      4px 100%,
-      4px calc(100% - 4px),
-      0 calc(100% - 4px)
-    );
+    border-radius: 14px;
     background: color-mix(in srgb, var(--tone) 18%, var(--lu-surface-2));
   }
 
@@ -124,103 +127,45 @@
     }
   }
 
-  /* The ⓘ button: a quiet icon that lights up on hover and focus. */
-  .lu-info-button {
-    border-radius: 50%;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .lu-info-button:hover,
-  .lu-info-button:active {
-    color: var(--ion-color-primary);
-  }
-
-  .lu-info-button:focus-visible {
-    outline: 2px solid var(--ion-color-primary);
-    outline-offset: -4px;
-  }
-
-  /* "All scans" in the page header: a pixel chip button with stepped corners. */
+  /* "All scans" in the page header: a rounded chip button with a soft shadow. */
   .lu-all-scans {
-    clip-path: polygon(
-      0 4px,
-      2px 4px,
-      2px 2px,
-      4px 2px,
-      4px 0,
-      calc(100% - 4px) 0,
-      calc(100% - 4px) 2px,
-      calc(100% - 2px) 2px,
-      calc(100% - 2px) 4px,
-      100% 4px,
-      100% calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 2px),
-      calc(100% - 4px) calc(100% - 2px),
-      calc(100% - 4px) 100%,
-      4px 100%,
-      4px calc(100% - 2px),
-      2px calc(100% - 2px),
-      2px calc(100% - 4px),
-      0 calc(100% - 4px)
-    );
-    box-shadow:
-      inset 0 0 0 2px var(--lu-border),
-      inset 0 -4px 0 var(--lu-surface-2);
+    border: 1px solid var(--lu-border);
+    box-shadow: var(--lu-shadow);
+    transition: transform 150ms var(--ease-soft, ease-out);
     touch-action: manipulation;
   }
 
   .lu-all-scans:focus-visible {
-    outline: 0;
-    box-shadow:
-      inset 0 0 0 2px var(--lu-surface),
-      inset 0 0 0 4px var(--lu-text);
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: 2px;
   }
 
   .lu-all-scans:active {
-    transform: translateY(2px);
+    transform: scale(0.97);
+    box-shadow: var(--lu-shadow-pressed);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-all-scans {
+      transition: none;
+    }
+
+    .lu-all-scans:active {
+      transform: none;
+    }
   }
 
   /* Calendar and title icons in the brand purple. */
   .lu-tone-calendar {
-    --px-fill: var(--ion-color-primary);
-    --px-hi: color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-splash-star));
-    --px-core: var(--lu-splash-star);
+    --icon-color: var(--ion-color-primary);
   }
 
-  /*
-   * The latest-scan card: a pixel frame (corners cut in 4px steps, a 2px
-   * purple rim, a lit top edge) with a faint brand tint.
-   */
+  /* The scan card: a neutral card like every other (hairline, surface, soft shadow). */
   .lu-scan-card {
-    clip-path: polygon(
-      0 8px,
-      4px 8px,
-      4px 4px,
-      8px 4px,
-      8px 0,
-      calc(100% - 8px) 0,
-      calc(100% - 8px) 4px,
-      calc(100% - 4px) 4px,
-      calc(100% - 4px) 8px,
-      100% 8px,
-      100% calc(100% - 8px),
-      calc(100% - 4px) calc(100% - 8px),
-      calc(100% - 4px) calc(100% - 4px),
-      calc(100% - 8px) calc(100% - 4px),
-      calc(100% - 8px) 100%,
-      8px 100%,
-      8px calc(100% - 4px),
-      4px calc(100% - 4px),
-      4px calc(100% - 8px),
-      0 calc(100% - 8px)
-    );
-    background: color-mix(in srgb, var(--ion-color-primary) 7%, var(--lu-surface));
-    box-shadow:
-      inset 0 0 0 2px color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border)),
-      inset 0 4px 0 color-mix(in srgb, var(--ion-color-primary) 22%, transparent),
-      inset 0 -4px 0 color-mix(in srgb, var(--ion-color-primary) 18%, transparent);
+    border: 1px solid var(--lu-border);
+    border-radius: 16px;
+    background: var(--lu-surface);
+    box-shadow: var(--lu-shadow);
   }
 
   /* The scan date doubles as a button: a dashed underline says it opens something. */
@@ -239,7 +184,7 @@
     border-color: color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border));
     background: color-mix(in srgb, var(--ion-color-primary) 16%, var(--lu-surface));
     color: var(--lu-text);
-    box-shadow: 0 2px 0 var(--lu-pixel-shadow);
+    box-shadow: var(--lu-shadow);
 
     &.is-current {
       border-color: var(--ion-color-primary-shade);
@@ -247,9 +192,11 @@
       color: var(--ion-color-primary-contrast);
     }
 
+    transition: transform 150ms var(--ease-soft, ease-out);
+
     &:active {
-      transform: translateY(2px);
-      box-shadow: none;
+      transform: scale(0.97);
+      box-shadow: var(--lu-shadow-pressed);
     }
 
     &:focus-visible {
@@ -258,105 +205,40 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      transition: none;
+
       &:active {
         transform: none;
       }
     }
   }
 
-  /* One flat row under the tiles: which scan the changes are against, and a small pixel button to switch. */
-  .lu-compare {
-    border: 2px solid var(--lu-border);
-    background: var(--lu-surface-2);
-  }
-
-  .lu-compare-button {
-    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 60%, var(--lu-border));
-    background: var(--lu-surface);
-    color: var(--lu-text);
-    box-shadow: 0 3px 0 color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-pixel-shadow));
-    transition:
-      transform 90ms steps(2),
-      box-shadow 90ms steps(2);
-
-    &:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-pixel-shadow));
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--ion-color-primary);
-      outline-offset: 3px;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-  }
-
-  .lu-grass-dark {
-    fill: color-mix(in srgb, var(--lu-tier-4) 70%, var(--lu-splash-bg));
-  }
-
-  .lu-grass-light {
-    fill: var(--lu-tier-4);
-  }
-
-  .lu-grass-stone {
-    fill: color-mix(in srgb, var(--lu-floor-edge) 80%, var(--lu-surface));
-  }
-
-  /* The bigger cards get a stronger rim in their own color, as in the reference. */
-  .lu-scan-tile {
-    border-color: color-mix(in srgb, var(--tone) 70%, var(--lu-border));
-  }
-
-  .lu-more-card {
-    border-color: color-mix(in srgb, var(--tone) 45%, var(--lu-border));
-    background: color-mix(in srgb, var(--tone) 7%, var(--lu-surface));
-  }
-
-  /* Scan picker arrows: small pixel buttons with stepped corners. */
+  /* Scan picker arrows: round buttons with a hairline and a soft shadow. */
   .lu-scan-step {
-    clip-path: polygon(
-      0 4px,
-      2px 4px,
-      2px 2px,
-      4px 2px,
-      4px 0,
-      calc(100% - 4px) 0,
-      calc(100% - 4px) 2px,
-      calc(100% - 2px) 2px,
-      calc(100% - 2px) 4px,
-      100% 4px,
-      100% calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 2px),
-      calc(100% - 4px) calc(100% - 2px),
-      calc(100% - 4px) 100%,
-      4px 100%,
-      4px calc(100% - 2px),
-      2px calc(100% - 2px),
-      2px calc(100% - 4px),
-      0 calc(100% - 4px)
-    );
-    box-shadow:
-      inset 0 0 0 2px var(--lu-border),
-      inset 0 -4px 0 var(--lu-border);
+    border: 1px solid var(--lu-border);
+    box-shadow: var(--lu-shadow);
+    transition: transform 150ms var(--ease-soft, ease-out);
+  }
+
+  .lu-scan-step:disabled {
+    box-shadow: none;
   }
 
   .lu-scan-step:focus-visible {
-    outline: 0;
-    box-shadow:
-      inset 0 0 0 2px var(--lu-surface),
-      inset 0 0 0 4px var(--lu-text);
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: 2px;
   }
 
   .lu-scan-step:not(:disabled):active {
-    transform: translateY(2px);
+    transform: scale(0.97);
+    box-shadow: var(--lu-shadow-pressed);
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .lu-scan-step {
+      transition: none;
+    }
+
     .lu-scan-step:not(:disabled):active {
       transform: none;
     }

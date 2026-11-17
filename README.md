@@ -95,5 +95,5 @@ Measured with `npm run build` at the end of Sprint 1 (gzip):
 ## Project guides
 
 - [CLAUDE.md](CLAUDE.md): rules for every change (two languages, two themes, responsive, safe areas, tests, budgets).
-- `ui-standards` skill (`.claude/skills/ui-standards/SKILL.md`): the pixel style, accessibility rules, animation tools, and performance budgets.
+- `ui-standards` skill (`.claude/skills/ui-standards/SKILL.md`): the clean modern visual style, accessibility rules, animation tools, and performance budgets.
 - [Sprint 1 backlog](docs/sprints/sprint-1-backlog.md) and [plan](docs/superpowers/plans/2026-11-13-sprint-1-frontend-mvp.md).

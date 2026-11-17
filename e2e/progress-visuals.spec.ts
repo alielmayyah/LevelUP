@@ -1,4 +1,4 @@
-/* The body hologram and the trend switch behind "View more details" on Progress. */
+/* The body hologram and the trend switch behind "See full scan" on Progress. */
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
 import { expect, noHorizontalOverflow, test } from './fixtures';
@@ -20,6 +20,7 @@ for (const lang of ['en', 'ar'] as const)
       const segs = page.getByTestId('segments');
       const figure = segs.getByTestId('segments-figure');
       await expect(figure).toBeVisible();
+      await expect(figure).toHaveAttribute('data-silhouette', 'MALE');
       // Muscle view: 135% in the right arm is over the band.
       await expect(figure.locator('[data-part="rightArm"]')).toHaveAttribute('data-status', 'over');
       await expect(segs.getByTestId('seg-rightArm')).toContainText(s.bodyComp.zone.over);
@@ -32,12 +33,45 @@ for (const lang of ['en', 'ar'] as const)
       expect(left.x + left.width).toBeLessThanOrEqual(fig.x + 1);
     });
 
+    test('the female profile shows its silhouette in both scan views', async ({ page, loginAs }) => {
+      const s = { en, ar }[lang];
+      await loginAs('104');
+      await openDetails(page);
+      const segs = page.getByTestId('segments');
+      const figure = segs.getByTestId('segments-figure');
+      await expect(figure).toHaveAttribute('data-silhouette', 'FEMALE');
+      await expect(figure.locator('[data-part]')).toHaveCount(5);
+      await expect(segs.getByTestId('seg-leftArm')).toBeVisible();
+      await segs.getByRole('radio', { name: s.bodyComp.fatView }).click();
+      await expect(figure).toHaveAttribute('data-view', 'fat');
+      await expect(figure).toHaveAttribute('data-silhouette', 'FEMALE');
+      expect(await noHorizontalOverflow(page)).toBe(true);
+    });
+
+    test('See full scan is one disclosure, remembered after a reload', async ({ page, loginAs }) => {
+      const s = { en, ar }[lang];
+      await loginAs();
+      await page.goto('/tabs/progress');
+      const toggle = page.getByTestId('progress-more');
+      await expect(toggle).toHaveText(s.progress.moreDetails);
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      await expect(page.getByTestId('more-metrics')).toHaveCount(0);
+      await toggle.click();
+      await expect(toggle).toHaveText(s.progress.lessDetails);
+      await expect(page.getByTestId('more-metrics')).toBeVisible();
+      await expect(page.getByTestId('compare-open')).toHaveText(s.progress.compareChange);
+      await page.reload();
+      await expect(page.getByTestId('progress-more')).toHaveAttribute('aria-expanded', 'true');
+      await expect(page.getByTestId('more-metrics')).toBeVisible();
+      expect(await noHorizontalOverflow(page)).toBe(true);
+    });
+
     test('each trend option shows its metric icon', async ({ page, loginAs }) => {
       await loginAs();
       await openDetails(page);
       const trend = page.getByTestId('trend');
       for (const k of ['weight', 'muscle', 'bodyFat', 'score'])
-        await expect(trend.getByTestId(`trend-${k}`).locator('svg.lu-pixel-icon')).toBeVisible();
+        await expect(trend.getByTestId(`trend-${k}`).locator('svg.lu-icon')).toBeVisible();
     });
   });
 

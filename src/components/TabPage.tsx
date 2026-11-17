@@ -2,7 +2,7 @@ import { IonContent, IonPage, IonRefresher, IonRefresherContent, useIonRouter } 
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import PixelIcon from './PixelIcon';
+import Icon from './Icon';
 
 interface TabPageProps {
   testId: string;
@@ -21,14 +21,13 @@ interface TabPageProps {
   children: ReactNode;
 }
 
-/** A tab page in the pixel style: big display title, notch-safe body that clears the tab bar. */
+/** A tab page in the clean modern style: bold app-font title, muted subtitle, notch-safe body that clears the tab bar. */
 const TabPage: React.FC<TabPageProps> = ({
   testId,
   title,
   subtitle,
   onRefresh,
   actions,
-  titleIcon,
   backTo,
   fill,
   children,
@@ -55,15 +54,15 @@ const TabPage: React.FC<TabPageProps> = ({
                   else router.push(backTo, 'back', 'replace');
                 }}
               >
-                <PixelIcon name="arrowBack" className="rtl:-scale-x-100" />
+                <Icon name="arrowBack" className="rtl:-scale-x-100" />
               </button>
             )}
             <div className="min-w-0 flex-1">
-              <h1 className="lu-display m-0 flex items-center gap-2.5 text-[clamp(2rem,9vw,3rem)] leading-[1.05] wrap-break-word text-ink">
-                {titleIcon}
+              {/* No icon before the title: the tab bar already shows it. */}
+              <h1 className="lu-display m-0 text-[clamp(1.5rem,5vw,2rem)] leading-[1.15] wrap-break-word text-ink">
                 {title}
               </h1>
-              {subtitle && <p className="mx-0 mt-1.5 mb-0 text-[0.9rem] text-muted">{subtitle}</p>}
+              {subtitle && <p className="mx-0 mt-1 mb-0 text-[0.875rem] text-muted">{subtitle}</p>}
             </div>
             {actions}
           </div>

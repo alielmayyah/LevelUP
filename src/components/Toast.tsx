@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 /** A short message above the tab bar that hides itself. Announced politely to screen readers. */
-const PixelToast: React.FC<{ message: string | null; onDone: () => void; duration?: number }> = ({
+const Toast: React.FC<{ message: string | null; onDone: () => void; duration?: number }> = ({
   message,
   onDone,
   duration = 2500,
@@ -20,7 +20,7 @@ const PixelToast: React.FC<{ message: string | null; onDone: () => void; duratio
     >
       {message && (
         <p
-          className="m-0 max-w-[420px] rounded-[10px] border-2 border-line bg-ink px-3.5 py-2.5 text-[0.9rem] font-extrabold text-page shadow-px-sm"
+          className="lu-rise m-0 max-w-[420px] rounded-full bg-ink px-4 py-2.5 text-[0.9rem] font-semibold text-page shadow-raised"
           data-testid="toast"
         >
           {message}
@@ -30,4 +30,4 @@ const PixelToast: React.FC<{ message: string | null; onDone: () => void; duratio
   );
 };
 
-export default PixelToast;
+export default Toast;

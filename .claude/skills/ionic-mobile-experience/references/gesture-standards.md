@@ -6,7 +6,7 @@ Every gesture has a purpose, consistent behavior, immediate feedback, and an acc
 
 | Gesture | Where | Feedback | Accessible alternative |
 |---|---|---|---|
-| Tap | Everywhere | Pixel pressed state (down 2–3 px, shadow shrinks) | Keyboard Enter/Space |
+| Tap | Everywhere | Pressed state (`scale(0.97)`, slightly darker) | Keyboard Enter/Space |
 | Pull to refresh | Home, Progress, Goals, Leaderboard, Profile | `IonRefresherContent` spinner | Data also refreshes on tab re-entry, app resume, and reconnect; Retry on errors |
 | Swipe down | Notifications sheet | Sheet follows the finger, snaps | Close button; Escape; Android back |
 | Swipe back (iOS) | Ionic stack pages (none nested today) | Ionic's interactive transition | Tab bar / Android back |

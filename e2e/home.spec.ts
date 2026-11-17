@@ -1,6 +1,6 @@
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
-import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
+import { COMMUNITY, expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
 
 const strings = { en, ar };
 
@@ -18,10 +18,28 @@ for (const lang of LOCALES)
         await expect(home.getByTestId('today')).not.toBeEmpty();
         await expect(home.getByTestId('fitscore-value')).toHaveText('91');
         await expect(home.getByText(s.tier.elite)).toBeVisible();
-        await expect(home.getByTestId('rank-number')).toContainText('#1');
+        if (!COMMUNITY) await expect(home.getByTestId('rank-card')).toHaveCount(0);
+        else {
+          await expect(home.getByTestId('rank-number')).toContainText('#1');
+          const trophy = home.getByTestId('rank-trophy');
+          await expect(trophy).toBeVisible();
+          const { stroke, gold } = await trophy.evaluate((tile) => {
+            const cup = tile.querySelector('svg')!;
+            const sample = document.createElement('span');
+            sample.style.color = 'var(--lu-gold)';
+            tile.append(sample);
+            const gold = getComputedStyle(sample).color;
+            sample.remove();
+            return { stroke: getComputedStyle(cup).stroke, gold };
+          });
+          expect(stroke).toBe(gold);
+        }
         await expect(home.getByTestId('tile-body-fat')).toContainText('1.1%');
         await expect(home.getByTestId('tile-muscle')).toContainText(`0.9 ${strings[lang].units.kg}`);
         await expect(home.getByTestId('tile-bmi')).toContainText(strings[lang].home.wins.bmi);
+        for (const metric of ['body-fat', 'muscle', 'bmi']) {
+          await expect(home.getByTestId(`tile-${metric}`).locator('svg').first()).toBeVisible();
+        }
         expect(await noHorizontalOverflow(page)).toBe(true);
       });
 
@@ -59,14 +77,18 @@ test('a new member sees empty states, not zeros', async ({ page, loginAs }) => {
   await loginAs('102');
   await page.goto('/tabs/home');
   await expect(page.getByText(en.home.fitScore.empty)).toBeVisible();
-  await expect(page.getByText(en.home.rank.join)).toBeVisible();
-  await expect(page.getByTestId('tile-body-fat')).toContainText('—');
+  if (COMMUNITY) await expect(page.getByText(en.home.rank.join)).toBeVisible();
+  await expect(page.getByText(en.home.fitScore.emptyNext)).toBeVisible();
+  await expect(page.getByTestId('wins-empty')).toHaveText(en.home.wins.none);
+  await expect(page.getByTestId('tile-body-fat')).toHaveCount(0);
+  await expect(page.getByTestId('page-body')).not.toContainText('—');
   await expect(page.getByTestId('bell-dot')).toHaveCount(0);
   await page.getByTestId('bell').click();
   await expect(page.getByText(en.home.notifications.empty)).toBeVisible();
 });
 
 test('the rank card opens the leaderboard', async ({ page, loginAs }) => {
+  test.skip(!COMMUNITY, 'Community is switched off (VITE_COMMUNITY)');
   await loginAs();
   await page.goto('/tabs/home');
   await page.getByTestId('rank-card').click();
@@ -96,3 +118,30 @@ test('the header clears the notch and the last tile clears the tab bar', async (
   const bar = (await page.getByRole('navigation', { name: en.tabs.navLabel }).boundingBox())!;
   expect(t.y + t.height).toBeLessThanOrEqual(bar.y);
 });
+
+test('with no goal, the mission card opens New goal', async ({ page, loginAs }) => {
+  await loginAs('102');
+  await page.goto('/tabs/home');
+  await page.getByRole('button', { name: new RegExp(en.home.mission.empty) }).click();
+  await expect(page).toHaveURL(/\/tabs\/goals\/new$/);
+});
+
+for (const lang of LOCALES)
+  test.describe(lang, () => {
+    test.use({ lang });
+
+    test('the FitScore info sheet explains the score and its tiers', async ({ page, loginAs }) => {
+      const s = strings[lang].home;
+      await loginAs();
+      await page.goto('/tabs/home');
+      await page.getByRole('button', { name: s.fitScore.about }).click();
+      const sheet = page.getByTestId('fitscore-info');
+      await expect(sheet.getByRole('heading', { name: s.fitScoreInfo.title })).toBeVisible();
+      await expect(sheet.getByTestId('fitscore-tiers').getByRole('listitem')).toHaveCount(5);
+      await expect(sheet.getByText(s.tier.gettingStarted)).toBeVisible();
+      await expect(sheet.getByText(s.fitScoreInfo.privacy)).toBeVisible();
+      expect(await noHorizontalOverflow(page)).toBe(true);
+      await page.keyboard.press('Escape');
+      await expect(sheet.getByRole('heading', { name: s.fitScoreInfo.title })).toHaveCount(0);
+    });
+  });

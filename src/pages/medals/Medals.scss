@@ -5,7 +5,7 @@
     block-size: auto;
     aspect-ratio: 1;
     overflow: hidden;
-    image-rendering: pixelated;
+    border-radius: 16px;
 
     &[data-locked='true'] {
       filter: grayscale(0.94);
@@ -19,11 +19,11 @@
     display: grid;
     gap: 14px;
     padding: 16px;
-    border: 2px solid color-mix(in srgb, var(--lu-rarity-epic) 45%, var(--lu-splash-bg-2));
-    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--lu-rarity-epic) 45%, var(--lu-splash-bg-2));
+    border-radius: 16px;
     background: linear-gradient(135deg, var(--lu-splash-bg-2), var(--lu-splash-bg));
     color: var(--lu-splash-text);
-    box-shadow: 0 4px 0 var(--lu-pixel-shadow);
+    box-shadow: var(--lu-shadow);
   }
 
   .lu-trophy-count {
@@ -38,86 +38,65 @@
 
   .lu-trophy-bar {
     block-size: 10px;
-    border: 2px solid var(--lu-medal-ink);
+    border-radius: 999px;
     background: color-mix(in srgb, var(--lu-splash-text) 14%, var(--lu-splash-bg));
+    overflow: hidden;
 
     > span {
       display: block;
       block-size: 100%;
-      background: repeating-linear-gradient(
-        90deg,
-        var(--lu-rarity-gold) 0 6px,
-        color-mix(in srgb, var(--lu-rarity-gold) 70%, var(--lu-medal-ink)) 6px 8px
-      );
+      border-radius: inherit;
+      background: var(--lu-rarity-gold);
     }
   }
 
-  .lu-trophy-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
+  /* ---------- Filters: one row of chips that scrolls sideways ---------- */
 
-    > div {
-      display: grid;
-      gap: 2px;
-      padding: 8px 6px;
-      border-radius: 6px;
-      background: color-mix(in srgb, var(--lu-splash-text) 9%, transparent);
-      text-align: center;
-    }
-
-    dt {
-      color: var(--lu-splash-text-muted);
-      font-size: 0.72rem;
-      font-weight: 700;
-    }
-
-    dd {
-      margin: 0;
-      font-size: 1.15rem;
-      font-weight: 850;
-      font-variant-numeric: tabular-nums;
-    }
+  /* The strip's edge fade blends into the page, not a card. Two classes so chunk order can't undo it. */
+  .lu-strip-wrap.lu-trophy-filters-wrap {
+    --lu-strip-bg: var(--lu-bg);
   }
 
-  /* ---------- Filters ---------- */
-
-  .lu-trophy-filters {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-    gap: 4px;
-    padding: 4px;
+  .lu-trophy-filters button {
+    flex: none;
+    min-block-size: 44px;
+    padding: 0 16px;
     border: 1px solid var(--lu-border);
-    border-radius: 10px;
-    background: var(--lu-surface-2);
+    border-radius: 999px;
+    background: var(--lu-surface);
+    color: var(--lu-text-muted);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      transform 150ms var(--ease-soft, ease-out),
+      background-color 180ms ease-out,
+      color 180ms ease-out,
+      border-color 180ms ease-out;
 
-    button {
-      min-block-size: 44px;
-      min-inline-size: 0;
-      padding: 5px 4px;
-      border: 0;
-      border-radius: 6px;
-      background: transparent;
-      color: var(--lu-text-muted);
-      font-size: 0.8rem;
-      font-weight: 800;
-      line-height: 1.2;
-      cursor: pointer;
+    &[aria-checked='true'] {
+      border-color: var(--ion-color-primary);
+      background: var(--ion-color-primary);
+      color: var(--ion-color-primary-contrast);
+    }
 
-      &[aria-checked='true'] {
-        background: var(--ion-color-primary);
-        color: var(--ion-color-primary-contrast);
-        box-shadow: 0 2px 0 var(--ion-color-primary-shade);
-      }
+    &:active {
+      transform: scale(0.97);
+    }
 
-      &:active {
-        transform: translateY(1px);
-      }
+    &:focus-visible {
+      outline: 2px solid var(--lu-text);
+      outline-offset: 2px;
+    }
+  }
 
-      &:focus-visible {
-        outline: 2px solid var(--lu-text);
-        outline-offset: 2px;
-      }
+  @media (hover: hover) and (pointer: fine) {
+    .lu-trophy-filters button[aria-checked='false']:hover {
+      border-color: var(--lu-text-muted);
+      color: var(--lu-text);
     }
   }
 
@@ -146,12 +125,11 @@
     place-items: center;
     inline-size: 44px;
     block-size: 44px;
-    border: 2px solid color-mix(in srgb, var(--tone) 45%, var(--lu-border));
+    border: 1px solid color-mix(in srgb, var(--tone) 45%, var(--lu-border));
     border-radius: 8px;
     background: color-mix(in srgb, var(--tone) 14%, var(--lu-surface-2));
     font-size: 1.5rem;
-    --px-fill: var(--tone);
-    --px-hi: color-mix(in srgb, var(--tone) 50%, var(--lu-medal-shine));
+    --icon-color: var(--tone);
   }
 
   .lu-medal-grid {
@@ -192,21 +170,25 @@
     inline-size: 100%;
     block-size: 100%;
     padding: 8px 6px 10px;
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     border-radius: 8px;
     background: transparent;
     color: var(--lu-text);
     font: inherit;
     text-align: center;
     cursor: pointer;
-    transition: transform 120ms ease-out;
+    transition:
+      transform 120ms ease-out,
+      background-color 150ms ease-out;
 
-    &:hover {
-      background: color-mix(in srgb, var(--lu-text) 4%, transparent);
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: color-mix(in srgb, var(--lu-text) 4%, transparent);
+      }
     }
 
     &:active {
-      transform: translateY(2px);
+      transform: scale(0.97);
     }
 
     &:focus-visible {
@@ -223,10 +205,8 @@
     --m: var(--lu-rarity-bronze);
     /* Mostly text color, tinted by the rarity: pale metals stay readable on light cards. */
     color: color-mix(in srgb, var(--m) 38%, var(--lu-text));
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
 
     &[data-rarity='silver'] {
       --m: var(--lu-rarity-silver);
@@ -245,14 +225,14 @@
   .lu-medal-progress {
     inline-size: 100%;
     block-size: 6px;
-    border-radius: 2px;
-    background: var(--lu-surface-2);
-    box-shadow: inset 0 0 0 1px var(--lu-border);
+    border-radius: 999px;
+    background: var(--lu-border);
     overflow: hidden;
 
     > span {
       display: block;
       block-size: 100%;
+      border-radius: inherit;
       background: var(--ion-color-primary);
     }
   }
@@ -271,24 +251,27 @@
     block-size: 100%;
     padding: 0.5rem 0.25rem;
     border: 1px solid var(--lu-border);
-    border-radius: 8px;
+    border-radius: 14px;
     background: var(--lu-surface-2);
     color: var(--lu-text);
     font: inherit;
     text-align: center;
     overflow-wrap: anywhere;
     cursor: pointer;
+    transition: transform 150ms var(--ease-soft, ease-out);
 
     .lu-medal-art {
       inline-size: min(100%, 3.5rem);
     }
 
-    &:hover {
-      border-color: var(--ion-color-primary);
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        border-color: var(--ion-color-primary);
+      }
     }
 
     &:active {
-      transform: translateY(2px);
+      transform: scale(0.97);
     }
 
     &:focus-visible {
@@ -306,7 +289,7 @@
   .lu-medal-celebrate {
     --width: min(92vw, 380px);
     --height: auto;
-    --border-radius: 12px;
+    --border-radius: 20px;
     --background: transparent;
     --box-shadow: none;
   }
@@ -316,7 +299,7 @@
     justify-items: center;
     gap: 10px;
     padding: 22px 18px 18px;
-    border: 2px solid color-mix(in srgb, var(--lu-rarity-gold) 50%, var(--lu-splash-bg-2));
+    border: 1px solid color-mix(in srgb, var(--lu-rarity-gold) 50%, var(--lu-splash-bg-2));
     border-radius: 12px;
     background: radial-gradient(
       circle at 50% 30%,
@@ -324,7 +307,7 @@
       var(--lu-splash-bg) 70%
     );
     color: var(--lu-splash-text);
-    box-shadow: 0 6px 0 var(--lu-pixel-shadow);
+    box-shadow: var(--lu-shadow-raised);
     text-align: center;
 
     .lu-medal-art {
@@ -336,7 +319,7 @@
   @keyframes lu-medal-pop {
     from {
       opacity: 0;
-      transform: scale(0.6) translateY(8px);
+      transform: scale(0.6);
     }
     to {
       opacity: 1;
@@ -350,6 +333,8 @@
     .lu-medal-card:active {
       transform: none;
     }
+    .lu-trophy-filters button,
+    .lu-showcase-medal,
     .lu-medal-card {
       transition: none;
     }

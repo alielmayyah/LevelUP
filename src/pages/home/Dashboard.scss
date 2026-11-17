@@ -1,8 +1,8 @@
 /*
- * Home's custom pixel art: the FitScore card's dotted glow, tier blocks, the
- * mission's gym-floor strip and progress ring, metric tiles, and the
- * notification rows' tints. Layout and type are Tailwind classes in the components.
- * Shared building blocks (cards, chips, states) live in src/theme/pixel.css.
+ * Home's custom pieces: the FitScore card's soft brand wash, its info sheet,
+ * the mission's progress ring, metric tiles, and the notification rows' tints.
+ * Layout and type are Tailwind classes in the components.
+ * Shared building blocks (cards, chips, bars, states) live in src/theme/kit.css.
  */
 @mixin tint($color, $border: 45%, $fill: 14%) {
   border-color: color-mix(in srgb, #{$color} #{$border}, var(--lu-border));
@@ -13,76 +13,65 @@
   /* ---------- FitScore ---------- */
 
   .lu-fitscore {
-    border-color: color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-border));
-    background:
-      radial-gradient(color-mix(in srgb, var(--ion-color-primary) 22%, transparent) 1px, transparent 1.5px) 0 0 / 8px
-        8px,
-      linear-gradient(
-        160deg,
-        color-mix(in srgb, var(--ion-color-primary) 14%, var(--lu-surface)),
-        var(--lu-surface) 70%
-      );
+    border-color: color-mix(in srgb, var(--ion-color-primary) 30%, var(--lu-border));
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--ion-color-primary) 10%, var(--lu-surface)),
+      var(--lu-surface) 70%
+    );
   }
 
-  /* Five chunky blocks; the ones up to the member's tier are lit in their tier's color. */
-  .lu-tier-block {
-    border: 2px solid color-mix(in srgb, var(--tier) 45%, var(--lu-border));
-    background: color-mix(in srgb, var(--tier) 10%, transparent);
+  /* The ⓘ: a quiet icon that lights up on hover and focus. */
+  .lu-fitscore-info {
+    border-radius: 50%;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 
-    &.is-on {
-      background: color-mix(in srgb, var(--tier) 70%, transparent);
+    &:hover,
+    &:active {
+      color: var(--ion-color-primary);
     }
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: -4px;
+    }
+  }
+
+  /* ---------- FitScore info sheet (FitScoreInfo.tsx) ---------- */
+
+  .lu-fs-sheet {
+    max-height: none;
+  }
+
+  .lu-fs-panel {
+    border-radius: 18px 18px 0 0;
+    box-shadow:
+      inset 0 4px 0 var(--ion-color-primary),
+      var(--lu-shadow-raised);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .lu-fs-sheet[open] .lu-fs-panel {
+      animation: lu-fs-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+  }
+
+  /* One row per tier; the member's own row gets a light wash of its tier color. */
+  .lu-fs-tier {
+    background: var(--lu-surface-2);
 
     &.is-current {
-      border-color: var(--tier);
-      background: var(--tier);
-      box-shadow: 0 3px 0 color-mix(in srgb, var(--tier) 45%, var(--lu-pixel-shadow));
+      background: color-mix(in srgb, var(--tier) 16%, var(--lu-surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tier) 55%, var(--lu-border));
     }
+  }
+
+  .lu-fs-tier-dot {
+    background: var(--tier);
   }
 
   /* ---------- Mission ---------- */
-
-  /*
-   * A strip of rubber gym-floor tiles: a lit top edge, dark mat squares split by
-   * seams every 28px, and a few lighter flecks, like the speckled rubber in a gym.
-   */
-  .lu-mission-ground {
-    position: absolute;
-    inset: auto 0 0;
-    block-size: 16px;
-    border-block-start: 2px solid var(--lu-floor-edge);
-    background:
-      repeating-linear-gradient(90deg, transparent 0 26px, var(--lu-floor-seam) 26px 28px),
-      repeating-linear-gradient(
-          90deg,
-          transparent 0 9px,
-          var(--lu-floor-fleck) 9px 11px,
-          transparent 11px 19px,
-          var(--lu-floor-fleck) 19px 21px,
-          transparent 21px 28px
-        )
-        0 4px / 100% 2px no-repeat,
-      repeating-linear-gradient(
-          90deg,
-          transparent 0 4px,
-          var(--lu-floor-fleck) 4px 6px,
-          transparent 6px 15px,
-          var(--lu-floor-fleck) 15px 17px,
-          transparent 17px 28px
-        )
-        0 10px / 100% 2px no-repeat,
-      var(--lu-floor);
-  }
-
-  /* The dumbbell rests on the floor. */
-  .lu-mission-dumbbell {
-    position: absolute;
-    inset-block-end: 16px;
-    inset-inline-end: 16px;
-    font-size: 34px;
-    --px-fill: var(--lu-metal);
-    --px-hi: var(--lu-metal-hi);
-  }
 
   .lu-ring {
     svg {
@@ -99,11 +88,12 @@
     circle {
       fill: none;
       stroke-width: 7;
+      stroke-linecap: round;
     }
   }
 
   .lu-ring-track {
-    stroke: var(--lu-surface-2);
+    stroke: var(--lu-border);
   }
 
   .lu-ring-fill {
@@ -123,44 +113,27 @@
   /* ---------- Tiles ---------- */
 
   /*
-   * Each tile has its metric's hue (--metric) on the top bar and the icon badge.
-   * The value itself stays green or red, because that says good or bad.
+   * Each tile's icon takes its metric's hue (--metric), with a soft wash of it
+   * at the top. The value itself stays green or red, because that says good or bad.
    */
-  .lu-tile {
-    border-color: color-mix(in srgb, var(--metric) 35%, var(--lu-border));
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--metric) 10%, var(--lu-surface)),
-      var(--lu-surface) 60%
-    );
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0 0 auto;
-      block-size: 4px;
-      background: var(--metric);
-    }
+  .lu-tile-badge {
+    background: color-mix(in srgb, var(--metric) 14%, transparent);
+    color: var(--metric);
   }
 
   .lu-tile-fat {
     --metric: var(--lu-fat);
-    --px-fill: var(--lu-fat);
-    --px-hi: var(--lu-fat-hi);
-    --px-core: var(--lu-fat-core);
+    --icon-color: var(--lu-fat);
   }
 
-  /* The tile keeps the cyan muscle hue; the flexed arm itself is skin-toned. */
   .lu-tile-muscle {
     --metric: var(--lu-muscle);
-    --px-fill: var(--lu-skin);
-    --px-hi: var(--lu-skin-hi);
+    --icon-color: var(--lu-muscle);
   }
 
   .lu-tile-bmi {
     --metric: var(--lu-tier-3);
-    --px-fill: var(--lu-tier-3);
-    --px-hi: var(--lu-fat-core);
+    --icon-color: var(--lu-tier-3);
   }
 
   /* ---------- Notifications sheet ---------- */
@@ -168,23 +141,23 @@
   .lu-notif-count {
     @include tint(var(--lu-accent), 60%, 16%);
 
-    .lu-pixel-icon {
+    .lu-icon {
       color: var(--lu-accent);
     }
 
     &.is-clear {
       @include tint(var(--lu-success), 50%, 12%);
 
-      .lu-pixel-icon {
+      .lu-icon {
         color: var(--lu-success);
       }
     }
   }
 
   .lu-notif-item {
-    border: 2px solid var(--lu-border);
+    border: 1px solid var(--lu-border);
     background: var(--lu-surface);
-    box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+    box-shadow: var(--lu-shadow);
 
     &:focus-visible {
       outline: 2px solid var(--ion-color-primary);
@@ -206,16 +179,15 @@
     }
 
     &.is-mission {
-      --px-fill: var(--lu-gold);
-      --px-hi: var(--lu-fat-core);
+      --icon-color: var(--lu-gold);
       @include tint(var(--lu-gold), 50%, 16%);
     }
   }
 
-  /* A square marker, like a lit pixel, for unread. */
+  /* A small round dot for unread. */
   .lu-notif-dot {
+    border-radius: 999px;
     background: var(--lu-accent);
-    box-shadow: 0 2px 0 color-mix(in srgb, var(--lu-accent) 40%, var(--lu-pixel-shadow));
   }
 }
 
@@ -225,17 +197,9 @@
   }
 }
 
-/* The mission's pixel progress bar: ten blocks, lit in the brand color as the goal fills. */
-@layer components {
-  .lu-mission-blocks span {
-    flex: 1;
-    block-size: 8px;
-    background: var(--lu-surface-2);
-    box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--lu-pixel-shadow) 60%, transparent);
-  }
-
-  .lu-mission-blocks span.is-on {
-    background: var(--ion-color-primary);
-    box-shadow: inset 0 2px 0 color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-splash-star));
+@keyframes lu-fs-up {
+  from {
+    transform: translateY(32px);
+    opacity: 0;
   }
 }

@@ -8,7 +8,7 @@ description: Use when building or changing anything a member touches, swipes, sc
 LevelUP must feel like a native Android and iOS app, not a responsive website. This skill covers navigation, gestures, touch feedback, scrolling, the keyboard, safe areas, overlays, hardware back, and app lifecycle.
 
 It builds on, and does not repeat:
-- `ui-standards`: languages, themes, pixel style, accessibility rules, animation tools, budgets.
+- `ui-standards`: languages, themes, visual style, accessibility rules, animation tools, budgets.
 - `e2e-testing`: Playwright layout, device projects, fixtures.
 - `playwright-browser-check`: looking at screens by eye.
 - `git-workflow`: branches, commits, no AI attribution.
@@ -26,8 +26,8 @@ Load this skill before: creating a page; changing routes, the tab bar, or any na
 | Auth gate | `src/auth/RequireAuth.tsx`, `src/auth/token.ts` | Listens for sign-in/out; a 401 signs out (`onUnauthorized` in `App.tsx`) |
 | Page shell | `src/components/TabPage.tsx` | `IonPage` > `IonContent` > `IonRefresher` + notch-safe body |
 | Data | `src/api/useApi.ts` | `useApi` (fetch, `reload`, `retry`, `setData`) and `useRefreshOnEnter` (refresh on tab re-entry, app resume, reconnect) |
-| Overlays | `PixelDialog` (confirm), `PixelToast`, `IonModal` (notifications sheet) | See the overlay rule below |
-| Hardware back | Ionic's `ionBackButton` event (needs `@capacitor/app` on device) | `PixelDialog` registers to close itself |
+| Overlays | `Dialog` (confirm), `Toast`, `IonModal` (notifications sheet) | See the overlay rule below |
+| Hardware back | Ionic's `ionBackButton` event (needs `@capacitor/app` on device) | `Dialog` registers to close itself |
 
 ## Mandatory workflow
 
@@ -45,8 +45,8 @@ Load this skill before: creating a page; changing routes, the tab bar, or any na
 - **No dead ends** (`references/navigation-standards.md`): iPhones have no back button, so every screen shows a tappable way out — the tab bar, a top-start Back button on stack and full-screen pages, a ✕ or Cancel on every sheet and dialog, Retry on errors. Swipe and Escape are extras, never the only exit.
 - **Pull to refresh**: every data tab uses `TabPage`'s `onRefresh` (Home has its own `IonRefresher`). Always call `e.detail.complete()` in `finally`. Not inside the notifications sheet: its pull-down already dismisses the sheet, and the sheet refetches on every open.
 - **Gestures** (`references/gesture-standards.md`): Ionic swipe-back on stack pages, swipe-down on sheets, and swipe between tabs on tab root pages (`src/components/tabGestures.ts`; it skips screen edges, controls, charts, and sideways scrollers). Android back on a tab goes Home, then leaves the app.
-- **Touch**: every control has a pixel pressed state (moves down 2–3 px, its hard shadow shrinks); `-webkit-tap-highlight-color: transparent` only where a pressed state replaces it; `user-select: none` on controls, never on readable content; targets ≥ 44×44 px.
-- **Overlays**: `IonModal` for sheets; `PixelDialog` for confirmations; `PixelToast` for short messages. Do not add `IonAlert`, `IonToast`, `IonActionSheet`, or `IonPopover`: `@ionic/react` is one module, so any overlay used anywhere lands in the initial bundle (it pushed it past 200 KB once). Every overlay closes with its close button, Escape, a backdrop tap (unless destructive), and Android back.
+- **Touch**: every control has a pressed state (`scale(0.97)` and slightly darker, 120 ms); `-webkit-tap-highlight-color: transparent` only where a pressed state replaces it; `user-select: none` on controls, never on readable content; targets ≥ 44×44 px.
+- **Overlays**: `IonModal` for sheets; `Dialog` for confirmations; `Toast` for short messages. Do not add `IonAlert`, `IonToast`, `IonActionSheet`, or `IonPopover`: `@ionic/react` is one module, so any overlay used anywhere lands in the initial bundle (it pushed it past 200 KB once). Every overlay closes with its close button, Escape, a backdrop tap (unless destructive), and Android back.
 - **Keyboard**: the right `inputMode`/`type`/`autocomplete`/`enterKeyHint` on every field; Enter submits; the submit button stays reachable with the keyboard open (Ionic's scroll assist inside `IonContent`).
 - **Lifecycle**: data refreshes when a tab is re-entered, when the app comes back to the foreground, and when the network returns — only for the visible tab.
 - **Motion**: a CSS transition for the tab pill; GSAP for scripted sequences, loaded with `import()` outside the initial bundle; respect `prefers-reduced-motion` (see `ui-standards` → Animation).

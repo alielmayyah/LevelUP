@@ -11,9 +11,10 @@ import {
   type Scale,
   type Status,
 } from '../../body/standards';
-import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
+import Icon, { type IconName } from '../../components/Icon';
 import { focusSibling, rovingTarget } from '../../components/roving';
 import { formatNumber, formatSigned, numberLocale } from '../../i18n/format';
+import BodyScanFigure from './BodyScanFigure';
 import './BodyComposition.scss';
 
 type Better = 'up' | 'down' | null;
@@ -51,7 +52,7 @@ const Delta: React.FC<{ now: number; then: number; digits: number; unit: string;
   const tone = good === null ? 'text-muted' : good ? 'text-success' : 'text-danger';
   const amount = `${formatNumber(Math.abs(diff), digits)}${unit === '%' ? '%' : unit ? ` ${unit}` : ''}`;
   return (
-    <span className={`text-[0.75rem] font-extrabold whitespace-nowrap ${tone}`} data-testid={testId}>
+    <span className={`text-[0.75rem] font-semibold whitespace-nowrap ${tone}`} data-testid={testId}>
       <bdi aria-hidden="true">{diff === 0 ? '±0' : formatSigned(diff, unit, { digits })}</bdi>
       <span className="sr-only">
         {diff === 0 ? t('progress.noChange') : t(diff > 0 ? 'bodyComp.upSince' : 'bodyComp.downSince', { amount })}
@@ -86,7 +87,7 @@ const ZoneHeader: React.FC = () => {
 interface BarProps {
   testId: string;
   label: string;
-  icon: PixelIconName;
+  icon: IconName;
   tone: string;
   scale: Scale;
   /** The value placed on the scale (kg as % of standard for weight, muscle, and fat). */
@@ -115,12 +116,12 @@ const Bar: React.FC<BarProps> = (p) => {
   return (
     <div className={`grid gap-1.5 ${p.tone}`} data-testid={p.testId}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-        <span className="flex min-w-0 items-center gap-1.5 text-[0.85rem] font-extrabold text-ink">
-          <PixelIcon className="flex-none text-[1.1rem]" name={p.icon} />
+        <span className="flex min-w-0 items-center gap-1.5 text-[0.85rem] font-semibold text-ink">
+          <Icon className="flex-none text-[1.1rem]" name={p.icon} />
           {p.label}
         </span>
         <span className="flex items-baseline gap-2">
-          <strong className="lu-display text-[1.35rem] leading-none whitespace-nowrap text-ink">
+          <strong className="lu-display text-[1.35rem] leading-none font-semibold whitespace-nowrap text-ink">
             {formatNumber(p.value, p.digits)}
             <span className="text-[0.7em]">{suffix}</span>
           </strong>
@@ -146,151 +147,13 @@ const Bar: React.FC<BarProps> = (p) => {
           <span className="lu-scale-then absolute -inset-y-1" style={{ insetInlineStart: `calc(${then}% - 1.5px)` }} />
         )}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 text-[0.72rem] font-bold text-muted">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-[0.72rem] font-normal text-muted">
         <span>{t('bodyComp.normalRange', { range: ltr(rangeText) })}</span>
         <StatusChip status={p.status} badOver={p.badOver} />
       </div>
     </div>
   );
 };
-
-/*
- * The hologram figure, viewed from behind like the InBody sheet: the member's
- * left side is on the left. Drawn as the left half of a 20 × 41 pixel grid and
- * mirrored, so both sides always match:
- *   h head   t trunk   L arm   l leg   p projector base   . empty
- */
-const HALF_BODY = [
-  '........hh',
-  '.......hhh',
-  '.......hhh',
-  '.......hhh',
-  '.......hhh',
-  '........hh',
-  '.........h',
-  '....LLtttt',
-  '...LLLtttt',
-  '...LLLtttt',
-  '..LLL.tttt',
-  '..LLL.tttt',
-  '..LLL.tttt',
-  '..LL..tttt',
-  '..LL...ttt',
-  '..LL...ttt',
-  '.LLL...ttt',
-  '.LLL..tttt',
-  '.LL...tttt',
-  '.LL...tttt',
-  '......llll',
-  '......llll',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '......lll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '.......ll.',
-  '......lll.',
-  '.....llll.',
-  '..........',
-  '...ppppppp',
-  '.....ppppp',
-];
-
-type FigurePart = BodySegment | 'head' | 'base';
-
-const PART: Record<string, FigurePart> = {
-  h: 'head',
-  t: 'trunk',
-  p: 'base',
-  L: 'leftArm',
-  l: 'leftLeg',
-  R: 'rightArm',
-  r: 'rightLeg',
-};
-
-/** The full grid: each row's left half, then the same half mirrored with the right-side parts. */
-const BODY_ROWS = HALF_BODY.map(
-  (half) =>
-    half +
-    [...half]
-      .reverse()
-      .map((c) => (c === 'L' ? 'R' : c === 'l' ? 'r' : c))
-      .join(''),
-);
-const FIGURE_W = BODY_ROWS[0].length;
-const FIGURE_H = BODY_ROWS.length;
-
-/** Each part as a few rects: one per run of pixels on a row, so the figure stays a couple hundred nodes. */
-const FIGURE_RUNS = (() => {
-  const out: Record<FigurePart, { x: number; y: number; w: number }[]> = {
-    head: [],
-    base: [],
-    leftArm: [],
-    rightArm: [],
-    trunk: [],
-    leftLeg: [],
-    rightLeg: [],
-  };
-  BODY_ROWS.forEach((row, y) => {
-    let x = 0;
-    while (x < row.length) {
-      let w = 1;
-      while (row[x + w] === row[x]) w++;
-      const part = PART[row[x]];
-      if (part) out[part].push({ x, y, w });
-      x += w;
-    }
-  });
-  return out;
-})();
-
-/**
- * A glowing pixel hologram of the body on a faint grid. Each segment is tinted
- * by its zone; every other row is dimmer, like scan lines. A light bar sweeps
- * down it unless the device asks for reduced motion. Decorative: the callouts
- * around it carry every value in text.
- */
-const Figure: React.FC<{ statuses: Record<BodySegment, Status>; kind: 'lean' | 'fat' }> = ({ statuses, kind }) => (
-  <div className="lu-holo relative grid place-items-center overflow-hidden rounded-[10px] px-2.5 pt-3 pb-1">
-    <svg
-      className={`lu-holo-figure lu-figure-${kind} h-[188px] w-auto`}
-      viewBox={`0 0 ${FIGURE_W} ${FIGURE_H}`}
-      shapeRendering="crispEdges"
-      aria-hidden="true"
-      focusable="false"
-      data-testid="segments-figure"
-    >
-      {(Object.keys(FIGURE_RUNS) as FigurePart[]).map((part) => (
-        <g
-          key={part}
-          className={`lu-holo-${part} ${part === 'head' || part === 'base' ? '' : `lu-seg lu-seg-${statuses[part]}`}`}
-          data-part={part}
-          data-status={part === 'head' || part === 'base' ? undefined : statuses[part]}
-        >
-          {FIGURE_RUNS[part].map((r) => (
-            <rect
-              key={`${r.x}-${r.y}`}
-              className={r.y % 2 ? 'is-scan' : undefined}
-              x={r.x}
-              y={r.y}
-              width={r.w}
-              height={1}
-            />
-          ))}
-        </g>
-      ))}
-    </svg>
-    <span className="lu-holo-sweep" aria-hidden="true" />
-  </div>
-);
 
 const Callout: React.FC<{
   segment: BodySegment;
@@ -311,12 +174,12 @@ const Callout: React.FC<{
         : 'text-center justify-items-center';
   return (
     <div dir={i18n.dir()} className={`grid gap-0.5 ${alignClass}`} data-testid={`seg-${segment}`}>
-      <span className="text-[0.72rem] font-bold text-muted">{t(`bodyComp.segment.${segment}`)}</span>
-      <strong className="lu-display text-[1.2rem] leading-none whitespace-nowrap text-ink">
+      <span className="text-[0.72rem] font-normal text-muted">{t(`bodyComp.segment.${segment}`)}</span>
+      <strong className="lu-display text-[1.2rem] leading-none font-semibold whitespace-nowrap text-ink">
         {formatNumber(reading.kg, digits)}
         <span className="text-[0.7em]">{`${THIN}${t('units.kg')}`}</span>
       </strong>
-      <span className="text-[0.7rem] font-bold whitespace-nowrap text-muted">
+      <span className="text-[0.7rem] font-normal whitespace-nowrap text-muted">
         <bdi>{pct(reading.pct)}</bdi>
       </span>
       <StatusChip status={status} badOver={kind === 'fat'} />
@@ -385,7 +248,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     {
       testId: 'bar-fat',
       label: t('bodyComp.bar.fat'),
-      icon: 'flame',
+      icon: 'bodyFat',
       tone: 'lu-tone-fat',
       scale: SCALES.fat,
       position: ofStd(scan.bodyFatKg, std.fatKg),
@@ -405,7 +268,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     {
       testId: 'bar-bmi',
       label: t('bodyComp.bar.bmi'),
-      icon: 'ruler',
+      icon: 'gauge',
       tone: 'lu-tone-bmi',
       scale: SCALES.bmi,
       position: scan.bmi,
@@ -422,7 +285,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     {
       testId: 'bar-pbf',
       label: t('bodyComp.bar.pbf'),
-      icon: 'flame',
+      icon: 'bodyFat',
       tone: 'lu-tone-fat',
       scale: pbf,
       position: scan.bodyFatPct,
@@ -448,7 +311,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     },
     {
       key: 'protein',
-      icon: 'drumstick',
+      icon: 'protein',
       tone: 'lu-tone-protein',
       of: (a: AssessmentDto) => a.proteinKg,
       std: std.proteinKg,
@@ -490,7 +353,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
 
   const legend = compare && (
     <p
-      className="m-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.72rem] font-bold text-muted"
+      className="m-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.72rem] font-normal text-muted"
       data-testid="compare-legend"
     >
       <span className="flex items-center gap-1.5">
@@ -506,7 +369,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
 
   return (
     <div className="grid gap-3.5" data-testid="body-comp">
-      <section className="lu-px-card grid gap-3.5" aria-labelledby="bc-muscle-fat">
+      <section className="lu-card grid gap-3.5" aria-labelledby="bc-muscle-fat">
         <header className="grid gap-0.5">
           <span className="lu-card-kicker">{t('bodyComp.kicker')}</span>
           <h2 id="bc-muscle-fat" className="lu-card-title">
@@ -525,7 +388,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
         ))}
       </section>
 
-      <section className="lu-px-card grid gap-3" aria-labelledby="bc-segments" data-testid="segments">
+      <section className="lu-card grid gap-3" aria-labelledby="bc-segments" data-testid="segments">
         <h2 id="bc-segments" className="lu-card-title">
           {t('bodyComp.segmental')}
         </h2>
@@ -544,7 +407,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                   aria-checked={kind === k}
                   tabIndex={kind === k ? 0 : -1}
                   data-testid={`segments-${k}`}
-                  className="min-h-11 cursor-pointer rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-extrabold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+                  className="flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-normal text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
                   onClick={() => setKind(k)}
                   onKeyDown={(e) => {
                     const to = rovingTarget(e, i, kinds.length, rtl);
@@ -553,12 +416,16 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                     focusSibling(e, to);
                   }}
                 >
+                  <Icon className="shrink-0 text-base" name={k === 'lean' ? 'muscle' : 'bodyFat'} />
                   {t(k === 'lean' ? 'bodyComp.lean' : 'bodyComp.fatView')}
                 </button>
               ))}
             </div>
             {/* Laid out left to right in both languages, like the scan sheet: the figure is a picture of the body. */}
-            <div dir="ltr" className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-4">
+            <div
+              dir="ltr"
+              className="mx-auto grid w-full max-w-[32rem] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-4"
+            >
               <div className="col-start-1 row-start-1">
                 <Callout
                   segment="leftArm"
@@ -580,7 +447,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                 />
               </div>
               <div className="col-start-2 row-span-2 row-start-1 grid justify-items-center">
-                <Figure statuses={statuses} kind={kind} />
+                <BodyScanFigure statuses={statuses} kind={kind} sex={sex} />
               </div>
               <div className="col-start-3 row-start-1">
                 <Callout
@@ -624,7 +491,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
         )}
       </section>
 
-      <section className="lu-px-card grid gap-3.5" aria-labelledby="bc-composition">
+      <section className="lu-card grid gap-3.5" aria-labelledby="bc-composition">
         <h2 id="bc-composition" className="lu-card-title">
           {t('bodyComp.composition')}
         </h2>

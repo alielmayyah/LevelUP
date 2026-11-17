@@ -1,13 +1,12 @@
 /*
- * Login shares the splash's dusk palette in both themes: the white wordmark only
+ * Login shares the splash's dusk gradient palette in both themes: the white wordmark only
  * reads on a dark backdrop. Layout is Tailwind classes in Login.tsx; the
  * field's look lives here.
  */
 @layer components {
   .lu-login-input {
-    border: 2px solid color-mix(in srgb, var(--ion-color-secondary) 40%, var(--lu-splash-bg));
+    border: 1px solid color-mix(in srgb, var(--ion-color-secondary) 40%, var(--lu-splash-bg));
     background: color-mix(in srgb, var(--lu-splash-bg) 86%, var(--ion-color-primary));
-    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
     outline: none;
     transition:
       border-color 120ms ease-out,

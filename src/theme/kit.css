@@ -1,0 +1,586 @@
+/*
+ * The app's shared UI kit, clean modern style: soft rounded cards with a
+ * hairline border and blurred shadow, pill chips, iOS-style switches, a
+ * sliding segmented control, rounded progress bars, and loading/empty states.
+ * Type is IBM Plex Sans (Latin) and IBM Plex Sans Arabic (Arabic).
+ *
+ * Imported by tailwind.css into the `components` layer: Tailwind utilities on
+ * the same element override these (e.g. `lu-card p-3`), and page Sass
+ * partials, also in `components`, load later and so win ties.
+ */
+
+.lu-tab-body:lang(ar),
+.lu-notif:lang(ar) {
+  font-family: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+}
+
+/* Tab pages draw their own header, so the body clears the notch itself. */
+.lu-tab-body.lu-page-body {
+  padding-block-start: calc(var(--lu-gutter) + var(--ion-safe-area-top, 0px));
+}
+
+/* Titles and big numbers: the app font, bold, slightly tight. */
+.lu-display {
+  font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.lu-display:lang(ar) {
+  letter-spacing: 0;
+}
+
+/* ---------- Cards ---------- */
+
+.lu-card {
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding: 16px;
+  border: 1px solid var(--lu-border);
+  border-radius: 16px;
+  background: var(--lu-surface);
+  color: var(--lu-text);
+  box-shadow: var(--lu-shadow);
+  font: inherit;
+  text-align: start;
+}
+
+@media (min-width: 768px) {
+  .lu-card {
+    padding: 20px;
+  }
+}
+
+button.lu-card {
+  cursor: pointer;
+  transition:
+    transform 150ms var(--ease-soft, ease-out),
+    box-shadow 150ms var(--ease-soft, ease-out);
+}
+
+button.lu-card:active {
+  transform: scale(0.985);
+  box-shadow: var(--lu-shadow-pressed);
+}
+
+:is(button.lu-card, .lu-icon-button, .lu-segment button, .lu-link-button, .lu-row-button):focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 3px;
+}
+
+.lu-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lu-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.lu-card-title .lu-icon,
+.lu-section-title .lu-icon {
+  color: var(--ion-color-primary);
+  font-size: 1.15rem;
+}
+
+.lu-card-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--lu-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.lu-card-kicker .lu-icon {
+  color: var(--ion-color-primary);
+  font-size: 1rem;
+}
+
+.lu-card-kicker:lang(ar) {
+  font-size: 0.85rem;
+  letter-spacing: 0;
+}
+
+:root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) .lu-icon {
+  color: var(--ion-color-secondary);
+}
+
+.lu-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.lu-chevron {
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--lu-text-muted);
+  font-size: 1.15rem;
+}
+
+.lu-chevron:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+/* ---------- Chips ---------- */
+
+.lu-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lu-surface-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lu-chip-primary {
+  background: color-mix(in srgb, var(--ion-color-primary) 12%, transparent);
+  color: var(--ion-color-primary-shade);
+}
+
+:root.ion-palette-dark .lu-chip-primary {
+  background: color-mix(in srgb, var(--ion-color-secondary) 18%, transparent);
+  color: var(--ion-color-secondary);
+}
+
+.lu-chip-danger {
+  background: color-mix(in srgb, var(--lu-danger) 12%, transparent);
+  color: var(--lu-danger);
+}
+
+/* Tier colors, lowest to highest. Set --tier, then use it. */
+.lu-tier-1 {
+  --tier: var(--lu-tier-1);
+}
+
+.lu-tier-2 {
+  --tier: var(--lu-tier-2);
+}
+
+.lu-tier-3 {
+  --tier: var(--lu-tier-3);
+}
+
+.lu-tier-4 {
+  --tier: var(--lu-tier-4);
+}
+
+.lu-tier-5 {
+  --tier: var(--lu-tier-5);
+}
+
+.lu-chip-tier {
+  background: color-mix(in srgb, var(--tier) 16%, transparent);
+  color: var(--lu-text);
+}
+
+.lu-chip-tier .lu-icon {
+  color: var(--tier);
+}
+
+/* ---------- Icon tiles and buttons ---------- */
+
+.lu-icon-tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ion-color-primary) 10%, var(--lu-surface));
+  color: var(--ion-color-primary);
+  font-size: 22px;
+}
+
+.lu-icon-tile-gold {
+  color: var(--lu-gold);
+  background: color-mix(in srgb, currentColor 14%, var(--lu-surface));
+  font-size: 26px;
+}
+
+.lu-icon-button {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 0;
+  border: 1px solid var(--lu-border);
+  border-radius: 999px;
+  background: var(--lu-surface);
+  color: var(--lu-text);
+  box-shadow: var(--lu-shadow);
+  font-size: 22px;
+  cursor: pointer;
+  transition:
+    transform 120ms var(--ease-soft, ease-out),
+    box-shadow 120ms var(--ease-soft, ease-out);
+}
+
+.lu-icon-button:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+  cursor: default;
+}
+
+.lu-link-button {
+  min-block-size: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ion-color-primary);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+:root.ion-palette-dark .lu-link-button {
+  color: var(--ion-color-secondary);
+}
+
+.lu-link-button:disabled {
+  color: var(--lu-text-muted);
+  cursor: default;
+}
+
+/* ---------- Segmented control (Goals, Leaderboard) ---------- */
+
+.lu-segment {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 4px;
+  margin-block-end: 16px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--lu-surface-2);
+}
+
+.lu-segment button {
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  min-block-size: 44px;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--lu-text-muted);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 180ms var(--ease-soft, ease-out),
+    color 180ms var(--ease-soft, ease-out),
+    box-shadow 180ms var(--ease-soft, ease-out),
+    transform 120ms var(--ease-soft, ease-out);
+}
+
+.lu-segment button .lu-icon {
+  font-size: 1.1rem;
+}
+
+.lu-segment button[aria-selected='true'],
+.lu-segment button[aria-checked='true'] {
+  background: var(--lu-surface);
+  color: var(--lu-text);
+  box-shadow: var(--lu-shadow);
+}
+
+.lu-segment button[aria-selected='true'] .lu-icon,
+.lu-segment button[aria-checked='true'] .lu-icon {
+  color: var(--ion-color-primary);
+}
+
+:root.ion-palette-dark .lu-segment button[aria-selected='true'],
+:root.ion-palette-dark .lu-segment button[aria-checked='true'] {
+  background: var(--lu-border);
+}
+
+/* ---------- Progress bar ---------- */
+
+.lu-bar {
+  block-size: 10px;
+  border-radius: 999px;
+  background: var(--lu-surface-2);
+  overflow: hidden;
+}
+
+.lu-bar > span {
+  display: block;
+  block-size: 100%;
+  inline-size: var(--lu-bar, 0%);
+  border-radius: inherit;
+  background: var(--ion-color-primary);
+  transition: inline-size 500ms var(--ease-soft, ease-out);
+}
+
+:root.ion-palette-dark .lu-bar > span {
+  background: var(--ion-color-secondary);
+}
+
+/* ---------- Toggle switch ---------- */
+
+.lu-switch {
+  position: relative;
+  flex: none;
+  inline-size: 50px;
+  block-size: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lu-border);
+  cursor: pointer;
+  transition:
+    background-color 180ms var(--ease-soft, ease-out),
+    transform 120ms var(--ease-soft, ease-out);
+}
+
+.lu-switch::after {
+  content: '';
+  position: absolute;
+  inset-block: 3px;
+  inset-inline-start: 3px;
+  inline-size: 24px;
+  border-radius: 999px;
+  background: var(--lu-surface);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  transition: transform 180ms var(--ease-soft, ease-out);
+}
+
+:root.ion-palette-dark .lu-switch::after {
+  background: var(--lu-text);
+}
+
+.lu-switch[aria-checked='true'] {
+  background: var(--ion-color-primary);
+}
+
+.lu-switch[aria-checked='true']::after {
+  background: var(--ion-color-primary-contrast);
+  transform: translateX(20px);
+}
+
+.lu-switch[aria-checked='true']:dir(rtl)::after {
+  transform: translateX(-20px);
+}
+
+.lu-switch:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 3px;
+}
+
+/* ---------- States ---------- */
+
+.lu-state {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 32px 16px;
+  color: var(--lu-text-muted);
+  text-align: center;
+}
+
+.lu-state .lu-icon {
+  font-size: 40px;
+}
+
+.lu-state p {
+  margin: 0;
+}
+
+.lu-skeleton,
+.lu-skeleton-card {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--lu-surface-2) 30%, var(--lu-border) 50%, var(--lu-surface-2) 70%);
+  background-size: 300% 100%;
+  animation: lu-shimmer 1.4s ease-in-out infinite;
+}
+
+.lu-skeleton {
+  block-size: 0.9em;
+  margin-block: 4px;
+}
+
+.lu-skeleton-card {
+  border-radius: 16px;
+  min-block-size: 104px;
+}
+
+@keyframes lu-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lu-skeleton,
+  .lu-skeleton-card {
+    animation: none;
+  }
+
+  button.lu-card,
+  .lu-switch,
+  .lu-switch::after,
+  .lu-segment button,
+  .lu-bar > span {
+    transition: none;
+  }
+
+  button.lu-card:active {
+    transform: none;
+  }
+}
+
+/* ---------- Pressed states (every control gives immediate feedback) ---------- */
+
+/*
+ * Pressed: the control shrinks slightly and darkens. touch-action:
+ * manipulation stops a quick double tap from zooming the page instead of
+ * pressing twice.
+ */
+:is(
+  button,
+  .lu-icon-button,
+  .lu-link-button,
+  .lu-segment button,
+  .lu-choice button,
+  .lu-switch,
+  .lu-chart-key,
+  .lu-notif-item,
+  .lu-goal-row,
+  .lu-row-button
+) {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.lu-notif-item,
+.lu-goal {
+  transition:
+    transform 120ms var(--ease-soft, ease-out),
+    box-shadow 120ms var(--ease-soft, ease-out);
+}
+
+:is(.lu-icon-button:not(:disabled), .lu-notif-item):active,
+.lu-goal:has(.lu-goal-row:active) {
+  transform: scale(0.97);
+  box-shadow: var(--lu-shadow-pressed);
+}
+
+:is(.lu-segment button, .lu-choice button, .lu-chart-key, .lu-switch):active {
+  transform: scale(0.97);
+  filter: brightness(0.95);
+}
+
+:is(.lu-link-button, .lu-row-button):active:not(:disabled) {
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.lu-icon-button, .lu-notif-item, .lu-segment button, .lu-choice button, .lu-chart-key, .lu-switch):active,
+  .lu-goal:has(.lu-goal-row:active) {
+    transform: none;
+  }
+}
+
+/* The icon before each tab page's title: the same icon as its tab, in the brand purple. */
+.lu-title-icon {
+  color: var(--ion-color-primary);
+}
+
+:root.ion-palette-dark .lu-title-icon {
+  color: var(--ion-color-secondary);
+}
+
+/* ---------- Enter motion for overlays ---------- */
+
+/* Dialog panels pop in; toasts rise. Both appear from their resting state with no motion when reduced. */
+.lu-pop {
+  transition:
+    opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    scale 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  @starting-style {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+
+.lu-rise {
+  transition:
+    opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    translate 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  @starting-style {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+dialog::backdrop {
+  transition: opacity 200ms ease-out;
+
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lu-pop,
+  .lu-rise,
+  dialog::backdrop {
+    transition: none;
+  }
+}
+
+/* ---------- Info button (Home and Progress) ---------- */
+
+/* The ⓘ button: a quiet icon that lights up on hover and focus. */
+.lu-info-button {
+  border-radius: 50%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lu-info-button:active {
+  color: var(--ion-color-primary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lu-info-button:hover {
+    color: var(--ion-color-primary);
+  }
+}
+
+.lu-info-button:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: -4px;
+}

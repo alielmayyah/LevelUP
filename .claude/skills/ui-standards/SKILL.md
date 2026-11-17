@@ -13,7 +13,7 @@ A UI task is done only when it passes every row of the checklist at the bottom.
 - **Colors are theme tokens only.** Tailwind's default palette is removed; utilities like `bg-surface`, `text-muted`, `border-line`, `text-primary`, `bg-fat` point at `--lu-*` / `--ion-*` variables in `tokens.css`, so dark mode and brand colors keep working. `npm run check-colors` also scans `.scss` files and arbitrary values (`bg-[#fff]` fails).
 - **Variants:** `dark:` follows Ionic's `.ion-palette-dark` class, `ar:` targets Arabic text, `rtl:` the reading direction, `short-landscape:` a phone held sideways, `split:` / `wide:` the two-column layouts (≥ 900 px).
 - **Sass (`.scss` next to the component) for what utilities can't say cleanly:** gradients and `color-mix` art, pseudo-elements, keyframes, SVG strokes, and Ionic part/CSS-variable overrides. Wrap rules in `@layer components` so a utility on the same element still wins. Rules that style Ionic's scoped elements (`ion-label`) stay unlayered, or Ionic's own styles beat them (see `TabBar.scss`).
-- **Shared pixel kit** (`lu-px-card`, `lu-chip`, `lu-segment`, `lu-switch`, `lu-state`, …) lives in `src/theme/pixel.css` as component classes; add utilities beside them to adjust (`lu-px-card p-3`).
+- **Shared UI kit** (`lu-card`, `lu-chip`, `lu-segment`, `lu-switch`, `lu-state`, …) lives in `src/theme/kit.css` as component classes; add utilities beside them to adjust (`lu-card p-3`). (The old kit was `src/theme/pixel.css` with `lu-px-card`; the restyle replaces it. See "Visual style".)
 - **Cascade layers:** `theme < base < ionic < components < utilities`. Ionic's global CSS sits in the `ionic` layer, so utilities override it. No Tailwind preflight (Ionic's normalize does that job), so set every border side you mean: `border-2` sets all four; for one side use `[border-block-start:2px_dashed_var(--lu-border)]`.
 - **Class strings:** use sized values that don't carry a line height (`text-[0.875rem]`, not `text-sm`) unless you want Tailwind's. Keep a space between a class and a `${…}` expression, or Tailwind won't see the class and Prettier's Tailwind plugin may glue them: `` `base ${on ? 'is-on' : ''}` ``.
 - `npm run format` sorts classes (prettier-plugin-tailwindcss).
@@ -92,28 +92,34 @@ Rules:
 
 - Lazy-load every tab page with `React.lazy`. The splash and login screens stay in the main bundle.
 - Charts are the small SVG `LineChart` (`src/pages/progress/LineChart.tsx`), loaded as a lazy chunk. Don't add a chart library; extend `LineChart` instead.
-- Don't use Ionic overlays (`IonAlert`, `IonToast`, `IonActionSheet`, `IonPopover`): `@ionic/react` is one module, so any overlay used anywhere lands in the initial bundle. Use `PixelDialog` and `PixelToast`. (`IonModal` for the notifications sheet is already paid for.)
+- Don't use Ionic overlays (`IonAlert`, `IonToast`, `IonActionSheet`, `IonPopover`): `@ionic/react` is one module, so any overlay used anywhere lands in the initial bundle. Use `Dialog` and `Toast` (formerly `PixelDialog` and `PixelToast`). (`IonModal` for the notifications sheet is already paid for.)
 - Memoize list rows (`React.memo`) on the leaderboard. Virtualize it once there are more than 100 rows.
 - Use CSS animations on `transform`/`opacity` only, and respect `prefers-reduced-motion`.
 - Fetch each screen's data in as few calls as the API allows. Query-level rules (Prisma `select`, indexes, no N+1) live in the `levelup-backend` repo's CLAUDE.md.
 - Run `npm run build` and check the size report against the budget table above.
 
-## Pixel style
+## Visual style: clean modern
 
-The look is pixel-art: build screens from the shared pieces, don't restyle per screen.
+The look is **clean and modern**, like current fitness apps (Apple Fitness, Strava): soft rounded surfaces, real shadows, clear type, simple line icons. **No pixel art anywhere**: no pixel fonts, no hard offset shadows, no `crispEdges` rendering, no 12×12 pixel icons, no "moves down and the shadow shrinks" press effect. Build screens from the shared pieces; don't restyle per screen.
 
 | Piece | Where | Rule |
 |---|---|---|
-| Card | `.lu-px-card` (`src/theme/pixel.css`, Tailwind `components` layer) | 2px border, 10px corners, hard unblurred drop shadow `0 4px 0 var(--lu-pixel-shadow)` |
-| Page | `TabPage` | Big display title (`.lu-display`, Jersey 10: one weight, 400; sized about 20% larger than a regular face) and subtitle; body clears the notch and the tab bar |
-| Primary action | `CtaButton` | One per screen. Secondary actions: `.lu-link-button` or the dialog's secondary button |
-| Segmented switch | `.lu-segment` | Tabs pattern with arrow keys (`src/components/roving.ts`) |
-| Choice | `.lu-choice` | Radio group pattern with arrow keys |
-| Switch | `.lu-switch` | `role="switch"`, `aria-describedby` its one-line hint |
-| Icons | `PixelIcon` for everything: body metrics (flame = fat, muscle, scale, trophy) and interface icons (arrows, chevrons, close, settings…). Interface icons use `C` pixels, which take the text color. Don't add ionicons; draw a new 12×12 icon instead | Every icon is `aria-hidden` unless it is the only label (then pass `label`). Mirror directional icons in RTL with `rtl:-scale-x-100` |
-| Colors | `tokens.css` | One hue per metric (`--lu-fat`, `--lu-muscle`), tiers `--lu-tier-1..5`, medals `--lu-gold/silver/bronze` |
+| Card | `.lu-card` (`src/theme/kit.css`, Tailwind `components` layer) | `bg-surface`, 1px `--lu-border` hairline, 16px corners, soft blurred shadow `var(--lu-shadow)` (defined per theme in `tokens.css`; lighter in dark mode, where the border does most of the work). Inner padding 16px (20px at `md`+). |
+| Page | `TabPage` | Title in the app font at weight 700, `clamp(1.5rem, 5vw, 2rem)`, tight letter-spacing (`-0.01em`, none in Arabic); muted subtitle; body clears the notch and the tab bar |
+| Primary action | `CtaButton` | One per screen. Full-width on phones, 14px corners, brand gradient (`--ion-color-primary` → `--lu-secondary`), weight 600 label. Pressed: `scale(0.97)` and slightly darker; disabled: 40% opacity. Secondary actions: `.lu-link-button` or the dialog's secondary button |
+| Segmented switch | `.lu-segment` | Pill track with a sliding pill for the active option. Tabs pattern with arrow keys (`src/components/roving.ts`) |
+| Choice | `.lu-choice` | Rounded option rows or chips with a check mark when picked. Radio group pattern with arrow keys |
+| Switch | `.lu-switch` | iOS-style track and knob. `role="switch"`, `aria-describedby` its one-line hint |
+| Icons | `Icon` (`src/components/Icon.tsx`): app-level names (`bodyFat`, `muscle`, `trophy`…) mapped to `lucide-react` line icons, imported one by one so only used icons ship. 24px grid, 1.75 stroke, `currentColor` (or `--icon-color`). Metric icons sit in a soft round badge of the metric's hue (15% tint), never as big colored art. To add one, map a new name to a lucide icon in `Icon.tsx`; don't hand-draw icons or add another icon set | Every icon is `aria-hidden` unless it is the only label (then pass `label`). Mirror directional icons in RTL with `rtl:-scale-x-100` |
+| Progress | Rings and bars | Rounded caps, 8–10px stroke, track in `--lu-border`, fill in the brand or metric hue; numbers inside rings use tabular figures |
+| Colors | `tokens.css` | One hue per metric (`--lu-fat`, `--lu-muscle`), tiers `--lu-tier-1..5`, medals `--lu-gold/silver/bronze`. Backgrounds are calm (near-white / near-black); color is for meaning and actions, not decoration. Cards stay neutral (hairline border, surface background); a metric's hue goes on its icon badge or value, not on the card's border or fill |
+| Motion | See "Animation" | Short and soft: 150–250 ms, ease-out, small scale/opacity changes. Celebrations (level up, medal) may be bigger |
 
-Labels in small caps (`.lu-card-kicker`) use the normal font, never a pixel font: small pixel text is hard to read.
+**Type:** one family for both scripts: `IBM Plex Sans` for Latin and `IBM Plex Sans Arabic` for Arabic, weights 400, 600, 700, self-hosted with `@fontsource`. Big numbers (FitScore, XP, rank) use weight 700 with `font-variant-numeric: tabular-nums`. Small-caps labels (`.lu-card-kicker`) are weight 600, 0.75rem, muted, letter-spaced in Latin only.
+
+**Spacing:** 4px base grid. Card gaps 12px on phones, 16px at `md`+. Generous whitespace beats more boxes: don't nest cards inside cards.
+
+**Avatar:** the character art is the one illustrated element; it keeps its own art style and sits on the clean UI like a sticker, never inside a pixel frame.
 
 ## Empty and partial data
 

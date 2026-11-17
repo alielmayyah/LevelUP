@@ -10,7 +10,7 @@ describe('home text helpers', () => {
 
   it('maps tiers to keys', () => {
     expect(tierKey('On Track')).toBe('home.tier.onTrack');
-    expect(tierKey('Needs Improvement')).toBe('home.tier.needsImprovement');
+    expect(tierKey('Needs Improvement')).toBe('home.tier.gettingStarted');
   });
 
   it("writes today's date in the app language with Latin digits", async () => {

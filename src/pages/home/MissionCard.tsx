@@ -3,15 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import type { MissionSummary } from '../../api/types';
-import PixelIcon from '../../components/PixelIcon';
+import Icon from '../../components/Icon';
 import { formatNumber, formatPercent } from '../../i18n/format';
 
 const RADIUS = 26;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-/** The pixel progress bar under the amount: one block per tenth of the goal. */
-const BLOCKS = 10;
 
-/** The active goal with a progress ring. Opens the Goals tab. */
+/** The active goal with a progress ring; opens the Goals tab. With no goal, it opens New goal. */
 const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -21,11 +19,11 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
 
   const head = (
     <span className="lu-card-head">
-      <span className="lu-card-kicker">
-        <PixelIcon name="flag" />
+      <span className="lu-card-title">
+        <Icon name="flag" />
         {t('home.mission.title')}
       </span>
-      {mission && <PixelIcon className="lu-chevron" name="chevronForward" />}
+      <Icon className="lu-chevron" name="chevronForward" />
     </span>
   );
   // A heading for heading navigation. The visible label stays in the button so its name matches what is shown (WCAG 2.5.3).
@@ -35,14 +33,23 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
     </h2>
   );
 
+  // No goal yet: the whole card is the way to set one.
   if (!mission)
     return (
       <section className="grid" aria-labelledby={headingId}>
         {heading}
-        <div className="lu-px-card relative grid gap-2.5 overflow-hidden pb-[30px]" data-testid="mission-card">
+        <button
+          type="button"
+          className="lu-card grid gap-2.5"
+          data-testid="mission-card"
+          onClick={() => history.push('/tabs/goals/new')}
+        >
           {head}
-          <p className="m-0 text-muted">{t('home.mission.empty')}</p>
-        </div>
+          <span className="flex items-center gap-2 font-semibold text-ink" data-testid="mission-empty">
+            <Icon name="add" />
+            {t('home.mission.empty')}
+          </span>
+        </button>
       </section>
     );
 
@@ -57,7 +64,7 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
       {heading}
       <button
         type="button"
-        className="lu-px-card relative grid gap-2.5 overflow-hidden pb-[30px]"
+        className="lu-card grid gap-2.5"
         data-testid="mission-card"
         onClick={() => history.push('/tabs/goals')}
       >
@@ -78,48 +85,29 @@ const MissionCard: React.FC<{ mission: MissionSummary | null }> = ({ mission }) 
             </svg>
             <span
               id={`${ids}-pct`}
-              className="absolute inset-0 grid place-items-center font-display text-[1.45rem] leading-none font-normal text-ink"
+              className="absolute inset-0 grid place-items-center font-display text-[1.3rem] leading-none font-bold text-ink tabular-nums"
             >
               {formatPercent(percent)}
             </span>
           </span>
-          <span className="grid min-w-0 gap-1 text-[0.95rem] font-semibold text-ink">
-            <strong id={`${ids}-title`} className="text-[1.1rem] leading-[1.25] font-extrabold">
+          <span className="grid min-w-0 gap-1 text-ink">
+            <strong id={`${ids}-title`} className="text-[1.125rem] leading-[1.25] font-semibold">
               {mission.title}
             </strong>
-            <span id={`${ids}-details`} className="grid gap-1.5">
-              {/* Read out as one sentence; drawn as a big number, a pixel bar, and what's left. */}
+            <span id={`${ids}-details`} className="grid gap-1">
+              {/* The ring and "kg to go" are drawn; the full done/total is read out as one sentence. */}
               <span className="sr-only">
                 {t('home.mission.progress', {
                   done: formatNumber(mission.doneKg, 1),
                   total: formatNumber(mission.doneKg + mission.remainingKg, 1),
                 })}
               </span>
-              <span className="flex items-baseline gap-1.5" aria-hidden="true" data-testid="mission-amount">
-                <strong className="lu-display text-[1.75rem] leading-none font-normal text-ink">
-                  {formatNumber(mission.doneKg, 1)}
-                </strong>
-                <span className="text-[0.9rem] font-bold text-muted">
-                  / {formatNumber(mission.doneKg + mission.remainingKg, 1)} {t('units.kg')}
-                </span>
-              </span>
-              <span className="lu-mission-blocks flex gap-[3px]" aria-hidden="true">
-                {Array.from({ length: BLOCKS }, (_, i) => (
-                  <span key={i} className={i < Math.round((percent / 100) * BLOCKS) ? 'is-on' : undefined} />
-                ))}
-              </span>
-              <span className="text-[0.8rem] font-bold text-muted" data-testid="mission-left">
+              <span className="text-[0.9375rem] font-normal text-muted" data-testid="mission-left">
                 {mission.remainingKg > 0
                   ? t('home.mission.toGo', { left: formatNumber(mission.remainingKg, 1) })
                   : t('home.mission.reached')}
               </span>
             </span>
-          </span>
-        </span>
-        {/* A gym-floor strip with a dumbbell, along the card's bottom edge. Decorative. */}
-        <span className="lu-mission-ground" aria-hidden="true">
-          <span className="lu-mission-dumbbell">
-            <PixelIcon name="dumbbell" />
           </span>
         </span>
       </button>

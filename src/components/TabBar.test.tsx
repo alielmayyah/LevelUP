@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { setLanguage } from '../i18n';
 import TabBar from './TabBar';
@@ -67,5 +67,23 @@ describe('tabIndex / pillTransform', () => {
     expect(pillTransform(0, true)).toBe('translateX(0%)');
     expect(pillTransform(1, false)).toBe('translateX(100%)');
     expect(pillTransform(4, true)).toBe('translateX(-400%)');
+  });
+});
+
+describe('community switch', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it('leaves Community off the tab bar while it is switched off', async () => {
+    vi.stubEnv('VITE_COMMUNITY', 'false');
+    vi.resetModules();
+    const { features } = await import('../features');
+    const { TABS, tabIndex: indexOf } = await import('./tabConfig');
+    expect(features.community).toBe(false);
+    expect(TABS.map((t) => t.tab)).toEqual(['home', 'progress', 'goals', 'profile']);
+    expect(indexOf('/tabs/community')).toBe(-1);
+    expect(indexOf('/tabs/leaderboard')).toBe(-1);
   });
 });

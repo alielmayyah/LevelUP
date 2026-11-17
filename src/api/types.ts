@@ -251,135 +251,20 @@ export interface ProfileDto {
   avatar: AvatarConfigDto | null;
 }
 
-/* ---------- Character (character customization plan) ---------- */
+/* ---------- Character ---------- */
 
-/** Parts of the standard character that take a color preset. */
-export type AvatarPart = 'skin' | 'hair' | 'eyes' | 'tank' | 'shorts' | 'shoes';
-export type AvatarRig = 'standard' | 'women';
-
-export interface AvatarStyles {
-  hair:
-    | 'curls'
-    | 'fade'
-    | 'side-part'
-    | 'locs'
-    | 'top-knot'
-    | 'buzz-cut'
-    | 'waves'
-    | 'shaved'
-    | 'spikes'
-    | 'braids'
-    | 'high-ponytail'
-    | 'braided-ponytail'
-    | 'low-bun'
-    | 'puff'
-    | 'tapered-curls'
-    | 'double-braids'
-    | 'high-bun'
-    | 'sport-hijab'
-    | 'wrap-hijab'
-    | 'longline-hijab';
-  body:
-    | 'balanced'
-    | 'lean'
-    | 'broad'
-    | 'compact'
-    | 'tall'
-    | 'stocky'
-    | 'athletic'
-    | 'relaxed'
-    | 'long-limbed'
-    | 'power-build';
-  top:
-    | 'tank'
-    | 'tee'
-    | 'hoodie'
-    | 'track-jacket'
-    | 'sweatshirt'
-    | 'varsity'
-    | 'mesh-tee'
-    | 'compression-top'
-    | 'quarter-zip'
-    | 'sleeveless-hoodie'
-    | 'longline-tank'
-    | 'racerback-bra'
-    | 'fitted-zip'
-    | 'hood-up'
-    | 'zip-hoodie'
-    | 'raglan-top'
-    | 'longline-training-top';
-  shoes:
-    | 'trainers'
-    | 'high-tops'
-    | 'runners'
-    | 'slip-ons'
-    | 'boots'
-    | 'canvas'
-    | 'lifters'
-    | 'cross-trainers'
-    | 'barefoot'
-    | 'flat-lifters'
-    | 'cushioned-runners';
-  pants?:
-    | 'shorts'
-    | 'joggers'
-    | 'cargo'
-    | 'track-pants'
-    | 'jeans'
-    | 'bike-shorts'
-    | 'liner-shorts'
-    | 'training-tights'
-    | 'split-shorts'
-    | 'warmup-pants'
-    | 'high-rise-leggings'
-    | 'capris'
-    | 'tapered-joggers'
-    | 'panel-tights'
-    | 'loose-training-shorts';
-  beard?:
-    | 'clean-shaven'
-    | 'stubble'
-    | 'mustache'
-    | 'goatee'
-    | 'short-beard'
-    | 'full-beard'
-    | 'chin-strap'
-    | 'fade-beard'
-    | 'chin-tuft'
-    | 'boxed-beard'
-    | 'circle-beard';
-  socks?:
-    | 'no-socks'
-    | 'ankle-socks'
-    | 'crew-socks'
-    | 'striped-socks'
-    | 'knee-highs'
-    | 'grip-socks'
-    | 'cushioned-socks'
-    | 'tab-socks'
-    | 'compression-socks';
-  face?: 'smile' | 'focused' | 'grin';
-  glasses?: 'no-glasses' | 'round-glasses' | 'rectangular-glasses' | 'sport-glasses';
-}
+/** Parts of the HD figure that take a color preset. */
+export type AvatarPart = 'skin' | 'hair' | 'top' | 'bottom' | 'shoes';
 
 /**
  * A saved character: catalog preset IDs only, never raw colors or markup.
  * Body of PUT /me/avatar (full replacement), which returns the saved config.
+ * Schema 1 (the drawn characters) may still be stored; the app reads it as the
+ * default look and keeps any color that still exists.
  */
 export interface AvatarConfigDto {
-  schemaVersion: 1;
-  rig: AvatarRig;
-  colors: Record<AvatarPart, string> & {
-    beard?: string;
-    socks?: string;
-    hijab?: string;
-    /** Accepted when reading older saves. The mouth shade is derived from skin tone. */
-    smile?: 'dark-plum' | 'brown' | 'warm-brown';
-  };
-  /** Optional for characters saved before styles were available. */
-  styles?: AvatarStyles;
-  /** The hairstyle to restore when a member removes their hijab. */
-  hairUnderHijab?: AvatarStyles['hair'];
+  schemaVersion: 2;
+  colors: Record<AvatarPart, string>;
 }
 
 export interface SettingsDto {

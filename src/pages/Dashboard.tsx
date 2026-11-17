@@ -8,16 +8,17 @@ import { useApi, useRefreshOnEnter } from '../api/useApi';
 import Avatar from '../avatar/Avatar';
 import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
+import { features } from '../features';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
 import FitScoreCard from './home/FitScoreCard';
+import Icon from '../components/Icon';
 import { formatToday } from './home/homeText';
 import MissionCard from './home/MissionCard';
 import NotificationsSheet from './home/NotificationsSheet';
 import RankCard from './home/RankCard';
 import StatTiles from './home/StatTiles';
 import { HOME_GRID, HOME_SPAN, TILES } from './home/layout';
-import PixelIcon from '../components/PixelIcon';
 import './home/Dashboard.scss';
 
 /** Home tab. Everything on it comes from one request: GET /me/dashboard. */
@@ -55,6 +56,14 @@ const Dashboard: React.FC = () => {
         <div className="lu-page-body lu-tab-body" data-testid="page-body">
           <div className="mb-4">
             <div className="flex items-start gap-3">
+              {/* Same size as the picture, so the greeting doesn't jump when it loads. */}
+              {!d && dashboard.status === 'loading' && (
+                <span
+                  className="lu-skeleton-card block size-14 min-h-0 flex-none rounded-[12px]"
+                  aria-hidden="true"
+                  data-testid="home-avatar-skeleton"
+                />
+              )}
               {d && (
                 <Link
                   to="/tabs/profile"
@@ -66,11 +75,11 @@ const Dashboard: React.FC = () => {
                 </Link>
               )}
               <div className="min-w-0 flex-1">
-                <p className="m-0 mb-1 text-[0.875rem] font-bold text-muted" data-testid="today">
+                <p className="m-0 mb-1 text-[0.875rem] font-normal text-muted" data-testid="today">
                   {formatToday(today)}
                 </p>
                 <h1
-                  className="lu-display m-0 text-[clamp(2.25rem,10vw,3rem)] leading-none wrap-anywhere text-ink"
+                  className="m-0 text-[clamp(1.5rem,6vw,1.75rem)] leading-tight font-semibold wrap-anywhere text-ink"
                   data-testid="greeting"
                 >
                   {d ? t('home.hello', { name: d.member.firstName }) : <span className="lu-skeleton h-[1em] w-[70%]" />}
@@ -85,10 +94,10 @@ const Dashboard: React.FC = () => {
                 }
                 onClick={() => setNotifOpen(true)}
               >
-                <PixelIcon name="bell" />
+                <Icon name="bell" />
                 {unread > 0 && (
                   <span
-                    className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 border-page bg-danger px-[5px] text-[0.72rem] leading-none font-black text-surface dark:text-pixel-ink"
+                    className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border border-page bg-danger px-[5px] text-[0.72rem] leading-none font-bold text-surface dark:text-scrim"
                     data-testid="bell-dot"
                     aria-hidden="true"
                   >
@@ -122,7 +131,7 @@ const Dashboard: React.FC = () => {
           {d && (
             <div className={HOME_GRID}>
               {d.member.showFitScore && <FitScoreCard fitScore={d.fitScore} />}
-              <RankCard leaderboard={d.leaderboard} />
+              {features.community && <RankCard leaderboard={d.leaderboard} />}
               <MissionCard mission={d.mission} />
               <div className={HOME_SPAN}>
                 <StatTiles wins={d.monthlyWins} today={today} />

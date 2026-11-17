@@ -5,20 +5,21 @@
  */
 
 :root {
-  /* Surfaces carry a faint brand-purple tint, as in the pixel-art UI. */
-  --lu-bg: #f5f3fb;
+  /* Calm, near-neutral surfaces with the faintest brand tint; color is for meaning and actions. */
+  --lu-bg: #f6f6f9;
   --lu-surface: #ffffff;
-  --lu-surface-2: #eeeaf8;
-  --lu-text: #15112a;
-  --lu-text-muted: #5d5878;
-  --lu-border: #dfd9f0;
+  --lu-surface-2: #f0eff5;
+  --lu-text: #15121f;
+  --lu-text-muted: #5f5b70;
+  --lu-border: #e6e4ee;
   --lu-success: #1a7f37;
   --lu-danger: #c62828;
-  --lu-shadow-raised: 0 8px 24px rgba(21, 17, 42, 0.12);
-  /* Hard, unblurred drop under pixel-style cards and buttons. */
-  --lu-pixel-shadow: #d6cdef;
-  /* Outline color of pixel-art icons. */
-  --lu-pixel-ink: #241a45;
+  /* Soft, blurred elevation for cards, and a smaller one for pressed controls. */
+  --lu-shadow: 0 1px 2px rgba(21, 18, 31, 0.04), 0 8px 24px -12px rgba(21, 18, 31, 0.14);
+  --lu-shadow-pressed: 0 1px 2px rgba(21, 18, 31, 0.06);
+  --lu-shadow-raised: 0 12px 32px -8px rgba(21, 18, 31, 0.22);
+  /* Dim layer behind dialogs and sheets. */
+  --lu-scrim: #0b0814;
 
   /* One hue per body metric, used for its icon and tile accent. */
   --lu-fat: #f97316;
@@ -36,7 +37,7 @@
   --lu-skin: #f0a878;
   --lu-skin-hi: #ffd2b0;
 
-  /* Pixel decoration on the mission card: a rubber gym-floor strip and a dumbbell. */
+  /* Mission card decoration (legacy; unused after the restyle unless re-adopted). */
   --lu-floor: #2b2440;
   --lu-floor-edge: #6b5f92;
   --lu-floor-seam: #17122b;
@@ -62,7 +63,7 @@
   --lu-medal-shine: #ffffff;
   --lu-medal-locked: #6b6385;
 
-  /* Dusk backdrop behind the logo and pixel-art gym (splash and login) in both themes. */
+  /* Dusk backdrop behind the logo (splash and login) in both themes. */
   --lu-splash-bg: #1a0f2b;
   --lu-splash-bg-2: #321956;
   --lu-splash-text: #f4f1ff;
@@ -77,17 +78,19 @@
 }
 
 :root.ion-palette-dark {
-  --lu-bg: #0f0b1a;
-  --lu-surface: #191330;
-  --lu-surface-2: #231b40;
-  --lu-text: #f3f0ff;
-  --lu-text-muted: #bdb5dc;
-  --lu-border: #2f2654;
+  --lu-bg: #0c0b10;
+  --lu-surface: #17161d;
+  --lu-surface-2: #201f28;
+  --lu-text: #f4f3f8;
+  --lu-text-muted: #a9a6b8;
+  --lu-border: #2a2833;
   --lu-success: #4ade80;
   --lu-danger: #f87171;
-  --lu-shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --lu-pixel-shadow: #07050e;
-  --lu-pixel-ink: #07050e;
+  /* In dark mode the border does most of the work; shadows stay faint. */
+  --lu-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --lu-shadow-pressed: none;
+  --lu-shadow-raised: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+  --lu-scrim: #000000;
 
   --lu-fat: #fb923c;
   --lu-muscle: #22d3ee;
@@ -101,6 +104,8 @@
 /* Ionic reads its own variables; point them at the tokens in both palettes. */
 :root,
 :root.ion-palette-dark {
+  /* One family for both scripts: Plex Sans for Latin, Plex Sans Arabic for Arabic. */
+  --ion-font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --ion-background-color: var(--lu-bg);
   --ion-text-color: var(--lu-text);
   --ion-toolbar-background: var(--lu-bg);
@@ -113,6 +118,8 @@
 body {
   background: var(--lu-bg);
   color: var(--lu-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Arabic script needs about 10% more line height. */

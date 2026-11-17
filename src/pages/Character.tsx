@@ -3,48 +3,27 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { saveAvatar } from '../api/avatar';
-import type { AvatarConfigDto, ProfileDto } from '../api/types';
+import type { AvatarConfigDto, AvatarPart, ProfileDto } from '../api/types';
 import { useApi } from '../api/useApi';
 import Avatar from '../avatar/Avatar';
-import {
-  MATCH_HAIR,
-  colorIdFor,
-  customizerTabsFor,
-  isHijab,
-  memberAvatar,
-  showsLowerLeg,
-  presetsFor,
-  randomAvatar,
-  removeHijab,
-  sameAvatar,
-  stylesFor,
-  withHair,
-  type ColorPart,
-  type CustomizerTab,
-  type ResolvedStyles,
-  type StylePart,
-} from '../avatar/catalog';
-import { CustomizerIcon, OutfitPicker, StylePicker } from '../avatar/StylePicker';
+import { AVATAR_PARTS, memberAvatar, presetsFor, randomAvatar, sameAvatar } from '../avatar/catalog';
 import CtaButton from '../components/CtaButton';
+import Icon, { type IconName } from '../components/Icon';
 import ScrollStrip from '../components/ScrollStrip';
-import { useSwipe } from '../components/useSwipe';
 import { focusSibling, rovingTarget } from '../components/roving';
-import PixelIcon from '../components/PixelIcon';
+import { useSwipe } from '../components/useSwipe';
 import '../avatar/avatar.scss';
 
-const COLORS: Record<Exclude<CustomizerTab, 'outfits'>, readonly ColorPart[]> = {
-  hair: ['hair'],
-  body: ['skin'],
-  top: ['tank'],
-  pants: ['shorts'],
-  shoes: ['shoes'],
-  socks: ['socks'],
-  beard: ['beard'],
-  face: ['eyes'],
+const TAB_ICONS: Record<AvatarPart, IconName> = {
+  skin: 'smile',
+  hair: 'hair',
+  top: 'shirt',
+  bottom: 'pants',
+  shoes: 'shoe',
 };
 
 interface SwatchesProps {
-  part: ColorPart;
+  part: AvatarPart;
   value: string;
   onChange: (id: string) => void;
 }
@@ -52,27 +31,17 @@ interface SwatchesProps {
 /** One part's colors: a radio group with one Tab stop and arrow keys, each swatch named by its color. */
 const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
   const { t, i18n } = useTranslation();
-  const palette = presetsFor(part);
-  const presets = part === 'beard' ? [{ id: MATCH_HAIR, color: undefined }, ...palette] : palette;
+  const presets = presetsFor(part);
   const labelId = `swatch-${part}`;
   return (
-    <div className="grid min-w-0 gap-1.5" data-testid={`part-${part}`}>
-      <p
-        id={labelId}
-        className="m-0 flex items-baseline gap-x-2 text-[0.78rem] font-extrabold text-muted uppercase ar:normal-case"
-      >
-        {t(`avatar.part.${part}`)}
-        <span className="font-semibold normal-case" aria-hidden="true">
+    <div className="grid min-w-0 gap-2" data-testid={`part-${part}`}>
+      <p id={labelId} className="m-0 flex items-baseline gap-x-2 text-[0.8rem] font-semibold text-muted">
+        {t(`avatar.tab.${part}`)}
+        <span className="font-semibold text-ink" aria-hidden="true">
           {t(`avatar.color.${value}`)}
         </span>
       </p>
-      {/* One row that scrolls sideways, edge to edge, like a color strip in a camera app. */}
-      <ScrollStrip
-        role="radiogroup"
-        aria-labelledby={labelId}
-        outerClassName="-mx-3"
-        className="flex gap-2.5 overflow-x-auto px-3 pt-1 pb-2"
-      >
+      <div role="radiogroup" aria-labelledby={labelId} className="flex flex-wrap gap-3">
         {presets.map((preset, i) => {
           const on = preset.id === value;
           return (
@@ -83,8 +52,8 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
               aria-checked={on}
               aria-label={t(`avatar.color.${preset.id}`)}
               tabIndex={on ? 0 : -1}
-              className="lu-swatch relative grid size-11 flex-none cursor-pointer scroll-mx-8 place-items-center rounded-full border-2 border-line bg-surface-2 p-0 text-ink"
-              style={{ backgroundColor: preset.color }}
+              className="lu-swatch relative grid size-12 flex-none cursor-pointer place-items-center rounded-full border border-line p-0"
+              style={{ backgroundColor: preset.swatch }}
               onClick={() => onChange(preset.id)}
               onKeyDown={(e) => {
                 const to = rovingTarget(e, i, presets.length, i18n.dir() === 'rtl');
@@ -93,21 +62,11 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
                 focusSibling(e, to);
               }}
             >
-              {preset.id === MATCH_HAIR && <CustomizerIcon tab="hair" />}
-              {on && (
-                <PixelIcon
-                  className={
-                    preset.id === MATCH_HAIR
-                      ? 'absolute inset-e-0.5 inset-bs-0.5 text-[0.8rem]'
-                      : 'lu-swatch-check text-[1.1rem]'
-                  }
-                  name="check"
-                />
-              )}
+              {on && <Icon className="lu-swatch-check text-[1.1rem]" name="check" />}
             </button>
           );
         })}
-      </ScrollStrip>
+      </div>
     </div>
   );
 };
@@ -116,10 +75,10 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
 const AUTOSAVE_MS = 500;
 
 /**
- * A full-screen editor in the style of camera-app avatar makers: the character
- * stays pinned on top while a panel below switches categories. Every change
- * saves on its own (no Save button); leaving with a save still pending sends
- * it right away. The tab bar is hidden here (see TabBar).
+ * The character editor: the figure stays pinned on top while a panel below
+ * switches between parts, each a row of color swatches. Every change saves on
+ * its own (no Save button); leaving with a save still pending sends it right
+ * away. The tab bar is hidden here (see TabBar).
  */
 const Character: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -132,7 +91,7 @@ const Character: React.FC = () => {
   const saved = useMemo(() => (p ? memberAvatar(p) : null), [p]);
   /** Edits not yet saved; null means the draft is the saved character. */
   const [edits, setEdits] = useState<AvatarConfigDto | null>(null);
-  const [active, setActive] = useState<CustomizerTab>('outfits');
+  const [active, setActive] = useState<AvatarPart>('skin');
   const draft = edits ?? saved;
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [failed, setFailed] = useState(false);
@@ -144,7 +103,7 @@ const Character: React.FC = () => {
   useIonViewWillEnter(() => {
     leaving.current = false;
     if (optionsPanel.current) optionsPanel.current.scrollTop = 0;
-    setActive('outfits');
+    setActive('skin');
     setOriginal(null);
   }, []);
 
@@ -214,20 +173,12 @@ const Character: React.FC = () => {
     else router.push('/tabs/profile', 'back', 'replace');
   }, [flush, router]);
 
-  const setPart = (part: ColorPart, id: string) => {
+  const setPart = (part: AvatarPart, id: string) => {
     if (draft) edit({ ...draft, colors: { ...draft.colors, [part]: id } });
   };
 
-  const setStyle = <K extends StylePart>(part: K, id: ResolvedStyles[K]) => {
-    if (draft) edit({ ...draft, styles: { ...stylesFor(draft.styles), [part]: id } });
-  };
-
-  const styles = draft ? stylesFor(draft.styles) : null;
-  const wearingHijab = !!styles && isHijab(styles.hair);
-
-  const tabs = customizerTabsFor(draft?.rig ?? 'standard');
-
-  // Swipe sideways on the options to move to the next or previous category; the category row follows.
+  // Swipe sideways on the options to move to the next or previous part; the part row follows.
+  const tabs = AVATAR_PARTS;
   const nextTab = useCallback(
     () => setActive((cur) => tabs[Math.min(tabs.length - 1, tabs.indexOf(cur) + 1)] ?? cur),
     [tabs],
@@ -259,20 +210,20 @@ const Character: React.FC = () => {
               aria-label={t('avatar.back')}
               data-testid="character-back"
             >
-              <PixelIcon className="rtl:-scale-x-100" name="arrowBack" />
+              <Icon className="rtl:-scale-x-100" name="arrowBack" />
             </button>
-            <h1 className="lu-display m-0 min-w-0 flex-1 truncate text-center text-[1.75rem] leading-none text-ink">
+            <h1 className="lu-display m-0 min-w-0 flex-1 truncate text-center text-[1.5rem] leading-none text-ink">
               {t('avatar.title')}
             </h1>
             <button
               type="button"
               className="lu-icon-button"
-              onClick={() => draft && edit(randomAvatar(Math.random, draft.rig, draft))}
+              onClick={() => edit(randomAvatar())}
               disabled={!draft}
               aria-label={t('avatar.randomize')}
               data-testid="character-random"
             >
-              <PixelIcon name="dice" />
+              <Icon name="dice" />
             </button>
             <button
               type="button"
@@ -282,7 +233,7 @@ const Character: React.FC = () => {
               aria-label={t('avatar.reset')}
               data-testid="character-reset"
             >
-              <PixelIcon name="refresh" />
+              <Icon name="refresh" />
             </button>
           </div>
 
@@ -299,23 +250,25 @@ const Character: React.FC = () => {
             </div>
           )}
 
-          {draft && styles && (
+          {draft && (
             <>
-              {/* The stage: the character, big, on the dusk backdrop with a floor shadow. */}
+              {/* The stage: the character, big, with a soft floor shadow. */}
               <section
                 className="lu-avatar-stage relative grid place-items-center pt-2 pb-4"
                 aria-label={t('avatar.preview')}
               >
-                <Avatar
-                  config={draft}
-                  crop="full"
-                  label={t('avatar.preview')}
-                  testId="character-preview"
-                  className="relative z-1 block h-[clamp(170px,32vh,320px)] w-auto max-w-full short-landscape:h-[56vh] split:h-[min(62vh,480px)]"
-                />
-                <span className="lu-stage-floor" aria-hidden="true" />
+                <div className="relative isolate grid max-w-full place-items-center">
+                  <span className="lu-stage-floor" aria-hidden="true" />
+                  <Avatar
+                    config={draft}
+                    crop="full"
+                    label={t('avatar.preview')}
+                    testId="character-preview"
+                    className="relative z-1 block h-[clamp(200px,38vh,380px)] w-auto max-w-full short-landscape:h-[56vh] split:h-[min(66vh,520px)]"
+                  />
+                </div>
                 <p
-                  className="lu-save-chip absolute inset-e-3 bottom-2 m-0 min-h-[1.2em] rounded-full px-2.5 py-0.5 text-[0.75rem] font-extrabold empty:hidden"
+                  className="lu-save-chip absolute inset-e-3 bottom-2 m-0 min-h-[1.2em] rounded-full px-2.5 py-0.5 text-[0.75rem] font-semibold empty:hidden"
                   role="status"
                   data-testid="character-status"
                 >
@@ -323,7 +276,7 @@ const Character: React.FC = () => {
                 </p>
               </section>
 
-              {/* The panel: one row of categories, then that category's colors and styles. */}
+              {/* The panel: one row of parts, then that part's colors. */}
               <section
                 className="lu-editor-panel flex min-h-0 flex-col split:m-3 split:ms-0 split:mb-[max(12px,var(--ion-safe-area-bottom,0px))]"
                 aria-label={t('avatar.customize')}
@@ -356,10 +309,10 @@ const Character: React.FC = () => {
                       aria-controls={`avatar-panel-${tab}`}
                       aria-selected={tab === active}
                       tabIndex={tab === active ? 0 : -1}
-                      className="lu-customizer-tab grid min-h-14 min-w-16 flex-none cursor-pointer scroll-mx-8 place-items-center content-center gap-1 rounded-xl border-0 px-2 py-1.5 text-[0.72rem] leading-tight font-extrabold whitespace-nowrap"
+                      className="lu-customizer-tab grid min-h-14 min-w-16 flex-none cursor-pointer scroll-mx-8 place-items-center content-center gap-1 rounded-xl border-0 px-2 py-1.5 text-[0.75rem] leading-tight font-semibold whitespace-nowrap"
                       onClick={(e) => {
                         setActive(tab);
-                        // Bring a half-hidden category fully into the strip.
+                        // Bring a half-hidden part fully into the strip.
                         e.currentTarget.scrollIntoView({ inline: 'nearest', block: 'nearest' });
                       }}
                       onKeyDown={(e) => {
@@ -369,7 +322,7 @@ const Character: React.FC = () => {
                         focusSibling(e, to);
                       }}
                     >
-                      <CustomizerIcon tab={tab} />
+                      <Icon className="text-[1.25rem]" name={TAB_ICONS[tab]} />
                       {t(`avatar.tab.${tab}`)}
                     </button>
                   ))}
@@ -388,55 +341,9 @@ const Character: React.FC = () => {
                       aria-labelledby={`avatar-tab-${tab}`}
                       hidden={tab !== active}
                     >
-                      {tab === active &&
-                        (active === 'outfits' ? (
-                          <OutfitPicker config={draft} onChange={edit} />
-                        ) : (
-                          <div className="grid gap-3">
-                            {/* Colors first, then shapes: the strip is what people change most. */}
-                            {(active === 'hair' && wearingHijab ? (['hijab'] as const) : COLORS[active]).map((part) =>
-                              (part === 'beard' && styles.beard === 'clean-shaven') ||
-                              (part === 'shoes' && styles.shoes === 'barefoot') ||
-                              (part === 'socks' && styles.socks === 'no-socks') ? null : (
-                                <Swatches
-                                  key={part}
-                                  part={part}
-                                  value={colorIdFor(draft, part)}
-                                  onChange={(id) => setPart(part, id)}
-                                />
-                              ),
-                            )}
-                            {active === 'socks' && !showsLowerLeg(styles.pants) && (
-                              <p className="m-0 text-[0.8rem] text-muted">{t('avatar.socksHint')}</p>
-                            )}
-                            {active === 'hair' && !wearingHijab && styles.top === 'hood-up' && (
-                              <p className="m-0 text-[0.8rem] text-muted">{t('avatar.hoodHint')}</p>
-                            )}
-                            {active === 'face' && (
-                              <StylePicker part="glasses" config={draft} onChange={(id) => setStyle('glasses', id)} />
-                            )}
-                            {active === 'hair' ? (
-                              <StylePicker
-                                part="hair"
-                                config={draft}
-                                onChange={(id) => edit(withHair(draft, id))}
-                                action={
-                                  wearingHijab && (
-                                    <button
-                                      className="lu-link-button"
-                                      type="button"
-                                      onClick={() => edit(removeHijab(draft))}
-                                    >
-                                      {t('avatar.removeHijab')}
-                                    </button>
-                                  )
-                                }
-                              />
-                            ) : (
-                              <StylePicker part={active} config={draft} onChange={(id) => setStyle(active, id)} />
-                            )}
-                          </div>
-                        ))}
+                      {tab === active && (
+                        <Swatches part={tab} value={draft.colors[tab]} onChange={(id) => setPart(tab, id)} />
+                      )}
                     </div>
                   ))}
                 </div>

@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
-import PixelIcon from './PixelIcon';
+import Icon from './Icon';
 import { pillTransform, tabIndex, TABS } from './tabConfig';
 import './TabBar.scss';
 
@@ -26,7 +26,7 @@ const BAR = [
  * Reduced motion: it jumps.
  */
 const PILL =
-  'absolute inset-y-0 start-0 w-1/5 transition-transform duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
+  'absolute inset-y-0 start-0 transition-transform duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
 const INDICATOR = 'lu-navbar-indicator absolute top-1 left-1/2 h-8 w-[min(56px,88%)] -translate-x-1/2';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
@@ -96,7 +96,14 @@ const TabBar: React.FC = () => {
     <nav className={fullScreen ? `${BAR} hidden` : BAR} slot="bottom" aria-label={t('tabs.navLabel')}>
       {/* The panel spans the screen; the five tabs stay in a centered row so wide screens don't get giant tabs. */}
       <div className="relative mx-auto h-full max-w-[560px]">
-        <div className={PILL} data-testid="tab-pill" ref={pill} aria-hidden="true" hidden={index < 0}>
+        <div
+          className={PILL}
+          style={{ inlineSize: `${100 / TABS.length}%` }}
+          data-testid="tab-pill"
+          ref={pill}
+          aria-hidden="true"
+          hidden={index < 0}
+        >
           <span className={INDICATOR} />
         </div>
         <IonTabBar>
@@ -116,7 +123,7 @@ const TabBar: React.FC = () => {
                 void content?.scrollToTop(window.matchMedia(MOTION_OK).matches ? 300 : 0);
               }}
             >
-              <PixelIcon name={icon} />
+              <Icon name={icon} />
               {/* Short labels fit a 320–390 px bar. Below 360 px they are visually hidden but still read out. */}
               <IonLabel>{t(`tabs.short.${tab}`)}</IonLabel>
             </IonTabButton>

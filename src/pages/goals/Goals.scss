@@ -1,57 +1,45 @@
 /*
- * Goals' pixel details: each metric's hue, metric icon
- * tiles, striped progress bars, and the expand chevron. Layout and type are
- * Tailwind classes in Goals.tsx.
+ * Goals' custom pieces: each metric's hue, the metric icon tiles, the smooth
+ * progress bar in the goal's hue, and the picked state on New goal. Layout and
+ * type are Tailwind classes in Goals.tsx and NewGoal.tsx.
  */
-@mixin stripes($mix) {
-  background: repeating-linear-gradient(
-    90deg,
-    var(--metric) 0 6px,
-    color-mix(in srgb, var(--metric) $mix, var(--lu-surface)) 6px 8px
-  );
-}
-
 @layer components {
   /* Each metric's hue, as on Home and Progress. */
   .lu-goal-fat {
     --metric: var(--lu-fat);
-    --px-fill: var(--lu-fat);
-    --px-hi: var(--lu-fat-hi);
-    --px-core: var(--lu-fat-core);
+    --icon-color: var(--lu-fat);
   }
 
   .lu-goal-muscle {
     --metric: var(--lu-muscle);
-    --px-fill: var(--lu-muscle);
-    --px-hi: var(--lu-muscle-hi);
+    --icon-color: var(--lu-muscle);
   }
 
   .lu-goal-weight {
     --metric: var(--ion-color-secondary);
-    --px-fill: var(--ion-color-primary);
-    --px-hi: var(--lu-surface);
-    --px-core: var(--lu-accent);
+    --icon-color: var(--ion-color-primary);
   }
 
   .lu-goal-icon {
-    border: 2px solid color-mix(in srgb, var(--metric) 50%, var(--lu-border));
-    background: color-mix(in srgb, var(--metric) 16%, var(--lu-surface));
-    box-shadow: 0 3px 0 color-mix(in srgb, var(--metric) 35%, var(--lu-pixel-shadow));
+    background: color-mix(in srgb, var(--metric) 14%, var(--lu-surface));
   }
 
   /* New goal: the picked kind takes its metric's hue. */
   .lu-goal-choice {
-    box-shadow: 0 3px 0 var(--lu-pixel-shadow);
-    transition: transform 90ms steps(2);
+    box-shadow: var(--lu-shadow);
+    transition:
+      transform 150ms var(--ease-soft, ease-out),
+      box-shadow 150ms var(--ease-soft, ease-out),
+      background-color 150ms var(--ease-soft, ease-out);
 
     &:active {
-      transform: translateY(2px);
+      transform: scale(0.97);
+      box-shadow: var(--lu-shadow-pressed);
     }
 
     &[aria-checked='true'] {
       border-color: var(--metric);
-      background: color-mix(in srgb, var(--metric) 12%, var(--lu-surface));
-      box-shadow: 0 3px 0 color-mix(in srgb, var(--metric) 45%, var(--lu-pixel-shadow));
+      background: color-mix(in srgb, var(--metric) 10%, var(--lu-surface));
     }
 
     &:focus-visible {
@@ -61,62 +49,32 @@
 
     @media (prefers-reduced-motion: reduce) {
       transition: none;
+
+      &:active {
+        transform: none;
+      }
     }
   }
 
-  /* Ten blocks, lit in the goal's hue; a finished goal's are green. */
-  .lu-goal-blocks > span {
-    flex: 1;
-    block-size: 12px;
-    border-radius: 2px;
-    background: var(--lu-surface-2);
-    box-shadow: inset 0 0 0 1px var(--lu-border);
-
-    &.is-on {
-      background: var(--metric);
-      box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--metric) 65%, var(--lu-pixel-shadow));
-    }
+  /* The goal's bar fills in its metric's hue; a finished goal's is green. */
+  .lu-goal-progress > span {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--metric) 70%, var(--lu-surface)), var(--metric));
   }
 
-  .lu-goal-completed .lu-goal-blocks > span.is-on {
+  .lu-goal-progress:dir(rtl) > span {
+    background: linear-gradient(270deg, color-mix(in srgb, var(--metric) 70%, var(--lu-surface)), var(--metric));
+  }
+
+  .lu-goal-completed .lu-goal-progress > span {
     background: var(--lu-success);
-    box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--lu-success) 65%, var(--lu-pixel-shadow));
   }
 
   .lu-goal-target {
     color: var(--lu-text);
-    text-decoration: underline 3px color-mix(in srgb, var(--metric) 70%, transparent);
-    text-underline-offset: 4px;
   }
 
   .lu-goal-done {
     background: var(--lu-success);
     color: var(--lu-surface);
-  }
-
-  .lu-goal-chevron {
-    transition: transform 150ms steps(3);
-
-    .lu-goal-row[aria-expanded='true'] & {
-      transform: rotate(180deg);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-  }
-
-  .lu-goal-bar > span {
-    @include stripes(75%);
-
-    :root.ion-palette-dark & {
-      @include stripes(70%);
-    }
-  }
-
-  /* A finished goal's bar is solid green in both themes, so done reads as done. */
-  :root .lu-goal-completed .lu-goal-bar > span,
-  :root.ion-palette-dark .lu-goal-completed .lu-goal-bar > span {
-    background: var(--lu-success);
   }
 }

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { ProgressPoint } from '../../api/types';
-import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
+import Icon, { type IconName } from '../../components/Icon';
 import { focusSibling, rovingTarget } from '../../components/roving';
 import { formatNumber, numberLocale } from '../../i18n/format';
 import LineChart, { type Series } from './LineChart';
@@ -13,15 +13,15 @@ const day = (iso: string) =>
 
 type TrendKey = 'weight' | 'muscle' | 'bodyFat' | 'score';
 
-/** The same metric icons as the rest of the app: scale, muscle, flame, and the FitScore trophy. */
-const ICON: Record<TrendKey, { name: PixelIconName; colors: string }> = {
-  weight: { name: 'scale', colors: '[--px-hi:var(--lu-surface)]' },
-  muscle: { name: 'muscle', colors: '[--px-fill:var(--lu-muscle)] [--px-hi:var(--lu-muscle-hi)]' },
+/** The same metric icons as the rest of the app: scale, muscle, body fat, and the FitScore trophy. */
+const ICON: Record<TrendKey, { name: IconName; colors: string }> = {
+  weight: { name: 'scale', colors: '[--icon-color:var(--ion-color-primary)]' },
+  muscle: { name: 'muscle', colors: '[--icon-color:var(--lu-muscle)]' },
   bodyFat: {
-    name: 'flame',
-    colors: '[--px-core:var(--lu-fat-core)] [--px-fill:var(--lu-fat)] [--px-hi:var(--lu-fat-hi)]',
+    name: 'bodyFat',
+    colors: '[--icon-color:var(--lu-fat)]',
   },
-  score: { name: 'trophy', colors: '[--px-fill:var(--lu-gold)] [--px-hi:var(--lu-fat-core)]' },
+  score: { name: 'trophy', colors: '[--icon-color:var(--lu-gold)]' },
 };
 
 /** Which way is good news on each trend. Weight has no right direction. */
@@ -108,7 +108,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
   });
 
   return (
-    <section className="lu-px-card grid gap-3" aria-labelledby="chart-trend-title" data-testid="trend">
+    <section className="lu-card grid gap-3" aria-labelledby="chart-trend-title" data-testid="trend">
       <h2 id="chart-trend-title" className="lu-card-title">
         {t('progress.trend')}
       </h2>
@@ -116,7 +116,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
       <div
         role="radiogroup"
         aria-label={t('progress.trendPick')}
-        className={`grid gap-1 rounded-[10px] bg-surface-2 p-1 ${keys.length === 4 ? 'grid-cols-2 min-[360px]:grid-cols-4' : 'grid-cols-3'}`}
+        className={`grid gap-1 rounded-[14px] bg-surface-2 p-1 ${keys.length === 4 ? 'grid-cols-2 min-[360px]:grid-cols-4' : 'grid-cols-3'}`}
       >
         {keys.map((k, i) => (
           <button
@@ -126,7 +126,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
             aria-checked={current === k}
             tabIndex={current === k ? 0 : -1}
             data-testid={`trend-${k}`}
-            className="flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-0 bg-transparent px-1 py-1.5 font-inherit text-[0.78rem] leading-tight font-extrabold [overflow-wrap:normal] text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+            className="flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 rounded-[10px] border-0 bg-transparent px-1 py-1.5 font-inherit text-[0.78rem] leading-tight font-semibold [overflow-wrap:normal] text-muted transition-[background-color,color,box-shadow] duration-[180ms] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-surface aria-checked:text-ink aria-checked:shadow-card motion-reduce:transition-none dark:aria-checked:bg-line"
             onClick={() => setPick(k)}
             onKeyDown={(e) => {
               const to = rovingTarget(e, i, keys.length, rtl);
@@ -135,7 +135,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
               focusSibling(e, to);
             }}
           >
-            <PixelIcon name={ICON[k].name} className={`text-[1.15rem] ${ICON[k].colors}`} />
+            <Icon name={ICON[k].name} className={`text-[1.15rem] ${ICON[k].colors}`} />
             {all[k].label}
           </button>
         ))}
@@ -144,12 +144,12 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
       {/* The headline: where you are now and how far you've come since the first scan. */}
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1" data-testid="trend-headline">
         <strong className="lu-display text-[2rem] leading-none text-ink">{withUnit(last)}</strong>
-        <span className={`text-[0.85rem] font-extrabold ${tone}`}>
-          {diff !== 0 && <span aria-hidden="true">{diff > 0 ? '▲ ' : '▼ '}</span>}
+        <span className={`inline-flex items-center gap-1 text-[0.85rem] font-semibold ${tone}`}>
+          {diff !== 0 && <Icon className="flex-none" name={diff > 0 ? 'trendUp' : 'trendDown'} />}
           {since}
         </span>
       </div>
-      <p className="m-0 text-[0.75rem] font-bold text-muted" aria-hidden="true">
+      <p className="m-0 text-[0.75rem] font-normal text-muted" aria-hidden="true">
         {s.unit || t('home.fitScore.title')}
       </p>
       <LineChart

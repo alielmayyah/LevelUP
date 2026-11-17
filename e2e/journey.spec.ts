@@ -4,10 +4,9 @@
  */
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
-import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
+import { expect, LOCALES, noHorizontalOverflow, TABS, test, THEMES } from './fixtures';
 
 const strings = { en, ar };
-const TABS = ['home', 'progress', 'goals', 'community', 'profile'] as const;
 
 /** True when the visible page text has no NaN, undefined, null, or [object Object]. */
 const cleanText = (text: string) => !/\bNaN\b|\bundefined\b|\bnull\b|\[object Object\]/.test(text);
@@ -51,7 +50,7 @@ for (const lang of LOCALES)
 
 test('a brand-new member (102) sees empty states on every tab, never NaN or undefined', async ({ page, loginAs }) => {
   await loginAs('102');
-  const checks: Record<(typeof TABS)[number], string> = {
+  const checks: Record<string, string> = {
     home: en.home.fitScore.empty,
     progress: en.progress.empty,
     goals: en.goals.empty,
@@ -81,8 +80,6 @@ test('the tabs sit above the home indicator on every tab', async ({ page, loginA
 test('every tab label is shown in full, never cut off', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');
-  const width = page.viewportSize()!.width;
-  test.skip(width < 360, 'Below 360 px the bar shows icons only.');
   const cut = await page
     .locator('.lu-tabbar ion-label')
     .evaluateAll((labels) => labels.filter((l) => l.scrollWidth > l.clientWidth + 1).map((l) => l.textContent));

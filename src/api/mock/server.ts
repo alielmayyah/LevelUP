@@ -109,13 +109,7 @@ async function loadAvatar(m: MockMember): Promise<AvatarConfigDto | null> {
 /** PUT /me/avatar: full replacement with a catalog-valid config; anything else is a 400. */
 async function saveAvatar(m: MockMember, body: unknown): Promise<MockResponse> {
   if (!isValidAvatar(body)) return fail(400, 'Invalid avatar');
-  const config: AvatarConfigDto = {
-    schemaVersion: body.schemaVersion,
-    rig: body.rig,
-    colors: { ...body.colors },
-    ...(body.styles ? { styles: { ...body.styles } } : {}),
-    ...(body.hairUnderHijab ? { hairUnderHijab: body.hairUnderHijab } : {}),
-  };
+  const config: AvatarConfigDto = { schemaVersion: body.schemaVersion, colors: { ...body.colors } };
   await Preferences.set({ key: avatarKey(m), value: JSON.stringify(config) });
   avatars.set(m.id, config);
   return ok(config);

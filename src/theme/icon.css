@@ -1,0 +1,9 @@
+/* Shared icon sizing stays in the theme's component layer. */
+
+/* Display and size stay here (not utilities) so pages can resize icons from their own styles. */
+.lu-icon {
+  display: block;
+  inline-size: 1em;
+  block-size: 1em;
+  stroke: var(--icon-color, currentColor);
+}
