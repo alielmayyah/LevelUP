@@ -2,10 +2,9 @@ import { test as base } from '@playwright/test';
 
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
-import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
+import { COMMUNITY, expect, LOCALES, noHorizontalOverflow, TABS, test, THEMES } from './fixtures';
 
 const strings = { en, ar };
-const TABS = ['home', 'progress', 'goals', 'community', 'profile'] as const;
 
 for (const lang of LOCALES)
   for (const theme of THEMES)
@@ -130,4 +129,24 @@ base('signed out, every tab URL goes to the login screen', async ({ page }) => {
 base('the app title is LevelUP', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle('LevelUP');
+});
+
+test('Community stays hidden while it is switched off: no tab, and its addresses go Home', async ({
+  page,
+  loginAs,
+}) => {
+  test.skip(COMMUNITY, 'Community is switched on (VITE_COMMUNITY)');
+  await loginAs();
+  await page.goto('/tabs/home');
+  const tablist = page.getByRole('navigation', { name: en.tabs.navLabel });
+  await expect(tablist.getByRole('tab')).toHaveCount(4);
+  await expect(tablist.getByRole('tab', { name: en.tabs.short.community, exact: true })).toHaveCount(0);
+  await expect(page.getByTestId('rank-card')).toHaveCount(0);
+  for (const path of ['/tabs/community', '/tabs/leaderboard', '/tabs/community/member/2']) {
+    await page.goto(path);
+    await expect(page).toHaveURL(/\/tabs\/home$/);
+  }
+  await page.goto('/tabs/profile/settings');
+  await expect(page.getByTestId('setting-show-fitscore')).toBeVisible();
+  await expect(page.getByTestId('setting-leaderboard')).toHaveCount(0);
 });

@@ -1,6 +1,6 @@
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
-import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
+import { COMMUNITY, expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
 
 const strings = { en, ar };
 
@@ -18,19 +18,22 @@ for (const lang of LOCALES)
         await expect(home.getByTestId('today')).not.toBeEmpty();
         await expect(home.getByTestId('fitscore-value')).toHaveText('91');
         await expect(home.getByText(s.tier.elite)).toBeVisible();
-        await expect(home.getByTestId('rank-number')).toContainText('#1');
-        const trophy = home.getByTestId('rank-trophy');
-        await expect(trophy).toBeVisible();
-        const { stroke, gold } = await trophy.evaluate((tile) => {
-          const cup = tile.querySelector('svg')!;
-          const sample = document.createElement('span');
-          sample.style.color = 'var(--lu-gold)';
-          tile.append(sample);
-          const gold = getComputedStyle(sample).color;
-          sample.remove();
-          return { stroke: getComputedStyle(cup).stroke, gold };
-        });
-        expect(stroke).toBe(gold);
+        if (!COMMUNITY) await expect(home.getByTestId('rank-card')).toHaveCount(0);
+        else {
+          await expect(home.getByTestId('rank-number')).toContainText('#1');
+          const trophy = home.getByTestId('rank-trophy');
+          await expect(trophy).toBeVisible();
+          const { stroke, gold } = await trophy.evaluate((tile) => {
+            const cup = tile.querySelector('svg')!;
+            const sample = document.createElement('span');
+            sample.style.color = 'var(--lu-gold)';
+            tile.append(sample);
+            const gold = getComputedStyle(sample).color;
+            sample.remove();
+            return { stroke: getComputedStyle(cup).stroke, gold };
+          });
+          expect(stroke).toBe(gold);
+        }
         await expect(home.getByTestId('tile-body-fat')).toContainText('1.1%');
         await expect(home.getByTestId('tile-muscle')).toContainText(`0.9 ${strings[lang].units.kg}`);
         await expect(home.getByTestId('tile-bmi')).toContainText(strings[lang].home.wins.bmi);
@@ -82,6 +85,7 @@ test('a new member sees empty states, not zeros', async ({ page, loginAs }) => {
 });
 
 test('the rank card opens the leaderboard', async ({ page, loginAs }) => {
+  test.skip(!COMMUNITY, 'Community is switched off (VITE_COMMUNITY)');
   await loginAs();
   await page.goto('/tabs/home');
   await page.getByTestId('rank-card').click();

@@ -4,7 +4,7 @@
  */
 import { createRequire } from 'node:module';
 
-import { expect, LOCALES, test, THEMES } from './fixtures';
+import { COMMUNITY, expect, LOCALES, TABS, test, THEMES } from './fixtures';
 
 const AXE = createRequire(import.meta.url).resolve('axe-core/axe.min.js');
 
@@ -18,9 +18,13 @@ const SCREENS: { name: string; url: string; fitId?: string; open?: 'notification
   { name: 'goals', url: '/tabs/goals', fitId: '101' },
   { name: 'new goal', url: '/tabs/goals/new', fitId: '101' },
   { name: 'new goal (no scan)', url: '/tabs/goals/new', fitId: '102' },
-  { name: 'leaderboard', url: '/tabs/leaderboard', fitId: '101' },
-  { name: 'leaderboard (not joined)', url: '/tabs/leaderboard', fitId: '102' },
-  { name: 'community', url: '/tabs/community', fitId: '101' },
+  ...(COMMUNITY
+    ? [
+        { name: 'leaderboard', url: '/tabs/leaderboard', fitId: '101' },
+        { name: 'leaderboard (not joined)', url: '/tabs/leaderboard', fitId: '102' },
+        { name: 'community', url: '/tabs/community', fitId: '101' },
+      ]
+    : []),
   { name: 'profile', url: '/tabs/profile', fitId: '101' },
   { name: 'settings', url: '/tabs/profile/settings', fitId: '101' },
   { name: 'character editor', url: '/tabs/profile/character', fitId: '101' },
@@ -93,7 +97,7 @@ for (const lang of LOCALES)
 
 /** WCAG 2.4.11: a focused control is never hidden behind the floating tab bar. */
 for (const lang of LOCALES)
-  for (const tab of ['home', 'progress', 'goals', 'community', 'leaderboard', 'profile', 'profile/settings'])
+  for (const tab of [...TABS, ...(COMMUNITY ? ['leaderboard'] : []), 'profile/settings'])
     test.describe(`${lang}`, () => {
       test.use({ lang });
       test(`${tab}: keyboard focus never sits under the tab bar`, async ({ page, loginAs }) => {

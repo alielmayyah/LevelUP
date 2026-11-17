@@ -8,6 +8,7 @@ import { useApi, useRefreshOnEnter } from '../api/useApi';
 import { clearToken } from '../auth/token';
 import Icon, { type IconName } from '../components/Icon';
 import { brand } from '../brand.config';
+import { features } from '../features';
 import CtaButton from '../components/CtaButton';
 import Dialog from '../components/Dialog';
 import Toast from '../components/Toast';
@@ -229,18 +230,20 @@ const Settings: React.FC = () => {
               />
             </div>
 
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon="podium" hint={{ id: 'hint-leaderboard', text: t('profile.leaderboardHint') }}>
-                {t('profile.leaderboard')}
-              </RowLabel>
-              <Switch
-                testId="setting-leaderboard"
-                hintId="hint-leaderboard"
-                label={t('profile.leaderboard')}
-                checked={p.fitScoreOnLeaderboard}
-                onChange={() => void toggle('fitScoreOnLeaderboard')}
-              />
-            </div>
+            {features.community && (
+              <div className={`${ROW} ${RULED} text-muted`}>
+                <RowLabel icon="podium" hint={{ id: 'hint-leaderboard', text: t('profile.leaderboardHint') }}>
+                  {t('profile.leaderboard')}
+                </RowLabel>
+                <Switch
+                  testId="setting-leaderboard"
+                  hintId="hint-leaderboard"
+                  label={t('profile.leaderboard')}
+                  checked={p.fitScoreOnLeaderboard}
+                  onChange={() => void toggle('fitScoreOnLeaderboard')}
+                />
+              </div>
+            )}
           </section>
 
           {/* Sign out stands on its own, below the settings. */}

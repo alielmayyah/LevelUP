@@ -1,6 +1,8 @@
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
-import { expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
+import { COMMUNITY, expect, LOCALES, noHorizontalOverflow, test, THEMES } from './fixtures';
+
+test.skip(!COMMUNITY, 'Community is switched off (VITE_COMMUNITY)');
 
 const strings = { en, ar };
 type ScrollableContent = HTMLElement & {

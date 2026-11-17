@@ -1,7 +1,7 @@
 /* Progress, Goals, Leaderboard, and Profile behavior against the mock API. */
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
-import { expect, test } from './fixtures';
+import { COMMUNITY, expect, test } from './fixtures';
 
 const tab = (name: string) => `[data-testid="page-${name}"]`;
 
@@ -161,6 +161,7 @@ test.describe('Goals', () => {
 });
 
 test.describe('Leaderboard', () => {
+  test.skip(!COMMUNITY, 'Community is switched off (VITE_COMMUNITY)');
   test('highlights Mohamed and remembers the board across a reload', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/leaderboard');
@@ -292,6 +293,7 @@ test.describe('Profile', () => {
   });
 
   test('turning off the leaderboard setting removes Mohamed from the boards', async ({ page, loginAs }) => {
+    test.skip(!COMMUNITY, 'Community is switched off (VITE_COMMUNITY)');
     await loginAs();
     await page.goto('/tabs/profile');
     await page.getByRole('link', { name: en.profile.settings, exact: true }).click();

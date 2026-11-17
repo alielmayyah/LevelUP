@@ -8,6 +8,7 @@ import { useApi, useRefreshOnEnter } from '../api/useApi';
 import Avatar from '../avatar/Avatar';
 import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
+import { features } from '../features';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
 import FitScoreCard from './home/FitScoreCard';
@@ -122,7 +123,7 @@ const Dashboard: React.FC = () => {
           {d && (
             <div className={HOME_GRID}>
               {d.member.showFitScore && <FitScoreCard fitScore={d.fitScore} />}
-              <RankCard leaderboard={d.leaderboard} />
+              {features.community && <RankCard leaderboard={d.leaderboard} />}
               <MissionCard mission={d.mission} />
               <div className={HOME_SPAN}>
                 <StatTiles wins={d.monthlyWins} today={today} />

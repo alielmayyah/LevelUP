@@ -28,6 +28,7 @@ export default defineConfig({
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-    env: { VITE_USE_MOCKS: 'true' },
+    // Community is hidden in the shipped app; VITE_COMMUNITY=true runs its specs too.
+    env: { VITE_USE_MOCKS: 'true', VITE_COMMUNITY: process.env.VITE_COMMUNITY ?? 'false' },
   },
 });
