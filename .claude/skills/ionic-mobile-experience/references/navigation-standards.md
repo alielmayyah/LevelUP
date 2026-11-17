@@ -11,7 +11,7 @@
   home · progress · goals · leaderboard · profile
   home → bell → notifications sheet (IonModal)
   home → rank card → leaderboard;  mission card → goals;  join prompt → profile
-  profile → sign out → PixelDialog → /login                              [replace]
+  profile → sign out → Dialog → /login                              [replace]
 anything else → redirect (never a blank page)
 ```
 
@@ -41,7 +41,7 @@ Ionic turns the native back press into an `ionBackButton` event with priorities:
 
 | Priority | Who | Does |
 |---|---|---|
-| 100+ | Open overlay (`IonModal`, `PixelDialog`) | Closes the overlay |
+| 100+ | Open overlay (`IonModal`, `Dialog`) | Closes the overlay |
 | 0 | Ionic router | Goes back in the outlet's stack |
 | -1 | Ionic | Exits the app at the root (Capacitor) |
 
