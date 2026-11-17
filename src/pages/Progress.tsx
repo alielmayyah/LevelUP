@@ -350,7 +350,7 @@ const Progress: React.FC = () => {
                       className={`lu-scan-tile relative grid content-start justify-items-center gap-1 rounded-lg px-1 pt-2.5 pb-2 text-center ${m.tone}`}
                       data-testid={`metric-${m.key}`}
                     >
-                      <dt className="grid justify-items-center gap-1 text-[0.75rem] font-bold text-muted">
+                      <dt className="grid justify-items-center gap-1.5 text-[0.75rem] font-semibold text-muted">
                         {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
                         <InfoButton
                           className="absolute -end-1 -top-1"
@@ -358,7 +358,7 @@ const Progress: React.FC = () => {
                           onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
                           testId={`info-${m.key}`}
                         />
-                        <Icon className="text-[1.6rem]" name={m.icon} />
+                        <Icon className="text-[1.15rem]" name={m.icon} />
                         {t(`progress.metric.${m.key}`)}
                       </dt>
                       <dd className="lu-display m-0 text-[clamp(1.3rem,6vw,1.6rem)] leading-none whitespace-nowrap text-ink">
@@ -443,8 +443,8 @@ const Progress: React.FC = () => {
                         onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
                         testId={`info-${m.key}`}
                       />
-                      <span className="flex items-center gap-1.5 text-[0.85rem] font-bold text-ink">
-                        <Icon className="flex-none text-[1.25rem]" name={m.icon} />
+                      <span className="lu-metric-name flex items-center gap-2 text-[0.85rem] font-semibold text-ink">
+                        <Icon className="flex-none text-[1rem]" name={m.icon} />
                         {t(`progress.metric.${m.key}`)}
                       </span>
                     </dt>

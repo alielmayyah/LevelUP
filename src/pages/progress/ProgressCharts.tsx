@@ -15,7 +15,7 @@ type TrendKey = 'weight' | 'muscle' | 'bodyFat' | 'score';
 
 /** The same metric icons as the rest of the app: scale, muscle, body fat, and the FitScore trophy. */
 const ICON: Record<TrendKey, { name: IconName; colors: string }> = {
-  weight: { name: 'scale', colors: '[--icon-color:var(--lu-metal)]' },
+  weight: { name: 'scale', colors: '[--icon-color:var(--ion-color-primary)]' },
   muscle: { name: 'muscle', colors: '[--icon-color:var(--lu-muscle)]' },
   bodyFat: {
     name: 'bodyFat',
@@ -116,7 +116,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
       <div
         role="radiogroup"
         aria-label={t('progress.trendPick')}
-        className={`grid gap-1 rounded-[10px] bg-surface-2 p-1 ${keys.length === 4 ? 'grid-cols-2 min-[360px]:grid-cols-4' : 'grid-cols-3'}`}
+        className={`grid gap-1 rounded-[14px] bg-surface-2 p-1 ${keys.length === 4 ? 'grid-cols-2 min-[360px]:grid-cols-4' : 'grid-cols-3'}`}
       >
         {keys.map((k, i) => (
           <button
@@ -126,7 +126,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
             aria-checked={current === k}
             tabIndex={current === k ? 0 : -1}
             data-testid={`trend-${k}`}
-            className="flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-0 bg-transparent px-1 py-1.5 font-inherit text-[0.78rem] leading-tight font-bold [overflow-wrap:normal] text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+            className="flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 rounded-[10px] border-0 bg-transparent px-1 py-1.5 font-inherit text-[0.78rem] leading-tight font-semibold [overflow-wrap:normal] text-muted transition-[background-color,color,box-shadow] duration-[180ms] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-surface aria-checked:text-ink aria-checked:shadow-card motion-reduce:transition-none dark:aria-checked:bg-line"
             onClick={() => setPick(k)}
             onKeyDown={(e) => {
               const to = rovingTarget(e, i, keys.length, rtl);

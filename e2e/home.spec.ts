@@ -77,7 +77,7 @@ test('a new member sees empty states, not zeros', async ({ page, loginAs }) => {
   await loginAs('102');
   await page.goto('/tabs/home');
   await expect(page.getByText(en.home.fitScore.empty)).toBeVisible();
-  await expect(page.getByText(en.home.rank.join)).toBeVisible();
+  if (COMMUNITY) await expect(page.getByText(en.home.rank.join)).toBeVisible();
   await expect(page.getByTestId('tile-body-fat')).toContainText('—');
   await expect(page.getByTestId('bell-dot')).toHaveCount(0);
   await page.getByTestId('bell').click();

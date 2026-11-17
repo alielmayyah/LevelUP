@@ -1,26 +1,34 @@
 /*
- * Progress cards: each measurement has its own hue (--tone) for the border and
- * a faint tint, plus the colors of its icon.
+ * Progress cards: calm, neutral cards; each measurement's hue (--tone) shows
+ * only in its icon, which sits in a soft round badge of the same hue.
  */
 @layer components {
   .lu-scan-tile,
   .lu-more-card {
     --tone: var(--ion-color-primary);
-    border: 1px solid color-mix(in srgb, var(--tone) 40%, var(--lu-border));
-    background: color-mix(in srgb, var(--tone) 8%, var(--lu-surface));
+    border: 1px solid var(--lu-border);
+    border-radius: 14px;
+    background: var(--lu-surface);
     box-shadow: var(--lu-shadow);
   }
 
   /* The six smaller cards sit back a little so the big three lead. */
   .lu-more-card {
-    border-color: color-mix(in srgb, var(--tone) 22%, var(--lu-border));
-    background: color-mix(in srgb, var(--tone) 4%, var(--lu-surface));
+    background: color-mix(in srgb, var(--lu-surface-2) 55%, var(--lu-surface));
     box-shadow: none;
+  }
+
+  .lu-scan-tile > dt > .lu-icon,
+  .lu-more-card .lu-metric-name > .lu-icon {
+    box-sizing: content-box;
+    padding: 0.3em;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--icon-color) 15%, transparent);
   }
 
   .lu-tone-weight {
     --tone: var(--ion-color-primary);
-    --icon-color: var(--lu-metal);
+    --icon-color: var(--ion-color-primary);
   }
 
   .lu-tone-muscle {
@@ -230,16 +238,6 @@
     @media (prefers-reduced-motion: reduce) {
       transition: none;
     }
-  }
-
-  /* The bigger cards get a stronger rim in their own color, as in the reference. */
-  .lu-scan-tile {
-    border-color: color-mix(in srgb, var(--tone) 70%, var(--lu-border));
-  }
-
-  .lu-more-card {
-    border-color: color-mix(in srgb, var(--tone) 45%, var(--lu-border));
-    background: color-mix(in srgb, var(--tone) 7%, var(--lu-surface));
   }
 
   /* Scan picker arrows: round buttons with a hairline and a soft shadow. */

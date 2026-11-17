@@ -1,29 +1,28 @@
 import { render, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { ICONS } from './iconGlyphs';
-import Icon, { type IconName } from './Icon';
-
-const names = Object.keys(ICONS) as IconName[];
+import Icon from './Icon';
+import { ICON_NAMES } from './iconMap';
 
 describe('Icon', () => {
-  it('draws every glyph with the shared proportions and a small SVG tree', () => {
+  it('draws every icon as a 24-grid line icon sized to the text', () => {
     const { container } = render(
       <>
-        {names.map((name) => (
+        {ICON_NAMES.map((name) => (
           <Icon key={name} name={name} />
         ))}
       </>,
     );
     const icons = Array.from(container.querySelectorAll('svg'));
-    expect(icons).toHaveLength(names.length);
+    expect(icons).toHaveLength(ICON_NAMES.length);
     icons.forEach((icon, index) => {
-      const name = names[index];
+      const name = ICON_NAMES[index];
       expect(icon, name).toHaveAttribute('data-icon', name);
       expect(icon, name).toHaveAttribute('viewBox', '0 0 24 24');
       expect(icon, name).toHaveAttribute('stroke-width', '1.75');
+      expect(icon, name).toHaveAttribute('width', '1em');
+      expect(icon, name).toHaveClass('lu-icon');
       expect(icon.children.length, name).toBeGreaterThan(0);
-      expect(icon.querySelectorAll('*').length, name).toBeLessThanOrEqual(8);
     });
   });
 

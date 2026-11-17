@@ -99,6 +99,11 @@ const LineChart: React.FC<Props> = ({
     // Just the bottom and top of the scale: the line and its points carry the detail.
     return [r[0], r[1]];
   };
+  /** Whole numbers, unless the scale is so narrow that its two ends would round to the same label. */
+  const tickDigits = (axis: Series['axis']) => {
+    const r = ranges[axis];
+    return r && Math.round(r[0]) === Math.round(r[1]) ? 1 : 0;
+  };
   const labelEvery = Math.ceil(n / MAX_X_LABELS);
   const showLabel = (i: number) => i === n - 1 || (i % labelEvery === 0 && n - 1 - i >= labelEvery);
 
@@ -150,7 +155,7 @@ const LineChart: React.FC<Props> = ({
                 <line className="lu-chart-grid" x1={PAD.side} x2={W - PAD.side} y1={y(v, 'start')} y2={y(v, 'start')} />
               )}
               <text className="lu-chart-axis" x={startX} y={y(v, 'start') + 3} textAnchor={rtl ? 'start' : 'end'}>
-                {formatNumber(v, 0)}
+                {formatNumber(v, tickDigits('start'))}
               </text>
             </g>
           ))}
@@ -162,7 +167,7 @@ const LineChart: React.FC<Props> = ({
               y={y(v, 'end') + 3}
               textAnchor={rtl ? 'end' : 'start'}
             >
-              {formatNumber(v, 0)}
+              {formatNumber(v, tickDigits('end'))}
             </text>
           ))}
           {labels.map(

@@ -7,8 +7,3 @@
   block-size: 1em;
   stroke: var(--icon-color, currentColor);
 }
-
-/* Optional soft fill some glyphs carry (the bolt, the flame). */
-.lu-icon .lu-icon-tint {
-  fill: color-mix(in srgb, var(--icon-color, currentColor) 22%, transparent);
-}

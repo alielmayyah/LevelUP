@@ -80,8 +80,9 @@
    * Each tile's icon takes its metric's hue (--metric), with a soft wash of it
    * at the top. The value itself stays green or red, because that says good or bad.
    */
-  .lu-tile {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--metric) 8%, var(--lu-surface)), var(--lu-surface) 60%);
+  .lu-tile-badge {
+    background: color-mix(in srgb, var(--metric) 14%, transparent);
+    color: var(--metric);
   }
 
   .lu-tile-fat {
@@ -89,10 +90,9 @@
     --icon-color: var(--lu-fat);
   }
 
-  /* The tile keeps the cyan muscle hue; the flexed arm itself is skin-toned. */
   .lu-tile-muscle {
     --metric: var(--lu-muscle);
-    --icon-color: var(--lu-skin);
+    --icon-color: var(--lu-muscle);
   }
 
   .lu-tile-bmi {

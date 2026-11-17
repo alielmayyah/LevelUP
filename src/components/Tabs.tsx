@@ -81,10 +81,15 @@ const Tabs: React.FC = () => {
         <Route exact path="/tabs/progress" component={Progress} />
         <Route exact path="/tabs/goals" component={Goals} />
         <Route exact path="/tabs/goals/new" component={NewGoal} />
-        {features.community && <Route exact path="/tabs/community" component={Community} />}
-        {features.community && <Route exact path="/tabs/community/leaderboard" component={Leaderboard} />}
-        {features.community && <Route exact path="/tabs/community/member/:id" component={MemberProfile} />}
-        {features.community && <Route exact path="/tabs/leaderboard" component={Leaderboard} />}
+        {/* An array, never `false`: Ionic's outlet reads every child's props. */}
+        {features.community
+          ? [
+              <Route key="community" exact path="/tabs/community" component={Community} />,
+              <Route key="board" exact path="/tabs/community/leaderboard" component={Leaderboard} />,
+              <Route key="member" exact path="/tabs/community/member/:id" component={MemberProfile} />,
+              <Route key="leaderboard" exact path="/tabs/leaderboard" component={Leaderboard} />,
+            ]
+          : []}
         <Route exact path="/tabs/profile" component={Profile} />
         <Route exact path="/tabs/profile/settings" component={Settings} />
         <Route exact path="/tabs/profile/character" component={Character} />

@@ -31,7 +31,7 @@ const Tile: React.FC<TileProps> = ({ metric, icon, label, value, tone: tileTone 
     className={`lu-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative grid justify-items-center gap-1 overflow-hidden px-2 pt-4 pb-3 text-center`}
     data-testid={testId}
   >
-    <span className="mt-0.5 mb-1 grid place-items-center text-[48px]">
+    <span className="lu-tile-badge mb-1.5 grid size-11 place-items-center rounded-full text-[1.35rem]">
       <Icon name={icon} />
     </span>
     <span
@@ -39,7 +39,7 @@ const Tile: React.FC<TileProps> = ({ metric, icon, label, value, tone: tileTone 
     >
       {value}
     </span>
-    <span className="text-[0.78rem] font-bold text-muted">{label}</span>
+    <span className="text-[0.78rem] font-semibold text-muted">{label}</span>
   </div>
 );
 
