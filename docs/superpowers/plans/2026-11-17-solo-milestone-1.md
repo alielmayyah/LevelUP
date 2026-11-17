@@ -14,7 +14,7 @@
 
 - Every string exists in `en.json` and `ar.json`. Arabic is Egyptian colloquial, never MSA. Arabic renders right to left.
 - Every screen works in light and dark mode, using theme tokens only. Width 320 px up to desktop. No content under safe areas.
-- Primary actions use `CtaButton`. Tailwind first, Sass only for custom pieces. Shared component styles go in `src/theme`.
+- Clean modern style from `ui-standards` ("Visual style"), no pixel art. This plan runs **after** the restyle, so `Toast`, `Dialog`, `Icon` and `.lu-card` exist. Primary actions use `CtaButton`. Tailwind first, Sass only for custom pieces. Shared component styles go in `src/theme`.
 - Only `src/api/client.ts` and tests import from `src/api/mock/` (ESLint enforces this).
 - Load the repo skills before matching work: `ui-standards` and `ionic-mobile-experience` (UI tasks), `e2e-testing` (Task 6), `git-workflow` (every commit).
 - Commit to `dev`, one topic per commit, `type(scope): summary`, **no AI attribution or Co-Authored-By lines**.
@@ -297,7 +297,7 @@ Behavior:
 - Step 5: links to the existing Character editor ("Customize now") or "Later".
 - Finish calls `putSolo`, then `router.push('/tabs/home', 'root', 'replace')`.
 - Habit ids are generated with `crypto.randomUUID()`.
-- If `putSolo` fails, show the error with `PixelToast` and keep the answers.
+- If `putSolo` fails, show the error with `Toast` and keep the answers.
 
 - [ ] **Step 1: Write the failing component tests** (Testing Library, like `Login.test.tsx`):
   - Next is disabled until a goal is picked.
@@ -328,7 +328,7 @@ Load `ui-standards` and `ionic-mobile-experience` first.
 - Modify: `src/i18n/en.json`, `ar.json` (`today.*`, `training.<type>`, `tier.<tier>`)
 
 **Interfaces:**
-- Consumes: `getToday`, `putDay` (Task 3), `useSoloProfile` (Task 4), `CtaButton`, `PixelToast`, `UnlockCelebration` (its existing level-up style; reuse it only if its props fit, otherwise use a toast).
+- Consumes: `getToday`, `putDay` (Task 3), `useSoloProfile` (Task 4), `CtaButton`, `Toast`, `UnlockCelebration` (its existing level-up style; reuse it only if its props fit, otherwise use a toast).
 - Produces: test ids `today-section`, `xp-bar` (text `Lv N`), `weekly-ring` (text `N/T`), `train-button`, `train-type-<TYPE>`, `water-glass-<i>`, `habit-<id>`, `day-switch` (Today/Yesterday).
 
 Behavior:

@@ -225,7 +225,7 @@ Each phase ends with the app working and tests passing, and gets committed on `d
 ## Left to the builder
 
 - Exact avatar items behind each level.
-- Visual design of the weekly ring, water glasses and heatmap, within the existing theme tokens and pixel style.
+- Visual design of the weekly ring, water glasses and heatmap, within the theme tokens and the clean modern style in the `ui-standards` skill (no pixel art).
 - Celebration animation details (GSAP is already in the project).
 - The habit preset icons.
 
