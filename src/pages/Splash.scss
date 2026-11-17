@@ -1,7 +1,8 @@
 /*
- * The splash: dusk backdrop, the logo's breathing glow,
- * twinkling stars, and the CSS intro. Layout is Tailwind classes in Splash.tsx.
- * The class names here are also the hooks the exit animation (splashMotion.ts) targets.
+ * The splash: dusk gradient backdrop, the logo's breathing glow, a few soft
+ * twinkling stars, the loading line, and the CSS intro. Layout is Tailwind
+ * classes in Splash.tsx. The class names here are also the hooks the exit
+ * animation (splashMotion.ts) targets.
  */
 @use 'sass:list';
 
@@ -41,18 +42,38 @@
     opacity: 0;
   }
 
+  /* The loading line (LoadingLine.tsx): a faint track, a brand gradient fill. */
+  .lu-splash-loading {
+    background: color-mix(in srgb, var(--lu-splash-text) 16%, transparent);
+  }
+
+  .lu-splash-loading-fill {
+    background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-secondary));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--ion-color-secondary) 60%, transparent);
+    transform-origin: left center;
+  }
+
+  .lu-splash-loading-fill:dir(rtl) {
+    transform-origin: right center;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .lu-splash-shine {
       animation: lu-splash-shine 900ms ease-in-out 450ms both;
     }
 
-    /* The logo rises and sharpens into place; the bar fades in just after. */
+    /* The logo rises and sharpens into place; the line fades in just after. */
     .lu-splash-brand img {
       animation: lu-splash-logo-in 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
     }
 
-    .lu-bb {
+    .lu-splash-loading {
       animation: lu-splash-fade-in 400ms ease-out 250ms both;
+    }
+
+    /* Fills over the splash's whole run, easing out as it nears the end. */
+    .lu-splash-loading-fill {
+      animation: lu-splash-fill var(--lu-splash-ms, 1600ms) cubic-bezier(0.4, 0, 0.2, 1) both;
     }
 
     .lu-splash-glow {
@@ -60,63 +81,11 @@
     }
   }
 
-  /* The barbell loader (BarbellLoader.tsx): purple bumper plates on a steel bar. */
-  .lu-bb {
-    .lu-bb-ink {
-      fill: var(--lu-splash-bg);
-    }
-    .lu-bb-metal {
-      fill: var(--lu-metal);
-    }
-    .lu-bb-grip {
-      fill: var(--lu-floor-edge);
-    }
-    .lu-bb-tone-a {
-      fill: var(--ion-color-primary);
-    }
-    .lu-bb-tone-b {
-      fill: var(--ion-color-secondary);
-    }
-    .lu-bb-tone-c {
-      fill: var(--lu-splash-text-muted);
-    }
-    .lu-bb-hi {
-      fill: color-mix(in srgb, var(--lu-splash-star) 45%, transparent);
-    }
-
-    .lu-bb-plate,
-    .lu-bb-lift {
-      transform-box: view-box;
-    }
-  }
-
-  /*
-   * Plates go on in pairs at 15%, 33%, 51%, and 69% of the splash, each one
-   * sliding in from outside the bar; at 86% the loaded bar lifts once.
-   */
-  @media (prefers-reduced-motion: no-preference) {
-    .lu-bb-plate {
-      animation: var(--lu-splash-ms, 1600ms) linear both;
-    }
-
-    @each $side in l, r {
-      @for $i from 1 through 4 {
-        .lu-bb-#{$side}.lu-bb-step-#{$i} {
-          animation-name: lu-bb-#{$side}#{$i};
-        }
-      }
-    }
-
-    .lu-bb-lift {
-      animation: lu-bb-lift var(--lu-splash-ms, 1600ms) steps(1, end) both;
-    }
-  }
-
-  // Stars are 1-pixel gradients placed on two layers that drift out of step.
+  // Stars are small soft dots (radial gradients) on two layers that drift out of step.
   @function dots($colors...) {
     $out: ();
     @each $c in $colors {
-      $out: list.append($out, linear-gradient($c, $c), comma);
+      $out: list.append($out, radial-gradient(circle, $c 0 35%, transparent 72%), comma);
     }
     @return $out;
   }
@@ -128,6 +97,7 @@
       position: absolute;
       inset: 0;
       background-repeat: no-repeat;
+      opacity: 0.8;
       animation: lu-splash-drift 12s ease-in-out infinite alternate;
     }
 
@@ -146,13 +116,13 @@
         92% 65%,
         72% 84%;
       background-size:
+        6px 6px,
         4px 4px,
-        2px 2px,
-        3px 3px,
+        5px 5px,
+        6px 6px,
         4px 4px,
-        2px 2px,
-        4px 4px,
-        3px 3px;
+        6px 6px,
+        5px 5px;
     }
 
     &::after {
@@ -163,10 +133,10 @@
         77% 50%,
         90% 24%;
       background-size:
-        3px 3px,
-        2px 2px,
-        3px 3px,
-        2px 2px;
+        5px 5px,
+        4px 4px,
+        5px 5px,
+        4px 4px;
       animation-delay: -4s;
     }
 
@@ -177,25 +147,17 @@
       }
     }
   }
-
-  /*
-   * Intro: the scene and logo settle into place. Plain CSS, so no animation
-   * library ships in the first download. "backwards" applies only before and
-   * during the run, so the exit animation's inline styles win afterwards.
-   */
-  @media (prefers-reduced-motion: no-preference) {
-  }
 }
 
 @keyframes lu-splash-drift {
   from {
     transform: translate(0, 0);
-    opacity: 0.65;
+    opacity: 0.55;
   }
 
   to {
     transform: translate(6px, -9px);
-    opacity: 1;
+    opacity: 0.9;
   }
 }
 
@@ -236,170 +198,12 @@
   }
 }
 
-@keyframes lu-bb-l1 {
-  0%,
-  14.99% {
-    opacity: 0;
-    transform: translateX(-4px);
+@keyframes lu-splash-fill {
+  from {
+    transform: scaleX(0);
   }
 
-  15% {
-    opacity: 1;
-    transform: translateX(-2px);
-  }
-
-  19%,
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes lu-bb-l2 {
-  0%,
-  32.99% {
-    opacity: 0;
-    transform: translateX(-4px);
-  }
-
-  33% {
-    opacity: 1;
-    transform: translateX(-2px);
-  }
-
-  37%,
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes lu-bb-l3 {
-  0%,
-  50.99% {
-    opacity: 0;
-    transform: translateX(-4px);
-  }
-
-  51% {
-    opacity: 1;
-    transform: translateX(-2px);
-  }
-
-  55%,
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes lu-bb-l4 {
-  0%,
-  68.99% {
-    opacity: 0;
-    transform: translateX(-4px);
-  }
-
-  69% {
-    opacity: 1;
-    transform: translateX(-2px);
-  }
-
-  73%,
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes lu-bb-r1 {
-  0%,
-  14.99% {
-    opacity: 0;
-    transform: translateX(4px);
-  }
-
-  15% {
-    opacity: 1;
-    transform: translateX(2px);
-  }
-
-  19%,
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes lu-bb-r2 {
-  0%,
-  32.99% {
-    opacity: 0;
-    transform: translateX(4px);
-  }
-
-  33% {
-    opacity: 1;
-    transform: translateX(2px);
-  }
-
-  37%,
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes lu-bb-r3 {
-  0%,
-  50.99% {
-    opacity: 0;
-    transform: translateX(4px);
-  }
-
-  51% {
-    opacity: 1;
-    transform: translateX(2px);
-  }
-
-  55%,
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes lu-bb-r4 {
-  0%,
-  68.99% {
-    opacity: 0;
-    transform: translateX(4px);
-  }
-
-  69% {
-    opacity: 1;
-    transform: translateX(2px);
-  }
-
-  73%,
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes lu-bb-lift {
-  0%,
-  85.99% {
-    transform: translateY(0);
-  }
-
-  86% {
-    transform: translateY(-2px);
-  }
-
-  92%,
-  100% {
-    transform: translateY(-1px);
+  to {
+    transform: scaleX(1);
   }
 }

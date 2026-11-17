@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { formatNumber } from '../i18n/format';
-import PixelIcon from './PixelIcon';
+import Icon from './Icon';
 import './Pager.scss';
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const BUTTON =
-  'lu-pager-button grid size-11 cursor-pointer place-items-center border-0 bg-surface font-inherit text-[1.1rem] text-ink disabled:cursor-default disabled:text-muted disabled:opacity-50';
+  'lu-pager-button grid size-11 cursor-pointer place-items-center bg-surface font-inherit text-[1.1rem] text-ink disabled:cursor-default disabled:text-muted disabled:opacity-50';
 
 /** Previous / page x of y / next. Render it only when there is more than one page. */
 const Pager: React.FC<Props> = ({ page, pages, onPage, label }) => {
@@ -31,9 +31,9 @@ const Pager: React.FC<Props> = ({ page, pages, onPage, label }) => {
         disabled={page === 0}
         aria-label={t('leaderboard.prevPage')}
       >
-        <PixelIcon className="rtl:-scale-x-100" name="chevronBack" />
+        <Icon className="rtl:-scale-x-100" name="chevronBack" />
       </button>
-      <span className="min-w-[7ch] text-center text-[0.85rem] font-extrabold text-muted" aria-live="polite">
+      <span className="min-w-[7ch] text-center text-[0.85rem] font-bold text-muted" aria-live="polite">
         {t('leaderboard.pageOf', { page: formatNumber(page + 1), pages: formatNumber(pages) })}
       </span>
       <button
@@ -43,7 +43,7 @@ const Pager: React.FC<Props> = ({ page, pages, onPage, label }) => {
         disabled={page >= pages - 1}
         aria-label={t('leaderboard.nextPage')}
       >
-        <PixelIcon className="rtl:-scale-x-100" name="chevronForward" />
+        <Icon className="rtl:-scale-x-100" name="chevronForward" />
       </button>
     </nav>
   );

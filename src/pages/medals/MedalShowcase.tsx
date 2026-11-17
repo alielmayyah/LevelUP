@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import PixelIcon from '../../components/PixelIcon';
+import Icon from '../../components/Icon';
 import { formatNumber, formatPercent } from '../../i18n/format';
 import { MEDAL_CONFIG } from './config';
 import { medalTarget, medalTitle, medalValue } from './format';
@@ -24,7 +24,7 @@ function ShowcaseCard({ medal, next, onOpen }: { medal: MedalStatus; next?: Meda
       data-unlocked={medal.unlocked}
       onClick={onOpen}
     >
-      <span className="text-[0.8rem] leading-tight font-extrabold">{t(`medals.category.${medal.category}`)}</span>
+      <span className="text-[0.8rem] leading-tight font-bold">{t(`medals.category.${medal.category}`)}</span>
       <MedalArt category={medal.category} rarity={medal.rarity} locked={!medal.unlocked} />
       {MEDAL_CONFIG[medal.category].ids && (
         <span className="text-[0.72rem] leading-tight font-bold">{medalTitle(t, medal)}</span>
@@ -70,15 +70,15 @@ export default function MedalShowcase({
   const selected = summary?.slots.find(({ medal }) => medal.category === open)?.medal ?? null;
 
   return (
-    <section className="lu-px-card grid gap-2" aria-labelledby="profile-medals">
+    <section className="lu-card grid gap-2" aria-labelledby="profile-medals">
       <div className="flex flex-wrap items-center justify-between gap-x-2">
         <h2 id="profile-medals" className="lu-display m-0 flex items-center gap-2 text-[1.8rem] leading-tight">
-          <PixelIcon name="trophy" className="text-[0.75em]" />
+          <Icon name="trophy" className="text-[0.75em]" />
           {t('medals.link')}
         </h2>
         <Link to="/tabs/profile/medals" className="lu-link-button inline-flex items-center gap-1.5 no-underline">
           {t('profile.viewMedals')}
-          <PixelIcon name="chevronForward" className="rtl:-scale-x-100" />
+          <Icon name="chevronForward" className="rtl:-scale-x-100" />
         </Link>
       </div>
       {failed ? (

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto } from '../../api/types';
 import Pager from '../../components/Pager';
-import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
+import Icon, { type IconName } from '../../components/Icon';
 import { useSwipe } from '../../components/useSwipe';
 import { formatNumber, numberLocale } from '../../i18n/format';
 
@@ -36,7 +36,7 @@ const fullDate = (iso: string) =>
     new Date(iso),
   );
 
-const STATS: { key: string; icon: PixelIconName; tone: string; value: (a: AssessmentDto) => string }[] = [
+const STATS: { key: string; icon: IconName; tone: string; value: (a: AssessmentDto) => string }[] = [
   { key: 'weight', icon: 'scale', tone: 'lu-tone-weight', value: (a) => formatNumber(a.weightKg, 1) },
   { key: 'muscle', icon: 'muscle', tone: 'lu-tone-muscle', value: (a) => formatNumber(a.skeletalMuscleKg, 1) },
   { key: 'bodyFat', icon: 'bodyFat', tone: 'lu-tone-fat', value: (a) => `${formatNumber(a.bodyFatPct, 1)}%` },
@@ -76,7 +76,7 @@ const SheetBody: React.FC<Props & { title: string }> = ({
           {title}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
-          <PixelIcon name="close" />
+          <Icon name="close" />
         </button>
       </div>
       {comparing && (
@@ -93,7 +93,7 @@ const SheetBody: React.FC<Props & { title: string }> = ({
                 type="button"
                 disabled={locked}
                 aria-current={on ? 'true' : undefined}
-                className={`lu-scan-row grid w-full cursor-pointer gap-2 rounded-[10px] border-2 bg-surface p-3 text-start font-inherit text-ink disabled:cursor-default disabled:opacity-55 ${on ? 'is-current border-primary' : 'border-line'}`}
+                className={`lu-scan-row grid w-full cursor-pointer gap-2 rounded-[10px] border bg-surface p-3 text-start font-inherit text-ink disabled:cursor-default disabled:opacity-55 ${on ? 'is-current border-primary' : 'border-line'}`}
                 onClick={() => {
                   onPick(i);
                   onClose();
@@ -101,7 +101,7 @@ const SheetBody: React.FC<Props & { title: string }> = ({
                 data-testid="scan-row"
               >
                 <span className="flex flex-wrap items-center gap-2">
-                  <strong className="font-extrabold">{fullDate(s.takenAt)}</strong>
+                  <strong className="font-bold">{fullDate(s.takenAt)}</strong>
                   {i === 0 && <span className="lu-chip lu-chip-primary">{t('progress.newest')}</span>}
                   {comparing
                     ? (on || locked) && (
@@ -115,7 +115,7 @@ const SheetBody: React.FC<Props & { title: string }> = ({
                 <span className="grid grid-cols-3 gap-2">
                   {STATS.map((st) => (
                     <span key={st.key} className={`flex items-center gap-1.5 ${st.tone}`}>
-                      <PixelIcon className="flex-none text-[1.1rem]" name={st.icon} />
+                      <Icon className="flex-none text-[1.1rem]" name={st.icon} />
                       <span className="grid leading-tight">
                         <span className="text-[0.7rem] font-bold text-muted">{t(`progress.metric.${st.key}`)}</span>
                         <span className="lu-display text-[1.15rem] whitespace-nowrap">
@@ -135,7 +135,7 @@ const SheetBody: React.FC<Props & { title: string }> = ({
             <button
               type="button"
               aria-current={current === -1 ? 'true' : undefined}
-              className={`lu-scan-row w-full cursor-pointer rounded-[10px] border-2 border-dashed bg-surface p-3 text-start font-inherit font-extrabold text-ink ${current === -1 ? 'is-current border-primary' : 'border-line'}`}
+              className={`lu-scan-row w-full cursor-pointer rounded-[10px] border border-dashed bg-surface p-3 text-start font-inherit font-bold text-ink ${current === -1 ? 'is-current border-primary' : 'border-line'}`}
               onClick={() => {
                 onNone();
                 onClose();

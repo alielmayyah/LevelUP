@@ -28,7 +28,7 @@ const MedalCard: React.FC<Props> = ({ medal, onOpen }) => {
       onClick={() => onOpen(medal)}
     >
       <MedalArt category={medal.category} rarity={medal.rarity} locked={!medal.unlocked} />
-      <span className="text-[0.86rem] leading-tight font-extrabold">{title}</span>
+      <span className="text-[0.86rem] leading-tight font-bold">{title}</span>
       <bdi className="text-[0.77rem] font-bold text-muted">{medalTarget(t, medal)}</bdi>
       <span className="lu-rarity" data-rarity={medal.rarity}>
         {rarity}

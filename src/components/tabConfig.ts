@@ -1,4 +1,4 @@
-import type { PixelIconName } from './PixelIcon';
+import type { IconName } from './Icon';
 
 export const TABS = [
   { tab: 'home', href: '/tabs/home', icon: 'house' },
@@ -6,7 +6,7 @@ export const TABS = [
   { tab: 'goals', href: '/tabs/goals', icon: 'target' },
   { tab: 'community', href: '/tabs/community', icon: 'community' },
   { tab: 'profile', href: '/tabs/profile', icon: 'person' },
-] as const satisfies readonly { tab: string; href: string; icon: PixelIconName }[];
+] as const satisfies readonly { tab: string; href: string; icon: IconName }[];
 
 /** Index of the tab that owns `pathname`, or -1. */
 export const tabIndex = (pathname: string): number => {

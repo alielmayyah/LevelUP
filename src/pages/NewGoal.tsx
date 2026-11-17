@@ -6,8 +6,8 @@ import { createGoal } from '../api/goals';
 import type { AssessmentDto, GoalMetric } from '../api/types';
 import { useApi } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
-import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
-import PixelToast from '../components/PixelToast';
+import Icon, { type IconName } from '../components/Icon';
+import Toast from '../components/Toast';
 import { focusSibling, rovingTarget } from '../components/roving';
 import { formatNumber, formatSigned } from '../i18n/format';
 import './goals/Goals.scss';
@@ -16,7 +16,7 @@ const STEP = 0.5;
 const METRICS: readonly GoalMetric[] = ['BODY_FAT_KG', 'MUSCLE_KG', 'WEIGHT_KG'];
 
 /** Same icon and hue as the goal rows, Home, and Progress. */
-const LOOK: Record<GoalMetric, { icon: PixelIconName; tone: string }> = {
+const LOOK: Record<GoalMetric, { icon: IconName; tone: string }> = {
   BODY_FAT_KG: { icon: 'bodyFat', tone: 'fat' },
   MUSCLE_KG: { icon: 'muscle', tone: 'muscle' },
   WEIGHT_KG: { icon: 'scale', tone: 'weight' },
@@ -98,8 +98,8 @@ function Choice<T extends string | number>({
   );
 }
 
-const SECTION = 'lu-px-card grid gap-3 p-3.5';
-const QUESTION = 'm-0 text-[1rem] font-extrabold text-ink';
+const SECTION = 'lu-card grid gap-3 p-3.5';
+const QUESTION = 'm-0 text-[1rem] font-bold text-ink';
 
 /**
  * The member sets their own goal: what to change and by how much. No due date.
@@ -133,7 +133,7 @@ const NewGoal: React.FC = () => {
         aria-label={t('newGoal.back')}
         data-testid="new-goal-back"
       >
-        <PixelIcon className="rtl:-scale-x-100" name="arrowBack" />
+        <Icon className="rtl:-scale-x-100" name="arrowBack" />
       </button>
       <div className="min-w-0 flex-1">
         <h1 className="lu-display m-0 text-[clamp(2rem,9vw,2.75rem)] leading-[1.05] wrap-anywhere text-ink">
@@ -155,8 +155,8 @@ const NewGoal: React.FC = () => {
     );
   else if (!scan)
     body = (
-      <div className="lu-px-card lu-state" data-testid="new-goal-no-scan">
-        <PixelIcon name="scale" />
+      <div className="lu-card lu-state" data-testid="new-goal-no-scan">
+        <Icon name="scale" />
         <p>{t('newGoal.noScan')}</p>
         <CtaButton onClick={leave}>{t('newGoal.back')}</CtaButton>
       </div>
@@ -202,28 +202,25 @@ const NewGoal: React.FC = () => {
             labelledBy="new-goal-type"
             className="grid gap-2 sm:grid-cols-3"
             optionClass={(m) =>
-              `lu-goal-choice lu-goal-${LOOK[m].tone} flex min-h-14 cursor-pointer items-center gap-3 rounded-[10px] border-2 border-line bg-surface p-2.5 text-start font-inherit text-ink sm:grid sm:justify-items-center sm:text-center`
+              `lu-goal-choice lu-goal-${LOOK[m].tone} flex min-h-14 cursor-pointer items-center gap-3 rounded-[14px] border border-line bg-surface p-3 text-start font-inherit text-ink sm:grid sm:justify-items-center sm:text-center`
             }
             testId={(m) => `goal-type-${m}`}
             render={(m, on) => (
               <>
                 <span
-                  className="lu-goal-icon grid size-11 flex-none place-items-center rounded-lg text-[28px]"
+                  className="lu-goal-icon grid size-11 flex-none place-items-center rounded-xl text-[24px]"
                   aria-hidden="true"
                 >
-                  <PixelIcon name={LOOK[m].icon} />
+                  <Icon name={LOOK[m].icon} />
                 </span>
                 <span className="grid min-w-0 flex-1 gap-0.5">
-                  <span className="leading-tight font-extrabold">{t(`newGoal.metric.${m}`)}</span>
+                  <span className="leading-tight font-bold">{t(`newGoal.metric.${m}`)}</span>
                   <span className="text-[0.8rem] font-bold text-muted">
                     {t('newGoal.now', { value: formatNumber(current(scan, m), 1) })}
                   </span>
                 </span>
                 {on && (
-                  <PixelIcon
-                    className="flex-none text-[1.2rem] text-primary sm:hidden dark:text-secondary"
-                    name="check"
-                  />
+                  <Icon className="flex-none text-[1.2rem] text-primary sm:hidden dark:text-secondary" name="check" />
                 )}
               </>
             )}
@@ -243,7 +240,7 @@ const NewGoal: React.FC = () => {
               aria-label={t('newGoal.less')}
               data-testid="goal-less"
             >
-              <PixelIcon name="remove" />
+              <Icon name="remove" />
             </button>
             <output
               className="lu-display min-w-[5ch] text-center text-[3rem] leading-none text-ink"
@@ -261,7 +258,7 @@ const NewGoal: React.FC = () => {
               aria-label={t('newGoal.more')}
               data-testid="goal-more"
             >
-              <PixelIcon name="add" />
+              <Icon name="add" />
             </button>
           </div>
           <p className="m-0 text-center text-[0.875rem] font-bold text-muted" data-testid="goal-change">
@@ -270,7 +267,7 @@ const NewGoal: React.FC = () => {
         </section>
 
         <section
-          className={`lu-px-card lu-goal-${tone} grid gap-2 p-3.5`}
+          className={`lu-card lu-goal-${tone} grid gap-2 p-3.5`}
           aria-labelledby="new-goal-summary"
           data-testid="goal-summary"
         >
@@ -279,13 +276,13 @@ const NewGoal: React.FC = () => {
           </h2>
           <div className="flex items-center gap-3">
             <span
-              className="lu-goal-icon grid size-12 flex-none place-items-center rounded-lg text-[32px]"
+              className="lu-goal-icon grid size-12 flex-none place-items-center rounded-xl text-[26px]"
               aria-hidden="true"
             >
-              <PixelIcon name={icon} />
+              <Icon name={icon} />
             </span>
             <span className="grid min-w-0 gap-0.5">
-              <span className="text-[1.1rem] leading-tight font-extrabold text-ink" data-testid="goal-name">
+              <span className="text-[1.1rem] leading-tight font-bold text-ink" data-testid="goal-name">
                 {t(`newGoal.name.${metric}`, { amount: formatNumber(amount) })}
               </span>
               <span className="text-[0.875rem] font-bold text-muted" data-testid="goal-starts">
@@ -316,7 +313,7 @@ const NewGoal: React.FC = () => {
           {body}
         </div>
       </IonContent>
-      <PixelToast message={failed ? t('newGoal.failed') : null} onDone={clearFailed} />
+      <Toast message={failed ? t('newGoal.failed') : null} onDone={clearFailed} />
     </IonPage>
   );
 };

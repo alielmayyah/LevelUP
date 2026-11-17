@@ -6,11 +6,11 @@ import { saveSettings } from '../api/settings';
 import type { ProfileDto, SettingsDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import { clearToken } from '../auth/token';
-import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
+import Icon, { type IconName } from '../components/Icon';
 import { brand } from '../brand.config';
 import CtaButton from '../components/CtaButton';
-import PixelDialog from '../components/PixelDialog';
-import PixelToast from '../components/PixelToast';
+import Dialog from '../components/Dialog';
+import Toast from '../components/Toast';
 import { focusSibling, rovingTarget } from '../components/roving';
 import TabPage from '../components/TabPage';
 import { currentLanguage, setLanguage, type Lang } from '../i18n';
@@ -21,20 +21,20 @@ const GRID = 'mx-auto grid w-full max-w-[620px] gap-3.5';
 /** One settings line: label on one side, value or control on the other; wraps on narrow screens. */
 const ROW = 'flex min-h-[52px] flex-wrap items-center justify-between gap-x-3 gap-y-2 py-2 font-semibold';
 /** Rows are split by a thin rule, except the last one. */
-const RULED = '[border-block-end:2px_solid_var(--lu-surface-2)] last:[border-block-end:0]';
+const RULED = '[border-block-end:1px_solid_var(--lu-border)] last:[border-block-end:0]';
 const LABEL = 'flex min-w-0 items-center gap-2.5 font-bold';
 const LABEL_ICON = 'flex-none text-[1.2rem]';
 const HINT = 'text-[0.8rem] font-semibold text-muted';
 
 /** A label with an icon, and optionally a one-line hint under it. */
-const RowLabel: React.FC<{ icon: PixelIconName; children: React.ReactNode; hint?: { id: string; text: string } }> = ({
+const RowLabel: React.FC<{ icon: IconName; children: React.ReactNode; hint?: { id: string; text: string } }> = ({
   icon,
   children,
   hint,
 }) => (
   // A row with a hint holds a switch: the label shrinks and wraps so the switch stays on the same line.
   <span className={`${LABEL} text-ink ${hint ? 'flex-1 basis-0' : ''}`}>
-    <PixelIcon className={`${LABEL_ICON} text-muted`} name={icon} />
+    <Icon className={`${LABEL_ICON} text-muted`} name={icon} />
     {hint ? (
       <span className="grid">
         {children}
@@ -49,7 +49,7 @@ const RowLabel: React.FC<{ icon: PixelIconName; children: React.ReactNode; hint?
 );
 
 const SECTION =
-  'mx-0 mt-3 mb-1 flex items-center gap-2 text-[0.8rem] font-extrabold tracking-[0.08em] text-primary uppercase dark:text-secondary ar:text-[0.9rem] ar:tracking-normal';
+  'mx-0 mt-3 mb-1 flex items-center gap-2 text-[0.8rem] font-bold tracking-[0.08em] text-primary uppercase dark:text-secondary ar:text-[0.9rem] ar:tracking-normal';
 
 interface SwitchProps {
   checked: boolean;
@@ -86,7 +86,7 @@ function Choice<T extends string>({ label, value, options, onChange, testId }: C
   const { i18n } = useTranslation();
   return (
     <div
-      className="lu-choice inline-flex gap-0.5 rounded-lg border-2 border-line bg-surface-2 p-0.5"
+      className="lu-choice inline-flex gap-0.5 rounded-full bg-surface-2 p-0.5"
       role="radiogroup"
       aria-label={label}
       data-testid={testId}
@@ -96,7 +96,7 @@ function Choice<T extends string>({ label, value, options, onChange, testId }: C
           key={o.value}
           type="button"
           role="radio"
-          className="min-h-9 min-w-11 cursor-pointer rounded-md border-0 bg-transparent px-2.5 py-0 font-inherit text-[0.8rem] font-extrabold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+          className="min-h-9 min-w-11 cursor-pointer rounded-full border-0 bg-transparent px-3 py-0 font-inherit text-[0.8rem] font-semibold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
           lang={o.lang}
           aria-checked={value === o.value}
           tabIndex={value === o.value ? 0 : -1}
@@ -166,9 +166,9 @@ const Settings: React.FC = () => {
       {p && (
         // Fills the screen: the settings card grows, its rows share the height evenly, and Sign out sits at the bottom.
         <div className="mx-auto flex w-full max-w-[620px] flex-1 flex-col gap-3.5">
-          <section className="lu-px-card flex flex-1 flex-col py-1.5 [&>div]:flex-1" aria-labelledby="sec-settings">
+          <section className="lu-card flex flex-1 flex-col py-1.5 [&>div]:flex-1" aria-labelledby="sec-settings">
             <h2 id="sec-settings" className={SECTION}>
-              <PixelIcon name="settings" />
+              <Icon name="settings" />
               {t('profile.preferences')}
             </h2>
 
@@ -246,20 +246,20 @@ const Settings: React.FC = () => {
           {/* Sign out stands on its own, below the settings. */}
           <button
             type="button"
-            className="lu-px-card lu-signout flex min-h-[52px] w-full cursor-pointer items-center justify-between gap-3 px-4 py-2 font-inherit font-semibold text-danger"
+            className="lu-card lu-signout flex min-h-[52px] w-full cursor-pointer items-center justify-between gap-3 px-4 py-2 font-inherit font-semibold text-danger"
             onClick={() => setConfirmOut(true)}
             data-testid="sign-out"
           >
             <span className={`${LABEL} text-danger`}>
-              <PixelIcon className={`${LABEL_ICON} text-danger rtl:-scale-x-100`} name="logout" />
+              <Icon className={`${LABEL_ICON} text-danger rtl:-scale-x-100`} name="logout" />
               {t('profile.signOut')}
             </span>
-            <PixelIcon className="lu-chevron text-danger" name="chevronForward" />
+            <Icon className="lu-chevron text-danger" name="chevronForward" />
           </button>
         </div>
       )}
 
-      <PixelDialog
+      <Dialog
         open={confirmOut}
         title={t('profile.signOutConfirm', { name: brand.name })}
         cancelLabel={t('profile.cancel')}
@@ -271,7 +271,7 @@ const Settings: React.FC = () => {
           void signOut();
         }}
       />
-      <PixelToast message={saveFailed ? t('profile.saveFailed') : null} onDone={clearSaveFailed} />
+      <Toast message={saveFailed ? t('profile.saveFailed') : null} onDone={clearSaveFailed} />
     </TabPage>
   );
 };

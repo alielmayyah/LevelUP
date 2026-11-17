@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { AssessmentDto } from '../../api/types';
 import { useSwipe } from '../../components/useSwipe';
 import { formatNumber, numberLocale } from '../../i18n/format';
-import PixelIcon from '../../components/PixelIcon';
+import Icon from '../../components/Icon';
 
 interface Props {
   open: boolean;
@@ -64,12 +64,12 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
           {t('progress.calendarTitle')}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('progress.closeScans')} onClick={onClose}>
-          <PixelIcon name="close" />
+          <Icon name="close" />
         </button>
       </div>
       <p className="m-0 px-4 pb-3 text-[0.85rem] font-semibold text-muted">{t('progress.calendarHint')}</p>
 
-      <div ref={swipe} className="mx-4 grid gap-3 rounded-xl border-2 border-line bg-surface p-3">
+      <div ref={swipe} className="mx-4 grid gap-3 rounded-xl border border-line bg-surface p-3">
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -79,10 +79,10 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
             aria-label={t('progress.prevMonth')}
             data-testid="calendar-prev"
           >
-            <PixelIcon className="rtl:-scale-x-100" name="chevronBack" />
+            <Icon className="rtl:-scale-x-100" name="chevronBack" />
           </button>
           <p className="m-0 grid flex-1 text-center" aria-live="polite">
-            <strong className="text-[1.05rem] font-extrabold" data-testid="calendar-month">
+            <strong className="text-[1.05rem] font-bold" data-testid="calendar-month">
               {monthName}
             </strong>
             <span className="text-[0.78rem] font-bold text-muted">
@@ -97,13 +97,13 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
             aria-label={t('progress.nextMonth')}
             data-testid="calendar-next"
           >
-            <PixelIcon className="rtl:-scale-x-100" name="chevronForward" />
+            <Icon className="rtl:-scale-x-100" name="chevronForward" />
           </button>
         </div>
 
         <div className="grid grid-cols-7 gap-1 text-center" aria-hidden="true">
           {heads.map((h, i) => (
-            <span key={i} className="text-[0.72rem] font-extrabold text-muted">
+            <span key={i} className="text-[0.72rem] font-bold text-muted">
               {h}
             </span>
           ))}
@@ -123,7 +123,7 @@ const CalendarBody: React.FC<Omit<Props, 'open'>> = ({ scans, current, onPick, o
                 ) : (
                   <button
                     type="button"
-                    className={`lu-cal-day grid cursor-pointer place-items-center rounded-lg border-2 p-0 font-inherit text-[0.9rem] font-extrabold ${scan === current ? 'is-current' : ''}`}
+                    className={`lu-cal-day grid cursor-pointer place-items-center rounded-lg border p-0 font-inherit text-[0.9rem] font-bold ${scan === current ? 'is-current' : ''}`}
                     aria-label={t('progress.scanOn', { date: longDate.format(date) })}
                     aria-current={scan === current ? 'date' : undefined}
                     onClick={() => {

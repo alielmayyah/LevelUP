@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../../api/client';
 import type { NotificationDto } from '../../api/types';
 import { useApi } from '../../api/useApi';
-import HomeIcon from './HomeIcon';
+import Icon from '../../components/Icon';
 import { formatCount } from '../../i18n/format';
 import { formatTimeAgo } from './homeText';
 
@@ -88,17 +88,17 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
           {t('home.notifications.title')}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('home.notifications.close')} onClick={onClose}>
-          <HomeIcon name="close" />
+          <Icon name="close" />
         </button>
       </div>
 
       {items && items.length > 0 && (
         <div className="flex items-center justify-between gap-2 px-4 pt-0 pb-2.5">
           <span
-            className={`lu-notif-count inline-flex items-center gap-1.5 rounded-lg border-2 px-2.5 py-1 text-[0.85rem] font-extrabold text-ink ${unread === 0 ? 'is-clear' : ''}`}
+            className={`lu-notif-count inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[0.85rem] font-bold text-ink ${unread === 0 ? 'is-clear' : ''}`}
             data-testid="unread-count"
           >
-            <HomeIcon className="text-[1.05rem]" name={unread === 0 ? 'checkDouble' : 'bell'} />
+            <Icon className="text-[1.05rem]" name={unread === 0 ? 'checkDouble' : 'bell'} />
             {unread === 0
               ? t('home.notifications.empty')
               : t('home.notifications.unreadCount', { n: formatCount(unread) })}
@@ -109,7 +109,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
             onClick={markAll}
             disabled={unread === 0}
           >
-            <HomeIcon className="text-[1.1rem]" name="checkDouble" />
+            <Icon className="text-[1.1rem]" name="checkDouble" />
             {t('home.notifications.markAll')}
           </button>
         </div>
@@ -118,7 +118,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
       {list.status === 'loading' && (
         <ul className={`${LIST} px-4`} aria-busy="true">
           {[0, 1, 2].map((i) => (
-            <li key={i} className="flex items-center gap-3 rounded-[10px] border-2 border-line bg-surface p-3">
+            <li key={i} className="flex items-center gap-3 rounded-[14px] border border-line bg-surface p-3">
               <span className="lu-skeleton size-11 flex-none" />
               <span className="grid flex-1">
                 <span className="lu-skeleton" style={{ inlineSize: '60%' }} />
@@ -140,7 +140,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
 
       {items && items.length === 0 && (
         <div className="lu-state">
-          <HomeIcon name="bellOff" />
+          <Icon name="bellOff" />
           <p>{t('home.notifications.empty')}</p>
         </div>
       )}
@@ -152,7 +152,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
               <section key={group} className="not-first:mt-2" aria-labelledby={`notif-${group}`}>
                 <h3
                   id={`notif-${group}`}
-                  className="mx-0 my-2 text-[0.8rem] font-extrabold tracking-[0.08em] text-muted uppercase ar:text-[0.9rem] ar:tracking-normal"
+                  className="mx-0 my-2 text-[0.8rem] font-bold tracking-[0.08em] text-muted uppercase ar:text-[0.9rem] ar:tracking-normal"
                 >
                   {t(`home.notifications.${group}`)}
                 </h3>
@@ -164,33 +164,33 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                       <li key={n.id}>
                         <button
                           type="button"
-                          className={`lu-notif-item flex w-full cursor-pointer items-center gap-3 rounded-[10px] p-3 text-start font-inherit text-ink ${isUnread ? 'is-unread' : ''}`}
+                          className={`lu-notif-item flex w-full cursor-pointer items-center gap-3 rounded-[14px] p-3 text-start font-inherit text-ink ${isUnread ? 'is-unread' : ''}`}
                           data-testid="notification"
                           onClick={() => markRead(n)}
                         >
                           <span
-                            className={`lu-notif-icon grid size-11 flex-none place-items-center rounded-lg border-2 ${mission ? 'is-mission text-[30px]' : 'text-[22px]'}`}
+                            className={`lu-notif-icon grid size-11 flex-none place-items-center rounded-xl border ${mission ? 'is-mission text-[30px]' : 'text-[22px]'}`}
                             aria-hidden="true"
                           >
-                            {mission ? <HomeIcon name="trophy" /> : <HomeIcon name="scan" />}
+                            {mission ? <Icon name="trophy" /> : <Icon name="scan" />}
                           </span>
                           <span className="grid min-w-0 flex-1 gap-0.5">
-                            <span className={isUnread ? 'font-extrabold' : 'font-semibold'}>
+                            <span className={isUnread ? 'font-bold' : 'font-semibold'}>
                               {t(n.title.key, n.title.params ?? {})}
                             </span>
                             <span className="text-[0.9rem] text-muted">{t(n.body.key, n.body.params ?? {})}</span>
                             <span className="inline-flex items-center gap-1 text-[0.78rem] font-semibold text-muted">
-                              <HomeIcon className="text-[0.9rem]" name="clock" />
+                              <Icon className="text-[0.9rem]" name="clock" />
                               {formatTimeAgo(n.createdAt)}
                             </span>
                           </span>
                           {isUnread ? (
                             <>
-                              <span className="lu-notif-dot size-2.5 flex-none" aria-hidden="true" />
+                              <span className="lu-notif-dot size-2.5 flex-none rounded-full" aria-hidden="true" />
                               <span className="sr-only">{t('home.notifications.unread')}</span>
                             </>
                           ) : (
-                            <HomeIcon
+                            <Icon
                               className="flex-none text-[1.1rem] text-success"
                               name="check"
                               label={t('home.notifications.read')}

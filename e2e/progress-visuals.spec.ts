@@ -53,7 +53,7 @@ for (const lang of ['en', 'ar'] as const)
       await openDetails(page);
       const trend = page.getByTestId('trend');
       for (const k of ['weight', 'muscle', 'bodyFat', 'score'])
-        await expect(trend.getByTestId(`trend-${k}`).locator('svg.lu-pixel-icon')).toBeVisible();
+        await expect(trend.getByTestId(`trend-${k}`).locator('svg.lu-icon')).toBeVisible();
     });
   });
 

@@ -28,14 +28,14 @@
 /* Dark palette is toggled with the ion-palette-dark class on <html>. */
 @import '@ionic/react/css/palettes/dark.class.css' layer(ionic);
 
-/* The shared pixel kit (cards, chips, segments, switches) and page layout, as component classes. */
+/* The shared UI kit (cards, chips, segments, switches) and page layout, as component classes. */
 @import './layout.css' layer(components);
-@import './pixel.css' layer(components);
-@import './pixel-icon.css' layer(components);
+@import './kit.css' layer(components);
+@import './icon.css' layer(components);
 
 /* Dark mode follows Ionic's class on <html>, not the media query, so the in-app setting wins. */
 @custom-variant dark (&:where(.ion-palette-dark, .ion-palette-dark *));
-/* Arabic text (Jersey 10 has no Arabic glyphs; Arabic needs other sizes and spacing). */
+/* Arabic text (Arabic needs other sizes and spacing). */
 @custom-variant ar (&:lang(ar));
 /* A phone held sideways: little height to work with. */
 @custom-variant short-landscape {
@@ -68,8 +68,7 @@
   --color-line: var(--lu-border);
   --color-success: var(--lu-success);
   --color-danger: var(--lu-danger);
-  --color-pixel-shadow: var(--lu-pixel-shadow);
-  --color-pixel-ink: var(--lu-pixel-ink);
+  --color-scrim: var(--lu-scrim);
 
   --color-primary: var(--ion-color-primary);
   --color-primary-shade: var(--ion-color-primary-shade);
@@ -96,16 +95,17 @@
   --color-splash-star: var(--lu-splash-star);
   --color-splash-danger: var(--lu-splash-danger);
 
-  --font-display: 'Jersey 10', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  --font-display: 'IBM Plex Sans', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  --font-sans: 'IBM Plex Sans', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
   --font-arabic: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
 
-  /* Hard, unblurred pixel drops under cards and buttons. */
-  --shadow-px: 0 4px 0 var(--lu-pixel-shadow);
-  --shadow-px-sm: 0 3px 0 var(--lu-pixel-shadow);
-  --shadow-px-pressed: 0 1px 0 var(--lu-pixel-shadow);
+  /* Soft, blurred elevation (values per theme in tokens.css). */
+  --shadow-card: var(--lu-shadow);
+  --shadow-card-sm: var(--lu-shadow);
+  --shadow-card-pressed: var(--lu-shadow-pressed);
   --shadow-raised: var(--lu-shadow-raised);
 
-  --ease-px: steps(2);
+  --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /*

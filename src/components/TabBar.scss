@@ -1,8 +1,7 @@
 /*
- * The navigation bar: a flat panel in the theme's surface color with one thin
- * top line, pixel-art icons, and a compact purple indicator with stepped
- * pixel corners that slides behind the active icon. The pixel identity lives
- * in the icons and the indicator's corners, not in heavy frames.
+ * The navigation bar: a translucent panel in the theme's surface color with
+ * one hairline on top, line icons, and a rounded pill indicator that slides
+ * behind the active icon.
  *
  * The tab-button rules stay outside any cascade layer on purpose: ion-label's
  * styles are injected unlayered by Ionic, and layered rules would lose to them.
@@ -17,37 +16,15 @@
 
 @layer components {
   .lu-navbar {
-    background: var(--lu-surface);
+    background: color-mix(in srgb, var(--lu-surface) 92%, transparent);
     box-shadow: inset 0 1px 0 var(--lu-border);
+    backdrop-filter: saturate(1.4) blur(16px);
   }
 
-  /* Corners cut in 2px steps: just enough to read as pixel art. */
   .lu-navbar-indicator {
-    clip-path: polygon(
-      0 4px,
-      2px 4px,
-      2px 2px,
-      4px 2px,
-      4px 0,
-      calc(100% - 4px) 0,
-      calc(100% - 4px) 2px,
-      calc(100% - 2px) 2px,
-      calc(100% - 2px) 4px,
-      100% 4px,
-      100% calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 2px),
-      calc(100% - 4px) calc(100% - 2px),
-      calc(100% - 4px) 100%,
-      4px 100%,
-      4px calc(100% - 2px),
-      2px calc(100% - 2px),
-      2px calc(100% - 4px),
-      0 calc(100% - 4px)
-    );
-    background: var(--ion-color-primary);
-    /* One restrained pixel highlight along the top. */
-    box-shadow: inset 0 2px 0 color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-splash-star));
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+    box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--ion-color-primary) 70%, transparent);
   }
 }
 
@@ -78,16 +55,15 @@
     min-height: 44px;
     justify-content: flex-start;
 
-    /* Resting icons: muted lavender outlines with a quiet fill. */
-    --px-line: var(--lu-text-muted);
-    --px-fill: color-mix(in srgb, var(--lu-text-muted) 22%, var(--lu-surface));
+    /* Resting icons: muted outlines. */
+    --icon-color: var(--lu-text-muted);
 
-    .lu-pixel-icon {
+    .lu-icon {
       transition: transform 120ms ease-out;
     }
 
-    &:active .lu-pixel-icon {
-      transform: translateY(1px);
+    &:active .lu-icon {
+      transform: scale(0.92);
     }
   }
 
@@ -95,8 +71,7 @@
   ion-tab-button.is-lit {
     --color: var(--ion-color-primary);
     --color-selected: var(--ion-color-primary);
-    --px-line: var(--lu-splash-star);
-    --px-fill: color-mix(in srgb, var(--lu-splash-star) 55%, var(--ion-color-primary));
+    --icon-color: var(--ion-color-primary-contrast);
   }
 
   /*
@@ -111,7 +86,7 @@
   }
 
   /* rem, not px, so the bar follows the member's text size (WCAG 1.4.4). The icon sits centered on the 32px indicator. */
-  .lu-pixel-icon {
+  .lu-icon {
     font-size: 1.25rem;
     margin-top: 10px;
   }
@@ -121,14 +96,14 @@
     max-width: 100%;
     overflow: visible;
     font-size: 0.68rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0;
     white-space: nowrap;
     text-overflow: clip;
   }
 
   ion-tab-button.is-lit ion-label {
-    font-weight: 800;
+    font-weight: 700;
   }
 
   @media (max-width: 359.98px) {
@@ -145,7 +120,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    ion-tab-button .lu-pixel-icon {
+    ion-tab-button .lu-icon {
       transition: none;
     }
   }

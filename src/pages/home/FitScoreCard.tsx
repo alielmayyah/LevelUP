@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import type { FitScoreSummary, FitScoreTier } from '../../api/types';
 import { formatNumber, formatSigned } from '../../i18n/format';
 import { tierKey } from './homeText';
-import HomeIcon from './HomeIcon';
+import Icon from '../../components/Icon';
 
 gsap.registerPlugin(useGSAP);
 
@@ -45,17 +45,17 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
 
   return (
     <section
-      className="lu-px-card lu-fitscore relative overflow-hidden md:row-span-2 md:flex md:flex-col"
+      className="lu-card lu-fitscore relative overflow-hidden md:row-span-2 md:flex md:flex-col"
       data-testid="fitscore-card"
       aria-labelledby="fitscore-title"
     >
       <header className="lu-card-head justify-between">
         <h2 id="fitscore-title" className="lu-card-title">
-          <HomeIcon name="pulse" />
+          <Icon name="pulse" />
           {t('home.fitScore.title')}
         </h2>
         <span className="inline-flex items-center gap-1 text-[0.78rem] font-bold text-muted">
-          <HomeIcon name="lock" />
+          <Icon name="lock" />
           {t('home.fitScore.private')}
         </span>
       </header>
@@ -63,7 +63,7 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
       {fitScore ? (
         <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 md:flex-1 md:content-center">
           <span
-            className="lu-display text-[clamp(4rem,22vw,5.5rem)] leading-none text-ink tabular-nums [text-shadow:4px_4px_0_color-mix(in_srgb,var(--ion-color-primary)_55%,transparent)]"
+            className="lu-display text-[clamp(4rem,22vw,5.5rem)] leading-none text-ink tabular-nums"
             ref={scoreEl}
             data-testid="fitscore-value"
           >
@@ -71,7 +71,7 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
           </span>
           <span className="grid justify-items-start gap-2">
             <span className={`lu-chip lu-chip-tier lu-tier-${TIERS.indexOf(fitScore.tier) + 1}`}>
-              <HomeIcon name="bolt" />
+              <Icon name="bolt" />
               {t(tierKey(fitScore.tier))}
             </span>
             <span
@@ -81,7 +81,7 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
               {trend === 'up' || trend === 'down' ? (
                 <>
                   {/* Trend arrows are never mirrored: up means better in both languages. */}
-                  <HomeIcon name={trend === 'up' ? 'trendUp' : 'trendDown'} />
+                  <Icon name={trend === 'up' ? 'trendUp' : 'trendDown'} />
                   {formatSigned(change)} {t('home.fitScore.since')}
                 </>
               ) : (
@@ -101,7 +101,7 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
             {TIERS.map((tier, i) => (
               <span
                 key={tier}
-                className={`lu-tier-block h-2.5 rounded-[2px] lu-tier-${i + 1} ${i <= TIERS.indexOf(fitScore.tier) ? 'is-on' : ''} ${tier === fitScore.tier ? 'is-current' : ''}`}
+                className={`lu-tier-block h-2 lu-tier-${i + 1} ${i <= TIERS.indexOf(fitScore.tier) ? 'is-on' : ''} ${tier === fitScore.tier ? 'is-current' : ''}`}
               />
             ))}
           </span>

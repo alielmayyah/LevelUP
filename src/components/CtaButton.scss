@@ -1,75 +1,25 @@
-// The pixel face of the CTA: a solid block with corners cut in 4px steps, a
-// light top-left bevel, and a thick dark lip that shrinks when pressed, like a
-// game button. Layout and states are Tailwind classes in CtaButton.tsx.
-@function px-corners($s) {
-  @return polygon(
-    0 #{2 * $s},
-    #{$s} #{2 * $s},
-    #{$s} #{$s},
-    #{2 * $s} #{$s},
-    #{2 * $s} 0,
-    calc(100% - #{2 * $s}) 0,
-    calc(100% - #{2 * $s}) #{$s},
-    calc(100% - #{$s}) #{$s},
-    calc(100% - #{$s}) #{2 * $s},
-    100% #{2 * $s},
-    100% calc(100% - #{2 * $s}),
-    calc(100% - #{$s}) calc(100% - #{2 * $s}),
-    calc(100% - #{$s}) calc(100% - #{$s}),
-    calc(100% - #{2 * $s}) calc(100% - #{$s}),
-    calc(100% - #{2 * $s}) 100%,
-    #{2 * $s} 100%,
-    #{2 * $s} calc(100% - #{$s}),
-    #{$s} calc(100% - #{$s}),
-    #{$s} calc(100% - #{2 * $s}),
-    0 calc(100% - #{2 * $s})
-  );
-}
-
-$rim: inset 0 0 0 2px color-mix(in srgb, var(--ion-color-primary-shade) 55%, var(--lu-splash-bg));
-$light:
-  inset 0 4px 0 color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-splash-star)),
-  inset 4px 0 0 color-mix(in srgb, var(--ion-color-primary) 78%, var(--lu-splash-star));
-$dark-side: inset -4px 0 0 var(--ion-color-primary-shade);
-$lip: color-mix(in srgb, var(--ion-color-primary-shade) 55%, var(--lu-splash-bg));
-
+// The CTA's surface: a rounded brand gradient with a soft colored shadow.
+// Layout and states are Tailwind classes in CtaButton.tsx.
 @layer components {
   .lu-cta {
-    clip-path: px-corners(4px);
-    background: var(--ion-color-primary);
-    box-shadow:
-      $rim,
-      $light,
-      $dark-side,
-      inset 0 -7px 0 $lip;
-    /* The pixel display face, as on titles; Arabic falls back to IBM Plex Sans Arabic. */
-    font-family: 'Jersey 10', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
-    font-size: 1.35rem;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+    box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--ion-color-primary) 70%, transparent);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 
     &:lang(ar) {
-      font-size: 1.05rem;
-      font-weight: 700;
       letter-spacing: 0;
     }
 
-    /* Pressed: the lip shrinks as the block sinks (Tailwind moves it down 2px). */
     &:enabled:active {
-      box-shadow:
-        $rim,
-        $light,
-        $dark-side,
-        inset 0 -3px 0 $lip;
+      box-shadow: 0 2px 8px -4px color-mix(in srgb, var(--ion-color-primary) 70%, transparent);
     }
 
-    /* clip-path would cut off an outline, so keyboard focus is a ring inside the block. */
     &:focus-visible {
-      box-shadow:
-        inset 0 0 0 3px var(--lu-splash-text),
-        inset 0 0 0 5px var(--lu-splash-bg),
-        inset 0 -7px 0 $lip;
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 3px;
     }
 
     ion-spinner {

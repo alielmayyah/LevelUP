@@ -2,16 +2,16 @@ import { render, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { ICONS } from './iconGlyphs';
-import PixelIcon, { type PixelIconName } from './PixelIcon';
+import Icon, { type IconName } from './Icon';
 
-const names = Object.keys(ICONS) as PixelIconName[];
+const names = Object.keys(ICONS) as IconName[];
 
-describe('PixelIcon', () => {
+describe('Icon', () => {
   it('draws every glyph with the shared proportions and a small SVG tree', () => {
     const { container } = render(
       <>
         {names.map((name) => (
-          <PixelIcon key={name} name={name} />
+          <Icon key={name} name={name} />
         ))}
       </>,
     );
@@ -28,10 +28,10 @@ describe('PixelIcon', () => {
   });
 
   it('keeps decorative icons hidden and exposes the name of standalone icons', () => {
-    const { container, rerender } = render(<PixelIcon name="close" />);
+    const { container, rerender } = render(<Icon name="close" />);
     expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
     expect(within(container).queryByRole('img')).toBeNull();
-    rerender(<PixelIcon name="check" label="Read" />);
+    rerender(<Icon name="check" label="Read" />);
     expect(within(container).getByRole('img', { name: 'Read' })).toHaveAttribute('focusable', 'false');
   });
 });

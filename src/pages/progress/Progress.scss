@@ -6,9 +6,9 @@
   .lu-scan-tile,
   .lu-more-card {
     --tone: var(--ion-color-primary);
-    border: 2px solid color-mix(in srgb, var(--tone) 40%, var(--lu-border));
+    border: 1px solid color-mix(in srgb, var(--tone) 40%, var(--lu-border));
     background: color-mix(in srgb, var(--tone) 8%, var(--lu-surface));
-    box-shadow: 0 3px 0 color-mix(in srgb, var(--tone) 25%, var(--lu-pixel-shadow));
+    box-shadow: var(--lu-shadow);
   }
 
   /* The six smaller cards sit back a little so the big three lead. */
@@ -20,48 +20,48 @@
 
   .lu-tone-weight {
     --tone: var(--ion-color-primary);
-    --px-fill: var(--lu-metal);
+    --icon-color: var(--lu-metal);
   }
 
   .lu-tone-muscle {
     --tone: var(--lu-tier-4);
-    --px-fill: var(--lu-muscle);
+    --icon-color: var(--lu-muscle);
   }
 
   .lu-tone-fat {
     --tone: var(--lu-fat);
-    --px-fill: var(--lu-fat);
+    --icon-color: var(--lu-fat);
   }
 
   .lu-tone-water {
     --tone: var(--lu-muscle);
-    --px-fill: var(--lu-muscle);
+    --icon-color: var(--lu-muscle);
   }
 
   /* Protein uses the warm nutrition accent. */
   .lu-tone-protein {
     --tone: var(--lu-fat);
-    --px-fill: var(--lu-bronze);
+    --icon-color: var(--lu-bronze);
   }
 
   .lu-tone-minerals {
     --tone: var(--lu-tier-5);
-    --px-fill: var(--lu-tier-5);
+    --icon-color: var(--lu-tier-5);
   }
 
   .lu-tone-bmr {
     --tone: var(--lu-gold);
-    --px-fill: var(--lu-gold);
+    --icon-color: var(--lu-gold);
   }
 
   .lu-tone-bmi {
     --tone: var(--lu-tier-3);
-    --px-fill: var(--lu-tier-3);
+    --icon-color: var(--lu-tier-3);
   }
 
   .lu-tone-visceral {
     --tone: var(--lu-tier-1);
-    --px-fill: var(--lu-tier-1);
+    --icon-color: var(--lu-tier-1);
   }
 
   /*
@@ -76,24 +76,11 @@
     border-radius: 18px 18px 0 0;
     box-shadow:
       inset 0 4px 0 var(--tone),
-      0 -8px 24px color-mix(in srgb, var(--lu-pixel-ink) 30%, transparent);
+      var(--lu-shadow-raised);
   }
 
   .lu-info-icon {
-    clip-path: polygon(
-      0 4px,
-      4px 4px,
-      4px 0,
-      calc(100% - 4px) 0,
-      calc(100% - 4px) 4px,
-      100% 4px,
-      100% calc(100% - 4px),
-      calc(100% - 4px) calc(100% - 4px),
-      calc(100% - 4px) 100%,
-      4px 100%,
-      4px calc(100% - 4px),
-      0 calc(100% - 4px)
-    );
+    border-radius: 14px;
     background: color-mix(in srgb, var(--tone) 18%, var(--lu-surface-2));
   }
 
@@ -129,84 +116,45 @@
     outline-offset: -4px;
   }
 
-  /* "All scans" in the page header: a pixel chip button with stepped corners. */
+  /* "All scans" in the page header: a rounded chip button with a soft shadow. */
   .lu-all-scans {
-    clip-path: polygon(
-      0 4px,
-      2px 4px,
-      2px 2px,
-      4px 2px,
-      4px 0,
-      calc(100% - 4px) 0,
-      calc(100% - 4px) 2px,
-      calc(100% - 2px) 2px,
-      calc(100% - 2px) 4px,
-      100% 4px,
-      100% calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 2px),
-      calc(100% - 4px) calc(100% - 2px),
-      calc(100% - 4px) 100%,
-      4px 100%,
-      4px calc(100% - 2px),
-      2px calc(100% - 2px),
-      2px calc(100% - 4px),
-      0 calc(100% - 4px)
-    );
-    box-shadow:
-      inset 0 0 0 2px var(--lu-border),
-      inset 0 -4px 0 var(--lu-surface-2);
+    border: 1px solid var(--lu-border);
+    box-shadow: var(--lu-shadow);
+    transition: transform 150ms var(--ease-soft, ease-out);
     touch-action: manipulation;
   }
 
   .lu-all-scans:focus-visible {
-    outline: 0;
-    box-shadow:
-      inset 0 0 0 2px var(--lu-surface),
-      inset 0 0 0 4px var(--lu-text);
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: 2px;
   }
 
   .lu-all-scans:active {
-    transform: translateY(2px);
+    transform: scale(0.97);
+    box-shadow: var(--lu-shadow-pressed);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-all-scans {
+      transition: none;
+    }
+
+    .lu-all-scans:active {
+      transform: none;
+    }
   }
 
   /* Calendar and title icons in the brand purple. */
   .lu-tone-calendar {
-    --px-fill: var(--ion-color-primary);
+    --icon-color: var(--ion-color-primary);
   }
 
-  /*
-   * The latest-scan card: a pixel frame (corners cut in 4px steps, a 2px
-   * purple rim, a lit top edge) with a faint brand tint.
-   */
+  /* The latest-scan card: a rounded card with a brand hairline, a faint brand tint and a soft shadow. */
   .lu-scan-card {
-    clip-path: polygon(
-      0 8px,
-      4px 8px,
-      4px 4px,
-      8px 4px,
-      8px 0,
-      calc(100% - 8px) 0,
-      calc(100% - 8px) 4px,
-      calc(100% - 4px) 4px,
-      calc(100% - 4px) 8px,
-      100% 8px,
-      100% calc(100% - 8px),
-      calc(100% - 4px) calc(100% - 8px),
-      calc(100% - 4px) calc(100% - 4px),
-      calc(100% - 8px) calc(100% - 4px),
-      calc(100% - 8px) 100%,
-      8px 100%,
-      8px calc(100% - 4px),
-      4px calc(100% - 4px),
-      4px calc(100% - 8px),
-      0 calc(100% - 8px)
-    );
-    background: color-mix(in srgb, var(--ion-color-primary) 7%, var(--lu-surface));
-    box-shadow:
-      inset 0 0 0 2px color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border)),
-      inset 0 4px 0 color-mix(in srgb, var(--ion-color-primary) 22%, transparent),
-      inset 0 -4px 0 color-mix(in srgb, var(--ion-color-primary) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ion-color-primary) 35%, var(--lu-border));
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--ion-color-primary) 6%, var(--lu-surface));
+    box-shadow: var(--lu-shadow);
   }
 
   /* The scan date doubles as a button: a dashed underline says it opens something. */
@@ -225,7 +173,7 @@
     border-color: color-mix(in srgb, var(--ion-color-primary) 55%, var(--lu-border));
     background: color-mix(in srgb, var(--ion-color-primary) 16%, var(--lu-surface));
     color: var(--lu-text);
-    box-shadow: 0 2px 0 var(--lu-pixel-shadow);
+    box-shadow: var(--lu-shadow);
 
     &.is-current {
       border-color: var(--ion-color-primary-shade);
@@ -233,9 +181,11 @@
       color: var(--ion-color-primary-contrast);
     }
 
+    transition: transform 150ms var(--ease-soft, ease-out);
+
     &:active {
-      transform: translateY(2px);
-      box-shadow: none;
+      transform: scale(0.97);
+      box-shadow: var(--lu-shadow-pressed);
     }
 
     &:focus-visible {
@@ -244,30 +194,32 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      transition: none;
+
       &:active {
         transform: none;
       }
     }
   }
 
-  /* One flat row under the tiles: which scan the changes are against, and a small pixel button to switch. */
+  /* One flat row under the tiles: which scan the changes are against, and a small button to switch. */
   .lu-compare {
-    border: 2px solid var(--lu-border);
+    border: 1px solid var(--lu-border);
     background: var(--lu-surface-2);
   }
 
   .lu-compare-button {
-    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 60%, var(--lu-border));
+    border: 1px solid color-mix(in srgb, var(--ion-color-primary) 60%, var(--lu-border));
     background: var(--lu-surface);
     color: var(--lu-text);
-    box-shadow: 0 3px 0 color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-pixel-shadow));
+    box-shadow: var(--lu-shadow);
     transition:
-      transform 90ms steps(2),
-      box-shadow 90ms steps(2);
+      transform 150ms var(--ease-soft, ease-out),
+      box-shadow 150ms var(--ease-soft, ease-out);
 
     &:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-pixel-shadow));
+      transform: scale(0.97);
+      box-shadow: var(--lu-shadow-pressed);
     }
 
     &:focus-visible {
@@ -280,18 +232,6 @@
     }
   }
 
-  .lu-grass-dark {
-    fill: color-mix(in srgb, var(--lu-tier-4) 70%, var(--lu-splash-bg));
-  }
-
-  .lu-grass-light {
-    fill: var(--lu-tier-4);
-  }
-
-  .lu-grass-stone {
-    fill: color-mix(in srgb, var(--lu-floor-edge) 80%, var(--lu-surface));
-  }
-
   /* The bigger cards get a stronger rim in their own color, as in the reference. */
   .lu-scan-tile {
     border-color: color-mix(in srgb, var(--tone) 70%, var(--lu-border));
@@ -302,47 +242,32 @@
     background: color-mix(in srgb, var(--tone) 7%, var(--lu-surface));
   }
 
-  /* Scan picker arrows: small pixel buttons with stepped corners. */
+  /* Scan picker arrows: round buttons with a hairline and a soft shadow. */
   .lu-scan-step {
-    clip-path: polygon(
-      0 4px,
-      2px 4px,
-      2px 2px,
-      4px 2px,
-      4px 0,
-      calc(100% - 4px) 0,
-      calc(100% - 4px) 2px,
-      calc(100% - 2px) 2px,
-      calc(100% - 2px) 4px,
-      100% 4px,
-      100% calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 4px),
-      calc(100% - 2px) calc(100% - 2px),
-      calc(100% - 4px) calc(100% - 2px),
-      calc(100% - 4px) 100%,
-      4px 100%,
-      4px calc(100% - 2px),
-      2px calc(100% - 2px),
-      2px calc(100% - 4px),
-      0 calc(100% - 4px)
-    );
-    box-shadow:
-      inset 0 0 0 2px var(--lu-border),
-      inset 0 -4px 0 var(--lu-border);
+    border: 1px solid var(--lu-border);
+    box-shadow: var(--lu-shadow);
+    transition: transform 150ms var(--ease-soft, ease-out);
+  }
+
+  .lu-scan-step:disabled {
+    box-shadow: none;
   }
 
   .lu-scan-step:focus-visible {
-    outline: 0;
-    box-shadow:
-      inset 0 0 0 2px var(--lu-surface),
-      inset 0 0 0 4px var(--lu-text);
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: 2px;
   }
 
   .lu-scan-step:not(:disabled):active {
-    transform: translateY(2px);
+    transform: scale(0.97);
+    box-shadow: var(--lu-shadow-pressed);
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .lu-scan-step {
+      transition: none;
+    }
+
     .lu-scan-step:not(:disabled):active {
       transform: none;
     }

@@ -1,12 +1,11 @@
 /*
- * The app's pixel-art building blocks, shared by every tab:
- * a pixel display face (Jersey 10) for titles and big numbers,
- * chunky cards with a hard unblurred drop shadow, chips, icon tiles, and
- * loading/empty states. Jersey 10 has no Arabic glyphs, so Arabic falls back
- * to IBM Plex Sans Arabic.
+ * The app's shared UI kit, clean modern style: soft rounded cards with a
+ * hairline border and blurred shadow, pill chips, iOS-style switches, a
+ * sliding segmented control, rounded progress bars, and loading/empty states.
+ * Type is IBM Plex Sans (Latin) and IBM Plex Sans Arabic (Arabic).
  *
  * Imported by tailwind.css into the `components` layer: Tailwind utilities on
- * the same element override these (e.g. `lu-px-card p-3`), and page Sass
+ * the same element override these (e.g. `lu-card p-3`), and page Sass
  * partials, also in `components`, load later and so win ties.
  */
 
@@ -20,44 +19,52 @@
   padding-block-start: calc(var(--lu-gutter) + var(--ion-safe-area-top, 0px));
 }
 
+/* Titles and big numbers: the app font, bold, slightly tight. */
 .lu-display {
-  font-family: 'Jersey 10', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
-  font-weight: 400;
-  letter-spacing: 0;
+  font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
 }
 
 .lu-display:lang(ar) {
-  font-weight: 700;
+  letter-spacing: 0;
 }
 
 /* ---------- Cards ---------- */
 
-.lu-px-card {
+.lu-card {
   box-sizing: border-box;
   inline-size: 100%;
-  padding: 14px;
-  border: 2px solid var(--lu-border);
-  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid var(--lu-border);
+  border-radius: 16px;
   background: var(--lu-surface);
   color: var(--lu-text);
-  box-shadow: 0 4px 0 var(--lu-pixel-shadow);
+  box-shadow: var(--lu-shadow);
   font: inherit;
   text-align: start;
 }
 
-button.lu-px-card {
+@media (min-width: 768px) {
+  .lu-card {
+    padding: 20px;
+  }
+}
+
+button.lu-card {
   cursor: pointer;
   transition:
-    transform 90ms steps(2),
-    box-shadow 90ms steps(2);
+    transform 150ms var(--ease-soft, ease-out),
+    box-shadow 150ms var(--ease-soft, ease-out);
 }
 
-button.lu-px-card:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 var(--lu-pixel-shadow);
+button.lu-card:active {
+  transform: scale(0.985);
+  box-shadow: var(--lu-shadow-pressed);
 }
 
-:is(button.lu-px-card, .lu-icon-button, .lu-segment button, .lu-link-button, .lu-row-button):focus-visible {
+:is(button.lu-card, .lu-icon-button, .lu-segment button, .lu-link-button, .lu-row-button):focus-visible {
   outline: 2px solid var(--ion-color-primary);
   outline-offset: 3px;
 }
@@ -71,51 +78,50 @@ button.lu-px-card:active {
 .lu-card-title {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
-.lu-card-title .lu-pixel-icon,
-.lu-section-title .lu-pixel-icon {
+.lu-card-title .lu-icon,
+.lu-section-title .lu-icon {
   color: var(--ion-color-primary);
   font-size: 1.15rem;
 }
 
-/* Not the pixel face: at label size it is hard to read. */
 .lu-card-kicker {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--ion-color-primary);
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  color: var(--lu-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.lu-card-kicker .lu-pixel-icon {
-  font-size: 1.05rem;
+.lu-card-kicker .lu-icon {
+  color: var(--ion-color-primary);
+  font-size: 1rem;
 }
 
 .lu-card-kicker:lang(ar) {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   letter-spacing: 0;
 }
 
-:root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) .lu-pixel-icon,
-:root.ion-palette-dark .lu-card-kicker {
+:root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) .lu-icon {
   color: var(--ion-color-secondary);
 }
 
 .lu-section-title {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 8px 0 10px;
+  gap: 8px;
+  margin: 12px 0 10px;
   font-size: 1.05rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .lu-chevron {
@@ -135,26 +141,26 @@ button.lu-px-card:active {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
-  border: 1px solid currentColor;
-  border-radius: 4px;
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lu-surface-2);
   font-size: 0.75rem;
-  font-weight: 800;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .lu-chip-primary {
-  border-color: color-mix(in srgb, var(--ion-color-primary) 50%, transparent);
-  background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
+  background: color-mix(in srgb, var(--ion-color-primary) 12%, transparent);
   color: var(--ion-color-primary-shade);
 }
 
 :root.ion-palette-dark .lu-chip-primary {
+  background: color-mix(in srgb, var(--ion-color-secondary) 18%, transparent);
   color: var(--ion-color-secondary);
 }
 
 .lu-chip-danger {
-  border-color: color-mix(in srgb, var(--lu-danger) 55%, transparent);
   background: color-mix(in srgb, var(--lu-danger) 12%, transparent);
   color: var(--lu-danger);
 }
@@ -181,12 +187,11 @@ button.lu-px-card:active {
 }
 
 .lu-chip-tier {
-  border-color: color-mix(in srgb, var(--tier) 60%, transparent);
   background: color-mix(in srgb, var(--tier) 16%, transparent);
   color: var(--lu-text);
 }
 
-.lu-chip-tier .lu-pixel-icon {
+.lu-chip-tier .lu-icon {
   color: var(--tier);
 }
 
@@ -198,20 +203,16 @@ button.lu-px-card:active {
   place-items: center;
   inline-size: 44px;
   block-size: 44px;
-  border: 2px solid var(--lu-border);
-  border-radius: 8px;
-  background: var(--lu-surface-2);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ion-color-primary) 10%, var(--lu-surface));
   color: var(--ion-color-primary);
   font-size: 22px;
 }
 
 .lu-icon-tile-gold {
-  --px-fill: currentColor;
-  --px-hi: var(--lu-fat-core);
   color: var(--lu-gold);
-  border-color: color-mix(in srgb, currentColor 45%, var(--lu-border));
-  background: color-mix(in srgb, currentColor 16%, var(--lu-surface));
-  font-size: 30px;
+  background: color-mix(in srgb, currentColor 14%, var(--lu-surface));
+  font-size: 26px;
 }
 
 .lu-icon-button {
@@ -222,25 +223,26 @@ button.lu-px-card:active {
   inline-size: 44px;
   block-size: 44px;
   padding: 0;
-  border: 2px solid var(--lu-border);
-  border-radius: 10px;
+  border: 1px solid var(--lu-border);
+  border-radius: 999px;
   background: var(--lu-surface);
   color: var(--lu-text);
-  box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+  box-shadow: var(--lu-shadow);
   font-size: 22px;
   cursor: pointer;
+  transition: transform 120ms var(--ease-soft, ease-out);
 }
 
 .lu-link-button {
   min-block-size: 44px;
   padding: 0 10px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background: transparent;
   color: var(--ion-color-primary);
   font: inherit;
-  font-size: 0.85rem;
-  font-weight: 800;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -253,7 +255,7 @@ button.lu-px-card:active {
   cursor: default;
 }
 
-/* ---------- Segmented switch (Goals, Leaderboard) ---------- */
+/* ---------- Segmented control (Goals, Leaderboard) ---------- */
 
 .lu-segment {
   display: grid;
@@ -262,47 +264,58 @@ button.lu-px-card:active {
   gap: 4px;
   margin-block-end: 16px;
   padding: 4px;
-  border: 2px solid var(--lu-border);
-  border-radius: 12px;
-  background: var(--lu-surface);
-  box-shadow: 0 4px 0 var(--lu-pixel-shadow);
+  border-radius: 14px;
+  background: var(--lu-surface-2);
 }
 
 .lu-segment button {
   display: grid;
   place-items: center;
   gap: 2px;
-  min-block-size: 48px;
+  min-block-size: 44px;
   padding: 6px 4px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background: transparent;
   color: var(--lu-text-muted);
   font: inherit;
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-size: 0.8rem;
+  font-weight: 600;
   line-height: 1.15;
   text-align: center;
   cursor: pointer;
+  transition:
+    background-color 180ms var(--ease-soft, ease-out),
+    color 180ms var(--ease-soft, ease-out),
+    box-shadow 180ms var(--ease-soft, ease-out);
 }
 
-.lu-segment button .lu-pixel-icon {
-  font-size: 1.15rem;
+.lu-segment button .lu-icon {
+  font-size: 1.1rem;
 }
 
 .lu-segment button[aria-selected='true'],
 .lu-segment button[aria-checked='true'] {
-  background: var(--ion-color-primary);
-  color: var(--ion-color-primary-contrast);
-  box-shadow: 0 3px 0 var(--ion-color-primary-shade);
+  background: var(--lu-surface);
+  color: var(--lu-text);
+  box-shadow: var(--lu-shadow);
 }
 
-/* ---------- Pixel progress bar ---------- */
+.lu-segment button[aria-selected='true'] .lu-icon,
+.lu-segment button[aria-checked='true'] .lu-icon {
+  color: var(--ion-color-primary);
+}
+
+:root.ion-palette-dark .lu-segment button[aria-selected='true'],
+:root.ion-palette-dark .lu-segment button[aria-checked='true'] {
+  background: var(--lu-border);
+}
+
+/* ---------- Progress bar ---------- */
 
 .lu-bar {
-  block-size: 12px;
-  border: 2px solid var(--lu-border);
-  border-radius: 3px;
+  block-size: 10px;
+  border-radius: 999px;
   background: var(--lu-surface-2);
   overflow: hidden;
 }
@@ -311,20 +324,14 @@ button.lu-px-card:active {
   display: block;
   block-size: 100%;
   inline-size: var(--lu-bar, 0%);
-  background: repeating-linear-gradient(
-    90deg,
-    var(--ion-color-primary) 0 6px,
-    color-mix(in srgb, var(--ion-color-primary) 80%, var(--lu-surface)) 6px 8px
-  );
-  transition: inline-size 400ms steps(10);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-secondary));
+  transition: inline-size 500ms var(--ease-soft, ease-out);
 }
 
-:root.ion-palette-dark .lu-bar > span {
-  background: repeating-linear-gradient(
-    90deg,
-    var(--ion-color-secondary) 0 6px,
-    color-mix(in srgb, var(--ion-color-secondary) 75%, var(--lu-surface)) 6px 8px
-  );
+/* The bar fills from the start side, so its gradient runs the other way in RTL. */
+.lu-bar:dir(rtl) > span {
+  background: linear-gradient(270deg, var(--ion-color-primary), var(--ion-color-secondary));
 }
 
 /* ---------- Toggle switch ---------- */
@@ -332,28 +339,33 @@ button.lu-px-card:active {
 .lu-switch {
   position: relative;
   flex: none;
-  inline-size: 48px;
-  block-size: 28px;
+  inline-size: 50px;
+  block-size: 30px;
   padding: 0;
-  border: 2px solid var(--lu-border);
-  border-radius: 8px;
-  background: var(--lu-surface-2);
+  border: 0;
+  border-radius: 999px;
+  background: var(--lu-border);
   cursor: pointer;
+  transition: background-color 180ms var(--ease-soft, ease-out);
 }
 
 .lu-switch::after {
   content: '';
   position: absolute;
-  inset-block: 2px;
-  inset-inline-start: 2px;
-  inline-size: 20px;
-  border-radius: 4px;
-  background: var(--lu-text-muted);
-  transition: transform 120ms steps(3);
+  inset-block: 3px;
+  inset-inline-start: 3px;
+  inline-size: 24px;
+  border-radius: 999px;
+  background: var(--lu-surface);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  transition: transform 180ms var(--ease-soft, ease-out);
+}
+
+:root.ion-palette-dark .lu-switch::after {
+  background: var(--lu-text);
 }
 
 .lu-switch[aria-checked='true'] {
-  border-color: var(--ion-color-primary);
   background: var(--ion-color-primary);
 }
 
@@ -382,7 +394,7 @@ button.lu-px-card:active {
   text-align: center;
 }
 
-.lu-state .lu-pixel-icon {
+.lu-state .lu-icon {
   font-size: 40px;
 }
 
@@ -393,10 +405,10 @@ button.lu-px-card:active {
 .lu-skeleton,
 .lu-skeleton-card {
   display: block;
-  border-radius: 6px;
+  border-radius: 8px;
   background: linear-gradient(90deg, var(--lu-surface-2) 30%, var(--lu-border) 50%, var(--lu-surface-2) 70%);
   background-size: 300% 100%;
-  animation: lu-shimmer 1.4s steps(8) infinite;
+  animation: lu-shimmer 1.4s ease-in-out infinite;
 }
 
 .lu-skeleton {
@@ -405,7 +417,7 @@ button.lu-px-card:active {
 }
 
 .lu-skeleton-card {
-  border-radius: 10px;
+  border-radius: 16px;
   min-block-size: 104px;
 }
 
@@ -425,13 +437,15 @@ button.lu-px-card:active {
     animation: none;
   }
 
-  button.lu-px-card,
+  button.lu-card,
+  .lu-switch,
   .lu-switch::after,
+  .lu-segment button,
   .lu-bar > span {
     transition: none;
   }
 
-  button.lu-px-card:active {
+  button.lu-card:active {
     transform: none;
   }
 }
@@ -439,9 +453,9 @@ button.lu-px-card:active {
 /* ---------- Pressed states (every control gives immediate feedback) ---------- */
 
 /*
- * Pixel press: the control drops 2 px and its hard shadow shrinks, like a
- * physical button. touch-action: manipulation stops a quick double tap from
- * zooming the page instead of pressing twice.
+ * Pressed: the control shrinks slightly and darkens. touch-action:
+ * manipulation stops a quick double tap from zooming the page instead of
+ * pressing twice.
  */
 :is(
   button,
@@ -460,24 +474,15 @@ button.lu-px-card:active {
   user-select: none;
 }
 
-.lu-icon-button:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--lu-pixel-shadow);
-}
-
-.lu-notif-item:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--lu-pixel-shadow);
-}
-
+:is(.lu-icon-button, .lu-notif-item):active,
 .lu-goal:has(.lu-goal-row:active) {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--lu-pixel-shadow);
+  transform: scale(0.97);
+  box-shadow: var(--lu-shadow-pressed);
 }
 
 :is(.lu-segment button, .lu-choice button, .lu-chart-key, .lu-switch):active {
-  transform: translateY(1px);
-  filter: brightness(0.92);
+  transform: scale(0.97);
+  filter: brightness(0.95);
 }
 
 :is(.lu-link-button, .lu-row-button):active:not(:disabled) {
@@ -491,11 +496,11 @@ button.lu-px-card:active {
   }
 }
 
-/* The pixel icon before each tab page's title: the same icon as its tab, in the brand purple. */
+/* The icon before each tab page's title: the same icon as its tab, in the brand purple. */
 .lu-title-icon {
-  /* A purple outline, not dark ink, so line-heavy icons (the flag pole) show in dark mode too. */
-  --px-line: color-mix(in srgb, var(--ion-color-primary) 65%, var(--lu-text));
-  --px-fill: var(--ion-color-primary);
-  --px-hi: color-mix(in srgb, var(--ion-color-primary) 40%, var(--lu-splash-star));
-  --px-core: var(--lu-splash-star);
+  color: var(--ion-color-primary);
+}
+
+:root.ion-palette-dark .lu-title-icon {
+  color: var(--ion-color-secondary);
 }

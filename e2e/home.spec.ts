@@ -21,24 +21,21 @@ for (const lang of LOCALES)
         await expect(home.getByTestId('rank-number')).toContainText('#1');
         const trophy = home.getByTestId('rank-trophy');
         await expect(trophy).toBeVisible();
-        const { fill, gold } = await trophy.evaluate((tile) => {
-          const cup = tile.querySelector('.px-fill')!;
+        const { stroke, gold } = await trophy.evaluate((tile) => {
+          const cup = tile.querySelector('svg')!;
           const sample = document.createElement('span');
           sample.style.color = 'var(--lu-gold)';
           tile.append(sample);
           const gold = getComputedStyle(sample).color;
           sample.remove();
-          return { fill: getComputedStyle(cup).fill, gold };
+          return { stroke: getComputedStyle(cup).stroke, gold };
         });
-        expect(fill).toBe(gold);
+        expect(stroke).toBe(gold);
         await expect(home.getByTestId('tile-body-fat')).toContainText('1.1%');
         await expect(home.getByTestId('tile-muscle')).toContainText(`0.9 ${strings[lang].units.kg}`);
         await expect(home.getByTestId('tile-bmi')).toContainText(strings[lang].home.wins.bmi);
         for (const metric of ['body-fat', 'muscle', 'bmi']) {
-          await expect(home.getByTestId(`tile-${metric}`).locator('svg')).toHaveAttribute(
-            'shape-rendering',
-            'crispEdges',
-          );
+          await expect(home.getByTestId(`tile-${metric}`).locator('svg')).toBeVisible();
         }
         expect(await noHorizontalOverflow(page)).toBe(true);
       });

@@ -29,7 +29,7 @@ import CtaButton from '../components/CtaButton';
 import ScrollStrip from '../components/ScrollStrip';
 import { useSwipe } from '../components/useSwipe';
 import { focusSibling, rovingTarget } from '../components/roving';
-import PixelIcon from '../components/PixelIcon';
+import Icon from '../components/Icon';
 import '../avatar/avatar.scss';
 
 const COLORS: Record<Exclude<CustomizerTab, 'outfits'>, readonly ColorPart[]> = {
@@ -59,7 +59,7 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
     <div className="grid min-w-0 gap-1.5" data-testid={`part-${part}`}>
       <p
         id={labelId}
-        className="m-0 flex items-baseline gap-x-2 text-[0.78rem] font-extrabold text-muted uppercase ar:normal-case"
+        className="m-0 flex items-baseline gap-x-2 text-[0.78rem] font-bold text-muted uppercase ar:normal-case"
       >
         {t(`avatar.part.${part}`)}
         <span className="font-semibold normal-case" aria-hidden="true">
@@ -83,7 +83,7 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
               aria-checked={on}
               aria-label={t(`avatar.color.${preset.id}`)}
               tabIndex={on ? 0 : -1}
-              className="lu-swatch relative grid size-11 flex-none cursor-pointer scroll-mx-8 place-items-center rounded-full border-2 border-line bg-surface-2 p-0 text-ink"
+              className="lu-swatch relative grid size-11 flex-none cursor-pointer scroll-mx-8 place-items-center rounded-full border border-line bg-surface-2 p-0 text-ink"
               style={{ backgroundColor: preset.color }}
               onClick={() => onChange(preset.id)}
               onKeyDown={(e) => {
@@ -95,7 +95,7 @@ const Swatches: React.FC<SwatchesProps> = ({ part, value, onChange }) => {
             >
               {preset.id === MATCH_HAIR && <CustomizerIcon tab="hair" />}
               {on && (
-                <PixelIcon
+                <Icon
                   className={
                     preset.id === MATCH_HAIR
                       ? 'absolute inset-e-0.5 inset-bs-0.5 text-[0.8rem]'
@@ -259,7 +259,7 @@ const Character: React.FC = () => {
               aria-label={t('avatar.back')}
               data-testid="character-back"
             >
-              <PixelIcon className="rtl:-scale-x-100" name="arrowBack" />
+              <Icon className="rtl:-scale-x-100" name="arrowBack" />
             </button>
             <h1 className="lu-display m-0 min-w-0 flex-1 truncate text-center text-[1.75rem] leading-none text-ink">
               {t('avatar.title')}
@@ -272,7 +272,7 @@ const Character: React.FC = () => {
               aria-label={t('avatar.randomize')}
               data-testid="character-random"
             >
-              <PixelIcon name="dice" />
+              <Icon name="dice" />
             </button>
             <button
               type="button"
@@ -282,7 +282,7 @@ const Character: React.FC = () => {
               aria-label={t('avatar.reset')}
               data-testid="character-reset"
             >
-              <PixelIcon name="refresh" />
+              <Icon name="refresh" />
             </button>
           </div>
 
@@ -317,7 +317,7 @@ const Character: React.FC = () => {
                   />
                 </div>
                 <p
-                  className="lu-save-chip absolute inset-e-3 bottom-2 m-0 min-h-[1.2em] rounded-full px-2.5 py-0.5 text-[0.75rem] font-extrabold empty:hidden"
+                  className="lu-save-chip absolute inset-e-3 bottom-2 m-0 min-h-[1.2em] rounded-full px-2.5 py-0.5 text-[0.75rem] font-bold empty:hidden"
                   role="status"
                   data-testid="character-status"
                 >
@@ -358,7 +358,7 @@ const Character: React.FC = () => {
                       aria-controls={`avatar-panel-${tab}`}
                       aria-selected={tab === active}
                       tabIndex={tab === active ? 0 : -1}
-                      className="lu-customizer-tab grid min-h-14 min-w-16 flex-none cursor-pointer scroll-mx-8 place-items-center content-center gap-1 rounded-xl border-0 px-2 py-1.5 text-[0.72rem] leading-tight font-extrabold whitespace-nowrap"
+                      className="lu-customizer-tab grid min-h-14 min-w-16 flex-none cursor-pointer scroll-mx-8 place-items-center content-center gap-1 rounded-xl border-0 px-2 py-1.5 text-[0.72rem] leading-tight font-bold whitespace-nowrap"
                       onClick={(e) => {
                         setActive(tab);
                         // Bring a half-hidden category fully into the strip.

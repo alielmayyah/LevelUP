@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
-import PixelIcon from './PixelIcon';
+import Icon from './Icon';
 import { pillTransform, tabIndex, TABS } from './tabConfig';
 import './TabBar.scss';
 
@@ -116,7 +116,7 @@ const TabBar: React.FC = () => {
                 void content?.scrollToTop(window.matchMedia(MOTION_OK).matches ? 300 : 0);
               }}
             >
-              <PixelIcon name={icon} />
+              <Icon name={icon} />
               {/* Short labels fit a 320–390 px bar. Below 360 px they are visually hidden but still read out. */}
               <IonLabel>{t(`tabs.short.${tab}`)}</IonLabel>
             </IonTabButton>

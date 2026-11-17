@@ -11,7 +11,7 @@ import '../avatar/avatar.scss';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
 import FitScoreCard from './home/FitScoreCard';
-import HomeIcon from './home/HomeIcon';
+import Icon from '../components/Icon';
 import { formatToday } from './home/homeText';
 import MissionCard from './home/MissionCard';
 import NotificationsSheet from './home/NotificationsSheet';
@@ -85,10 +85,10 @@ const Dashboard: React.FC = () => {
                 }
                 onClick={() => setNotifOpen(true)}
               >
-                <HomeIcon name="bell" />
+                <Icon name="bell" />
                 {unread > 0 && (
                   <span
-                    className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 border-page bg-danger px-[5px] text-[0.72rem] leading-none font-black text-surface dark:text-pixel-ink"
+                    className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border border-page bg-danger px-[5px] text-[0.72rem] leading-none font-bold text-surface dark:text-scrim"
                     data-testid="bell-dot"
                     aria-hidden="true"
                   >

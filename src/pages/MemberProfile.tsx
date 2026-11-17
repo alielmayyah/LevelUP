@@ -7,7 +7,7 @@ import Avatar from '../avatar/Avatar';
 import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
 import CtaButton from '../components/CtaButton';
-import PixelIcon from '../components/PixelIcon';
+import Icon from '../components/Icon';
 import TabPage from '../components/TabPage';
 import { formatCount, formatNumber, formatRank } from '../i18n/format';
 import MetricIcon from './leaderboard/MetricIcon';
@@ -22,7 +22,7 @@ const BOARD_TONE: Record<LeaderboardBoard, string> = {
   bodyFat: 'border-fat/45 bg-fat/8',
 };
 
-const TAG = 'flex items-center gap-1.5 rounded-md bg-surface-2 px-2 py-1 text-[0.85rem]';
+const TAG = 'flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-[0.85rem]';
 const CARD_TITLE = 'lu-display m-0 flex items-center gap-2 text-[1.6rem] leading-none text-ink ar:text-[1.3rem]';
 
 /**
@@ -41,7 +41,7 @@ const MemberProfile: React.FC = () => {
     <TabPage
       testId="page-member"
       title={t('member.title')}
-      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="person" />}
+      titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="person" />}
       backTo="/tabs/community"
       onRefresh={reload}
     >
@@ -55,7 +55,7 @@ const MemberProfile: React.FC = () => {
       {member && showcase && (
         <div className="mx-auto grid w-full max-w-[620px] gap-3.5">
           {/* Who: character, name, and two small tags. */}
-          <section className="lu-px-card flex items-center gap-4" aria-labelledby="member-name">
+          <section className="lu-card flex items-center gap-4" aria-labelledby="member-name">
             <div className="lu-avatar-frame grid h-36 w-[clamp(5rem,25vw,7rem)] shrink-0 place-items-center overflow-hidden rounded-[12px]">
               <Avatar
                 config={memberAvatar(member)}
@@ -75,19 +75,19 @@ const MemberProfile: React.FC = () => {
               <dl className="mx-0 mt-2.5 mb-0 flex flex-wrap gap-1.5">
                 <div className={TAG}>
                   <dt className="flex">
-                    <PixelIcon className="flex-none text-[1.05rem] text-primary" name="calendar" />
+                    <Icon className="flex-none text-[1.05rem] text-primary" name="calendar" />
                     <span className="sr-only">{t('profile.age')}</span>
                   </dt>
-                  <dd className="m-0 font-extrabold whitespace-nowrap text-ink" data-testid="member-age">
+                  <dd className="m-0 font-bold whitespace-nowrap text-ink" data-testid="member-age">
                     {member.age !== null ? t('profile.ageValue', { value: formatNumber(member.age) }) : '—'}
                   </dd>
                 </div>
                 <div className={TAG}>
                   <dt className="flex">
-                    <PixelIcon className="flex-none text-[1.05rem] text-accent" name="ruler" />
+                    <Icon className="flex-none text-[1.05rem] text-accent" name="ruler" />
                     <span className="sr-only">{t('profile.height')}</span>
                   </dt>
-                  <dd className="m-0 font-extrabold whitespace-nowrap text-ink" data-testid="member-height">
+                  <dd className="m-0 font-bold whitespace-nowrap text-ink" data-testid="member-height">
                     {member.heightCm
                       ? t('profile.heightValue', { value: formatNumber(member.heightCm), unit: t('units.cm') })
                       : '—'}
@@ -98,16 +98,16 @@ const MemberProfile: React.FC = () => {
           </section>
 
           {/* Rank on each board, out of everyone on it right now. */}
-          <section className="lu-px-card grid gap-3" aria-labelledby="member-ranks">
+          <section className="lu-card grid gap-3" aria-labelledby="member-ranks">
             <h2 id="member-ranks" className={CARD_TITLE}>
-              <PixelIcon className="flex-none text-[0.8em] text-primary" name="podium" />
+              <Icon className="flex-none text-[0.8em] text-primary" name="podium" />
               {t('member.ranks')}
             </h2>
             <ul className="m-0 grid list-none grid-cols-3 gap-2 p-0">
               {member.rankings.map(({ board, rank, total }) => (
                 <li
                   key={board}
-                  className={`grid content-start justify-items-center gap-1.5 rounded-lg border-2 px-1.5 pt-3 pb-2.5 text-center ${BOARD_TONE[board]}`}
+                  className={`grid content-start justify-items-center gap-1.5 rounded-xl border px-1.5 pt-3 pb-2.5 text-center ${BOARD_TONE[board]}`}
                   data-testid={`member-rank-${board}`}
                 >
                   <MetricIcon board={board} className="text-[1.75rem]" />
@@ -120,7 +120,7 @@ const MemberProfile: React.FC = () => {
                     </span>
                   </span>
                   {/* Two lines at most, so the three tiles line up. */}
-                  <span className="grid min-h-[2.2em] place-items-center text-[0.75rem] leading-[1.1] font-extrabold text-balance text-ink">
+                  <span className="grid min-h-[2.2em] place-items-center text-[0.75rem] leading-[1.1] font-bold text-balance text-ink">
                     {t(`leaderboard.board.${board}`)}
                   </span>
                 </li>
@@ -129,7 +129,7 @@ const MemberProfile: React.FC = () => {
           </section>
 
           {/* Medals: just the art, the best one earned in each category, locked ones dimmed. */}
-          <section className="lu-px-card grid gap-3" aria-labelledby="member-medals">
+          <section className="lu-card grid gap-3" aria-labelledby="member-medals">
             <div className="flex items-center justify-between gap-2">
               <h2 id="member-medals" className={CARD_TITLE}>
                 <MetricIcon board="score" className="text-[0.8em]" />
@@ -169,14 +169,14 @@ const MemberProfile: React.FC = () => {
           {/* A row like Settings' Sign out: the whole card is the link. */}
           <Link
             to="/tabs/community/leaderboard"
-            className="lu-px-card flex min-h-[56px] items-center justify-between gap-3 px-4 py-2 font-bold text-ink no-underline"
+            className="lu-card flex min-h-[56px] items-center justify-between gap-3 px-4 py-2 font-bold text-ink no-underline"
             data-testid="member-boards-link"
           >
             <span className="flex items-center gap-2.5">
               <MetricIcon board="score" className="text-[1.3rem]" />
               {t('member.seeBoards')}
             </span>
-            <PixelIcon className="text-muted rtl:-scale-x-100" name="chevronForward" />
+            <Icon className="text-muted rtl:-scale-x-100" name="chevronForward" />
           </Link>
         </div>
       )}

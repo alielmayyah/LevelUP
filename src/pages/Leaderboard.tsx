@@ -15,10 +15,10 @@ import {
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
 import Avatar from '../avatar/Avatar';
-import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
+import Icon, { type IconName } from '../components/Icon';
 import '../avatar/avatar.scss';
 import { focusSibling, rovingTarget } from '../components/roving';
-import PixelToast from '../components/PixelToast';
+import Toast from '../components/Toast';
 import TabPage from '../components/TabPage';
 import { formatCount, formatNumber, formatRank } from '../i18n/format';
 import './leaderboard/Leaderboard.scss';
@@ -36,7 +36,7 @@ const AGE_KEY = 'lu.ageGroup';
 /** Rows per page below the podium. The pager shows only when a board has more. */
 const PAGE_SIZE = 10;
 
-const BOARD_ICONS: Record<LeaderboardBoard, PixelIconName> = {
+const BOARD_ICONS: Record<LeaderboardBoard, IconName> = {
   score: 'trophy',
   muscle: 'muscle',
   bodyFat: 'bodyFat',
@@ -101,18 +101,18 @@ function AgeFilter({ value, mine, onChange }: AgeFilterProps) {
         data-active={value !== 'all'}
         onClick={() => setOpen((o) => !o)}
       >
-        <PixelIcon name="filter" />
+        <Icon name="filter" />
       </button>
       {open && (
         <div
           ref={panel}
           id="age-filter-menu"
-          className="lu-px-card lu-filter-menu"
+          className="lu-card lu-filter-menu"
           role="radiogroup"
           aria-label={label}
           data-testid="age-filter"
         >
-          <p className="m-0 px-2 pt-1 pb-1.5 text-[0.75rem] font-extrabold text-muted" aria-hidden="true">
+          <p className="m-0 px-2 pt-1 pb-1.5 text-[0.75rem] font-bold text-muted" aria-hidden="true">
             {label}
           </p>
           {AGE_GROUPS.map((age, i) => (
@@ -136,7 +136,7 @@ function AgeFilter({ value, mine, onChange }: AgeFilterProps) {
               }}
             >
               <span className="lu-filter-check" aria-hidden="true">
-                {value === age && <PixelIcon name="check" />}
+                {value === age && <Icon name="check" />}
               </span>
               <bdi className="flex-1">{t(`leaderboard.age.${age}`)}</bdi>
               {age === mine && (
@@ -145,7 +145,7 @@ function AgeFilter({ value, mine, onChange }: AgeFilterProps) {
                   aria-label={t('leaderboard.age.yours')}
                   title={t('leaderboard.age.yours')}
                 >
-                  <PixelIcon name="person" />
+                  <Icon name="person" />
                 </span>
               )}
             </button>
@@ -172,14 +172,14 @@ const Row = memo(function Row({ row, division, board, value, you, rowRef }: RowP
     <li
       ref={rowRef}
       // Off-screen rows skip layout and paint (content-visibility), so 100+ rows still scroll smoothly.
-      className={`lu-lb-row ${COLUMNS} min-h-[52px] rounded-[10px] px-3 py-1.5 [contain-intrinsic-size:auto_52px] [content-visibility:auto] ${row.isMe ? 'is-me' : ''}`}
+      className={`lu-lb-row ${COLUMNS} min-h-[52px] rounded-[14px] px-3 py-1.5 [contain-intrinsic-size:auto_52px] [content-visibility:auto] ${row.isMe ? 'is-me' : ''}`}
       data-testid={row.isMe ? 'my-row' : 'row'}
     >
-      <span className={`lu-lb-rank grid size-[30px] place-items-center rounded-md text-[0.85rem] font-black ${medal}`}>
+      <span className={`lu-lb-rank grid size-[30px] place-items-center rounded-full text-[0.85rem] font-bold ${medal}`}>
         {formatCount(row.rank)}
       </span>
-      <span className="flex min-w-0 items-center gap-2 font-extrabold">
-        <span className="lu-avatar-frame block size-9 flex-none overflow-hidden rounded-[8px]">
+      <span className="flex min-w-0 items-center gap-2 font-bold">
+        <span className="lu-avatar-frame block size-9 flex-none overflow-hidden rounded-[10px]">
           <Avatar config={rowAvatar(row, division)} className="block size-full" />
         </span>
         <span className="truncate" dir="auto">
@@ -189,9 +189,7 @@ const Row = memo(function Row({ row, division, board, value, you, rowRef }: RowP
       </span>
       <span className="flex items-center gap-1.5">
         <MetricIcon board={board} className="text-[16px]" />
-        <span className="font-display text-[1.45rem] font-normal whitespace-nowrap text-primary dark:text-secondary">
-          {value}
-        </span>
+        <span className="lu-display text-[1.2rem] whitespace-nowrap text-primary dark:text-secondary">{value}</span>
       </span>
     </li>
   );
@@ -307,19 +305,19 @@ const Leaderboard: React.FC = () => {
       testId="page-leaderboard"
       backTo="/tabs/community"
       title={t('tabs.leaderboard')}
-      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="trophy" />}
+      titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="trophy" />}
       subtitle={d ? t(`leaderboard.division.${d.division}`) : t('leaderboard.subtitle')}
       onRefresh={data.reload}
       actions={
         me && d && !stale ? (
           <div
-            className="lu-lb-me flex flex-none items-center gap-2 rounded-[10px] border-2 px-2.5 py-1 min-[420px]:ps-1"
+            className="lu-lb-me flex flex-none items-center gap-2 rounded-[14px] border px-2.5 py-1 min-[420px]:ps-1"
             data-testid="my-rank"
             role="group"
             aria-label={t('leaderboard.yourRank')}
           >
             {/* The face only where there is room: on a phone the title needs the width. */}
-            <span className="lu-avatar-frame hidden size-10 flex-none overflow-hidden rounded-[8px] min-[420px]:block">
+            <span className="lu-avatar-frame hidden size-10 flex-none overflow-hidden rounded-[10px] min-[420px]:block">
               <Avatar config={rowAvatar(me, d.division)} className="block size-full" />
             </span>
             <span className="grid leading-none">
@@ -333,8 +331,8 @@ const Leaderboard: React.FC = () => {
       }
     >
       {d && !d.optedIn && (
-        <div className="lu-px-card mb-4 grid justify-items-center gap-2.5 text-center" data-testid="join-banner">
-          <PixelIcon className="text-[28px] text-muted" name="eyeOff" />
+        <div className="lu-card mb-4 grid justify-items-center gap-2.5 text-center" data-testid="join-banner">
+          <Icon className="text-[28px] text-muted" name="eyeOff" />
           <p className="m-0 font-bold">{t('leaderboard.hidden')}</p>
           <CtaButton className="w-[min(100%,240px)]" onClick={() => void join()} disabled={joining} aria-busy={joining}>
             {t('leaderboard.join')}
@@ -364,7 +362,7 @@ const Leaderboard: React.FC = () => {
                 focusSibling(e, to);
               }}
             >
-              <PixelIcon name={BOARD_ICONS[b]} />
+              <Icon name={BOARD_ICONS[b]} />
               {t(`leaderboard.board.${b}`)}
             </button>
           ))}
@@ -381,9 +379,9 @@ const Leaderboard: React.FC = () => {
             aria-label={t('leaderboard.age.clear', { group: t(`leaderboard.age.${age}`) })}
             onClick={() => chooseAge('all')}
           >
-            <PixelIcon name="filter" />
+            <Icon name="filter" />
             <bdi>{t(`leaderboard.age.${age}`)}</bdi>
-            <PixelIcon name="close" />
+            <Icon name="close" />
           </button>
         </div>
       )}
@@ -391,7 +389,7 @@ const Leaderboard: React.FC = () => {
 
       {d && !stale && d.optedIn && !me && d.ageGroup !== 'all' && d.myAgeGroup !== d.ageGroup && (
         <p
-          className="mx-0 mt-0 mb-3 rounded-lg border-2 border-dashed border-line px-3 py-2.5 font-bold text-muted"
+          className="mx-0 mt-0 mb-3 rounded-xl border border-dashed border-line px-3 py-2.5 font-bold text-muted"
           data-testid="other-age-note"
         >
           {t('leaderboard.age.otherGroup')}
@@ -400,7 +398,7 @@ const Leaderboard: React.FC = () => {
 
       {d && d.optedIn && !me && (d.ageGroup === 'all' || d.myAgeGroup === d.ageGroup) && (
         <p
-          className="mx-0 mt-0 mb-3 rounded-lg border-2 border-dashed border-line px-3 py-2.5 font-bold text-muted"
+          className="mx-0 mt-0 mb-3 rounded-xl border border-dashed border-line px-3 py-2.5 font-bold text-muted"
           data-testid="no-scan-note"
         >
           {t('leaderboard.noScan')}
@@ -427,8 +425,8 @@ const Leaderboard: React.FC = () => {
           aria-busy={stale}
         >
           {d && d.rows.length === 0 && (
-            <div className="lu-px-card lu-state" data-testid="board-empty">
-              <PixelIcon name="podium" />
+            <div className="lu-card lu-state" data-testid="board-empty">
+              <Icon name="podium" />
               <p>{t(d.ageGroup && d.ageGroup !== 'all' ? 'leaderboard.age.empty' : 'leaderboard.emptyBoard')}</p>
             </div>
           )}
@@ -446,10 +444,7 @@ const Leaderboard: React.FC = () => {
 
           {d && d.rows.length > 3 && (
             <div>
-              <div
-                className={`${COLUMNS} px-3 pt-0 pb-1.5 text-[0.75rem] font-extrabold text-muted`}
-                aria-hidden="true"
-              >
+              <div className={`${COLUMNS} px-3 pt-0 pb-1.5 text-[0.75rem] font-bold text-muted`} aria-hidden="true">
                 <span>{t('leaderboard.rank')}</span>
                 <span>{t('leaderboard.member')}</span>
                 <span className="text-end">{t(`leaderboard.value.${d.board}`)}</span>
@@ -483,11 +478,11 @@ const Leaderboard: React.FC = () => {
           <div className="h-[72px]" aria-hidden="true" />
           <button type="button" className={`lu-me-dock ${COLUMNS}`} data-testid="my-rank-dock" onClick={jumpToMe}>
             <span className="sr-only">{t('leaderboard.jumpToMe')}</span>
-            <span className="lu-lb-rank grid size-[30px] place-items-center rounded-md text-[0.85rem] font-black">
+            <span className="lu-lb-rank grid size-[30px] place-items-center rounded-full text-[0.85rem] font-bold">
               {formatCount(me.rank)}
             </span>
-            <span className="flex min-w-0 items-center gap-2 font-extrabold">
-              <span className="lu-avatar-frame block size-9 flex-none overflow-hidden rounded-[8px]">
+            <span className="flex min-w-0 items-center gap-2 font-bold">
+              <span className="lu-avatar-frame block size-9 flex-none overflow-hidden rounded-[10px]">
                 <Avatar config={rowAvatar(me, d.division)} className="block size-full" />
               </span>
               <span className="truncate" dir="auto">
@@ -496,10 +491,10 @@ const Leaderboard: React.FC = () => {
               <span className="lu-chip lu-chip-primary">{t('leaderboard.you')}</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="font-display text-[1.35rem] whitespace-nowrap text-primary dark:text-secondary">
+              <span className="lu-display text-[1.2rem] whitespace-nowrap text-primary dark:text-secondary">
                 {format(me.value, d.board)}
               </span>
-              <PixelIcon
+              <Icon
                 name="chevronDown"
                 className={`text-[14px] text-muted ${myRowPlace === 'above' ? '-scale-y-100' : ''}`}
               />
@@ -508,7 +503,7 @@ const Leaderboard: React.FC = () => {
         </>
       )}
 
-      <PixelToast message={joinFailed ? t('leaderboard.joinFailed') : null} onDone={clearJoinFailed} />
+      <Toast message={joinFailed ? t('leaderboard.joinFailed') : null} onDone={clearJoinFailed} />
     </TabPage>
   );
 };

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import type { MonthlyWins } from '../../api/types';
-import HomeIcon, { type HomeIconName } from './HomeIcon';
+import Icon, { type IconName } from '../../components/Icon';
 import { formatSigned } from '../../i18n/format';
 import { formatMonth } from './homeText';
 import { TILES } from './layout';
@@ -19,7 +19,7 @@ const tone = (value: number | null, goodWhen: 'down' | 'up'): Tone => {
 
 interface TileProps {
   metric: 'fat' | 'muscle' | 'bmi';
-  icon: HomeIconName;
+  icon: IconName;
   label: string;
   value: string;
   tone?: Tone;
@@ -28,11 +28,11 @@ interface TileProps {
 
 const Tile: React.FC<TileProps> = ({ metric, icon, label, value, tone: tileTone = 'none', testId }) => (
   <div
-    className={`lu-px-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative grid justify-items-center gap-1 overflow-hidden px-2 pt-4 pb-3 text-center`}
+    className={`lu-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative grid justify-items-center gap-1 overflow-hidden px-2 pt-4 pb-3 text-center`}
     data-testid={testId}
   >
-    <span className="mt-0.5 mb-1 grid place-items-center text-[48px] drop-shadow-[0_3px_0_var(--lu-pixel-shadow)]">
-      <HomeIcon name={icon} />
+    <span className="mt-0.5 mb-1 grid place-items-center text-[48px]">
+      <Icon name={icon} />
     </span>
     <span
       className={`lu-display text-[clamp(1.55rem,6.8vw,2.1rem)] leading-[1.1] whitespace-nowrap ${VALUE_COLOR[tileTone]}`}
@@ -60,13 +60,13 @@ const StatTiles: React.FC<{ wins: MonthlyWins; today: Date }> = ({ wins, today }
   return (
     <section aria-labelledby="wins-title">
       <h2 id="wins-title" className="lu-section-title">
-        <HomeIcon name="sparkles" />
+        <Icon name="sparkles" />
         {t('home.wins.title', { month: formatMonth(today) })}
       </h2>
       <div className={TILES}>
         <Tile
           metric="fat"
-          icon="flame"
+          icon="bodyFat"
           label={t('home.wins.bodyFat')}
           value={formatSigned(wins.bodyFatChangePct, '%', { digits: 1 })}
           tone={tone(wins.bodyFatChangePct, 'down')}

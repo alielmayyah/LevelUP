@@ -69,10 +69,10 @@
     block-size: 28px;
     padding: 0;
     translate: 0 -50%;
-    border: 2px solid var(--lu-border);
+    border: 1px solid var(--lu-border);
     border-radius: 999px;
     background: var(--lu-surface-2);
-    box-shadow: 0 2px 0 var(--lu-pixel-shadow);
+    box-shadow: var(--lu-shadow);
     color: var(--lu-text);
     font-size: 16px;
     cursor: pointer;

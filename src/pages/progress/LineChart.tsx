@@ -49,7 +49,7 @@ function niceRange(values: number[]): [number, number] {
 const MAX_X_LABELS = 6;
 
 /**
- * A small pixel-style line chart: square points, one quiet baseline, a tappable
+ * A small, smooth line chart: round points, one quiet baseline, a tappable
  * column per scan that shows every visible value for that date, and a legend
  * that hides or shows each line.
  */
@@ -142,7 +142,6 @@ const LineChart: React.FC<Props> = ({
           aria-label={label}
           aria-roledescription="chart"
           aria-describedby={`${id}-summary`}
-          shapeRendering="crispEdges"
         >
           {ticks('start').map((v, i) => (
             <g key={`s${v}`}>
@@ -181,15 +180,9 @@ const LineChart: React.FC<Props> = ({
 
           {visible.map((s) => (
             <g key={s.key} className={`lu-chart-series ${s.colorClass}`}>
-              <polyline shapeRendering="auto" points={s.values.map((v, i) => `${x(i)},${y(v, s.axis)}`).join(' ')} />
+              <polyline points={s.values.map((v, i) => `${x(i)},${y(v, s.axis)}`).join(' ')} />
               {s.values.map((v, i) => (
-                <rect
-                  key={i}
-                  x={x(i) - (active === i ? 4 : 3)}
-                  y={y(v, s.axis) - (active === i ? 4 : 3)}
-                  width={active === i ? 8 : 6}
-                  height={active === i ? 8 : 6}
-                />
+                <circle key={i} cx={x(i)} cy={y(v, s.axis)} r={active === i ? 4.5 : 3.5} />
               ))}
             </g>
           ))}
@@ -224,7 +217,7 @@ const LineChart: React.FC<Props> = ({
 
         {active !== null && (
           <div
-            className="lu-chart-tip pointer-events-none absolute top-0 z-1 grid gap-0.5 rounded-lg border-2 border-line bg-surface px-2.5 py-2 text-[0.78rem] whitespace-nowrap shadow-px-sm"
+            className="lu-chart-tip pointer-events-none absolute top-0 z-1 grid gap-0.5 rounded-lg border border-line bg-surface px-2.5 py-2 text-[0.78rem] whitespace-nowrap shadow-card-sm"
             data-testid={`${testId}-tip`}
             role="status"
             style={{
@@ -248,7 +241,7 @@ const LineChart: React.FC<Props> = ({
             <button
               key={s.key}
               type="button"
-              className={`lu-chart-key inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border-2 border-line bg-surface-2 px-2.5 py-1 font-inherit text-[0.78rem] font-bold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-[pressed=false]:text-muted aria-[pressed=false]:line-through aria-[pressed=false]:opacity-60 ${s.colorClass}`}
+              className={`lu-chart-key inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-line bg-surface-2 px-2.5 py-1 font-inherit text-[0.78rem] font-bold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-[pressed=false]:text-muted aria-[pressed=false]:line-through aria-[pressed=false]:opacity-60 ${s.colorClass}`}
               aria-pressed={!hidden.has(s.key)}
               onClick={() => toggle(s.key)}
             >

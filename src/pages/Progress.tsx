@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { AssessmentDto, ProfileDto, ProgressDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
-import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
+import Icon, { type IconName } from '../components/Icon';
 import TabPage from '../components/TabPage';
 import { formatNumber, numberLocale } from '../i18n/format';
 import './progress/Progress.scss';
@@ -29,8 +29,8 @@ interface Metric<K> {
   value: (a: AssessmentDto) => number;
   unit?: 'kg' | '%' | 'kcal';
   digits: number;
-  icon: PixelIconName;
-  /** Class that sets the metric's hue and its pixel icon's colors (Progress.scss). */
+  icon: IconName;
+  /** Class that sets the metric's hue and its icon's color (Progress.scss). */
   tone: string;
 }
 
@@ -120,23 +120,8 @@ const MORE: MoreMetric[] = [
 const scanDate = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
 
-/** Pixel grass and a pebble in a bottom corner of the scan card. */
-const Grass: React.FC<{ side: 'start' | 'end' }> = ({ side }) => (
-  <svg
-    className={`lu-grass pointer-events-none absolute bottom-0 h-5 w-auto ${side === 'start' ? 'start-1' : 'end-1 -scale-x-100'}`}
-    viewBox="0 0 20 8"
-    shapeRendering="crispEdges"
-    aria-hidden="true"
-    focusable="false"
-  >
-    <path className="lu-grass-dark" d="M0 8V6h1V4h1v2h1V3h1v3h1V5h1v1h2V4h1v2h1V2h1v4h1V5h1v1h2v2z" />
-    <path className="lu-grass-light" d="M2 6V4h1v2zM10 6V2h1v4zM4 6V3h1v3z" />
-    <path className="lu-grass-stone" d="M15 8V6h1V5h3v1h1v2z" />
-  </svg>
-);
-
 const STEP =
-  'lu-scan-step grid size-11 flex-none cursor-pointer place-items-center border-0 bg-surface-2 font-inherit text-[1.15rem] text-ink disabled:cursor-default disabled:opacity-40';
+  'lu-scan-step grid size-11 flex-none cursor-pointer place-items-center rounded-full bg-surface font-inherit text-[1.15rem] text-ink disabled:cursor-default disabled:opacity-40';
 
 /**
  * Progress tab: one scan at a time (the latest by default, earlier ones a tap
@@ -251,17 +236,17 @@ const Progress: React.FC = () => {
       title={t('tabs.progress')}
       subtitle={t('progress.journey')}
       onRefresh={reloadAll}
-      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="chart" />}
+      titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="chart" />}
       actions={
         // The scan card names the scan on screen; the header only offers the full list.
         list.length > 1 && (
           <button
             type="button"
-            className="lu-all-scans inline-flex min-h-11 min-w-11 flex-none cursor-pointer items-center justify-center gap-2 border-0 bg-surface px-3.5 font-inherit text-[0.9rem] font-extrabold text-primary max-[359px]:px-0 dark:text-secondary"
+            className="lu-all-scans inline-flex min-h-11 min-w-11 flex-none cursor-pointer items-center justify-center gap-2 rounded-full bg-surface px-3.5 font-inherit text-[0.9rem] font-semibold text-primary max-[359px]:px-0 dark:text-secondary"
             onClick={() => setShowAll(true)}
             data-testid="view-all-scans"
           >
-            <PixelIcon className="text-[1.15rem] rtl:-scale-x-100" name="history" />
+            <Icon className="text-[1.15rem] rtl:-scale-x-100" name="history" />
             {/* Icon only on the narrowest phones, so the page title keeps its line; the name stays for screen readers. */}
             <span className="max-[359px]:sr-only">{t('progress.viewAll', { n: formatNumber(list.length) })}</span>
           </button>
@@ -285,8 +270,8 @@ const Progress: React.FC = () => {
       )}
 
       {!loading && !failed && !scan && (
-        <div className="lu-px-card lu-state" data-testid="progress-empty">
-          <PixelIcon className="lu-tone-calendar text-[3rem]" name="chart" />
+        <div className="lu-card lu-state" data-testid="progress-empty">
+          <Icon className="lu-tone-calendar text-[3rem]" name="chart" />
           <p>{t('progress.empty')}</p>
         </div>
       )}
@@ -295,12 +280,10 @@ const Progress: React.FC = () => {
         <div className="grid gap-3.5 wide:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] wide:items-start">
           <div className="grid gap-5">
             <section
-              className="lu-scan-card relative grid gap-3 p-3.5 pb-6"
+              className="lu-scan-card relative grid gap-3 p-3.5 md:p-5"
               aria-labelledby="latest-scan"
               data-testid="latest-scan"
             >
-              <Grass side="start" />
-              <Grass side="end" />
               {/* Scan picker: older on the start side, newer on the end side. */}
               <header className="flex items-center gap-2">
                 <button
@@ -311,7 +294,7 @@ const Progress: React.FC = () => {
                   aria-label={t('progress.olderScan')}
                   data-testid="scan-older"
                 >
-                  <PixelIcon className="rtl:-scale-x-100" name="chevronBack" />
+                  <Icon className="rtl:-scale-x-100" name="chevronBack" />
                 </button>
                 <div className="grid min-w-0 flex-1 justify-items-center text-center" aria-live="polite">
                   {/* The scan's date is the title; tapping it opens the calendar of scans. */}
@@ -324,7 +307,7 @@ const Progress: React.FC = () => {
                       data-testid="scan-calendar-open"
                     >
                       {scanDate(scan.takenAt)}
-                      <PixelIcon className="lu-tone-calendar flex-none text-[1.05rem]" name="calendar" />
+                      <Icon className="lu-tone-calendar flex-none text-[1.05rem]" name="calendar" />
                     </button>
                   </h2>
                   {/* Tags: whether this is the newest scan, and how old it is. */}
@@ -354,7 +337,7 @@ const Progress: React.FC = () => {
                   aria-label={t('progress.newerScan')}
                   data-testid="scan-newer"
                 >
-                  <PixelIcon className="rtl:-scale-x-100" name="chevronForward" />
+                  <Icon className="rtl:-scale-x-100" name="chevronForward" />
                 </button>
               </header>
 
@@ -375,14 +358,14 @@ const Progress: React.FC = () => {
                           onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
                           testId={`info-${m.key}`}
                         />
-                        <PixelIcon className="text-[1.6rem]" name={m.icon} />
+                        <Icon className="text-[1.6rem]" name={m.icon} />
                         {t(`progress.metric.${m.key}`)}
                       </dt>
                       <dd className="lu-display m-0 text-[clamp(1.3rem,6vw,1.6rem)] leading-none whitespace-nowrap text-ink">
                         {value(m, scan)}
                       </dd>
                       <dd
-                        className="m-0 min-h-[1.2em] text-[0.78rem] leading-tight font-extrabold"
+                        className="m-0 min-h-[1.2em] text-[0.78rem] leading-tight font-bold"
                         data-testid={`change-${m.key}`}
                       >
                         {c ? (
@@ -413,10 +396,10 @@ const Progress: React.FC = () => {
                   className="lu-compare flex items-center gap-2.5 rounded-lg py-1.5 ps-2.5 pe-1.5"
                   data-testid="change-caption"
                 >
-                  <PixelIcon className="lu-tone-calendar flex-none text-[1.4rem]" name="calendar" />
+                  <Icon className="lu-tone-calendar flex-none text-[1.4rem]" name="calendar" />
                   <p className="m-0 grid min-w-0 flex-1 leading-tight">
                     <span className="text-[0.72rem] font-bold text-muted">{t('progress.comparedWith')}</span>
-                    <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.9rem] font-extrabold text-ink">
+                    <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.9rem] font-bold text-ink">
                       {before ? scanDate(before.takenAt) : t('progress.compareOffShort')}
                       {before && (
                         <span className="lu-chip text-muted" data-testid="compare-gap">
@@ -427,7 +410,7 @@ const Progress: React.FC = () => {
                   </p>
                   <button
                     type="button"
-                    className="lu-compare-button min-h-11 flex-none cursor-pointer rounded-md px-3.5 font-inherit text-[0.85rem] font-extrabold"
+                    className="lu-compare-button min-h-11 flex-none cursor-pointer rounded-md px-3.5 font-inherit text-[0.85rem] font-bold"
                     onClick={() => setPicking(true)}
                     data-testid="compare-open"
                   >
@@ -442,7 +425,7 @@ const Progress: React.FC = () => {
                 id="more-title"
                 className="lu-display m-0 flex items-center gap-2 text-[1.7rem] leading-none text-ink"
               >
-                <PixelIcon className="lu-title-icon flex-none text-[0.8em]" name="chart" />
+                <Icon className="lu-title-icon flex-none text-[0.8em]" name="chart" />
                 {t('progress.more')}
               </h2>
               <dl className="m-0 grid grid-cols-2 gap-2.5 md:grid-cols-3">
@@ -460,8 +443,8 @@ const Progress: React.FC = () => {
                         onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
                         testId={`info-${m.key}`}
                       />
-                      <span className="flex items-center gap-1.5 text-[0.85rem] font-extrabold text-ink">
-                        <PixelIcon className="flex-none text-[1.25rem]" name={m.icon} />
+                      <span className="flex items-center gap-1.5 text-[0.85rem] font-bold text-ink">
+                        <Icon className="flex-none text-[1.25rem]" name={m.icon} />
                         {t(`progress.metric.${m.key}`)}
                       </span>
                     </dt>
@@ -473,7 +456,7 @@ const Progress: React.FC = () => {
                       const c = change(m);
                       return c ? (
                         <dd
-                          className={`m-0 text-[0.78rem] font-extrabold whitespace-nowrap ${c.tone}`}
+                          className={`m-0 text-[0.78rem] font-bold whitespace-nowrap ${c.tone}`}
                           data-testid={`change-${m.key}`}
                         >
                           <bdi aria-hidden="true">{c.signed}</bdi>
@@ -488,14 +471,14 @@ const Progress: React.FC = () => {
 
             <button
               type="button"
-              className="lu-compare-button flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 font-inherit text-[0.95rem] font-extrabold"
+              className="lu-compare-button flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 font-inherit text-[0.95rem] font-bold"
               aria-expanded={details}
               aria-controls="progress-details"
               onClick={() => setDetails((d) => !d)}
               data-testid="progress-more"
             >
               {details ? t('progress.lessDetails') : t('progress.moreDetails')}
-              <PixelIcon
+              <Icon
                 className={`text-[1.1rem] transition-transform duration-150 motion-reduce:transition-none ${details ? 'rotate-180' : ''}`}
                 name="chevronDown"
               />
@@ -509,7 +492,7 @@ const Progress: React.FC = () => {
                   <BodyComposition scan={scan} compare={before} heightCm={me.data.heightCm} sex={me.data.sex} />
                 </Suspense>
                 {points.length < 2 ? (
-                  <p className="lu-px-card lu-state" data-testid="second-scan">
+                  <p className="lu-card lu-state" data-testid="second-scan">
                     {t('progress.secondScan')}
                   </p>
                 ) : (

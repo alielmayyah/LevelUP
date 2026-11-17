@@ -1,7 +1,7 @@
 import { IonModal } from '@ionic/react';
 import { useTranslation } from 'react-i18next';
 
-import PixelIcon from '../../components/PixelIcon';
+import Icon from '../../components/Icon';
 import { formatPercent } from '../../i18n/format';
 import { formatMedalDate, medalTitle, medalValue } from './format';
 import MedalArt from './MedalArt';
@@ -47,7 +47,7 @@ function Details({ medal, onClose }: { medal: MedalStatus; onClose: () => void }
     <div className="lu-tab-body grid content-start gap-4 overflow-y-auto p-4 pb-[calc(24px+var(--ion-safe-area-bottom,0px))]">
       <div className="flex justify-end">
         <button type="button" className="lu-icon-button" aria-label={t('medals.detail.close')} onClick={onClose}>
-          <PixelIcon name="close" />
+          <Icon name="close" />
         </button>
       </div>
       <div className="grid justify-items-center gap-2 text-center" data-testid="medal-detail">
@@ -61,7 +61,7 @@ function Details({ medal, onClose }: { medal: MedalStatus; onClose: () => void }
         </p>
       </div>
 
-      <dl className="lu-px-card m-0 grid gap-3 p-3.5">
+      <dl className="lu-card m-0 grid gap-3 p-3.5">
         <Row label={t('medals.detail.status')}>
           <span data-testid="medal-detail-status">{t(medal.unlocked ? 'medals.unlocked' : 'medals.locked')}</span>
           {medal.unlockedAt && <span className="text-muted"> · {formatMedalDate(medal.unlockedAt)}</span>}
@@ -101,7 +101,7 @@ function Details({ medal, onClose }: { medal: MedalStatus; onClose: () => void }
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="grid gap-0.5">
-      <dt className="text-[0.75rem] font-extrabold text-muted">{label}</dt>
+      <dt className="text-[0.75rem] font-bold text-muted">{label}</dt>
       <dd className="m-0 text-[0.92rem] font-semibold text-ink">{children}</dd>
     </div>
   );

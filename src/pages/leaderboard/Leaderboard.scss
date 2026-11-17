@@ -1,30 +1,34 @@
 /*
- * Leaderboard's pixel details: the gold-dotted "your rank" card, row tints,
- * and medal colors for ranks 1–3. Layout and type are Tailwind classes in Leaderboard.tsx.
+ * Leaderboard details: the "your rank" card, row tints, medal colors for
+ * ranks 1–3, and the podium. Layout and type are Tailwind classes in
+ * Leaderboard.tsx and Podium.tsx.
  */
 @layer components {
   .lu-lb-me {
     border-color: color-mix(in srgb, var(--lu-gold) 45%, var(--lu-border));
-    background:
-      radial-gradient(color-mix(in srgb, var(--lu-gold) 18%, transparent) 1px, transparent 1.5px) 0 0 / 8px 8px,
-      var(--lu-surface);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--lu-gold) 14%, var(--lu-surface)),
+      var(--lu-surface) 70%
+    );
+    box-shadow: var(--lu-shadow);
   }
 
   .lu-lb-row {
-    border: 2px solid var(--lu-border);
+    border: 1px solid var(--lu-border);
     background: var(--lu-surface);
-    box-shadow: 0 3px 0 var(--lu-pixel-shadow);
+    box-shadow: var(--lu-shadow);
 
     &.is-me {
       border-color: var(--ion-color-primary);
-      background: color-mix(in srgb, var(--ion-color-primary) 12%, var(--lu-surface));
-      box-shadow: 0 3px 0 color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-pixel-shadow));
+      background: color-mix(in srgb, var(--ion-color-primary) 10%, var(--lu-surface));
+      box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--ion-color-primary) 60%, transparent);
     }
   }
 
   .lu-lb-rank {
-    border: 2px solid var(--lu-border);
     background: var(--lu-surface-2);
+    color: var(--lu-text);
   }
 
   $medals: (
@@ -36,120 +40,31 @@
   @each $rank, $color in $medals {
     .lu-medal-#{$rank} {
       --medal: #{$color};
-      border-color: var(--medal);
-      background: var(--medal);
-      color: var(--lu-pixel-ink);
-      box-shadow: 0 2px 0 color-mix(in srgb, var(--medal) 50%, var(--lu-pixel-shadow));
+      background: linear-gradient(160deg, color-mix(in srgb, var(--medal) 70%, var(--lu-medal-shine)), var(--medal));
+      color: var(--lu-medal-ink);
+      box-shadow: 0 4px 12px -6px color-mix(in srgb, var(--medal) 70%, transparent);
     }
   }
-}
-
-/*
- * Pixel art pieces: corners are cut in 4px steps (clip-path), edges are hard
- * bevels (inset shadows), and the outline is a 2px stepped drop shadow. No
- * rounded corners or blur anywhere, so they match the characters.
- */
-@function px-corners($s) {
-  @return polygon(
-    0 #{2 * $s},
-    #{$s} #{2 * $s},
-    #{$s} #{$s},
-    #{2 * $s} #{$s},
-    #{2 * $s} 0,
-    calc(100% - #{2 * $s}) 0,
-    calc(100% - #{2 * $s}) #{$s},
-    calc(100% - #{$s}) #{$s},
-    calc(100% - #{$s}) #{2 * $s},
-    100% #{2 * $s},
-    100% calc(100% - #{2 * $s}),
-    calc(100% - #{$s}) calc(100% - #{2 * $s}),
-    calc(100% - #{$s}) calc(100% - #{$s}),
-    calc(100% - #{2 * $s}) calc(100% - #{$s}),
-    calc(100% - #{2 * $s}) 100%,
-    #{2 * $s} 100%,
-    #{2 * $s} calc(100% - #{$s}),
-    #{$s} calc(100% - #{$s}),
-    #{$s} calc(100% - #{2 * $s}),
-    0 calc(100% - #{2 * $s})
-  );
-}
-
-/* Only the top corners stepped (blocks sit on the info panel). */
-@function px-top-corners($s) {
-  @return polygon(
-    0 #{2 * $s},
-    #{$s} #{2 * $s},
-    #{$s} #{$s},
-    #{2 * $s} #{$s},
-    #{2 * $s} 0,
-    calc(100% - #{2 * $s}) 0,
-    calc(100% - #{2 * $s}) #{$s},
-    calc(100% - #{$s}) #{$s},
-    calc(100% - #{$s}) #{2 * $s},
-    100% #{2 * $s},
-    100% 100%,
-    0 100%
-  );
-}
-
-@mixin px-outline($c) {
-  filter: drop-shadow(2px 0 0 $c) drop-shadow(-2px 0 0 $c) drop-shadow(0 2px 0 $c) drop-shadow(0 -2px 0 $c);
 }
 
 @layer components {
   /* ---------- Podium ---------- */
 
+  /* A soft card with a faint brand glow behind the winners. */
   .lu-podium {
     position: relative;
     overflow: hidden;
-    clip-path: px-corners(4px);
+    border: 1px solid var(--lu-border);
+    border-radius: 20px;
     background:
       radial-gradient(
-        ellipse at 50% 30%,
-        color-mix(in srgb, var(--ion-color-primary) 45%, var(--lu-splash-bg-2)),
+        ellipse 80% 70% at 50% 20%,
+        color-mix(in srgb, var(--ion-color-primary) 16%, transparent),
         transparent 70%
       ),
-      var(--lu-splash-bg);
-    box-shadow:
-      inset 0 0 0 3px color-mix(in srgb, var(--lu-splash-bg-2) 80%, var(--lu-splash-text) 20%),
-      inset 0 0 0 6px var(--lu-splash-bg);
-    color: var(--lu-splash-text);
-
-    /* Pixel stars: 4px plus shapes and single dots, drawn with hard shadows. */
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: var(--lu-splash-star);
-      pointer-events: none;
-    }
-
-    &::before {
-      inset-block-start: 18px;
-      inset-inline-start: 20px;
-      box-shadow:
-        4px 0 0 var(--lu-splash-star),
-        -4px 0 0 var(--lu-splash-star),
-        0 4px 0 var(--lu-splash-star),
-        0 -4px 0 var(--lu-splash-star),
-        36px 28px 0 var(--lu-gold),
-        60px 4px 0 color-mix(in srgb, var(--lu-splash-star) 60%, transparent);
-    }
-
-    &::after {
-      inset-block-start: 22px;
-      inset-inline-end: 24px;
-      box-shadow:
-        4px 0 0 var(--lu-gold),
-        -4px 0 0 var(--lu-gold),
-        0 4px 0 var(--lu-gold),
-        0 -4px 0 var(--lu-gold),
-        -40px 30px 0 var(--lu-splash-star),
-        -70px 2px 0 color-mix(in srgb, var(--lu-splash-star) 60%, transparent);
-      background: var(--lu-gold);
-    }
+      var(--lu-surface);
+    box-shadow: var(--lu-shadow);
+    color: var(--lu-text);
   }
 
   .lu-podium-figure {
@@ -157,51 +72,27 @@
     z-index: 1;
   }
 
-  /* Block and name panel share one stepped outline. */
+  /* Block and name panel read as one rounded column. */
   .lu-podium-base {
-    @include px-outline(var(--lu-pixel-ink));
+    overflow: hidden;
+    border-radius: 14px;
+    box-shadow: var(--lu-shadow);
   }
 
   .lu-podium-block {
-    clip-path: px-top-corners(4px);
-    box-shadow:
-      inset 0 4px 0 color-mix(in srgb, var(--medal) 55%, var(--lu-splash-star)),
-      inset 4px 0 0 color-mix(in srgb, var(--medal) 75%, var(--lu-splash-star)),
-      inset -4px 0 0 color-mix(in srgb, var(--medal) 75%, var(--lu-splash-bg)),
-      inset 0 -6px 0 color-mix(in srgb, var(--medal) 65%, var(--lu-splash-bg));
     border: 0;
-    border-radius: 0;
+    border-radius: 14px 14px 0 0;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--lu-medal-shine) 45%, transparent);
   }
 
   .lu-podium-info {
-    background: color-mix(in srgb, var(--lu-splash-bg-2) 70%, var(--lu-splash-bg));
-    box-shadow:
-      inset 0 4px 0 color-mix(in srgb, var(--lu-splash-bg) 70%, var(--lu-splash-bg)),
-      inset 0 -4px 0 color-mix(in srgb, var(--lu-splash-bg-2) 60%, var(--lu-splash-text) 12%);
-    color: var(--lu-splash-text);
+    background: var(--lu-surface-2);
+    color: var(--lu-text);
   }
 
-  /* Rubber gym floor along the bottom of the stage. */
-  .lu-podium-floor {
-    margin-block-start: 6px;
-    background: repeating-linear-gradient(90deg, var(--lu-floor-seam) 0 2px, transparent 2px 32px), var(--lu-floor);
-    box-shadow:
-      inset 0 2px 0 var(--lu-floor-edge),
-      inset 0 6px 0 var(--lu-floor-fleck);
-  }
-
-  /* ---------- Board tabs: one row of four, pixel buttons ---------- */
+  /* ---------- Board tabs: one row of three in the segmented track ---------- */
 
   .lu-board-tabs {
-    gap: 4px;
-    padding: 4px;
-    border: 0;
-    border-radius: 0;
-    clip-path: px-corners(4px);
-    box-shadow:
-      inset 0 0 0 2px var(--lu-border),
-      inset 0 -6px 0 var(--lu-surface-2);
-
     /* Icon above the label, so long names ("Lowest Body Fat") keep to two lines on a phone. */
     button {
       display: flex;
@@ -211,40 +102,16 @@
       gap: 3px;
       min-block-size: 52px;
       padding: 6px 4px 8px;
-      border-radius: 0;
-      clip-path: px-corners(2px);
       font-size: 0.75rem;
       line-height: 1.1;
       text-align: center;
       text-wrap: balance;
     }
 
-    button .lu-pixel-icon {
+    button .lu-icon {
       flex: none;
       font-size: 1.05rem;
     }
-
-    /* The tab pill: background slides between tabs instead of snapping. */
-    button {
-      transition:
-        background-color 160ms ease-out,
-        color 160ms ease-out,
-        box-shadow 160ms ease-out;
-    }
-
-    button[aria-selected='true'] {
-      box-shadow:
-        inset 0 3px 0 color-mix(in srgb, var(--ion-color-primary) 70%, var(--lu-splash-star)),
-        inset 0 -4px 0 var(--ion-color-primary-shade);
-    }
-  }
-
-  /* clip-path would cut off an outline, so focus is drawn inside the button. */
-  .lu-board-tabs button:focus-visible {
-    outline: 0;
-    box-shadow:
-      inset 0 0 0 2px var(--lu-surface),
-      inset 0 0 0 4px var(--lu-text);
   }
 
   .lu-board-tabs button:lang(ar) {
@@ -252,7 +119,7 @@
   }
 
   @media (max-width: 359.98px) {
-    .lu-board-tabs button .lu-pixel-icon {
+    .lu-board-tabs button .lu-icon {
       display: none;
     }
   }
@@ -273,20 +140,6 @@
     .lu-board-swap {
       animation: none;
     }
-
-    .lu-board-tabs button {
-      transition: none;
-    }
-  }
-}
-
-/* The "you" tag on the dark podium panel: white on brand purple, in both themes. */
-@layer components {
-  .lu-podium .lu-chip,
-  :root.ion-palette-dark .lu-podium .lu-chip {
-    border-color: var(--ion-color-primary-shade);
-    background: var(--ion-color-primary);
-    color: var(--ion-color-primary-contrast);
   }
 }
 
@@ -303,7 +156,8 @@
       inset-inline-end: 6px;
       inline-size: 8px;
       block-size: 8px;
-      border: 2px solid var(--lu-surface);
+      border: 1px solid var(--lu-surface);
+      border-radius: 999px;
       background: var(--ion-color-primary);
       content: '';
     }
@@ -319,6 +173,7 @@
     inline-size: max-content;
     min-inline-size: 190px;
     padding: 6px;
+    box-shadow: var(--lu-shadow-raised);
 
     button {
       display: flex;
@@ -327,27 +182,28 @@
       min-block-size: 44px;
       padding: 6px 10px;
       border: 0;
-      border-radius: 6px;
+      border-radius: 10px;
       background: transparent;
       color: var(--lu-text);
       font-size: 0.88rem;
-      font-weight: 750;
+      font-weight: 600;
       text-align: start;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      transition: transform 120ms ease-out;
 
       &:hover {
         background: var(--lu-surface-2);
       }
 
       &[aria-checked='true'] {
-        background: color-mix(in srgb, var(--ion-color-primary) 14%, var(--lu-surface));
-        font-weight: 850;
+        background: color-mix(in srgb, var(--ion-color-primary) 12%, var(--lu-surface));
+        font-weight: 700;
       }
 
       &:active {
-        transform: translateY(1px);
+        transform: scale(0.97);
       }
 
       &:focus-visible {
@@ -371,6 +227,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .lu-filter-menu button {
+      transition: none;
+    }
+
     .lu-filter-menu button:active {
       transform: none;
     }
@@ -386,34 +246,37 @@
     inset-block-end: calc(var(--lu-tabbar-height) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px));
     min-block-size: 56px;
     padding: 8px 12px;
-    border: 2px solid color-mix(in srgb, var(--ion-color-primary) 70%, transparent);
-    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--ion-color-primary) 60%, transparent);
+    border-radius: 16px;
     background: var(--lu-surface);
-    box-shadow: 0 3px 0 color-mix(in srgb, var(--lu-pixel-shadow) 70%, transparent);
+    box-shadow: var(--lu-shadow-raised);
     color: var(--lu-text);
     font: inherit;
     text-align: start;
     cursor: pointer;
-    animation: lu-dock-in 160ms ease-out both;
+    transition: transform 150ms ease-out;
+    animation: lu-dock-in 200ms ease-out both;
 
     &:active {
-      transform: translateY(2px);
+      transform: scale(0.97);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--lu-text);
+      outline: 2px solid var(--ion-color-primary);
       outline-offset: 2px;
     }
   }
 
   @keyframes lu-dock-in {
     from {
+      opacity: 0;
       transform: translateY(8px);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .lu-me-dock {
+      transition: none;
       animation: none;
 
       &:active {

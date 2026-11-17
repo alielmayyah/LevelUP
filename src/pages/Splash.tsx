@@ -7,7 +7,7 @@ import { getToken } from '../auth/token';
 import { brand } from '../brand.config';
 import { playIntroSoon } from '../sound/useSound';
 import './Splash.scss';
-import BarbellLoader from './splash/BarbellLoader';
+import LoadingLine from './splash/LoadingLine';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 /** How long the logo shows before the app moves on by itself. */
@@ -16,7 +16,7 @@ export const SPLASH_MS = 1600;
 const EXIT_MAX_MS = 600;
 
 /**
- * Launch screen only: the logo on the dusk sky, then the app moves on by
+ * Launch screen only: the logo on a soft dusk gradient, then the app moves on by
  * itself, to Login when signed out or straight to Home with a session.
  * Nothing to tap, so there is no way to get stuck here.
  * `?stay` keeps it on screen (screenshots and accessibility checks).
@@ -97,8 +97,8 @@ const Splash: React.FC = () => {
               {t('splash.tagline')}
             </span>
           </div>
-          {/* "Loading the bar": plates slide onto a pixel barbell in step with the splash's timer. */}
-          <BarbellLoader label={t('splash.loading')} durationMs={SPLASH_MS} />
+          {/* A thin line fills smoothly in step with the splash's timer. */}
+          <LoadingLine label={t('splash.loading')} durationMs={SPLASH_MS} />
         </main>
       </div>
     </IonPage>

@@ -1,11 +1,11 @@
 import { useEffect, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
+import Icon, { type IconName } from '../../components/Icon';
 
 export interface InfoTopic {
   key: string;
-  icon: PixelIconName;
+  icon: IconName;
   tone: string;
   /** The member's value for this measurement in the scan on screen, already formatted ("47.5 kg"). */
   value?: string;
@@ -25,7 +25,7 @@ export const InfoButton: React.FC<{ label: string; onClick: () => void; testId: 
     onClick={onClick}
     data-testid={testId}
   >
-    <PixelIcon name="info" />
+    <Icon name="info" />
   </button>
 );
 
@@ -75,7 +75,7 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
   return (
     <dialog
       ref={ref}
-      className="lu-info-sheet m-0 mx-auto mt-auto w-full max-w-[480px] border-0 bg-transparent p-0 text-ink backdrop:bg-pixel-ink/55"
+      className="lu-info-sheet m-0 mx-auto mt-auto w-full max-w-[480px] border-0 bg-transparent p-0 text-ink backdrop:bg-scrim/55"
       aria-labelledby={titleId}
       data-testid="metric-info"
       onCancel={(e) => {
@@ -92,7 +92,7 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
         >
           <header className="flex items-start gap-3.5">
             <span className="lu-info-icon grid size-14 flex-none place-items-center">
-              <PixelIcon className="text-[2rem]" name={topic.icon} />
+              <Icon className="text-[2rem]" name={topic.icon} />
             </span>
             <div className="grid min-w-0 flex-1 gap-1">
               <h2 id={titleId} className="lu-display m-0 text-[1.9rem] leading-none text-ink">
@@ -113,7 +113,7 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
               aria-label={t('progress.closeScans')}
               onClick={onClose}
             >
-              <PixelIcon name="close" />
+              <Icon name="close" />
             </button>
           </header>
 
@@ -121,10 +121,10 @@ const MetricInfo: React.FC<Props> = ({ topic, onClose }) => {
             {PARTS.map(({ part, icon }) => (
               <li key={part} className="lu-info-row flex items-start gap-3 rounded-[10px] p-3">
                 <span className="lu-info-row-icon grid size-9 flex-none place-items-center rounded-lg text-[1.15rem]">
-                  <PixelIcon name={icon} />
+                  <Icon name={icon} />
                 </span>
                 <div className="grid min-w-0 gap-0.5">
-                  <h3 className="m-0 text-[0.9rem] font-extrabold text-ink">{t(`progress.infoHead.${part}`)}</h3>
+                  <h3 className="m-0 text-[0.9rem] font-bold text-ink">{t(`progress.infoHead.${part}`)}</h3>
                   <p className="m-0 text-[0.9rem] leading-relaxed text-muted">
                     {t(`progress.info.${topic.key}.${part}`)}
                   </p>

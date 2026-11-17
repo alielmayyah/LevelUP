@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import type { ProfileDto } from '../api/types';
 import { useApi } from '../api/useApi';
 import CtaButton from '../components/CtaButton';
-import PixelIcon, { type PixelIconName } from '../components/PixelIcon';
+import Icon, { type IconName } from '../components/Icon';
 import { focusSibling, rovingTarget } from '../components/roving';
 import { formatNumber, formatPercent } from '../i18n/format';
 import { MEDAL_CATEGORIES, MEDAL_CONFIG } from './medals/config';
@@ -30,7 +30,7 @@ import './medals/Medals.scss';
 type Filter = 'all' | MedalCategory;
 const FILTERS: Filter[] = ['all', ...MEDAL_CATEGORIES];
 
-const ICONS: Record<MedalCategory, PixelIconName> = {
+const ICONS: Record<MedalCategory, IconName> = {
   bodyFat: 'bodyFat',
   muscle: 'muscle',
   bench: 'barbell',
@@ -50,10 +50,10 @@ function Overview({ categories }: { categories: MedalCategoryStatus[] }) {
     <section className="lu-trophy-overview" aria-labelledby="trophy-overview" data-testid="medal-overview">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 id="trophy-overview" className="m-0 text-[0.9rem] font-extrabold">
+          <h2 id="trophy-overview" className="m-0 text-[0.9rem] font-bold">
             {t('medals.overview')}
           </h2>
-          <p className="m-0 mt-1 leading-none font-extrabold tabular-nums">
+          <p className="m-0 mt-1 leading-none font-bold tabular-nums">
             <bdi className="lu-trophy-count" dir="ltr" aria-hidden="true">
               {formatNumber(s.unlocked)} <small>/ {formatNumber(s.total)}</small>
             </bdi>
@@ -62,7 +62,7 @@ function Overview({ categories }: { categories: MedalCategoryStatus[] }) {
             </span>
           </p>
         </div>
-        <PixelIcon name="trophy" className="shrink-0 text-[2.6rem] [--px-fill:var(--lu-rarity-gold)]" />
+        <Icon name="trophy" className="shrink-0 text-[2.6rem] [--icon-color:var(--lu-rarity-gold)]" />
       </div>
       <div className="grid gap-1.5">
         <div
@@ -159,7 +159,7 @@ function Section({ status, onOpen }: { status: MedalCategoryStatus; onOpen: (m: 
   const heading = `medal-section-${status.category}`;
   return (
     <section
-      className="lu-px-card lu-medal-section"
+      className="lu-card lu-medal-section"
       data-category={status.category}
       aria-labelledby={heading}
       data-testid={heading}
@@ -167,9 +167,9 @@ function Section({ status, onOpen }: { status: MedalCategoryStatus; onOpen: (m: 
       <div className="grid content-start gap-2">
         <div className="flex items-center gap-3">
           <span className="lu-medal-section-icon">
-            <PixelIcon name={ICONS[status.category]} />
+            <Icon name={ICONS[status.category]} />
           </span>
-          <h2 id={heading} className="m-0 text-[1.1rem] leading-tight font-extrabold text-ink">
+          <h2 id={heading} className="m-0 text-[1.1rem] leading-tight font-bold text-ink">
             {t(`medals.category.${status.category}`)}
           </h2>
         </div>
@@ -249,7 +249,7 @@ export default function Medals() {
                 else router.push('/tabs/profile', 'back', 'replace');
               }}
             >
-              <PixelIcon name="arrowBack" className="rtl:-scale-x-100" />
+              <Icon name="arrowBack" className="rtl:-scale-x-100" />
             </button>
             <div className="min-w-0">
               <h1 className="lu-display m-0 text-[clamp(2.2rem,9vw,3rem)] leading-none text-ink">

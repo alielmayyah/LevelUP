@@ -11,7 +11,7 @@ import {
   type Scale,
   type Status,
 } from '../../body/standards';
-import PixelIcon, { type PixelIconName } from '../../components/PixelIcon';
+import Icon, { type IconName } from '../../components/Icon';
 import { focusSibling, rovingTarget } from '../../components/roving';
 import { formatNumber, formatSigned, numberLocale } from '../../i18n/format';
 import BodyScanFigure from './BodyScanFigure';
@@ -52,7 +52,7 @@ const Delta: React.FC<{ now: number; then: number; digits: number; unit: string;
   const tone = good === null ? 'text-muted' : good ? 'text-success' : 'text-danger';
   const amount = `${formatNumber(Math.abs(diff), digits)}${unit === '%' ? '%' : unit ? ` ${unit}` : ''}`;
   return (
-    <span className={`text-[0.75rem] font-extrabold whitespace-nowrap ${tone}`} data-testid={testId}>
+    <span className={`text-[0.75rem] font-bold whitespace-nowrap ${tone}`} data-testid={testId}>
       <bdi aria-hidden="true">{diff === 0 ? '±0' : formatSigned(diff, unit, { digits })}</bdi>
       <span className="sr-only">
         {diff === 0 ? t('progress.noChange') : t(diff > 0 ? 'bodyComp.upSince' : 'bodyComp.downSince', { amount })}
@@ -87,7 +87,7 @@ const ZoneHeader: React.FC = () => {
 interface BarProps {
   testId: string;
   label: string;
-  icon: PixelIconName;
+  icon: IconName;
   tone: string;
   scale: Scale;
   /** The value placed on the scale (kg as % of standard for weight, muscle, and fat). */
@@ -116,8 +116,8 @@ const Bar: React.FC<BarProps> = (p) => {
   return (
     <div className={`grid gap-1.5 ${p.tone}`} data-testid={p.testId}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-        <span className="flex min-w-0 items-center gap-1.5 text-[0.85rem] font-extrabold text-ink">
-          <PixelIcon className="flex-none text-[1.1rem]" name={p.icon} />
+        <span className="flex min-w-0 items-center gap-1.5 text-[0.85rem] font-bold text-ink">
+          <Icon className="flex-none text-[1.1rem]" name={p.icon} />
           {p.label}
         </span>
         <span className="flex items-baseline gap-2">
@@ -369,7 +369,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
 
   return (
     <div className="grid gap-3.5" data-testid="body-comp">
-      <section className="lu-px-card grid gap-3.5" aria-labelledby="bc-muscle-fat">
+      <section className="lu-card grid gap-3.5" aria-labelledby="bc-muscle-fat">
         <header className="grid gap-0.5">
           <span className="lu-card-kicker">{t('bodyComp.kicker')}</span>
           <h2 id="bc-muscle-fat" className="lu-card-title">
@@ -388,7 +388,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
         ))}
       </section>
 
-      <section className="lu-px-card grid gap-3" aria-labelledby="bc-segments" data-testid="segments">
+      <section className="lu-card grid gap-3" aria-labelledby="bc-segments" data-testid="segments">
         <h2 id="bc-segments" className="lu-card-title">
           {t('bodyComp.segmental')}
         </h2>
@@ -407,7 +407,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                   aria-checked={kind === k}
                   tabIndex={kind === k ? 0 : -1}
                   data-testid={`segments-${k}`}
-                  className="flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-extrabold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+                  className="flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-bold text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
                   onClick={() => setKind(k)}
                   onKeyDown={(e) => {
                     const to = rovingTarget(e, i, kinds.length, rtl);
@@ -416,7 +416,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                     focusSibling(e, to);
                   }}
                 >
-                  <PixelIcon className="shrink-0 text-base" name={k === 'lean' ? 'muscle' : 'bodyFat'} />
+                  <Icon className="shrink-0 text-base" name={k === 'lean' ? 'muscle' : 'bodyFat'} />
                   {t(k === 'lean' ? 'bodyComp.lean' : 'bodyComp.fatView')}
                 </button>
               ))}
@@ -491,7 +491,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
         )}
       </section>
 
-      <section className="lu-px-card grid gap-3.5" aria-labelledby="bc-composition">
+      <section className="lu-card grid gap-3.5" aria-labelledby="bc-composition">
         <h2 id="bc-composition" className="lu-card-title">
           {t('bodyComp.composition')}
         </h2>

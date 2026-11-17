@@ -13,7 +13,7 @@ import LanguageToggle from '../components/LanguageToggle';
 import SoundToggle from '../components/SoundToggle';
 import { CORNER_BUTTON, CORNER_CONTROLS, CORNER_START } from '../components/cornerControl';
 import { useSound } from '../sound/useSound';
-import PixelIcon from '../components/PixelIcon';
+import Icon from '../components/Icon';
 import './Login.scss';
 
 const MIN_DIGITS = 3;
@@ -84,7 +84,7 @@ const Login: React.FC = () => {
               onClick={() => history.replace('/splash')}
               data-testid="login-back"
             >
-              <PixelIcon className="text-[1.25rem] rtl:-scale-x-100" name="arrowBack" />
+              <Icon className="text-[1.25rem] rtl:-scale-x-100" name="arrowBack" />
             </button>
           </div>
           <div className={CORNER_CONTROLS}>
@@ -113,7 +113,7 @@ const Login: React.FC = () => {
               className="mb-2 flex items-center gap-1.5 text-[0.9rem] font-bold text-splash-muted"
               htmlFor={inputId}
             >
-              <PixelIcon className="text-[1.15rem]" name="idCard" />
+              <Icon className="text-[1.15rem]" name="idCard" />
               {t('login.fitId')}
             </label>
             <input
@@ -150,7 +150,7 @@ const Login: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.16 }}
                   >
-                    <PixelIcon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
+                    <Icon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
                     {t(`login.${failure}`)}
                   </m.p>
                 ) : (
@@ -162,7 +162,7 @@ const Login: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.16 }}
                   >
-                    <PixelIcon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
+                    <Icon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
                     {t('login.help')}
                   </m.p>
                 )}
@@ -183,7 +183,7 @@ const Login: React.FC = () => {
               ) : (
                 <>
                   {t('login.submit')}
-                  <PixelIcon className="text-[1.2rem] rtl:-scale-x-100" name="arrowForward" />
+                  <Icon className="text-[1.2rem] rtl:-scale-x-100" name="arrowForward" />
                 </>
               )}
             </CtaButton>

@@ -9,7 +9,7 @@ import Avatar from '../avatar/Avatar';
 import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
 import Pager from '../components/Pager';
-import PixelIcon from '../components/PixelIcon';
+import Icon from '../components/Icon';
 import TabPage from '../components/TabPage';
 import { formatCount, formatRank } from '../i18n/format';
 import { rowAvatar } from './leaderboard/rowAvatar';
@@ -72,7 +72,7 @@ const Community: React.FC = () => {
     <TabPage
       testId="page-community"
       title={t('tabs.community')}
-      titleIcon={<PixelIcon className="lu-title-icon flex-none text-[0.75em]" name="community" />}
+      titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="community" />}
       onRefresh={refresh}
       fill
     >
@@ -90,9 +90,9 @@ const Community: React.FC = () => {
           <div className="lu-wall-board-slot">
             <div className="lu-wall-board" data-testid="community-wall-board">
               <span className="flex min-w-0 items-center justify-center gap-1 text-gold" aria-hidden="true">
-                <PixelIcon name="trophy" className="shrink-0" />
+                <Icon name="trophy" className="shrink-0" />
                 <span className="text-splash-text">{t('community.leaderboards')}</span>
-                <PixelIcon name="chevronForward" className="shrink-0 rtl:-scale-x-100" />
+                <Icon name="chevronForward" className="shrink-0 rtl:-scale-x-100" />
               </span>
               {podium.length > 0 && (
                 <span className="flex min-h-0 justify-center gap-1.5" aria-hidden="true">
@@ -100,7 +100,7 @@ const Community: React.FC = () => {
                     <span
                       key={row.memberId}
                       title={row.name}
-                      className={`lu-wall-portrait relative aspect-square min-w-0 border-2 ${FRAME_COLORS[index]}`}
+                      className={`lu-wall-portrait relative aspect-square min-w-0 border ${FRAME_COLORS[index]}`}
                       data-testid="community-board-portrait"
                     >
                       <Avatar config={row.isMe && selfAvatar ? selfAvatar : avatar} className="block size-full" />
@@ -157,18 +157,18 @@ const Community: React.FC = () => {
             })}
           {selected && (
             <div className="lu-community-card" role="group" aria-label={selected.row.name} data-testid="community-card">
-              <span className="lu-avatar-frame grid size-11 flex-none place-items-center overflow-hidden rounded-md">
+              <span className="lu-avatar-frame grid size-11 flex-none place-items-center overflow-hidden rounded-[10px]">
                 <Avatar config={selected.avatar} className="block size-full" />
               </span>
               <span className="grid min-w-0 flex-1 leading-tight">
-                <bdi className="truncate font-extrabold">{selected.row.name}</bdi>
+                <bdi className="truncate font-bold">{selected.row.name}</bdi>
                 {/* A little about them: their rank and FitScore on the gym board. */}
                 <span
                   className="lu-community-card-info flex items-center gap-1 text-[0.75rem] font-bold whitespace-nowrap"
                   data-testid="community-card-info"
                 >
                   <span aria-hidden="true">{formatRank(selected.row.rank)}</span>
-                  <PixelIcon name="trophy" className="ms-1 flex-none text-gold" />
+                  <Icon name="trophy" className="ms-1 flex-none text-gold" />
                   <span aria-hidden="true">{formatCount(selected.row.value)}</span>
                   <span className="sr-only">
                     {t('community.cardInfo', {
@@ -183,7 +183,7 @@ const Community: React.FC = () => {
                 className="lu-community-visit"
                 data-testid="community-visit"
               >
-                <PixelIcon name="person" className="flex-none" />
+                <Icon name="person" className="flex-none" />
                 {t('community.profile')}
               </Link>
               <button
@@ -192,7 +192,7 @@ const Community: React.FC = () => {
                 onClick={() => selectMember(null)}
                 aria-label={t('community.close')}
               >
-                <PixelIcon name="close" />
+                <Icon name="close" />
               </button>
             </div>
           )}

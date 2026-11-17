@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSound } from '../sound/useSound';
 import { CORNER_BUTTON } from './cornerControl';
-import PixelIcon from './PixelIcon';
+import Icon from './Icon';
 
 interface SoundToggleProps {
   className?: string;
@@ -37,7 +37,7 @@ const SoundToggle: React.FC<SoundToggleProps> = ({ className }) => {
           exit={{ opacity: 0, scale: 0.5, rotate: 25 }}
           transition={{ duration: 0.18, ease: 'easeOut' }}
         >
-          <PixelIcon name={enabled ? 'volume' : 'mute'} />
+          <Icon name={enabled ? 'volume' : 'mute'} />
         </m.span>
       </AnimatePresence>
     </button>
