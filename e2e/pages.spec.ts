@@ -614,10 +614,22 @@ test.describe('Character', () => {
     await expect(sprite.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'high-tops');
 
     const lower = sprite.locator('[data-body-region="lower"]');
+    const head = sprite.locator('[data-style-layer="hair"]');
+    const headDrawing = await head.locator('path').first().getAttribute('d');
+    const top = sprite.locator('[data-style-layer="top"] path').first();
+    const topDrawing = await top.getAttribute('d');
     const before = (await lower.getAttribute('transform'))!;
     await editor.getByRole('tab', { name: en.avatar.tab.body, exact: true }).click();
     await editor.getByRole('radio', { name: en.avatar.style['long-limbed'], exact: true }).click();
     await expect(lower).not.toHaveAttribute('transform', before);
+    await expect(head.locator('path').first()).toHaveAttribute('d', headDrawing!);
+    await expect(top).toHaveAttribute('d', topDrawing!);
+
+    await editor.getByRole('tab', { name: en.avatar.tab.shoes, exact: true }).click();
+    await editor.getByRole('radio', { name: en.avatar.style.barefoot, exact: true }).click();
+    await expect(sprite.locator('[data-style-layer="shoes"]')).toHaveAttribute('data-variant', 'barefoot');
+    await expect(head.locator('path').first()).toHaveAttribute('d', headDrawing!);
+    await expect(top).toHaveAttribute('d', topDrawing!);
     await expect(editor.getByTestId('character-status')).toHaveText(en.avatar.saved);
 
     await page.reload();

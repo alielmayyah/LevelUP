@@ -27,8 +27,20 @@ export const ART_NECK = 82;
 export const ART_WAIST = 129;
 export const ART_ANKLE = 180;
 export const ART_FLOOR = 211;
-const ART_HEIGHT = 205;
 const ART_CENTER = 64;
+
+const SOCK_TOP = {
+  'ankle-socks': 173,
+  'crew-socks': 161,
+  'striped-socks': 160,
+  'knee-highs': 146,
+  'grip-socks': 175,
+  'cushioned-socks': 168,
+  'tab-socks': 175,
+  'compression-socks': 147,
+} as const satisfies Record<Exclude<ResolvedStyles['socks'], 'no-socks'>, number>;
+
+export const sockTop = (style: keyof typeof SOCK_TOP) => SOCK_TOP[style];
 
 const hasScarf = (source: SpriteSource) =>
   source === 'lilac' || source === 'violetWrap' || source === 'paleWrap' || source === 'amber';
@@ -49,30 +61,25 @@ export function alignedAnkle(source: SpriteSource, side: Foot, tailored: boolean
 export function artworkGeometry(
   source: SpriteSource,
   region: SpriteRegion,
-  complete: boolean,
   tailored: boolean,
   shoe?: { side: Foot; x: number },
 ) {
   const { h, center, neck, waist, ankle, face, feet } = atlas[source];
-  const factor = ART_HEIGHT / h;
-  if (complete) {
-    return `translate(${ART_CENTER - center * factor} ${ART_FLOOR - h * factor}) scale(${factor})`;
-  }
 
   if (region === 'head') {
-    const scale = source.endsWith('Head') ? 20 / (face.eyes[1][0] - face.eyes[0][0]) : factor;
-    const y = hasScarf(source) ? ART_NECK - neck * scale : ART_NECK - 8 - face.jaw[1] * scale;
+    const scale = 20 / (face.eyes[1][0] - face.eyes[0][0]);
+    const y = hasScarf(source) ? ART_NECK + 2 - neck * scale : ART_NECK - 8 - face.jaw[1] * scale;
     return `translate(${ART_CENTER - face.jaw[0] * scale} ${y}) scale(${scale})`;
   }
 
   const fit = waistFit(source, tailored);
   const [start, end, top, bottom] = {
-    top: [neck, waist, ART_NECK, ART_WAIST + 1],
+    top: [neck, waist, ART_NECK, ART_WAIST + 2],
     legs: [waist, ankle, ART_WAIST, ART_ANKLE],
     shoes: [ankle, h, ART_ANKLE - 1, ART_FLOOR],
   }[region];
   const scaleY = (bottom - top) / (end - start);
-  const scaleX = region === 'shoes' ? factor : fit.scale;
+  const scaleX = region === 'shoes' ? 205 / h : fit.scale;
   const x = shoe ? shoe.x - feet[shoe.side] * scaleX : ART_CENTER - (region === 'shoes' ? center : fit.center) * scaleX;
   return `translate(${x} ${top - start * scaleY}) scale(${scaleX} ${scaleY})`;
 }
@@ -82,7 +89,8 @@ export function pickHead(style: ResolvedStyles): SpriteSource {
   if (hair === 'sport-hijab') return 'violetWrap';
   if (hair === 'wrap-hijab') return 'lilac';
   if (hair === 'longline-hijab') return 'paleWrap';
-  if (isTiedHair(hair) || hair === 'top-knot') return 'teal';
+  if (hair === 'high-bun') return 'teal';
+  if (isTiedHair(hair) || hair === 'top-knot') return 'sideHead';
   if (hair === 'spikes') return 'silver';
   if (hair === 'buzz-cut' || hair === 'fade' || hair === 'shaved') return 'buzzHead';
   if (hair === 'waves') return 'cloud';
@@ -93,16 +101,23 @@ export function pickHead(style: ResolvedStyles): SpriteSource {
 
 export function pickTop(style: ResolvedStyles, tailored: boolean): SpriteSource {
   if (style.top === 'racerback-bra' || style.top === 'longline-tank') return 'teal';
-  if (style.top === 'tank' || style.top === 'tee' || style.top === 'mesh-tee' || style.top === 'raglan-top') {
+  if (
+    style.top === 'tank' ||
+    style.top === 'tee' ||
+    style.top === 'mesh-tee' ||
+    style.top === 'raglan-top' ||
+    style.top === 'sleeveless-hoodie'
+  ) {
     return tailored ? 'teal' : 'silver';
   }
   if (style.top === 'track-jacket' || style.top === 'fitted-zip' || style.top === 'longline-training-top') {
-    return tailored ? 'lilac' : 'cap';
+    return style.top === 'fitted-zip' ? 'lilac' : 'cap';
   }
   if (style.top === 'zip-hoodie' || style.top === 'quarter-zip' || style.top === 'compression-top') {
     return tailored ? 'lilac' : 'cap';
   }
-  return tailored ? 'paleWrap' : 'cloud';
+  if (style.top === 'sweatshirt' || style.top === 'varsity') return 'violet';
+  return 'cloud';
 }
 
 export function pickLegs(style: ResolvedStyles, tailored: boolean): SpriteSource {
@@ -119,6 +134,8 @@ export function pickLegs(style: ResolvedStyles, tailored: boolean): SpriteSource
     case 'track-pants':
     case 'tapered-joggers':
       return tailored ? 'lilac' : 'cloud';
+    case 'capris':
+      return 'lilac';
     default:
       return tailored ? 'paleWrap' : 'violet';
   }
@@ -127,15 +144,23 @@ export function pickLegs(style: ResolvedStyles, tailored: boolean): SpriteSource
 export function pickShoes(style: ResolvedStyles, tailored: boolean): SpriteSource {
   switch (style.shoes) {
     case 'high-tops':
-    case 'boots':
       return tailored ? 'violetWrap' : 'silver';
+    case 'boots':
+      return 'violet';
     case 'runners':
-    case 'cushioned-runners':
       return tailored ? 'teal' : 'cloud';
+    case 'cushioned-runners':
+      return tailored ? 'paleWrap' : 'teal';
     case 'lifters':
-    case 'flat-lifters':
       return tailored ? 'amber' : 'cap';
+    case 'flat-lifters':
+      return 'lilac';
+    case 'slip-ons':
+    case 'canvas':
+      return 'paleWrap';
+    case 'cross-trainers':
+      return 'amber';
     default:
-      return tailored ? 'lilac' : 'violet';
+      return tailored ? 'lilac' : 'cloud';
   }
 }

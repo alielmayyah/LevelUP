@@ -3,12 +3,16 @@ import type { AvatarConfigDto, AvatarPaint, ColorPart, ResolvedStyles } from './
 import { colorIdFor, isHijab } from './catalog';
 import {
   artworkGeometry,
+  ART_ANKLE,
+  ART_WAIST,
   atlas,
+  sockTop,
   type Foot,
   type Paint,
   type SpriteRegion,
   type SpriteSource,
 } from './referenceGeometry';
+import { PantsDetails, ShoeDetails, TopDetails } from './SpriteDetails';
 
 type Layer = { paint: Paint; color: string; shade: number; path: string };
 const CACHE = new Map<SpriteSource, Record<SpriteRegion, Layer[]>>();
@@ -29,10 +33,14 @@ function layers(source: SpriteSource) {
       const stride = Math.ceil(w / step);
       for (let y = start; y < endY; y += step) {
         const height = Math.min(step, endY - y);
-        for (let x = 0; x < stride;) {
+        // Avoid loose hair pixels left in the shoulders of the studio top.
+        const studioCollar = source === 'teal' && region === 1 && y < neck + 12;
+        const left = studioCollar ? 17 : 0;
+        const right = studioCollar ? 42 : stride;
+        for (let x = left; x < right;) {
           const index = indices.charCodeAt(offset + x);
           let endX = x + 1;
-          while (endX < stride && indices.charCodeAt(offset + endX) === index) endX++;
+          while (endX < right && indices.charCodeAt(offset + endX) === index) endX++;
           const length = Math.min(endX * step, w) - x * step;
           if (index) rows[index - 1].push(`M${x * step} ${y}h${length}v${height}h-${length}z`);
           x = endX;
@@ -43,7 +51,15 @@ function layers(source: SpriteSource) {
     });
   const output: Record<SpriteRegion, Layer[]> = { head: [], top: [], legs: [], shoes: [] };
   palette.forEach(([region, paint, color, shade], index) => {
-    if (rows[index].length) output[region].push({ paint, color: `#${color}`, shade, path: rows[index].join('') });
+    if (!rows[index].length) return;
+    // Pink cheek highlights were picked up by the pale scarf's fabric mask.
+    const cheek = source === 'paleWrap' && paint === 'hijab' && (color === 'f1bcc1' || color === 'b07b93');
+    output[region].push({
+      paint: cheek ? 'skin' : paint,
+      color: `#${color}`,
+      shade: cheek ? (color === 'f1bcc1' ? 11 : -28) : shade,
+      path: rows[index].join(''),
+    });
   });
   CACHE.set(source, output);
   return output;
@@ -53,7 +69,7 @@ const PALETTES: Record<SpriteSource, Partial<Record<Paint, string>>> = {
   silver: { hair: 'silver', top: 'burgundy', pants: 'charcoal', socks: 'off-white', shoes: 'teal' },
   cloud: { hair: 'auburn', top: 'cream', pants: 'graphite', socks: 'off-white', shoes: 'brick' },
   teal: { hair: 'auburn', top: 'teal', pants: 'slate', socks: 'off-white', shoes: 'teal' },
-  cap: { hair: 'espresso', top: 'charcoal', pants: 'slate', socks: 'charcoal', shoes: 'amber' },
+  cap: { hair: 'espresso', top: 'charcoal', pants: 'slate', socks: 'charcoal', shoes: 'teal' },
   violet: { hair: 'indigo', top: 'orchid', pants: 'aubergine', socks: 'off-white', shoes: 'violet' },
   lilac: { hijab: 'plum', top: 'orchid', pants: 'aubergine', socks: 'off-white', shoes: 'violet' },
   violetWrap: { hijab: 'plum', top: 'plum', pants: 'aubergine', socks: 'off-white', shoes: 'violet' },
@@ -88,7 +104,8 @@ function fillFor(layer: Layer, source: SpriteSource, config: AvatarConfigDto, p:
   if (paint === 'beard') return color;
   const original = paint === 'skin' ? 'light' : PALETTES[source][paint];
   const part = COLOR_PART[paint];
-  const bareAnkle = paint === 'socks' && config.styles?.socks === 'no-socks';
+  // Exposed ankles are skin until the selected sock is painted over them.
+  const bareAnkle = paint === 'socks';
   if (!bareAnkle && colorIdFor(config, part) === original) return color;
   const tint = bareAnkle ? p.skin : p[part];
   const fraction = Math.min(62, Math.abs(shade) * (shade < 0 ? 0.6 : 0.45));
@@ -108,53 +125,152 @@ function fillFor(layer: Layer, source: SpriteSource, config: AvatarConfigDto, p:
 export function ReferenceLayer({
   source,
   region,
-  complete,
   config,
   paint,
+  styles,
   hood,
   tailored,
   shoe,
+  withSocks,
 }: {
   source: SpriteSource;
   region: SpriteRegion;
-  complete: boolean;
   config: AvatarConfigDto;
   paint: AvatarPaint;
-  hood?: 'raised' | 'behind';
+  styles: ResolvedStyles;
+  hood?: 'raised';
   tailored: boolean;
   shoe?: { side: Foot; x: number };
+  withSocks?: boolean;
 }) {
   const clip = useId();
+  const detail = useId();
+  const cuffs = useId();
   const frame = atlas[source];
   const middle = (frame.feet[0] + frame.feet[1]) / 2;
-  const entries = layers(source)[region].filter((layer) => hood !== 'behind' || layer.paint === 'hijab');
+  const entries = layers(source)[region];
   const firstHijab = entries.findIndex(({ paint }) => paint === 'hijab');
   const firstSkin = entries.findIndex(({ paint }) => paint === 'skin');
-  const firstSock = entries.findIndex(({ paint }) => paint === 'socks');
+  const fabric = region === 'top' ? 'top' : 'pants';
+  const [beltStart, beltEnd] = frame.belt;
+  const waistCenter = (beltStart + beltEnd) / 2;
+  const legs = region === 'legs';
+  const top = region === 'top';
+  const capris = legs && styles.pants === 'capris';
+  const cuffHeight = styles.socks === 'no-socks' ? ART_ANKLE : sockTop(styles.socks);
+  const ankleScale = (frame.ankle - frame.waist) / (ART_ANKLE - ART_WAIST);
+  const cuff = frame.waist + (cuffHeight - ART_WAIST) * ankleScale;
+  const hem = frame.waist + (frame.ankle - frame.waist) * 0.78;
+  const sleeves = top && ['tee', 'mesh-tee', 'raglan-top'].includes(styles.top);
+  const shirt = top && (styles.top === 'longline-tank' || (tailored && styles.top === 'tank'));
+  const detailShape =
+    top || legs
+      ? entries
+          .filter(({ paint }) => paint === fabric || (top && paint === 'skin' && (sleeves || shirt)))
+          .map(({ path }) => path)
+          .join('')
+      : '';
+  const sockPixels =
+    legs && withSocks && styles.socks !== 'no-socks'
+      ? entries
+          .filter(({ paint }) => paint === 'skin' || paint === 'socks' || (capris && paint === 'pants'))
+          .map(({ path }) => path)
+          .join('')
+      : '';
+  const cuffStart = capris ? Math.max(hem, cuff) : cuff;
+  const shoeOrHeadClip = shoe || (region === 'head' && (hood || source === 'teal'));
   return (
-    <g transform={artworkGeometry(source, region, complete, tailored, shoe)} shapeRendering="crispEdges">
-      {shoe && (
+    <g transform={artworkGeometry(source, region, tailored, shoe)} shapeRendering="crispEdges">
+      {shoeOrHeadClip && (
         <clipPath id={clip}>
-          <rect
-            x={shoe.side === 0 ? 0 : middle}
-            y={frame.ankle}
-            width={shoe.side === 0 ? middle : frame.w - middle}
-            height={frame.h - frame.ankle}
-          />
+          {shoe ? (
+            <rect
+              x={shoe.side === 0 ? 0 : middle}
+              y={frame.ankle}
+              width={shoe.side === 0 ? middle : frame.w - middle}
+              height={frame.h - frame.ankle}
+            />
+          ) : hood ? (
+            <rect x="0" y="0" width={frame.w} height={frame.neck - 5} />
+          ) : (
+            // The studio reference has loose hair below its bun.
+            <path d={`M0 0H${frame.w}V74H43V67H39V59H35V49H29V43H0Z`} />
+          )}
         </clipPath>
       )}
-      <g clipPath={shoe ? `url(#${clip})` : undefined}>
+      <g clipPath={shoeOrHeadClip ? `url(#${clip})` : undefined}>
         {entries.map((layer, i) => (
           <path
             key={i}
-            fill={fillFor(hood && layer.paint === 'hijab' ? { ...layer, paint: 'top' } : layer, source, config, paint)}
+            fill={fillFor(
+              layer.paint === 'hijab' && hood
+                ? { ...layer, paint: 'top' }
+                : layer.paint === 'hair' && styles.hair === 'shaved' && region === 'head'
+                  ? { ...layer, paint: 'skin', color: paint.skin }
+                  : layer,
+              source,
+              config,
+              paint,
+            )}
             d={layer.path}
             data-feature={layer.paint === 'iris' ? 'iris' : undefined}
-            data-paint={i === firstHijab && !hood ? 'hijab-fabric' : i === firstSock ? 'sock-fabric' : undefined}
+            data-paint={i === firstHijab && !hood ? 'hijab-fabric' : undefined}
             data-art-detail={i === firstSkin && firstHijab >= 0 && !hood ? 'hijab-face' : undefined}
           />
         ))}
+        {region === 'shoes' &&
+          (shoe ? [frame.feet[shoe.side]] : frame.feet).map((x, i) => (
+            <g key={i} transform={`translate(${x} ${frame.ankle}) scale(${(frame.h - frame.ankle) / 28})`}>
+              <ShoeDetails style={styles.shoes} paint={paint} />
+            </g>
+          ))}
       </g>
+      {region === 'head' && styles.hair === 'fade' && !hood && (
+        <path d="M16 44h8v3h-8Zm49 0h8v3h-8Z M19 39h7v2h-7Zm45 0h7v2h-7Z" fill={paint.hairLight} />
+      )}
+      {region === 'head' && styles.hair === 'tapered-curls' && !hood && (
+        <path d="M28 57h6v5h-6Zm55 0h6v5h-6Z" fill={paint.hairLight} />
+      )}
+      {(top || legs) && (
+        <>
+          <clipPath id={detail}>
+            <path d={detailShape} />
+          </clipPath>
+          <g clipPath={`url(#${detail})`}>
+            {capris && <rect y={hem} width={frame.w} height={frame.ankle - hem} fill={paint.skin} />}
+            <g
+              transform={`translate(${waistCenter} ${top ? frame.neck : frame.waist}) scale(${(beltEnd - beltStart) / 43} ${top ? (frame.waist - frame.neck) / 47 : (frame.ankle - frame.waist) / 51})`}
+            >
+              {sleeves && <path d="M-42 0h84v19H-42Z" fill={paint.tank} />}
+              {shirt && <path d="M-15 31h30v16h-30Z" fill={paint.tank} />}
+              {top ? (
+                <TopDetails style={styles.top} paint={paint} />
+              ) : (
+                <PantsDetails style={styles.pants} paint={paint} />
+              )}
+            </g>
+          </g>
+        </>
+      )}
+      {sockPixels && (
+        <>
+          <clipPath id={cuffs}>
+            <path d={sockPixels} />
+          </clipPath>
+          <g clipPath={`url(#${cuffs})`}>
+            <rect
+              data-paint={styles.shoes === 'barefoot' ? undefined : 'sock-fabric'}
+              y={cuffStart}
+              width={frame.w}
+              height={frame.ankle - cuffStart}
+              fill={paint.socks}
+            />
+            {(styles.socks === 'striped-socks' || styles.socks === 'knee-highs') && (
+              <rect y={capris ? Math.max(hem, cuff + 3) : cuff + 3} width={frame.w} height="2" fill={paint.sockTrim} />
+            )}
+          </g>
+        </>
+      )}
     </g>
   );
 }
@@ -164,13 +280,11 @@ export function ReferenceFace({
   styles,
   paint: p,
   source,
-  complete,
   tailored,
 }: {
   styles: ResolvedStyles;
   paint: AvatarPaint;
   source: SpriteSource;
-  complete: boolean;
   tailored: boolean;
 }) {
   const {
@@ -185,20 +299,27 @@ export function ReferenceFace({
   const covered = isHijab(styles.hair);
   const beardPath = styles.beard === 'clean-shaven' ? undefined : BEARDS[styles.beard];
   return (
-    <g transform={artworkGeometry(source, 'head', complete, tailored)}>
+    <g transform={artworkGeometry(source, 'head', tailored)}>
       <g data-style-layer="face" data-variant={styles.face}>
         {styles.face !== 'smile' && (
           <path
             data-feature="smile"
-            d={styles.face === 'grin' ? `M-4 -1h8l-2 3h-4z` : `M-3 0h6v1h-6z`}
+            d={styles.face === 'grin' ? 'M-4 -1h8l-2 3h-4z' : 'M-3 0h6v1h-6z'}
             transform={`translate(${mx} ${my}) scale(${scale})`}
             fill={styles.face === 'grin' ? p.trim : p.mouth}
             stroke={styles.face === 'grin' ? p.mouth : undefined}
             strokeWidth={1}
           />
         )}
+        {styles.face === 'focused' && (
+          <path
+            d={`M${lx - 4 * scale} ${ly - 5 * scale}l${7 * scale} ${2 * scale}M${rx - 3 * scale} ${ry - 3 * scale}l${7 * scale} ${-2 * scale}`}
+            stroke={p.outline}
+            strokeWidth={scale}
+          />
+        )}
       </g>
-      {!covered && beardPath && source !== 'cap' && (
+      {!covered && beardPath && (
         <g
           data-style-layer="beard"
           data-variant={styles.beard}
@@ -212,7 +333,6 @@ export function ReferenceFace({
           />
         </g>
       )}
-      {source === 'cap' && <g data-style-layer="beard" data-variant={styles.beard} />}
       {styles.glasses !== 'no-glasses' && (
         <g
           data-style-layer="glasses"
