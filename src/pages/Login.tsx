@@ -139,7 +139,7 @@ const Login: React.FC = () => {
 
             {/* Sign-in errors, read out as they appear. */}
             <div id={hintId} aria-live="polite">
-              <AnimatePresence initial={false}>
+              <AnimatePresence mode="wait" initial={false}>
                 {failure && (
                   <m.p
                     key={failure}
