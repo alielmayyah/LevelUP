@@ -4,21 +4,22 @@
 <meta charset="utf-8">
 <title>LevelUP — Business &amp; Technical Plan v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Jersey+10&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0F0B1A; --surface:#191330; --surface2:#231B40; --surface3:#2A2150; --line:#2F2654;
-  --ink:#F3F0FF; --ink2:#BDB5DC; --muted:#8A80AE;
-  --accent:#B77CF7; --accent-soft:rgba(124,77,242,.20); --violet:#22D3EE; --violet-soft:rgba(34,211,238,.12);
-  --amber:#F5A524; --amber-soft:rgba(245,165,36,.13); --good:#4ADE80; --warn:#F5A524; --bad:#F87171;
-  --grad:linear-gradient(135deg,#E19CFB 0%,#B77CF7 40%,#6C3CF0 100%);
+  --bg:#0B0916; --surface:#17132A; --surface2:#201B38; --surface3:#262046; --line:#2B2546;
+  --ink:#F5F3FC; --ink2:#AAA4C4; --muted:#7F789C;
+  --accent:#B98CFF; --accent-soft:rgba(124,77,242,.20); --violet:#4D8DFF; --violet-soft:rgba(77,141,255,.12);
+  --amber:#F5A524; --amber-soft:rgba(245,165,36,.13); --good:#5BE38F; --warn:#F5A524; --bad:#FF7A85;
+  --grad:linear-gradient(135deg,#E19CFB 0%,#B98CFF 40%,#6B3BF5 100%);
   --c-teal:#7C4DF2; --c-amber:#D9731A; --c-violet:#0E9AB8;
 }
 @page{size:A4;margin:0}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{font-family:Inter,"IBM Plex Sans Arabic","Segoe UI",sans-serif;font-size:9.6pt;line-height:1.5}
-.ar,[dir=rtl]{font-family:"IBM Plex Sans Arabic",Inter,"Segoe UI",sans-serif}
+body{font-family:"IBM Plex Sans","IBM Plex Sans Arabic","Segoe UI",sans-serif;font-size:9.6pt;line-height:1.5}
+.ar,[dir=rtl]{font-family:"IBM Plex Sans Arabic","IBM Plex Sans","Segoe UI",sans-serif}
+h1,h2,h3,.stat .v,.big,.s-h,.btn,.quote,.kpi b,.main h5{font-family:Alexandria,"IBM Plex Sans","IBM Plex Sans Arabic",sans-serif;letter-spacing:-.01em}
 .page{width:210mm;height:297mm;padding:15mm 16mm 16mm;position:relative;overflow:hidden;break-after:page;page-break-after:always;background:var(--bg)}
 .page:last-child{break-after:auto;page-break-after:auto}
 .foot{position:absolute;left:16mm;right:16mm;bottom:8mm;display:flex;justify-content:space-between;color:var(--muted);font-size:7.5pt;border-top:1px solid var(--line);padding-top:2.5mm}
@@ -36,13 +37,13 @@ ul{margin:0 0 2.5mm;padding-left:4.5mm;color:var(--ink2)} li{margin:0 0 1.2mm}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:4mm;padding:4.5mm}
 .card.tint{background:linear-gradient(160deg,rgba(124,77,242,.10),rgba(20,22,28,1) 60%)}
-.card.vtint{background:linear-gradient(160deg,rgba(34,211,238,.12),rgba(20,22,28,1) 60%)}
+.card.vtint{background:linear-gradient(160deg,rgba(77,141,255,.12),rgba(20,22,28,1) 60%)}
 .card.atint{background:linear-gradient(160deg,rgba(245,165,36,.10),rgba(20,22,28,1) 60%)}
 .card p:last-child,.card ul:last-child{margin-bottom:0}
 .stat .v{font-size:19pt;font-weight:800;letter-spacing:-.02em;line-height:1.1}
 .stat .l{font-size:7.8pt;color:var(--ink2);margin-top:1mm}
 .tag{display:inline-block;font-size:7pt;font-weight:700;padding:.6mm 2mm;border-radius:10mm;background:var(--accent-soft);color:var(--accent);letter-spacing:.04em}
-.tag.v{background:var(--violet-soft);color:var(--violet)} .tag.a{background:var(--amber-soft);color:var(--amber)} .tag.r{background:rgba(248,113,113,.12);color:var(--bad)}
+.tag.v{background:var(--violet-soft);color:var(--violet)} .tag.a{background:var(--amber-soft);color:var(--amber)} .tag.r{background:rgba(255,122,133,.12);color:var(--bad)}
 table{width:100%;border-collapse:separate;border-spacing:0;font-size:8.4pt;background:var(--surface);border:1px solid var(--line);border-radius:3mm;overflow:hidden;margin-bottom:3mm}
 th{text-align:left;font-weight:600;color:var(--muted);font-size:7.4pt;text-transform:uppercase;letter-spacing:.06em;padding:2.2mm 3mm;background:var(--surface2);border-bottom:1px solid var(--line)}
 td{padding:2.1mm 3mm;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
@@ -60,54 +61,54 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
 .dot{display:inline-block;width:2.2mm;height:2.2mm;border-radius:50%;margin-right:1.5mm;vertical-align:middle}
 .quote{font-size:12.5pt;line-height:1.45;color:var(--ink);font-weight:600}
 .small{font-size:7.8pt;color:var(--muted)}
-.sec-num{z-index:0;position:absolute;right:16mm;top:13mm;font-size:46pt;font-weight:800;color:#1D1636;letter-spacing:-.04em}
+.sec-num{z-index:0;position:absolute;right:16mm;top:13mm;font-size:46pt;font-weight:800;color:#19152E;letter-spacing:-.04em}
 
 /* ---------- phone mockups ---------- */
 .phones{display:flex;gap:6mm;justify-content:center;align-items:flex-start}
 .pwrap{width:54mm}
-.phone{width:54mm;height:110mm;border-radius:8mm;background:#07050E;padding:1.6mm;border:1px solid #3A2F66;box-shadow:0 6mm 14mm rgba(0,0,0,.55),0 0 0 .5mm #0A0714 inset;position:relative}
-.scr{direction:rtl;font-family:"IBM Plex Sans Arabic",Inter,sans-serif;height:100%;border-radius:6.5mm;background:#120D22;overflow:hidden;position:relative;font-size:7.2px;color:var(--ink);padding:8mm 3mm 3mm}
+.phone{width:54mm;height:110mm;border-radius:8mm;background:#06050C;padding:1.6mm;border:1px solid #36305C;box-shadow:0 6mm 14mm rgba(0,0,0,.55),0 0 0 .5mm #08060F inset;position:relative}
+.scr{direction:rtl;font-family:"IBM Plex Sans Arabic","IBM Plex Sans",sans-serif;height:100%;border-radius:6.5mm;background:#0E0B1C;overflow:hidden;position:relative;font-size:7.2px;color:var(--ink);padding:8mm 3mm 3mm}
 .scr .notch{position:absolute;top:1.6mm;left:50%;transform:translateX(-50%);width:15mm;height:3.6mm;background:#000;border-radius:3mm}
 .scr .sb{position:absolute;top:1.8mm;right:4mm;left:4mm;display:flex;justify-content:space-between;font-size:6px;color:var(--ink2);direction:ltr;font-family:Inter}
 .cap{margin-top:3mm} .cap h4{font-size:8.8pt} .cap p{font-size:7.8pt;margin:0}
 .s-h{font-size:10.5px;font-weight:700;margin:0 0 1.5mm}
 .s-sub{font-size:6.6px;color:var(--ink2)}
-.s-card{background:#1B1534;border:1px solid #2F2654;border-radius:3mm;padding:2.4mm;margin-bottom:2mm}
+.s-card{background:#17132A;border:1px solid #2B2546;border-radius:3mm;padding:2.4mm;margin-bottom:2mm}
 .s-hero{background:radial-gradient(120% 90% at 100% 0%,rgba(124,77,242,.28),rgba(23,26,34,1) 60%);border:1px solid rgba(124,77,242,.25)}
 .big{font-size:17px;font-weight:700;letter-spacing:-.01em;direction:ltr;display:inline-block}
 .g{color:var(--good)} .am{color:var(--amber)} .vi{color:var(--violet)}
-.chip{display:inline-block;padding:.5mm 1.8mm;border-radius:5mm;background:#261E45;color:var(--ink2);font-size:6.2px;margin-left:1mm}
+.chip{display:inline-block;padding:.5mm 1.8mm;border-radius:5mm;background:#231D3C;color:var(--ink2);font-size:6.2px;margin-left:1mm}
 .chip.on{background:var(--grad);color:#fff;font-weight:700}
 .btn{display:block;text-align:center;background:var(--grad);color:#fff;font-weight:700;border-radius:2.6mm;padding:2.2mm;font-size:7.6px}
-.btn.ghost{background:#211A3D;color:var(--ink);border:1px solid #3A2F66}
-.nav{position:absolute;bottom:0;left:0;right:0;height:9mm;background:rgba(18,13,34,.96);border-top:1px solid #261E45;display:flex;justify-content:space-around;align-items:center;font-size:5.8px;color:var(--muted)}
-.nav span{text-align:center} .nav span i{display:block;width:2.8mm;height:2.8mm;border-radius:1mm;background:#322858;margin:0 auto .6mm} .nav .on{color:var(--accent)} .nav .on i{background:var(--accent)}
+.btn.ghost{background:#1D1836;color:var(--ink);border:1px solid #36305C}
+.nav{position:absolute;bottom:0;left:0;right:0;height:9mm;background:rgba(14,11,28,.96);border-top:1px solid #231D3C;display:flex;justify-content:space-around;align-items:center;font-size:5.8px;color:var(--muted)}
+.nav span{text-align:center} .nav span i{display:block;width:2.8mm;height:2.8mm;border-radius:1mm;background:#2E2752;margin:0 auto .6mm} .nav .on{color:var(--accent)} .nav .on i{background:var(--accent)}
 .row{display:flex;justify-content:space-between;align-items:center}
-.mcard{background:#1B1534;border:1px solid #2F2654;border-radius:2.4mm;padding:1.8mm}
+.mcard{background:#17132A;border:1px solid #2B2546;border-radius:2.4mm;padding:1.8mm}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.6mm}
-.bar{height:1.3mm;border-radius:1mm;background:#2A2150;overflow:hidden} .bar>b{display:block;height:100%;border-radius:1mm}
-.ring{width:13mm;height:13mm;border-radius:50%;background:conic-gradient(#6C3CF0 0,#B77CF7 39%,#E19CFB 78%,#2A2150 78% 100%);display:grid;place-items:center}
-.ring>div{width:10.4mm;height:10.4mm;border-radius:50%;background:#1B1534;display:grid;place-items:center;font-weight:700;font-size:9px;direction:ltr}
+.bar{height:1.3mm;border-radius:1mm;background:#262046;overflow:hidden} .bar>b{display:block;height:100%;border-radius:1mm}
+.ring{width:13mm;height:13mm;border-radius:50%;background:conic-gradient(#6B3BF5 0,#B98CFF 39%,#E19CFB 78%,#262046 78% 100%);display:grid;place-items:center}
+.ring>div{width:10.4mm;height:10.4mm;border-radius:50%;background:#17132A;display:grid;place-items:center;font-weight:700;font-size:9px;direction:ltr}
 
 /* ---------- desktop mockups ---------- */
-.desk{background:#120D22;border:1px solid #3A2F66;border-radius:3.5mm;overflow:hidden;box-shadow:0 6mm 14mm rgba(0,0,0,.5);font-size:7.2px}
-.desk .top{height:6mm;background:#1A1430;border-bottom:1px solid #2F2654;display:flex;align-items:center;gap:1.4mm;padding:0 3mm}
-.desk .top i{width:1.8mm;height:1.8mm;border-radius:50%;background:#3D3366;display:inline-block}
-.desk .top .url{margin-left:4mm;background:#120D22;border-radius:1.5mm;padding:.6mm 3mm;color:var(--muted);font-size:6.2px}
+.desk{background:#0E0B1C;border:1px solid #36305C;border-radius:3.5mm;overflow:hidden;box-shadow:0 6mm 14mm rgba(0,0,0,.5);font-size:7.2px}
+.desk .top{height:6mm;background:#151126;border-bottom:1px solid #2B2546;display:flex;align-items:center;gap:1.4mm;padding:0 3mm}
+.desk .top i{width:1.8mm;height:1.8mm;border-radius:50%;background:#39325E;display:inline-block}
+.desk .top .url{margin-left:4mm;background:#0E0B1C;border-radius:1.5mm;padding:.6mm 3mm;color:var(--muted);font-size:6.2px}
 .desk .body{display:grid;grid-template-columns:30mm 1fr;min-height:60mm}
-.side{background:#140F26;border-right:1px solid #261E45;padding:3mm 2.5mm;color:var(--ink2)}
+.side{background:#110E20;border-right:1px solid #231D3C;padding:3mm 2.5mm;color:var(--ink2)}
 .side .logo{font-weight:800;color:var(--ink);font-size:8.5px;margin-bottom:3mm;letter-spacing:.06em}
 .side div.it{padding:1.2mm 2mm;border-radius:1.5mm;margin-bottom:.6mm}
 .side div.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .main{padding:3.5mm 4mm}
 .main h5{font-size:10px;margin:0 0 2.5mm;font-weight:700}
 .dt{width:100%;border-collapse:collapse;font-size:6.8px;background:transparent;border:none;border-radius:0;margin:0}
-.dt th{background:transparent;font-size:6px;padding:1.2mm 1.5mm;border-bottom:1px solid #2F2654}
-.dt td{padding:1.3mm 1.5mm;border-bottom:1px solid #261E45;color:var(--ink2)}
+.dt th{background:transparent;font-size:6px;padding:1.2mm 1.5mm;border-bottom:1px solid #2B2546}
+.dt td{padding:1.3mm 1.5mm;border-bottom:1px solid #231D3C;color:var(--ink2)}
 .ok{color:var(--good);font-weight:700} .wa{display:inline-block;background:#1F3A2E;color:#6EE7A8;border-radius:1.2mm;padding:.4mm 1.6mm;font-weight:600}
 .pill{display:inline-block;border-radius:5mm;padding:.3mm 1.6mm;font-size:6px;font-weight:600}
-.p-new{background:var(--accent-soft);color:var(--accent)} .p-con{background:var(--violet-soft);color:var(--violet)} .p-sold{background:rgba(74,222,128,.14);color:var(--good)} .p-warn{background:var(--amber-soft);color:var(--amber)}
-.kpi{background:#1B1534;border:1px solid #2F2654;border-radius:2.4mm;padding:2mm 2.4mm}
+.p-new{background:var(--accent-soft);color:var(--accent)} .p-con{background:var(--violet-soft);color:var(--violet)} .p-sold{background:rgba(91,227,143,.14);color:var(--good)} .p-warn{background:var(--amber-soft);color:var(--amber)}
+.kpi{background:#17132A;border:1px solid #2B2546;border-radius:2.4mm;padding:2mm 2.4mm}
 .kpi b{display:block;font-size:12px;margin-top:.6mm}
 
 /* flow */
@@ -121,7 +122,7 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
 <body>
 
 <!-- ======================= 1. COVER ======================= -->
-<section class="page" style="background:radial-gradient(90% 60% at 85% 20%,rgba(124,77,242,.16),transparent 60%),radial-gradient(70% 50% at 10% 90%,rgba(34,211,238,.14),transparent 60%),var(--bg)">
+<section class="page" style="background:radial-gradient(90% 60% at 85% 20%,rgba(124,77,242,.16),transparent 60%),radial-gradient(70% 50% at 10% 90%,rgba(77,141,255,.14),transparent 60%),var(--bg)">
   <div style="display:grid;grid-template-columns:1fr 60mm;gap:8mm;height:100%;align-items:center">
     <div>
       <img src="logo.png" alt="LevelUP · Track. Improve. Transform." style="width:64mm;display:block;margin:0 0 9mm -2mm">
@@ -129,7 +130,7 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
       <h1>Every body scan,<br>finally <span style="background:var(--grad);-webkit-background-clip:text;color:transparent">understood.</span></h1>
       <p class="lead" style="margin-top:6mm">LevelUP: gyms and clinics upload each InBody result in under a minute. Members see every scan from every place, explained in plain Arabic. The gym pays because the app brings it more re-scans and more personal-training sales.</p>
       <div class="grid3" style="margin-top:8mm;max-width:120mm">
-        <div class="stat"><div class="v" style="color:#B77CF7">B2B2C</div><div class="l">Gyms pay, members use it free</div></div>
+        <div class="stat"><div class="v" style="color:#B98CFF">B2B2C</div><div class="l">Gyms pay, members use it free</div></div>
         <div class="stat"><div class="v">~92%</div><div class="l">Gross margin at 50 venues</div></div>
         <div class="stat"><div class="v">9 wks</div><div class="l">Design prototype + MVP</div></div>
       </div>
@@ -237,44 +238,44 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
   <p class="lead">We sell to the business (B2B). The business gives the app to its customers (B2C). The member's great experience is what makes the gym earn more, and that is why the gym keeps paying.</p>
   <svg viewBox="0 0 680 330" width="100%" style="display:block;margin-bottom:4mm">
     <defs>
-      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8A80AE"/></marker>
-      <marker id="aht" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#B77CF7"/></marker>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7F789C"/></marker>
+      <marker id="aht" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#B98CFF"/></marker>
       <marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#F5A524"/></marker>
     </defs>
     <!-- nodes -->
-    <rect x="10" y="110" width="170" height="110" rx="14" fill="#191330" stroke="#2F2654"/>
-    <text x="95" y="145" fill="#F3F0FF" font-size="15" font-weight="700" text-anchor="middle">Gym / Clinic</text>
-    <text x="95" y="166" fill="#BDB5DC" font-size="10.5" text-anchor="middle">Pays monthly per branch</text>
-    <text x="95" y="182" fill="#BDB5DC" font-size="10.5" text-anchor="middle">or per scan</text>
+    <rect x="10" y="110" width="170" height="110" rx="14" fill="#17132A" stroke="#2B2546"/>
+    <text x="95" y="145" fill="#F5F3FC" font-size="15" font-weight="700" text-anchor="middle">Gym / Clinic</text>
+    <text x="95" y="166" fill="#AAA4C4" font-size="10.5" text-anchor="middle">Pays monthly per branch</text>
+    <text x="95" y="182" fill="#AAA4C4" font-size="10.5" text-anchor="middle">or per scan</text>
     <text x="95" y="204" fill="#F5A524" font-size="11" font-weight="700" text-anchor="middle">EGP 990–2,490</text>
 
-    <rect x="255" y="95" width="170" height="140" rx="14" fill="rgba(124,77,242,.10)" stroke="#B77CF7"/>
-    <text x="340" y="135" fill="#F3F0FF" font-size="15" font-weight="700" text-anchor="middle">Our platform</text>
-    <text x="340" y="156" fill="#BDB5DC" font-size="10.5" text-anchor="middle">Dashboard · member app</text>
-    <text x="340" y="172" fill="#BDB5DC" font-size="10.5" text-anchor="middle">trainer view · rules engine</text>
-    <text x="340" y="200" fill="#B77CF7" font-size="11" font-weight="700" text-anchor="middle">~92% gross margin</text>
+    <rect x="255" y="95" width="170" height="140" rx="14" fill="rgba(124,77,242,.10)" stroke="#B98CFF"/>
+    <text x="340" y="135" fill="#F5F3FC" font-size="15" font-weight="700" text-anchor="middle">Our platform</text>
+    <text x="340" y="156" fill="#AAA4C4" font-size="10.5" text-anchor="middle">Dashboard · member app</text>
+    <text x="340" y="172" fill="#AAA4C4" font-size="10.5" text-anchor="middle">trainer view · rules engine</text>
+    <text x="340" y="200" fill="#B98CFF" font-size="11" font-weight="700" text-anchor="middle">~92% gross margin</text>
 
-    <rect x="500" y="110" width="170" height="110" rx="14" fill="#191330" stroke="#2F2654"/>
-    <text x="585" y="145" fill="#F3F0FF" font-size="15" font-weight="700" text-anchor="middle">Member</text>
-    <text x="585" y="166" fill="#BDB5DC" font-size="10.5" text-anchor="middle">Uses it free</text>
-    <text x="585" y="182" fill="#BDB5DC" font-size="10.5" text-anchor="middle">through their gym</text>
-    <text x="585" y="204" fill="#22D3EE" font-size="11" font-weight="700" text-anchor="middle">Member Plus: EGP 49–79</text>
+    <rect x="500" y="110" width="170" height="110" rx="14" fill="#17132A" stroke="#2B2546"/>
+    <text x="585" y="145" fill="#F5F3FC" font-size="15" font-weight="700" text-anchor="middle">Member</text>
+    <text x="585" y="166" fill="#AAA4C4" font-size="10.5" text-anchor="middle">Uses it free</text>
+    <text x="585" y="182" fill="#AAA4C4" font-size="10.5" text-anchor="middle">through their gym</text>
+    <text x="585" y="204" fill="#4D8DFF" font-size="11" font-weight="700" text-anchor="middle">Member Plus: EGP 49–79</text>
 
     <!-- gym -> platform money -->
     <path d="M180,140 L252,140" stroke="#F5A524" stroke-width="2" fill="none" marker-end="url(#aha)"/>
     <text x="216" y="132" fill="#F5A524" font-size="9.5" text-anchor="middle">money</text>
     <!-- platform -> gym value -->
-    <path d="M255,190 L183,190" stroke="#B77CF7" stroke-width="2" fill="none" marker-end="url(#aht)"/>
-    <text x="219" y="206" fill="#B77CF7" font-size="9.5" text-anchor="middle">leads, stats</text>
+    <path d="M255,190 L183,190" stroke="#B98CFF" stroke-width="2" fill="none" marker-end="url(#aht)"/>
+    <text x="219" y="206" fill="#B98CFF" font-size="9.5" text-anchor="middle">leads, stats</text>
     <!-- platform -> member -->
-    <path d="M425,165 L497,165" stroke="#B77CF7" stroke-width="2" fill="none" marker-end="url(#aht)"/>
-    <text x="461" y="157" fill="#B77CF7" font-size="9.5" text-anchor="middle">reports</text>
+    <path d="M425,165 L497,165" stroke="#B98CFF" stroke-width="2" fill="none" marker-end="url(#aht)"/>
+    <text x="461" y="157" fill="#B98CFF" font-size="9.5" text-anchor="middle">reports</text>
     <!-- member -> gym loop -->
     <path d="M585,220 C585,300 95,300 95,223" stroke="#F5A524" stroke-width="2" fill="none" marker-end="url(#aha)" stroke-dasharray="5 4"/>
     <text x="340" y="318" fill="#F5A524" font-size="11" font-weight="600" text-anchor="middle">Member spends more at the gym: re-scans, personal training, packages, renewals</text>
     <!-- gym -> member scans -->
-    <path d="M95,110 C95,30 585,30 585,107" stroke="#8A80AE" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
-    <text x="340" y="48" fill="#BDB5DC" font-size="10.5" text-anchor="middle">Gym uploads each scan, the member sees it in LevelUP with the gym's logo</text>
+    <path d="M95,110 C95,30 585,30 585,107" stroke="#7F789C" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+    <text x="340" y="48" fill="#AAA4C4" font-size="10.5" text-anchor="middle">Gym uploads each scan, the member sees it in LevelUP with the gym's logo</text>
   </svg>
   <div class="grid3">
     <div class="card"><h4>Who pays</h4><p>Gyms and clinics, monthly per branch. Nutritionists and small clinics pay per scan. Members pay only if their gym isn't on the app yet (Member Plus).</p></div>
@@ -309,21 +310,21 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
   <h3>A Starter gym's month, with the app (example)</h3>
   <div class="grid2" style="grid-template-columns:1.45fr 1fr;align-items:center">
     <svg viewBox="0 0 520 190" width="100%" role="img" aria-label="Plan cost EGP 990 versus gains: 8 extra re-scans EGP 1,200, one PT package EGP 3,000, total EGP 4,200">
-      <g font-size="11" fill="#BDB5DC">
-        <line x1="150" y1="5" x2="150" y2="180" stroke="#2F2654"/>
+      <g font-size="11" fill="#AAA4C4">
+        <line x1="150" y1="5" x2="150" y2="180" stroke="#2B2546"/>
         <text x="140" y="27" text-anchor="end">Plan cost</text>
         <path d="M150,14 H235.6 Q239.6,14 239.6,18 V32 Q239.6,36 235.6,36 H150 Z" fill="#D9731A"/>
-        <text x="247" y="29" fill="#F3F0FF" font-weight="700">EGP 990</text>
+        <text x="247" y="29" fill="#F5F3FC" font-weight="700">EGP 990</text>
         <text x="140" y="70" text-anchor="end">8 extra re-scans</text>
         <path d="M150,57 H254.6 Q258.6,57 258.6,61 V75 Q258.6,79 254.6,79 H150 Z" fill="#7C4DF2"/>
-        <text x="266" y="72" fill="#F3F0FF" font-weight="700">EGP 1,200</text>
+        <text x="266" y="72" fill="#F5F3FC" font-weight="700">EGP 1,200</text>
         <text x="140" y="113" text-anchor="end">1 PT package</text>
         <path d="M150,100 H417.4 Q421.4,100 421.4,104 V118 Q421.4,122 417.4,122 H150 Z" fill="#7C4DF2"/>
-        <text x="429" y="115" fill="#F3F0FF" font-weight="700">EGP 3,000</text>
-        <text x="140" y="156" text-anchor="end" fill="#F3F0FF" font-weight="700">Total gain</text>
+        <text x="429" y="115" fill="#F5F3FC" font-weight="700">EGP 3,000</text>
+        <text x="140" y="156" text-anchor="end" fill="#F5F3FC" font-weight="700">Total gain</text>
         <path d="M150,143 H526 V165 H150 Z" fill="#7C4DF2" opacity=".0"/>
         <path d="M150,143 H476 Q480,143 480,147 V161 Q480,165 476,165 H150 Z" fill="#7C4DF2"/>
-        <text x="472" y="158" fill="#F3F0FF" font-weight="800" text-anchor="end">EGP 4,200</text>
+        <text x="472" y="158" fill="#F5F3FC" font-weight="800" text-anchor="end">EGP 4,200</text>
       </g>
     </svg>
     <div>
@@ -373,11 +374,11 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
     <span><span class="dot" style="background:#0E9AB8"></span>Partner revenue share</span>
   </div>
   <svg viewBox="0 0 640 262" width="100%" role="img" aria-label="Revenue scenarios stacked by gross profit, running costs and partner share">
-    <g font-size="10.5" fill="#8A80AE">
-      <line x1="60" y1="220" x2="630" y2="220" stroke="#3D3366"/>
-      <line x1="60" y1="153.3" x2="630" y2="153.3" stroke="#221A3E"/><text x="52" y="157" text-anchor="end">50k</text>
-      <line x1="60" y1="86.7" x2="630" y2="86.7" stroke="#221A3E"/><text x="52" y="90" text-anchor="end">100k</text>
-      <line x1="60" y1="20" x2="630" y2="20" stroke="#221A3E"/><text x="52" y="24" text-anchor="end">150k</text>
+    <g font-size="10.5" fill="#7F789C">
+      <line x1="60" y1="220" x2="630" y2="220" stroke="#39325E"/>
+      <line x1="60" y1="153.3" x2="630" y2="153.3" stroke="#1E1934"/><text x="52" y="157" text-anchor="end">50k</text>
+      <line x1="60" y1="86.7" x2="630" y2="86.7" stroke="#1E1934"/><text x="52" y="90" text-anchor="end">100k</text>
+      <line x1="60" y1="20" x2="630" y2="20" stroke="#1E1934"/><text x="52" y="24" text-anchor="end">150k</text>
       <text x="52" y="224" text-anchor="end">0</text>
     </g>
     <!-- bar 1 -->
@@ -393,14 +394,14 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
     <rect x="505" y="204.7" width="80" height="15.3" fill="#D9731A"/>
     <rect x="505" y="142.7" width="80" height="60" fill="#0E9AB8"/>
     <path d="M505,140.7 V20 Q505,16 509,16 H581 Q585,16 585,20 V140.7 Z" fill="#7C4DF2"/>
-    <g font-size="11" fill="#F3F0FF" font-weight="700" text-anchor="middle">
-      <text x="140" y="203">6k</text><text x="275" y="173">28k</text><text x="410" y="111">75k</text><text x="545" y="11" dy="0" fill="#0F0B1A">.</text>
+    <g font-size="11" fill="#F5F3FC" font-weight="700" text-anchor="middle">
+      <text x="140" y="203">6k</text><text x="275" y="173">28k</text><text x="410" y="111">75k</text><text x="545" y="11" dy="0" fill="#0B0916">.</text>
     </g>
-    <g font-size="10" fill="#F3F0FF" text-anchor="middle">
+    <g font-size="10" fill="#F5F3FC" text-anchor="middle">
       <text x="545" y="85" font-weight="700">150k</text><text x="545" y="99" fill="#FFFFFF">GP 62%</text>
       <text x="545" y="177" fill="#FFFFFF">share 30%</text>
     </g>
-    <g font-size="10" fill="#BDB5DC" text-anchor="middle">
+    <g font-size="10" fill="#AAA4C4" text-anchor="middle">
       <text x="140" y="236">First paid month</text><text x="140" y="250">5 venues · GP 71%</text>
       <text x="275" y="236">Month 6</text><text x="275" y="250">20 venues · GP 88%</text>
       <text x="410" y="236">Month 12</text><text x="410" y="250">50 venues · GP 92%</text>
@@ -493,7 +494,7 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
 </section>
 
 <!-- ======================= 10. DESIGN FIRST ======================= -->
-<section class="page" style="background:radial-gradient(80% 50% at 90% 0%,rgba(34,211,238,.13),transparent 60%),var(--bg)">
+<section class="page" style="background:radial-gradient(80% 50% at 90% 0%,rgba(77,141,255,.13),transparent 60%),var(--bg)">
   <span class="sec-num">09</span>
   <p class="eyebrow">Design first</p>
   <h2>Prototype #1 is the experience, not the code</h2>
@@ -536,20 +537,20 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
   <h2>LevelUP colours, type, motion</h2>
   <p class="lead">Taken from the LevelUP logo and the app's own tokens (<span class="mono">brand.config.ts</span>, <span class="mono">src/theme/tokens.css</span>). Dark mode shown; light mode uses the same brand hues.</p>
   <h3>Colour</h3>
-  <div class="swatch" style="height:8mm;background:linear-gradient(90deg,#E19CFB,#B77CF7 40%,#6C3CF0);margin-bottom:1.5mm"></div>
-  <div class="small" style="margin-bottom:3mm"><b style="color:var(--ink)">Logo gradient</b> · <span class="mono">#E19CFB → #B77CF7 → #6C3CF0</span> · buttons, rings, the "UP" in the wordmark</div>
-  <div class="grid4" style="margin-bottom:3mm"><div><div class="swatch" style="background:#6C3CF0"></div><b style="font-size:8pt">Primary</b><div class="small mono">#6C3CF0</div></div><div><div class="swatch" style="background:#B77CF7"></div><b style="font-size:8pt">Secondary</b><div class="small mono">#B77CF7</div></div><div><div class="swatch" style="background:#F5A524"></div><b style="font-size:8pt">Accent</b><div class="small mono">#F5A524</div></div><div><div class="swatch" style="background:#4ADE80"></div><b style="font-size:8pt">Success</b><div class="small mono">#4ADE80</div></div><div><div class="swatch" style="background:#22D3EE"></div><b style="font-size:8pt">Muscle</b><div class="small mono">#22D3EE</div></div><div><div class="swatch" style="background:#FB923C"></div><b style="font-size:8pt">Fat</b><div class="small mono">#FB923C</div></div><div><div class="swatch" style="background:#0F0B1A"></div><b style="font-size:8pt">Background</b><div class="small mono">#0F0B1A</div></div><div><div class="swatch" style="background:#191330"></div><b style="font-size:8pt">Surface</b><div class="small mono">#191330</div></div></div>
+  <div class="swatch" style="height:8mm;background:linear-gradient(90deg,#E19CFB,#B98CFF 40%,#6B3BF5);margin-bottom:1.5mm"></div>
+  <div class="small" style="margin-bottom:3mm"><b style="color:var(--ink)">Logo gradient</b> · <span class="mono">#E19CFB → #B98CFF → #6B3BF5</span> · buttons, rings, the "UP" in the wordmark</div>
+  <div class="grid4" style="margin-bottom:3mm"><div><div class="swatch" style="background:#6B3BF5"></div><b style="font-size:8pt">Primary</b><div class="small mono">#6B3BF5</div></div><div><div class="swatch" style="background:#B98CFF"></div><b style="font-size:8pt">Secondary</b><div class="small mono">#B98CFF</div></div><div><div class="swatch" style="background:#F5A524"></div><b style="font-size:8pt">Accent</b><div class="small mono">#F5A524</div></div><div><div class="swatch" style="background:#5BE38F"></div><b style="font-size:8pt">Success</b><div class="small mono">#5BE38F</div></div><div><div class="swatch" style="background:#4D8DFF"></div><b style="font-size:8pt">Muscle</b><div class="small mono">#4D8DFF</div></div><div><div class="swatch" style="background:#FF8A3D"></div><b style="font-size:8pt">Fat</b><div class="small mono">#FF8A3D</div></div><div><div class="swatch" style="background:#0B0916"></div><b style="font-size:8pt">Background</b><div class="small mono">#0B0916</div></div><div><div class="swatch" style="background:#17132A"></div><b style="font-size:8pt">Surface</b><div class="small mono">#17132A</div></div></div>
   <div class="grid2">
     <div>
       <h3 style="margin-top:0">Type</h3>
       <div class="card">
-        <div dir="rtl" class="ar" style="font-size:22pt;font-weight:700;line-height:1.2">عضل أكتر، دهون أقل</div>
-        <div class="small" style="margin-bottom:2mm">IBM Plex Sans Arabic · headline 28/34 · bold</div>
-        <div style="font-size:20pt;font-weight:800;letter-spacing:-.02em">+2.1 kg</div>
-        <div class="small" style="margin-bottom:2mm">Inter · numbers, tabular figures · 32/36</div>
+        <div dir="rtl" class="ar" style="font-family:Alexandria,sans-serif;font-size:21pt;font-weight:700;line-height:1.25">عضل أكتر، دهون أقل</div>
+        <div class="small" style="margin-bottom:2mm">Alexandria · titles and buttons, Arabic and Latin · bold</div>
+        <div style="font-family:Alexandria,sans-serif;font-size:20pt;font-weight:800;letter-spacing:-.02em">+2.1 kg</div>
+        <div class="small" style="margin-bottom:2mm">Alexandria · big numbers, read like a scoreboard</div>
         <div dir="rtl" class="ar" style="font-size:10pt;color:var(--ink2)">وزنك تقريباً ثابت، بس جسمك اتغيّر.</div>
-        <div class="small">Body 15/22 · secondary text colour</div>
-        <div style="font-family:'Jersey 10',Inter;font-size:17pt;line-height:1.1;margin-top:2mm;color:var(--accent)">FITSCORE 80</div><div class="small">Jersey 10 · pixel display accents, as in the app</div>
+        <div class="small">IBM Plex Sans Arabic / IBM Plex Sans · body text</div>
+        
       </div>
       <h3>Spacing and shape</h3>
       <div class="card"><p>4-point grid. Card radius 20, buttons 14, chips full. Tap targets at least 44 × 44. Minimum text contrast 4.5:1 on dark surfaces.</p></div>
@@ -587,12 +588,12 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
       <div class="phone"><div class="scr" style="display:flex;flex-direction:column">
         <div class="notch"></div><div class="sb"><span>9:41</span><span>●●●</span></div>
         <img src="mark.webp" alt="" style="height:13mm;width:auto;display:block;margin:5mm auto 2mm">
-        <div style="text-align:center;font-weight:800;font-size:10px;font-family:Inter;direction:ltr">Level<span style="background:var(--grad);-webkit-background-clip:text;color:transparent">UP</span></div>
-        <div style="text-align:center;font-size:5.6px;color:var(--muted);font-family:Inter;direction:ltr;margin-top:.6mm">with IRON BOX</div>
+        <div style="text-align:center;font-weight:800;font-size:10px;font-family:"IBM Plex Sans";direction:ltr">Level<span style="background:var(--grad);-webkit-background-clip:text;color:transparent">UP</span></div>
+        <div style="text-align:center;font-size:5.6px;color:var(--muted);font-family:"IBM Plex Sans";direction:ltr;margin-top:.6mm">with IRON BOX</div>
         <div class="s-h" style="text-align:center;margin-top:4mm;font-size:11px;line-height:1.4">نتايج الـ InBody بتاعتك<br>في مكان واحد</div>
         <div class="s-sub" style="text-align:center;margin-bottom:5mm">كل قياساتك من كل جيم وعيادة</div>
         <div class="s-sub" style="margin-bottom:1mm">رقم الموبايل</div>
-        <div class="s-card" style="direction:ltr;font-family:Inter;font-size:8px">🇪🇬 +20 &nbsp;101 234 5678</div>
+        <div class="s-card" style="direction:ltr;font-family:"IBM Plex Sans";font-size:8px">🇪🇬 +20 &nbsp;101 234 5678</div>
         <div class="row" style="direction:ltr;gap:1.5mm;margin:1mm 0 3mm">
           <div class="s-card" style="flex:1;text-align:center;font-size:10px;font-weight:700;margin:0">4</div><div class="s-card" style="flex:1;text-align:center;font-size:10px;font-weight:700;margin:0">8</div><div class="s-card" style="flex:1;text-align:center;font-size:10px;margin:0;border-color:var(--accent)">|</div><div class="s-card" style="flex:1;margin:0"></div>
         </div>
@@ -658,9 +659,9 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
         <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
         <div class="s-h">كل قياساتك</div>
         <div style="margin-bottom:2mm"><span class="chip on">الكل</span><span class="chip">Iron Box</span><span class="chip">عيادة د. سارة</span></div>
-        <div class="s-card"><div class="row"><b>12 نوفمبر</b><span class="chip" style="background:rgba(74,222,128,.14);color:var(--good)" dir="ltr">+1.1 kg عضل</span></div><div class="s-sub">Iron Box · التجمع · InBody 570</div></div>
-        <div class="s-card"><div class="row"><b>14 أكتوبر</b><span class="chip" style="background:rgba(74,222,128,.14);color:var(--good)" dir="ltr">−0.6 kg دهون</span></div><div class="s-sub">Iron Box · التجمع · InBody 570</div></div>
-        <div class="s-card" style="border-style:dashed;border-color:rgba(34,211,238,.5);padding:1.6mm 2.4mm"><span class="vi" style="font-weight:600">جهاز مختلف:</span> <span class="s-sub">قارن الاتجاه العام بس</span></div>
+        <div class="s-card"><div class="row"><b>12 نوفمبر</b><span class="chip" style="background:rgba(91,227,143,.14);color:var(--good)" dir="ltr">+1.1 kg عضل</span></div><div class="s-sub">Iron Box · التجمع · InBody 570</div></div>
+        <div class="s-card"><div class="row"><b>14 أكتوبر</b><span class="chip" style="background:rgba(91,227,143,.14);color:var(--good)" dir="ltr">−0.6 kg دهون</span></div><div class="s-sub">Iron Box · التجمع · InBody 570</div></div>
+        <div class="s-card" style="border-style:dashed;border-color:rgba(77,141,255,.5);padding:1.6mm 2.4mm"><span class="vi" style="font-weight:600">جهاز مختلف:</span> <span class="s-sub">قارن الاتجاه العام بس</span></div>
         <div class="s-card"><div class="row"><b>10 سبتمبر</b><span class="chip">ثابت</span></div><div class="s-sub">عيادة د. سارة · المعادي · InBody 270</div></div>
         <div class="s-card"><div class="row"><b>2 أغسطس</b><span class="chip">أول قياس</span></div><div class="s-sub">يدوي · من ورقة قديمة</div></div>
         <div class="nav"><span><i></i>الرئيسية</span><span class="on"><i></i>القياسات</span><span><i></i>مقارنة</span><span><i></i>حسابي</span></div>
@@ -672,7 +673,7 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
         <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
         <div class="s-h">مقارنة قياسين</div>
         <div class="row" style="gap:1.5mm;margin-bottom:2mm"><div class="s-card" style="flex:1;margin:0;text-align:center"><div class="s-sub">قبل</div><b>14 أكتوبر</b></div><div class="s-card" style="flex:1;margin:0;text-align:center;border-color:var(--accent)"><div class="s-sub">بعد</div><b>12 نوفمبر</b></div></div>
-        <div class="s-card" style="padding:1.4mm 2.4mm;background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3)"><span class="g">✓</span> نفس الجهاز · المقارنة دقيقة</div>
+        <div class="s-card" style="padding:1.4mm 2.4mm;background:rgba(91,227,143,.08);border-color:rgba(91,227,143,.3)"><span class="g">✓</span> نفس الجهاز · المقارنة دقيقة</div>
         <div class="s-card" style="padding:2mm 2.4mm;line-height:2">
           <div class="row"><span>الوزن</span><span dir="ltr" class="s-sub">82.1 → <b style="color:var(--ink)">82.3</b></span></div>
           <div class="row"><span>العضل</span><span dir="ltr" class="s-sub">35.7 → <b class="g">36.8</b></span></div>
@@ -693,22 +694,22 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
         <div style="margin-bottom:2mm"><span class="chip on">3 شهور</span><span class="chip">6 شهور</span><span class="chip">الكل</span></div>
         <div class="s-card"><b>وزنك: دهون ولا عضل؟</b>
           <svg viewBox="0 0 160 70" width="100%" style="margin-top:1mm;direction:ltr">
-            <rect x="10" y="12" width="22" height="18" rx="2" fill="#FB923C"/><rect x="10" y="32" width="22" height="34" fill="#22D3EE"/>
-            <rect x="50" y="14" width="22" height="16" rx="2" fill="#FB923C"/><rect x="50" y="32" width="22" height="34" fill="#22D3EE"/>
-            <rect x="90" y="16" width="22" height="15" rx="2" fill="#FB923C"/><rect x="90" y="33" width="22" height="33" fill="#22D3EE"/>
-            <rect x="130" y="18" width="22" height="13" rx="2" fill="#FB923C"/><rect x="130" y="33" width="22" height="33" fill="#22D3EE"/>
+            <rect x="10" y="12" width="22" height="18" rx="2" fill="#FF8A3D"/><rect x="10" y="32" width="22" height="34" fill="#4D8DFF"/>
+            <rect x="50" y="14" width="22" height="16" rx="2" fill="#FF8A3D"/><rect x="50" y="32" width="22" height="34" fill="#4D8DFF"/>
+            <rect x="90" y="16" width="22" height="15" rx="2" fill="#FF8A3D"/><rect x="90" y="33" width="22" height="33" fill="#4D8DFF"/>
+            <rect x="130" y="18" width="22" height="13" rx="2" fill="#FF8A3D"/><rect x="130" y="33" width="22" height="33" fill="#4D8DFF"/>
           </svg>
-          <div class="s-sub"><span class="dot" style="background:#FB923C;width:1.6mm;height:1.6mm"></span>دهون &nbsp; <span class="dot" style="background:#22D3EE;width:1.6mm;height:1.6mm"></span>كتلة بدون دهون</div>
+          <div class="s-sub"><span class="dot" style="background:#FF8A3D;width:1.6mm;height:1.6mm"></span>دهون &nbsp; <span class="dot" style="background:#4D8DFF;width:1.6mm;height:1.6mm"></span>كتلة بدون دهون</div>
         </div>
         <div class="s-card"><b>عضل مقابل دهون (كجم)</b>
           <svg viewBox="0 0 160 62" width="100%" style="margin-top:1mm;direction:ltr">
-            <line x1="5" y1="56" x2="155" y2="56" stroke="#2F2654"/>
-            <polyline points="12,30 55,26 100,20 148,12" fill="none" stroke="#22D3EE" stroke-width="2"/>
-            <polyline points="12,22 55,28 100,34 148,40" fill="none" stroke="#FB923C" stroke-width="2"/>
-            <circle cx="148" cy="12" r="3" fill="#22D3EE" stroke="#1B1534" stroke-width="1.5"/><circle cx="148" cy="40" r="3" fill="#FB923C" stroke="#1B1534" stroke-width="1.5"/>
-            <text x="144" y="8" font-size="7" fill="#F3F0FF" text-anchor="end">36.8</text><text x="144" y="50" font-size="7" fill="#F3F0FF" text-anchor="end">18.4</text>
+            <line x1="5" y1="56" x2="155" y2="56" stroke="#2B2546"/>
+            <polyline points="12,30 55,26 100,20 148,12" fill="none" stroke="#4D8DFF" stroke-width="2"/>
+            <polyline points="12,22 55,28 100,34 148,40" fill="none" stroke="#FF8A3D" stroke-width="2"/>
+            <circle cx="148" cy="12" r="3" fill="#4D8DFF" stroke="#17132A" stroke-width="1.5"/><circle cx="148" cy="40" r="3" fill="#FF8A3D" stroke="#17132A" stroke-width="1.5"/>
+            <text x="144" y="8" font-size="7" fill="#F5F3FC" text-anchor="end">36.8</text><text x="144" y="50" font-size="7" fill="#F5F3FC" text-anchor="end">18.4</text>
           </svg>
-          <div class="s-sub"><span class="dot" style="background:#22D3EE;width:1.6mm;height:1.6mm"></span>عضل &nbsp; <span class="dot" style="background:#FB923C;width:1.6mm;height:1.6mm"></span>دهون</div>
+          <div class="s-sub"><span class="dot" style="background:#4D8DFF;width:1.6mm;height:1.6mm"></span>عضل &nbsp; <span class="dot" style="background:#FF8A3D;width:1.6mm;height:1.6mm"></span>دهون</div>
         </div>
         <div class="nav"><span><i></i>الرئيسية</span><span class="on"><i></i>القياسات</span><span><i></i>مقارنة</span><span><i></i>حسابي</span></div>
       </div></div>
@@ -731,13 +732,13 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
         <div class="s-h">توازن الجسم</div>
         <div class="s-sub" style="margin-bottom:1mm">كتلة العضل في كل جزء (كجم)</div>
         <svg viewBox="0 0 160 170" width="100%" style="direction:ltr">
-          <circle cx="80" cy="18" r="11" fill="#2A2150"/>
-          <rect x="58" y="33" width="44" height="58" rx="10" fill="#22D3EE" opacity=".9"/>
-          <rect x="38" y="35" width="15" height="52" rx="7" fill="#22D3EE" opacity=".75"/>
-          <rect x="107" y="35" width="15" height="52" rx="7" fill="#22D3EE" opacity=".75"/>
-          <rect x="60" y="95" width="18" height="66" rx="8" fill="#22D3EE" opacity=".8"/>
-          <rect x="82" y="95" width="18" height="66" rx="8" fill="#FB923C" opacity=".95"/>
-          <g font-size="8" fill="#F3F0FF" font-family="Inter" text-anchor="middle">
+          <circle cx="80" cy="18" r="11" fill="#262046"/>
+          <rect x="58" y="33" width="44" height="58" rx="10" fill="#4D8DFF" opacity=".9"/>
+          <rect x="38" y="35" width="15" height="52" rx="7" fill="#4D8DFF" opacity=".75"/>
+          <rect x="107" y="35" width="15" height="52" rx="7" fill="#4D8DFF" opacity=".75"/>
+          <rect x="60" y="95" width="18" height="66" rx="8" fill="#4D8DFF" opacity=".8"/>
+          <rect x="82" y="95" width="18" height="66" rx="8" fill="#FF8A3D" opacity=".95"/>
+          <g font-size="8" fill="#F5F3FC" font-family="IBM Plex Sans" text-anchor="middle">
             <text x="80" y="65">27.9</text><text x="23" y="62">3.6</text><text x="137" y="62">3.4</text>
             <text x="44" y="132">9.8</text><text x="116" y="132">8.9</text>
           </g>
@@ -748,12 +749,12 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
       <div class="cap"><h4>Body map</h4><p>Arms, legs and trunk with left/right balance. Imbalances above about 8% get a gentle note and also become a trainer lead.</p></div>
     </div>
     <div class="pwrap">
-      <div class="phone"><div class="scr" style="background:radial-gradient(90% 60% at 50% 35%,rgba(124,77,242,.35),#120D22 70%);text-align:center">
+      <div class="phone"><div class="scr" style="background:radial-gradient(90% 60% at 50% 35%,rgba(124,77,242,.35),#0E0B1C 70%);text-align:center">
         <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
-        <div style="margin:2mm 2mm 0;background:rgba(35,27,64,.92);border-radius:3mm;padding:2mm;text-align:right;display:flex;gap:2mm;align-items:center">
-          <div style="width:6mm;height:6mm;border-radius:1.6mm;background:linear-gradient(135deg,#E19CFB,#6C3CF0);flex:none"></div><div><b style="font-size:6.8px">Iron Box</b><div class="s-sub">نتيجتك الجديدة وصلت 🎉</div></div></div>
-        <div style="margin:9mm auto 3mm;width:28mm;height:28mm;border-radius:50%;background:conic-gradient(#6C3CF0 0,#B77CF7 40%,#E19CFB 80%,rgba(255,255,255,.08) 80% 100%);display:grid;place-items:center;box-shadow:0 0 12mm rgba(124,77,242,.35)">
-          <div style="width:23mm;height:23mm;border-radius:50%;background:#120D22;display:grid;place-items:center"><div><div class="big g" style="font-size:15px">+0.8</div><div class="s-sub">كجم عضل</div></div></div></div>
+        <div style="margin:2mm 2mm 0;background:rgba(32,27,56,.92);border-radius:3mm;padding:2mm;text-align:right;display:flex;gap:2mm;align-items:center">
+          <div style="width:6mm;height:6mm;border-radius:1.6mm;background:linear-gradient(135deg,#E19CFB,#6B3BF5);flex:none"></div><div><b style="font-size:6.8px">Iron Box</b><div class="s-sub">نتيجتك الجديدة وصلت 🎉</div></div></div>
+        <div style="margin:9mm auto 3mm;width:28mm;height:28mm;border-radius:50%;background:conic-gradient(#6B3BF5 0,#B98CFF 40%,#E19CFB 80%,rgba(255,255,255,.08) 80% 100%);display:grid;place-items:center;box-shadow:0 0 12mm rgba(124,77,242,.35)">
+          <div style="width:23mm;height:23mm;border-radius:50%;background:#0E0B1C;display:grid;place-items:center"><div><div class="big g" style="font-size:15px">+0.8</div><div class="s-sub">كجم عضل</div></div></div></div>
         <div class="s-h" style="font-size:11px">شغلك باين!</div>
         <div class="s-sub" style="margin-bottom:4mm;line-height:1.6">عضلك زاد للشهر التالت على التوالي</div>
         <div class="s-card" style="text-align:right;opacity:.95"><div class="row"><span>دهون</span><b class="g" dir="ltr">−0.5 kg</b></div></div>
@@ -766,13 +767,13 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
       <div class="phone"><div class="scr">
         <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
         <div class="s-h">شارك تقدّمك</div>
-        <div style="border-radius:4mm;padding:4mm 3mm;background:linear-gradient(150deg,#4A2399,#120D22 55%,#2A1250);border:1px solid rgba(255,255,255,.08);text-align:center;margin-bottom:3mm">
-          <div style="display:flex;justify-content:center;align-items:center;gap:1.5mm;direction:ltr"><img src="mark.webp" alt="" style="height:4mm"><span style="font-family:Inter;font-weight:700;letter-spacing:.14em;font-size:6px;color:var(--ink2)">× IRON BOX</span></div>
+        <div style="border-radius:4mm;padding:4mm 3mm;background:linear-gradient(150deg,#4A2399,#0E0B1C 55%,#24104A);border:1px solid rgba(255,255,255,.08);text-align:center;margin-bottom:3mm">
+          <div style="display:flex;justify-content:center;align-items:center;gap:1.5mm;direction:ltr"><img src="mark.webp" alt="" style="height:4mm"><span style="font-family:"IBM Plex Sans";font-weight:700;letter-spacing:.14em;font-size:6px;color:var(--ink2)">× IRON BOX</span></div>
           <div class="big g" style="font-size:22px;margin-top:4mm">+2.1 kg</div>
           <div style="font-weight:700;font-size:9px">عضل في 3 شهور</div>
           <div class="s-sub" style="margin:2mm 0 4mm" dir="ltr">−1.8 kg fat · same weight</div>
           <div style="display:flex;justify-content:center;gap:1mm;direction:ltr">
-            <i style="width:3mm;height:6mm;background:#22D3EE;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:8mm;background:#22D3EE;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:10mm;background:#22D3EE;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:13mm;background:#B77CF7;border-radius:1mm;display:block;align-self:flex-end"></i>
+            <i style="width:3mm;height:6mm;background:#4D8DFF;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:8mm;background:#4D8DFF;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:10mm;background:#4D8DFF;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:13mm;background:#B98CFF;border-radius:1mm;display:block;align-self:flex-end"></i>
           </div>
           <div class="s-sub" style="margin-top:3mm;font-size:5.6px">تتبّع تقدّمك في Iron Box</div>
         </div>
@@ -799,7 +800,7 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
         <h5>Add scan · Karim Adel <span class="small" style="font-weight:400">· 010 1234 5678</span></h5>
         <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:3mm">
           <div>
-            <div style="border:1.5px dashed #B77CF7;border-radius:2.4mm;padding:3mm;text-align:center;background:var(--accent-soft);margin-bottom:2mm"><b style="color:var(--accent)">Karim_20261112.csv</b><br><span class="small">+ result sheet image · 312 KB</span></div>
+            <div style="border:1.5px dashed #B98CFF;border-radius:2.4mm;padding:3mm;text-align:center;background:var(--accent-soft);margin-bottom:2mm"><b style="color:var(--accent)">Karim_20261112.csv</b><br><span class="small">+ result sheet image · 312 KB</span></div>
             <div class="kpi" style="margin-bottom:2mm"><span class="small">Test date (from the machine)</span><b>12 Nov 2026 · 08:14</b></div>
             <div class="kpi"><span class="small">Machine</span><b>InBody 570 · Branch: New Cairo</b></div>
           </div>
@@ -872,7 +873,7 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
       <div class="side"><div class="logo" style="display:flex;align-items:center;gap:1.5mm"><img src="mark.webp" alt="" style="height:4.5mm"><span>LevelUP<br><span style="font-weight:500;color:var(--muted);letter-spacing:0;font-size:6px">Iron Box</span></span></div><div class="it">Add scan</div><div class="it">Members</div><div class="it">Follow-up · 12</div><div class="it on">Stats</div><div class="it">Billing</div></div>
       <div class="main">
         <h5>November · New Cairo branch</h5>
-        <div style="background:linear-gradient(135deg,rgba(124,77,242,.22),#1B1534 70%);border:1px solid rgba(124,77,242,.35);border-radius:2.6mm;padding:3mm;margin-bottom:2.5mm">
+        <div style="background:linear-gradient(135deg,rgba(124,77,242,.22),#17132A 70%);border:1px solid rgba(124,77,242,.35);border-radius:2.6mm;padding:3mm;margin-bottom:2.5mm">
           <span class="small">Money the app brought you this month</span>
           <div style="font-size:20px;font-weight:800;letter-spacing:-.02em;margin-top:.6mm">EGP 11,700 <span style="font-size:8px;color:var(--ink2);font-weight:500">vs EGP 2,490 plan · 4.7×</span></div>
           <span class="small">46 re-scans × EGP 150 = 6,900 · 2 PT/packages sold = 4,800</span>
@@ -929,29 +930,29 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
   <p class="eyebrow">Technical model</p>
   <h2>Architecture</h2>
   <p class="lead">Data comes from LookinBody120's own exports, uploaded by staff in the dashboard. Nothing is installed at the gym. One NestJS API serves every app.</p>
-  <svg viewBox="0 0 680 300" width="100%" style="display:block;margin-bottom:4mm" font-family="Inter">
-    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8A80AE"/></marker></defs>
-    <rect x="215" y="8" width="455" height="78" rx="12" fill="none" stroke="#2F2654" stroke-dasharray="5 4"/>
-    <text x="660" y="24" fill="#8A80AE" font-size="9.5" text-anchor="end">On the gym's existing PC</text>
-    <rect x="10" y="30" width="170" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="95" y="50" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">InBody machine</text><text x="95" y="66" fill="#BDB5DC" font-size="9.5" text-anchor="middle">runs the test</text>
-    <rect x="230" y="30" width="190" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="325" y="50" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">LookinBody120</text><text x="325" y="66" fill="#BDB5DC" font-size="9.5" text-anchor="middle">exports CSV, image, Excel</text>
-    <rect x="460" y="30" width="190" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="555" y="50" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Gym dashboard (web)</text><text x="555" y="66" fill="#BDB5DC" font-size="9.5" text-anchor="middle">pick member, upload, confirm</text>
-    <path d="M180,53 H227" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/><path d="M420,53 H457" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/>
-    <path d="M555,76 V118" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/>
-    <rect x="200" y="120" width="470" height="92" rx="12" fill="rgba(124,77,242,.10)" stroke="#B77CF7"/>
-    <text x="435" y="142" fill="#F3F0FF" font-size="13" font-weight="700" text-anchor="middle">NestJS API</text>
-    <text x="435" y="161" fill="#BDB5DC" font-size="9.8" text-anchor="middle">auth · orgs · members · scans · imports · access · leads · billing</text>
-    <text x="435" y="177" fill="#BDB5DC" font-size="9.8" text-anchor="middle">file reader for CSV and Excel with identity and duplicate checks</text>
-    <text x="435" y="193" fill="#BDB5DC" font-size="9.8" text-anchor="middle">rules engine explains changes and creates flags</text>
-    <rect x="10" y="120" width="160" height="92" rx="12" fill="#191330" stroke="#2F2654"/>
-    <text x="90" y="140" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Data and jobs</text>
-    <text x="90" y="157" fill="#BDB5DC" font-size="9.5" text-anchor="middle">MongoDB Atlas</text><text x="90" y="171" fill="#BDB5DC" font-size="9.5" text-anchor="middle">Cloudflare R2 (images)</text><text x="90" y="185" fill="#BDB5DC" font-size="9.5" text-anchor="middle">Redis + BullMQ</text><text x="90" y="199" fill="#BDB5DC" font-size="9.5" text-anchor="middle">FCM push · WhatsApp codes</text>
-    <path d="M170,166 H197" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/><path d="M200,172 H173" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/>
-    <path d="M300,212 V244" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/><path d="M435,212 V244" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/><path d="M570,212 V244" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/>
-    <rect x="225" y="246" width="150" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="300" y="266" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Member app</text><text x="300" y="282" fill="#BDB5DC" font-size="9.5" text-anchor="middle">iOS · Android · web</text>
-    <rect x="360" y="246" width="150" height="46" rx="10" fill="#191330" stroke="#2F2654" transform="translate(0,0)" opacity="0"/>
-    <rect x="385" y="246" width="100" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="435" y="266" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Trainer view</text><text x="435" y="282" fill="#BDB5DC" font-size="9.5" text-anchor="middle">clients · leads</text>
-    <rect x="495" y="246" width="150" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="570" y="266" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Owner stats</text><text x="570" y="282" fill="#BDB5DC" font-size="9.5" text-anchor="middle">money earned · KPIs</text>
+  <svg viewBox="0 0 680 300" width="100%" style="display:block;margin-bottom:4mm" font-family="IBM Plex Sans">
+    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7F789C"/></marker></defs>
+    <rect x="215" y="8" width="455" height="78" rx="12" fill="none" stroke="#2B2546" stroke-dasharray="5 4"/>
+    <text x="660" y="24" fill="#7F789C" font-size="9.5" text-anchor="end">On the gym's existing PC</text>
+    <rect x="10" y="30" width="170" height="46" rx="10" fill="#17132A" stroke="#2B2546"/><text x="95" y="50" fill="#F5F3FC" font-size="12" font-weight="700" text-anchor="middle">InBody machine</text><text x="95" y="66" fill="#AAA4C4" font-size="9.5" text-anchor="middle">runs the test</text>
+    <rect x="230" y="30" width="190" height="46" rx="10" fill="#17132A" stroke="#2B2546"/><text x="325" y="50" fill="#F5F3FC" font-size="12" font-weight="700" text-anchor="middle">LookinBody120</text><text x="325" y="66" fill="#AAA4C4" font-size="9.5" text-anchor="middle">exports CSV, image, Excel</text>
+    <rect x="460" y="30" width="190" height="46" rx="10" fill="#17132A" stroke="#2B2546"/><text x="555" y="50" fill="#F5F3FC" font-size="12" font-weight="700" text-anchor="middle">Gym dashboard (web)</text><text x="555" y="66" fill="#AAA4C4" font-size="9.5" text-anchor="middle">pick member, upload, confirm</text>
+    <path d="M180,53 H227" stroke="#7F789C" stroke-width="1.5" marker-end="url(#a2)"/><path d="M420,53 H457" stroke="#7F789C" stroke-width="1.5" marker-end="url(#a2)"/>
+    <path d="M555,76 V118" stroke="#7F789C" stroke-width="1.5" marker-end="url(#a2)"/>
+    <rect x="200" y="120" width="470" height="92" rx="12" fill="rgba(124,77,242,.10)" stroke="#B98CFF"/>
+    <text x="435" y="142" fill="#F5F3FC" font-size="13" font-weight="700" text-anchor="middle">NestJS API</text>
+    <text x="435" y="161" fill="#AAA4C4" font-size="9.8" text-anchor="middle">auth · orgs · members · scans · imports · access · leads · billing</text>
+    <text x="435" y="177" fill="#AAA4C4" font-size="9.8" text-anchor="middle">file reader for CSV and Excel with identity and duplicate checks</text>
+    <text x="435" y="193" fill="#AAA4C4" font-size="9.8" text-anchor="middle">rules engine explains changes and creates flags</text>
+    <rect x="10" y="120" width="160" height="92" rx="12" fill="#17132A" stroke="#2B2546"/>
+    <text x="90" y="140" fill="#F5F3FC" font-size="12" font-weight="700" text-anchor="middle">Data and jobs</text>
+    <text x="90" y="157" fill="#AAA4C4" font-size="9.5" text-anchor="middle">MongoDB Atlas</text><text x="90" y="171" fill="#AAA4C4" font-size="9.5" text-anchor="middle">Cloudflare R2 (images)</text><text x="90" y="185" fill="#AAA4C4" font-size="9.5" text-anchor="middle">Redis + BullMQ</text><text x="90" y="199" fill="#AAA4C4" font-size="9.5" text-anchor="middle">FCM push · WhatsApp codes</text>
+    <path d="M170,166 H197" stroke="#7F789C" stroke-width="1.5" marker-end="url(#a2)"/><path d="M200,172 H173" stroke="#7F789C" stroke-width="1.5" marker-end="url(#a2)"/>
+    <path d="M300,212 V244" stroke="#7F789C" stroke-width="1.5" marker-end="url(#a2)"/><path d="M435,212 V244" stroke="#7F789C" stroke-width="1.5" marker-end="url(#a2)"/><path d="M570,212 V244" stroke="#7F789C" stroke-width="1.5" marker-end="url(#a2)"/>
+    <rect x="225" y="246" width="150" height="46" rx="10" fill="#17132A" stroke="#2B2546"/><text x="300" y="266" fill="#F5F3FC" font-size="12" font-weight="700" text-anchor="middle">Member app</text><text x="300" y="282" fill="#AAA4C4" font-size="9.5" text-anchor="middle">iOS · Android · web</text>
+    <rect x="360" y="246" width="150" height="46" rx="10" fill="#17132A" stroke="#2B2546" transform="translate(0,0)" opacity="0"/>
+    <rect x="385" y="246" width="100" height="46" rx="10" fill="#17132A" stroke="#2B2546"/><text x="435" y="266" fill="#F5F3FC" font-size="12" font-weight="700" text-anchor="middle">Trainer view</text><text x="435" y="282" fill="#AAA4C4" font-size="9.5" text-anchor="middle">clients · leads</text>
+    <rect x="495" y="246" width="150" height="46" rx="10" fill="#17132A" stroke="#2B2546"/><text x="570" y="266" fill="#F5F3FC" font-size="12" font-weight="700" text-anchor="middle">Owner stats</text><text x="570" y="282" fill="#AAA4C4" font-size="9.5" text-anchor="middle">money earned · KPIs</text>
   </svg>
   <h3>Ways to get data in</h3>
   <table>
@@ -1189,30 +1190,30 @@ pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;pad
   <p class="eyebrow">Roadmap</p>
   <h2>Design first, then build, then sell with proof</h2>
   <p class="lead">Each phase has a gate. If the gate isn't met, fix sales or the product before building more.</p>
-  <svg viewBox="0 0 680 150" width="100%" style="display:block;margin-bottom:4mm" font-family="Inter">
-    <line x1="10" y1="128" x2="670" y2="128" stroke="#2F2654" stroke-width="2"/>
+  <svg viewBox="0 0 680 150" width="100%" style="display:block;margin-bottom:4mm" font-family="IBM Plex Sans">
+    <line x1="10" y1="128" x2="670" y2="128" stroke="#2B2546" stroke-width="2"/>
     <g>
-      <rect x="10" y="8" width="120" height="98" rx="10" fill="rgba(34,211,238,.12)" stroke="#22D3EE"/>
-      <text x="20" y="28" fill="#22D3EE" font-size="9" font-weight="700">WEEKS 1–2</text><text x="20" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Design prototype</text>
-      <text x="20" y="63" fill="#BDB5DC" font-size="9">Figma + motion</text><text x="20" y="77" fill="#BDB5DC" font-size="9">Test with 5 members</text><text x="20" y="91" fill="#BDB5DC" font-size="9">Demo for pilots</text>
-      <rect x="142" y="8" width="125" height="98" rx="10" fill="rgba(124,77,242,.10)" stroke="#B77CF7"/>
-      <text x="152" y="28" fill="#B77CF7" font-size="9" font-weight="700">WEEKS 3–9</text><text x="152" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Build MVP</text>
-      <text x="152" y="63" fill="#BDB5DC" font-size="9">File reader + upload</text><text x="152" y="77" fill="#BDB5DC" font-size="9">App, dashboard, rules</text><text x="152" y="91" fill="#BDB5DC" font-size="9">Push, consent</text>
-      <rect x="279" y="8" width="125" height="98" rx="10" fill="#191330" stroke="#2F2654"/>
-      <text x="289" y="28" fill="#8A80AE" font-size="9" font-weight="700">MONTHS 3–4</text><text x="289" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Pilots</text>
-      <text x="289" y="63" fill="#BDB5DC" font-size="9">3–5 free pilots</text><text x="289" y="77" fill="#BDB5DC" font-size="9">Tune rules</text><text x="289" y="91" fill="#BDB5DC" font-size="9">Arabic case study</text>
-      <rect x="416" y="8" width="125" height="98" rx="10" fill="#191330" stroke="#2F2654"/>
-      <text x="426" y="28" fill="#8A80AE" font-size="9" font-weight="700">MONTHS 5–6</text><text x="426" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Paid + partners</text>
-      <text x="426" y="63" fill="#BDB5DC" font-size="9">Convert to paid</text><text x="426" y="77" fill="#BDB5DC" font-size="9">Paymob, invoices</text><text x="426" y="91" fill="#BDB5DC" font-size="9">Software partner</text>
-      <rect x="553" y="8" width="117" height="98" rx="10" fill="#191330" stroke="#2F2654"/>
-      <text x="563" y="28" fill="#8A80AE" font-size="9" font-weight="700">MONTHS 7–12</text><text x="563" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Grow</text>
-      <text x="563" y="63" fill="#BDB5DC" font-size="9">Automatic sync</text><text x="563" y="77" fill="#BDB5DC" font-size="9">Tanita, Evolt, photo</text><text x="563" y="91" fill="#BDB5DC" font-size="9">Distributor, GCC</text>
+      <rect x="10" y="8" width="120" height="98" rx="10" fill="rgba(77,141,255,.12)" stroke="#4D8DFF"/>
+      <text x="20" y="28" fill="#4D8DFF" font-size="9" font-weight="700">WEEKS 1–2</text><text x="20" y="45" fill="#F5F3FC" font-size="12" font-weight="700">Design prototype</text>
+      <text x="20" y="63" fill="#AAA4C4" font-size="9">Figma + motion</text><text x="20" y="77" fill="#AAA4C4" font-size="9">Test with 5 members</text><text x="20" y="91" fill="#AAA4C4" font-size="9">Demo for pilots</text>
+      <rect x="142" y="8" width="125" height="98" rx="10" fill="rgba(124,77,242,.10)" stroke="#B98CFF"/>
+      <text x="152" y="28" fill="#B98CFF" font-size="9" font-weight="700">WEEKS 3–9</text><text x="152" y="45" fill="#F5F3FC" font-size="12" font-weight="700">Build MVP</text>
+      <text x="152" y="63" fill="#AAA4C4" font-size="9">File reader + upload</text><text x="152" y="77" fill="#AAA4C4" font-size="9">App, dashboard, rules</text><text x="152" y="91" fill="#AAA4C4" font-size="9">Push, consent</text>
+      <rect x="279" y="8" width="125" height="98" rx="10" fill="#17132A" stroke="#2B2546"/>
+      <text x="289" y="28" fill="#7F789C" font-size="9" font-weight="700">MONTHS 3–4</text><text x="289" y="45" fill="#F5F3FC" font-size="12" font-weight="700">Pilots</text>
+      <text x="289" y="63" fill="#AAA4C4" font-size="9">3–5 free pilots</text><text x="289" y="77" fill="#AAA4C4" font-size="9">Tune rules</text><text x="289" y="91" fill="#AAA4C4" font-size="9">Arabic case study</text>
+      <rect x="416" y="8" width="125" height="98" rx="10" fill="#17132A" stroke="#2B2546"/>
+      <text x="426" y="28" fill="#7F789C" font-size="9" font-weight="700">MONTHS 5–6</text><text x="426" y="45" fill="#F5F3FC" font-size="12" font-weight="700">Paid + partners</text>
+      <text x="426" y="63" fill="#AAA4C4" font-size="9">Convert to paid</text><text x="426" y="77" fill="#AAA4C4" font-size="9">Paymob, invoices</text><text x="426" y="91" fill="#AAA4C4" font-size="9">Software partner</text>
+      <rect x="553" y="8" width="117" height="98" rx="10" fill="#17132A" stroke="#2B2546"/>
+      <text x="563" y="28" fill="#7F789C" font-size="9" font-weight="700">MONTHS 7–12</text><text x="563" y="45" fill="#F5F3FC" font-size="12" font-weight="700">Grow</text>
+      <text x="563" y="63" fill="#AAA4C4" font-size="9">Automatic sync</text><text x="563" y="77" fill="#AAA4C4" font-size="9">Tanita, Evolt, photo</text><text x="563" y="91" fill="#AAA4C4" font-size="9">Distributor, GCC</text>
     </g>
-    <g font-size="8.5" fill="#BDB5DC" text-anchor="middle">
-      <rect x="131" y="123" width="10" height="10" transform="rotate(45 136 128)" fill="#22D3EE"/><text x="136" y="146">5/5 understand</text>
-      <rect x="268" y="123" width="10" height="10" transform="rotate(45 273 128)" fill="#B77CF7"/><text x="273" y="146">3 pilots signed</text>
-      <rect x="405" y="123" width="10" height="10" transform="rotate(45 410 128)" fill="#8A80AE"/><text x="410" y="146">3 of 5 pay</text>
-      <rect x="542" y="123" width="10" height="10" transform="rotate(45 547 128)" fill="#8A80AE"/><text x="547" y="146">20 paying venues</text>
+    <g font-size="8.5" fill="#AAA4C4" text-anchor="middle">
+      <rect x="131" y="123" width="10" height="10" transform="rotate(45 136 128)" fill="#4D8DFF"/><text x="136" y="146">5/5 understand</text>
+      <rect x="268" y="123" width="10" height="10" transform="rotate(45 273 128)" fill="#B98CFF"/><text x="273" y="146">3 pilots signed</text>
+      <rect x="405" y="123" width="10" height="10" transform="rotate(45 410 128)" fill="#7F789C"/><text x="410" y="146">3 of 5 pay</text>
+      <rect x="542" y="123" width="10" height="10" transform="rotate(45 547 128)" fill="#7F789C"/><text x="547" y="146">20 paying venues</text>
     </g>
   </svg>
   <div class="grid2">
