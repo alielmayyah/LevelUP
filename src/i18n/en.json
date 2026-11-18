@@ -798,6 +798,109 @@
     "needTwo": {
       "title": "Compare shows after your second scan",
       "message": "Take another scan in 4 weeks and we'll put the two side by side."
-    }
+    },
+    "pick": "Pick two scans",
+    "from": "Earlier scan",
+    "to": "Later scan",
+    "sameScan": "Pick two different scans."
+  },
+  "scans": {
+    "subtitle": "All your scans in one place",
+    "trends": "Muscle and fat over time",
+    "band": "Grey band: the machine's margin around your first scan. A flag marks where a line leaves it.",
+    "oneScan": "The lines appear after your second scan.",
+    "timeline": "Your scans",
+    "next": "Next scan",
+    "stop": "Stop {{n}}",
+    "open": "Open the scan from {{date}}",
+    "otherMachine": "Different machine",
+    "chartAria": "{{metric}}: {{from}} at the first scan, {{to}} now."
+  },
+  "scan": {
+    "title": "Scan report",
+    "vsPrevious": "Compared with the scan before",
+    "first": "This is your first scan, so there's nothing to compare yet.",
+    "allSame": "Every change is smaller than the machine's margin.",
+    "values": "Your numbers",
+    "zone": {
+      "under": "A bit low",
+      "normal": "Normal",
+      "over": "A bit high"
+    },
+    "range": "Normal: {{low}}–{{high}}",
+    "visceralGoal": "Goal: under 10",
+    "source": {
+      "machine": "Normal ranges from the machine's sheet.",
+      "standard": "Normal ranges worked out for your height."
+    },
+    "metric": {
+      "weightKg": "Weight",
+      "skeletalMuscleKg": "Muscle",
+      "bodyFatKg": "Fat",
+      "bodyFatPct": "Body fat %",
+      "visceralFatLevel": "Belly fat level",
+      "totalBodyWaterKg": "Body water"
+    },
+    "more": "More numbers",
+    "moreItem": {
+      "proteinKg": "Protein",
+      "mineralsKg": "Minerals",
+      "bmi": "BMI",
+      "bmrKcal": "Calories burned at rest",
+      "ecwRatio": "Water balance (ECW ratio)",
+      "phaseAngleDeg": "Phase angle",
+      "deviceScore": "InBody Score"
+    },
+    "close": "Close",
+    "disclaimer": "Fitness information, not a medical diagnosis.",
+    "details": "Full details and your plan",
+    "notFound": "We couldn't find this scan.",
+    "back": "All scans"
+  },
+  "balance": {
+    "title": "Body balance",
+    "subtitle": "Lean mass in each part, as a % of ideal",
+    "sides": "The drawing faces you: your right side is on its left.",
+    "arms": "Arms",
+    "legs": "Legs",
+    "gap": "Difference {{pct}}",
+    "balanced": "Balanced",
+    "uneven": "Uneven",
+    "needTwo": "A difference between your sides is flagged only after two scans.",
+    "none": "This machine doesn't measure each body part on its own.",
+    "part": {
+      "rightArm": "Right arm",
+      "leftArm": "Left arm",
+      "trunk": "Trunk",
+      "rightLeg": "Right leg",
+      "leftLeg": "Left leg"
+    },
+    "figureAria": "Lean mass by body part: {{parts}}."
+  },
+  "reveal": {
+    "title": "Your new result is here",
+    "beat": "Step {{n}} of 3",
+    "verdict": "What changed",
+    "change": "The biggest change since your first scan",
+    "milestone": "What you earned",
+    "next": "Next",
+    "done": "Done",
+    "skip": "Skip",
+    "onTheWay": "New scan saved. You're on the way."
+  },
+  "account": {
+    "subtitle": "Your profile, places and milestones",
+    "fitId": "Fit ID {{id}}",
+    "age": "{{value}} years",
+    "height": "{{value}} cm",
+    "places": "Where you scan",
+    "noPlaces": "Your gym shows up here after your first scan.",
+    "badges": "Your milestones",
+    "badgeFirst": "First scan",
+    "badgeLevel": "Level {{level}}",
+    "badgeNext": "Level {{level}}: muscle +{{muscle}} or fat −{{fat}}",
+    "more": "More",
+    "character": "Your character and medals",
+    "settings": "Language, theme and sign out"
   }
 }

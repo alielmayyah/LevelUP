@@ -73,6 +73,7 @@ function verdictFor(scans: AssessmentDto[], change: ScanChange | null): JourneyV
 export function journeyFor(scans: AssessmentDto[]): JourneyDto {
   if (scans.length === 0) {
     return {
+      noise: { ...NOISE },
       level: 0,
       nextLevel: null,
       verdict: 'noScans',
@@ -99,6 +100,7 @@ export function journeyFor(scans: AssessmentDto[]): JourneyDto {
   const toNext = (done: number, step: number) => round1(step - ((done + 1e-9) % step) || step);
 
   return {
+    noise: { ...NOISE },
     level,
     nextLevel: { muscleKg: toNext(gained, NOISE.muscleKg), fatKg: toNext(lost, NOISE.fatKg) },
     verdict: verdictFor(scans, sinceFirst),

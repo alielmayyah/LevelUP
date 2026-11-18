@@ -337,8 +337,9 @@ const Progress: React.FC = () => {
 
   return (
     <TabPage
-      testId="page-scans"
-      title={t('tabs.scans')}
+      testId="page-progress"
+      backTo="/tabs/scans"
+      title={t('scan.details')}
       subtitle={t('progress.journey')}
       onRefresh={refresh}
       titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="chart" />}

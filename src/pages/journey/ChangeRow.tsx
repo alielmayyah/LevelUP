@@ -26,7 +26,9 @@ export function ChangeRow({ metric, change }: { metric: ChangeKey; change: Metri
       data-verdict={change.verdict}
     >
       <IconTile icon={look.icon} tone={look.tone} />
-      <span className="min-w-0 flex-1 text-label text-ink">{t(`journey.change.${metric}`)}</span>
+      <span className="min-w-[4.5rem] flex-1 text-label whitespace-nowrap text-ink">
+        {t(`journey.change.${metric}`)}
+      </span>
       <Num
         value={change.delta}
         signed

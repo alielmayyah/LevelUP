@@ -154,7 +154,11 @@ const Dashboard: React.FC = () => {
                 subtitle={[formatDay(j.latest.takenAt), j.latest.place, j.latest.machine].filter(Boolean).join(' · ')}
                 testId="home-body"
                 action={
-                  <Button icon="arrowForward" onClick={() => history.push('/tabs/scans')} data-testid="home-report">
+                  <Button
+                    icon="arrowForward"
+                    onClick={() => history.push(`/tabs/scans/${j.stops[j.stops.length - 1].id}`)}
+                    data-testid="home-report"
+                  >
                     {t('journey.body.report')}
                   </Button>
                 }
@@ -217,7 +221,7 @@ const Dashboard: React.FC = () => {
                   title={t('journey.plan.title')}
                   testId="home-plan"
                   action={
-                    <CardLink to="/tabs/scans" testId="home-plan-open">
+                    <CardLink to="/tabs/scans/details" testId="home-plan-open">
                       {t('journey.plan.action')}
                     </CardLink>
                   }

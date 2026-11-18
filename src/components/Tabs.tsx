@@ -18,7 +18,9 @@ const withSuspense = (Page: LazyExoticComponent<ComponentType>) => {
 
 const LOADERS = {
   home: () => import('../pages/Dashboard'),
-  scans: () => import('../pages/Progress'),
+  scans: () => import('../pages/Scans'),
+  scanReport: () => import('../pages/ScanReport'),
+  progress: () => import('../pages/Progress'),
   compare: () => import('../pages/Compare'),
   goals: () => import('../pages/Goals'),
   newGoal: () => import('../pages/NewGoal'),
@@ -29,6 +31,8 @@ const LOADERS = {
 
 const Home = withSuspense(lazy(LOADERS.home));
 const Scans = withSuspense(lazy(LOADERS.scans));
+const ScanReport = withSuspense(lazy(LOADERS.scanReport));
+const Progress = withSuspense(lazy(LOADERS.progress));
 const Compare = withSuspense(lazy(LOADERS.compare));
 const Goals = withSuspense(lazy(LOADERS.goals));
 const NewGoal = withSuspense(lazy(LOADERS.newGoal));
@@ -68,6 +72,9 @@ const Tabs: React.FC = () => {
       <IonRouterOutlet>
         <Route exact path="/tabs/home" component={Home} />
         <Route exact path="/tabs/scans" component={Scans} />
+        {/* The old Progress page stays as the full details view until the redesign covers all of it. */}
+        <Route exact path="/tabs/scans/details" component={Progress} />
+        <Route exact path="/tabs/scans/:id(\d+)" component={ScanReport} />
         <Route exact path="/tabs/compare" component={Compare} />
         <Route exact path="/tabs/account/goals" component={Goals} />
         <Route exact path="/tabs/account/goals/new" component={NewGoal} />

@@ -128,6 +128,8 @@ export interface JourneyStop {
 export type JourneyMilestone = 'firstScan' | 'levelUp';
 
 export interface JourneyDto {
+  /** The smallest change the API calls real between two same-machine scans; charts draw it as the grey band. */
+  noise: { muscleKg: number; fatKg: number; weightKg: number; fatPct: number };
   /** 1 at the first scan, +1 per real change since it (muscle ≈ 0.9 kg up, fat ≈ 1.5 kg down). Never goes down. 0 with no scans. */
   level: number;
   /** What the next level takes, as body targets: either one is enough. null with no scans. */

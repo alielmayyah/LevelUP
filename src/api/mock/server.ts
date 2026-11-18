@@ -25,7 +25,7 @@ import {
 } from '../types';
 import { goalProgress, metricValue, round1 } from './domain';
 import type { GoalRecord } from './fixtures';
-import { journeyFor } from './journey';
+import { journeyFor, scanChange } from './journey';
 import { buildMembers, type MockMember } from './members';
 
 export interface MockResponse {
@@ -309,7 +309,9 @@ export const mockServer = {
     if (!me) return fail(401, 'Unauthorized');
 
     const read = pathname.match(/^\/me\/notifications\/(\d+)\/read$/);
-    switch (`${verb} ${read ? '/me/notifications/:id/read' : pathname}`) {
+    const cmp = pathname.match(/^\/me\/compare\/(\d+)\/(\d+)$/);
+    const route = read ? '/me/notifications/:id/read' : cmp ? '/me/compare/:from/:to' : pathname;
+    switch (`${verb} ${route}`) {
       case 'GET /me':
         return ok(await profile(me));
       case 'PUT /me/avatar':
@@ -320,6 +322,13 @@ export const mockServer = {
         return ok(progress(me));
       case 'GET /me/assessments':
         return ok([...me.assessments].reverse());
+      case 'GET /me/compare/:from/:to': {
+        // Any two of the member's scans, older first whatever the order asked.
+        const pair = [Number(cmp![1]), Number(cmp![2])].map((id) => me.assessments.find((a) => a.id === id));
+        if (!pair[0] || !pair[1]) return fail(404, 'Not found');
+        const [from, to] = [...pair].sort((a, b) => a!.takenAt.localeCompare(b!.takenAt));
+        return ok(scanChange(from!, to!));
+      }
       case 'GET /me/goals':
         return ok(goals(me));
       case 'POST /me/goals':
