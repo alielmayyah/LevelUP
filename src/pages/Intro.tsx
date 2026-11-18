@@ -111,7 +111,7 @@ const Intro: React.FC = () => {
   return (
     <IonPage data-testid="page-intro">
       <IonContent>
-        <main className="lu-tab-body box-border flex min-h-full flex-col px-5 pt-[calc(16px+var(--ion-safe-area-top,0px))] pb-[calc(20px+var(--ion-safe-area-bottom,0px))]">
+        <div className="lu-tab-body box-border flex min-h-full flex-col px-5 pt-[calc(16px+var(--ion-safe-area-top,0px))] pb-[calc(20px+var(--ion-safe-area-bottom,0px))]">
           <div className="flex min-h-11 justify-end">
             {!last && (
               <button type="button" className="lu-link-button" onClick={finish} data-testid="intro-skip">
@@ -146,7 +146,7 @@ const Intro: React.FC = () => {
               {last ? t('intro.start') : t('intro.next')}
             </CtaButton>
           </div>
-        </main>
+        </div>
       </IonContent>
     </IonPage>
   );

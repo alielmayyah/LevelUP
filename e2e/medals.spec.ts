@@ -55,7 +55,8 @@ for (const lang of LOCALES) {
         await expect(page.getByTestId('medal-celebration')).toHaveCount(0);
 
         await expect(panel.locator('[data-testid^="medal-"][data-unlocked]')).toHaveCount(50);
-        await expect(panel.locator('.lu-medal-card svg.lu-medal-art image')).toHaveCount(50);
+        // Vector badges: every medal draws its category's line icon.
+        await expect(panel.locator('.lu-medal-card svg.lu-medal-art .lu-medal-glyph')).toHaveCount(50);
         await expect(panel.locator('.lu-medal-art text')).toHaveCount(0);
         for (const id of MOHAMED_UNLOCKED)
           await expect(panel.getByTestId(`medal-${id}`)).toHaveAttribute('data-unlocked', 'true');
@@ -178,4 +179,13 @@ test.describe('no data', () => {
     await expect(panel.locator('.lu-medal-card [role="progressbar"]')).toHaveCount(0);
     await expect(page.getByTestId('medal-celebration')).toHaveCount(0);
   });
+});
+
+test('locked medals show a lock badge instead of a Locked label', async ({ page, loginAs }) => {
+  await loginAs('102');
+  await page.goto('/tabs/profile');
+  const pushUps = page.getByTestId('profile-medal-grid').getByTestId('profile-medal-pushUps');
+  await expect(pushUps.getByTestId('medal-lock')).toBeVisible();
+  // The word stays for screen readers only.
+  await expect(pushUps.getByText(en.medals.locked)).toHaveClass(/sr-only/);
 });

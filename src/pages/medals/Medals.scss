@@ -26,7 +26,13 @@
 
     &[data-locked='true'] {
       --m: var(--lu-text-muted);
-      opacity: 0.55;
+
+      .lu-medal-rim,
+      .lu-medal-face,
+      .lu-medal-glyph,
+      .lu-medal-pips {
+        opacity: 0.5;
+      }
     }
   }
 
@@ -47,6 +53,20 @@
   .lu-medal-glyph {
     color: color-mix(in srgb, var(--m) 60%, var(--lu-text));
     stroke: color-mix(in srgb, var(--m) 60%, var(--lu-text));
+  }
+
+  /* Lock badge: a solid disc with a white lock, ringed in the card color so it sits on top of the medal. */
+  .lu-medal-lock {
+    circle {
+      fill: var(--lu-text-muted);
+      stroke: var(--lu-surface);
+      stroke-width: 3;
+    }
+
+    svg {
+      color: var(--lu-surface);
+      stroke: var(--lu-surface);
+    }
   }
 
   .lu-medal-pips circle {

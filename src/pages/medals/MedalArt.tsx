@@ -30,10 +30,12 @@ const HEXAGON = '50,4 90,27 90,73 50,96 10,73 10,27';
 /**
  * A clean vector medal: a disc (or hexagon for Epic and Legendary) in the
  * rarity's color, the category's line icon in the middle, and one pip per
- * rarity step along the bottom. Art only: the surrounding card names it.
+ * rarity step along the bottom; a locked medal is greyed with a lock badge.
+ * Art only: the surrounding card names it.
  */
 const MedalArt: React.FC<Props> = ({ category, rarity, locked, className }) => {
   const Glyph = ICONS[GLYPH[category]];
+  const Lock = ICONS.lock;
   const level = MEDAL_RARITIES.indexOf(rarity) + 1;
   const hex = level >= 4;
   return (
@@ -62,6 +64,13 @@ const MedalArt: React.FC<Props> = ({ category, rarity, locked, className }) => {
         <circle className="lu-medal-face" cx="50" cy="50" r="35" />
       )}
       <Glyph className="lu-medal-glyph" x={31} y={27} width={38} height={38} strokeWidth={1.9} />
+      {/* Locked: a lock badge on the lower corner says it at a glance (the card's text says it to screen readers). */}
+      {locked && (
+        <g className="lu-medal-lock" data-testid="medal-lock">
+          <circle cx="76" cy="76" r="20" />
+          <Lock x={64} y={64} width={24} height={24} strokeWidth={2.4} />
+        </g>
+      )}
       <g className="lu-medal-pips">
         {Array.from({ length: level }, (_, i) => (
           <circle key={i} cx={50 + (i - (level - 1) / 2) * 6} cy={74} r={1.9} />

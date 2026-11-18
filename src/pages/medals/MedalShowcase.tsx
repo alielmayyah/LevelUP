@@ -29,7 +29,8 @@ function ShowcaseCard({ medal, next, onOpen }: { medal: MedalStatus; next?: Meda
         {t(`medals.rarity.${medal.rarity}`)}
       </span>
       <bdi className="text-[0.75rem] leading-tight font-normal text-muted">{medalTarget(t, medal)}</bdi>
-      {!medal.unlocked && <span className="text-[0.7rem] leading-tight text-muted">{t('medals.locked')}</span>}
+      {/* The lock badge on the art shows it; screen readers hear it here. */}
+      {!medal.unlocked && <span className="sr-only">{t('medals.locked')}</span>}
       {next && next.current !== null && (
         <span className="mt-auto grid w-full gap-1 pt-1" data-testid="profile-medal-progress">
           {percent !== null && (
