@@ -1,7 +1,7 @@
 /*
- * The app's shared UI kit, bold and energetic: big rounded cards that float on
- * the page, solid color blocks for body metrics (ink text on top), ink pills
- * for the active choice, iOS-style switches, hatched progress tracks, and
+ * The app's shared UI kit, bold but calm: big rounded neutral cards that
+ * float on the page, color only on icon discs and chart marks, ink pills for
+ * the active choice, iOS-style switches, hatched progress tracks, and
  * loading/empty states. Titles and numbers are Alexandria; body text is
  * IBM Plex Sans (Latin) and IBM Plex Sans Arabic (Arabic).
  *
@@ -197,50 +197,42 @@ button.lu-card:active {
   outline-offset: 3px;
 }
 
-/* ---------- Color blocks ---------- */
+/* ---------- Icon discs ---------- */
 
 /*
- * A solid block of one metric's color with ink text on it, in both themes:
- * the color says which metric at a glance. Set --block, or use a metric
- * class. Values inside use .lu-display.
+ * Color lives on icons, not on cards: a metric's icon sits on a solid disc of
+ * its color with an ink glyph, and the card around it stays neutral. Set
+ * --disc, or use a metric class. Size with utilities (size-10, text-[1.2rem]).
  */
-.lu-block {
-  --block: var(--ion-color-primary);
-  box-sizing: border-box;
-  border-radius: var(--lu-radius-card);
-  background: var(--block);
+.lu-disc {
+  --disc: var(--ion-color-primary);
+  display: grid;
+  flex: none;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--disc);
   color: var(--lu-on-block);
   --icon-color: var(--lu-on-block);
 }
 
-.lu-block-fat {
-  --block: var(--lu-fat);
+.lu-disc-fat {
+  --disc: var(--lu-fat);
 }
 
-.lu-block-muscle {
-  --block: var(--lu-muscle);
+.lu-disc-muscle {
+  --disc: var(--lu-muscle);
 }
 
-.lu-block-weight {
-  --block: var(--lu-weight);
+.lu-disc-weight {
+  --disc: var(--lu-weight);
 }
 
-.lu-block-lime {
-  --block: var(--lu-lime);
+.lu-disc-lime {
+  --disc: var(--lu-lime);
 }
 
-/* The round icon disc on a block: a light frosted wash over the block color. */
-.lu-block-badge {
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  background: var(--lu-frost);
-  color: var(--lu-on-block);
-}
-
-/* Muted text on a block (labels under big numbers). */
-.lu-block-muted {
-  color: var(--lu-on-block-muted);
+.lu-disc-gold {
+  --disc: var(--lu-tier-3);
 }
 
 /* ---------- Chips ---------- */
@@ -453,12 +445,8 @@ button.lu-card:active {
   block-size: 100%;
   inline-size: var(--lu-bar, 0%);
   border-radius: inherit;
-  background: var(--bar-color, var(--ion-color-primary));
+  background: var(--bar-color, var(--lu-text));
   transition: inline-size 500ms var(--ease-soft, ease-out);
-}
-
-:root.ion-palette-dark .lu-bar > span {
-  background: var(--bar-color, var(--ion-color-secondary));
 }
 
 /* ---------- Toggle switch ---------- */

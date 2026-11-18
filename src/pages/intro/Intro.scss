@@ -1,7 +1,7 @@
 /*
  * Intro slides, on the ink backdrop shared with the splash and login: a fan
- * of metric color blocks, a muscle block with its sparkline, a goal card with
- * a medal, and the page dots.
+ * of metric cards (color only on their icon discs), a muscle card with its
+ * sparkline, a goal card with a medal, and the page dots.
  */
 @layer components {
   /* The fan of blocks: each row tilts a hair, like cards dealt onto a table. */
@@ -20,7 +20,7 @@
 
   .lu-intro-spark polyline {
     fill: none;
-    stroke: var(--lu-on-block);
+    stroke: var(--lu-muscle);
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;

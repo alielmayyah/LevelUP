@@ -50,6 +50,7 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
         <span
           className="lu-goal-icon grid size-12 flex-none place-items-center rounded-full text-[24px]"
           aria-hidden="true"
+          data-pop
         >
           <Icon name={icon} />
         </span>

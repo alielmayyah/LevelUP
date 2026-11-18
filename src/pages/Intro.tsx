@@ -19,24 +19,24 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
   const { t } = useTranslation();
   if (slide === 'numbers') {
     const chips: [IconName, string, string][] = [
-      ['muscle', 'lu-block-muscle', t('intro.chip.muscle')],
-      ['bodyFat', 'lu-block-fat', t('intro.chip.fat')],
-      ['drop', 'lu-block-weight', t('intro.chip.water')],
-      ['bolt', 'lu-block-lime', t('intro.chip.energy')],
+      ['muscle', 'lu-disc-muscle', t('intro.chip.muscle')],
+      ['bodyFat', 'lu-disc-fat', t('intro.chip.fat')],
+      ['drop', 'lu-disc-weight', t('intro.chip.water')],
+      ['bolt', 'lu-disc-lime', t('intro.chip.energy')],
     ];
     return (
       <ul className="m-0 grid w-full max-w-[300px] list-none gap-2.5 p-0">
         {chips.map(([icon, tone, label], i) => (
           <li
             key={icon}
-            className={`lu-block lu-intro-row flex items-center gap-3 rounded-[20px] px-3.5 py-3 ${tone}`}
+            className="lu-card lu-intro-row flex items-center gap-3 rounded-[20px] px-3.5 py-3"
             // Every other row steps in a little, so the stack reads as a loose fan of cards.
             style={{ marginInlineStart: `${(i % 2) * 28}px`, inlineSize: 'calc(100% - 28px)' }}
           >
-            <span className="lu-block-badge size-9 flex-none text-[1.1rem]">
+            <span className={`lu-disc ${tone} size-9 text-[1.1rem]`}>
               <Icon name={icon} />
             </span>
-            <span className="font-display font-semibold">{label}</span>
+            <span className="font-display font-semibold text-ink">{label}</span>
           </li>
         ))}
       </ul>
@@ -45,10 +45,15 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
   if (slide === 'meaning')
     return (
       <div className="grid w-full max-w-[300px] gap-3 text-start">
-        <div className="lu-block lu-block-muscle grid gap-1.5 p-4">
-          <span className="lu-block-muted text-[0.8125rem] font-semibold">{t('intro.demo.muscle')}</span>
-          <span className="lu-display text-[2.2rem] leading-none">
-            {formatNumber(41.3, 1)} <span className="lu-block-muted text-[0.5em]">{t('units.kg')}</span>
+        <div className="lu-card grid gap-1.5 p-4">
+          <span className="flex items-center gap-2 text-[0.8125rem] font-semibold text-muted">
+            <span className="lu-disc lu-disc-muscle size-7 text-[0.95rem]">
+              <Icon name="muscle" />
+            </span>
+            {t('intro.demo.muscle')}
+          </span>
+          <span className="lu-display text-[2.2rem] leading-none text-ink">
+            {formatNumber(41.3, 1)} <span className="text-[0.5em] text-muted">{t('units.kg')}</span>
           </span>
           <svg
             className="lu-intro-spark block h-10 w-full"
@@ -75,7 +80,7 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
       <div className="lu-card grid gap-2 p-4">
         <span className="lu-card-kicker">{t('intro.demo.goal')}</span>
         <strong className="font-display text-ink">{t('intro.demo.goalTitle')}</strong>
-        <span className="lu-bar [--bar-color:var(--lu-muscle)]">
+        <span className="lu-bar">
           <span style={{ '--lu-bar': '67%' } as CSSProperties} />
         </span>
       </div>

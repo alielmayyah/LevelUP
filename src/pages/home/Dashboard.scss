@@ -46,9 +46,15 @@
   .lu-tick-lit {
     stroke: var(--lu-hero-up);
 
-    /* The tick at the score stands a little taller, in white. */
+    /* The tick at the score stands a little taller, in white, and breathes. */
     &.is-head {
       stroke: var(--lu-hero-text);
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
+
+      @media (prefers-reduced-motion: no-preference) {
+        animation: lu-tick-breathe 1.8s ease-in-out 1.4s infinite;
+      }
     }
   }
 
@@ -135,25 +141,6 @@
     }
   }
 
-  /* Each shortcut's icon sits on a small solid disc of its own color, ink icon on top. */
-  .lu-quick-badge {
-    background: var(--block);
-    color: var(--lu-on-block);
-    --icon-color: var(--lu-on-block);
-  }
-
-  .lu-quick-scan {
-    --block: var(--lu-weight);
-  }
-
-  .lu-quick-goal {
-    --block: var(--lu-muscle);
-  }
-
-  .lu-quick-medals {
-    --block: var(--lu-tier-3);
-  }
-
   /* ---------- Notifications sheet ---------- */
 
   .lu-notif-count {
@@ -206,6 +193,12 @@
   .lu-notif-dot {
     border-radius: 999px;
     background: var(--lu-accent);
+  }
+}
+
+@keyframes lu-tick-breathe {
+  50% {
+    opacity: 0.45;
   }
 }
 

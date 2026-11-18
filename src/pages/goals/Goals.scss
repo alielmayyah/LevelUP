@@ -1,8 +1,7 @@
 /*
- * Goals' custom pieces: each metric's block color, the solid metric icon
- * discs, the bar in the goal's color on its hatched track, and the picked
- * state on New goal. Layout and type are Tailwind classes in Goals.tsx and
- * NewGoal.tsx.
+ * Goals' custom pieces: each metric's color on its icon disc (the only color
+ * on the card), the ink bar on its hatched track, and the picked state on New
+ * goal. Layout and type are Tailwind classes in Goals.tsx and NewGoal.tsx.
  */
 @layer components {
   /* Each metric's hue, as on Home and Progress. */
@@ -38,12 +37,10 @@
       box-shadow: var(--lu-shadow-pressed);
     }
 
-    /* Picked: the whole option turns into its metric's color block. */
+    /* Picked: an ink outline and a check; the card itself stays neutral. */
     &[aria-checked='true'] {
-      border-color: var(--metric);
-      background: var(--metric);
-      color: var(--lu-on-block);
-      --icon-color: var(--lu-on-block);
+      border-color: var(--lu-text);
+      box-shadow: inset 0 0 0 1px var(--lu-text);
     }
 
     &:focus-visible {
@@ -66,11 +63,7 @@
    * otherwise painted every goal purple at night.
    */
   :root .lu-goal .lu-goal-progress > span {
-    background: var(--metric);
-  }
-
-  :root .lu-goal.lu-goal-completed .lu-goal-progress > span {
-    background: var(--lu-lime);
+    background: var(--lu-text);
   }
 
   .lu-goal-target {

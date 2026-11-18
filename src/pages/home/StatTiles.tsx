@@ -10,11 +10,12 @@ import { TILES } from './layout';
 
 type Tone = 'good' | 'bad' | 'none';
 
-/** The badge in the block's corner: a check for good news, a warning for the wrong way. */
+/** The badge in the tile's corner: a green check for good news, a red warning for the wrong way. */
 const TONE_ICON: Record<Exclude<Tone, 'none'>, IconName> = { good: 'checkCircle', bad: 'warning' };
+const TONE_COLOR: Record<Exclude<Tone, 'none'>, string> = { good: 'text-success', bad: 'text-danger' };
 
-/** Each metric's block color (kit.css). */
-const BLOCK = { fat: 'lu-block-fat', muscle: 'lu-block-muscle', bmi: 'lu-block-lime' } as const;
+/** Each metric's icon disc (kit.css): the only color on the tile. */
+const DISC = { fat: 'lu-disc-fat', muscle: 'lu-disc-muscle', bmi: 'lu-disc-lime' } as const;
 
 /** Fat going down is good; muscle going up is good. */
 const tone = (value: number | null, goodWhen: 'down' | 'up'): Tone => {
@@ -36,9 +37,9 @@ interface TileProps {
 }
 
 /**
- * One metric as a solid color block: its icon and good/bad badge on top, the
- * month's change as a big number (counted up the first time it shows), and
- * the metric's name under it. Ink text in both themes.
+ * One metric on a neutral card: its icon on a disc of the metric's color and
+ * a good/bad badge on top, the month's change as a big number (counted up),
+ * and the metric's name under it.
  */
 const Tile: React.FC<TileProps> = ({ metric, icon, label, change, unit, tone: tileTone = 'none', testId, wide }) => {
   const { t } = useTranslation();
@@ -47,27 +48,31 @@ const Tile: React.FC<TileProps> = ({ metric, icon, label, change, unit, tone: ti
   useCountUp(value, change, format, 1.1);
 
   const badge = (
-    <span className="lu-block-badge size-10 flex-none text-[1.2rem]" aria-hidden="true">
+    <span className={`lu-disc ${DISC[metric]} size-10 text-[1.2rem]`} aria-hidden="true" data-pop>
       <Icon name={icon} />
     </span>
   );
   const toneBadge = tileTone !== 'none' && (
-    <span className="lu-block-badge size-7 flex-none text-[0.95rem]" aria-hidden="true" data-pop>
-      <Icon name={TONE_ICON[tileTone]} />
+    <span className={`flex-none text-[1.15rem] ${TONE_COLOR[tileTone]}`} aria-hidden="true" data-pop>
+      <Icon className="[--icon-color:currentColor]" name={TONE_ICON[tileTone]} />
     </span>
   );
   const number = (
-    <span className="lu-display inline-flex items-center gap-1 text-[clamp(1.5rem,7vw,2rem)] leading-none whitespace-nowrap">
+    <span className="lu-display inline-flex items-center gap-1 text-[clamp(1.5rem,7vw,2rem)] leading-none whitespace-nowrap text-ink">
       {/* Which way it moved, not by color alone. Never mirrored: up is up in both languages. */}
-      {change !== 0 && <Icon className="flex-none text-[0.7em]" name={change > 0 ? 'trendUp' : 'trendDown'} />}
-      <span ref={value}>{formatSigned(change, unit, { digits: 1 })}</span>
+      {change !== 0 && (
+        <Icon className="flex-none text-[0.7em] text-muted" name={change > 0 ? 'trendUp' : 'trendDown'} />
+      )}
+      <span className="inline-block" ref={value}>
+        {formatSigned(change, unit, { digits: 1 })}
+      </span>
     </span>
   );
-  const name = <span className="lu-block-muted text-[0.875rem] leading-tight font-semibold">{label}</span>;
+  const name = <span className="text-[0.875rem] leading-tight font-semibold text-muted">{label}</span>;
 
   return (
     <div
-      className={`lu-block ${BLOCK[metric]} lu-tile lu-tile-${metric} lu-tile-${tileTone} relative overflow-hidden p-4 ${wide ? 'flex items-center gap-3' : 'grid min-h-[132px] content-between gap-3'}`}
+      className={`lu-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative overflow-hidden p-4 ${wide ? 'flex items-center gap-3' : 'grid min-h-[132px] content-between gap-3'}`}
       data-testid={testId}
     >
       {wide ? (

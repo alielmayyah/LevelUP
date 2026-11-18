@@ -37,14 +37,14 @@
   --lu-cta-bg-pressed: #2a2c33;
   --lu-cta-text: #ffffff;
 
-  /* Text on a color block: ink in both themes, so blocks read the same day and night. */
+  /* The glyph on an icon disc: ink in both themes, so discs read the same day and night. */
   --lu-on-block: #0e0f13;
   /* 85% ink: still reads as secondary, and keeps 4.5:1 on the blue and violet blocks. */
   --lu-on-block-muted: rgba(14, 15, 19, 0.85);
   /* A frosted white wash on a block or the hero (icon discs, chips). */
   --lu-frost: rgba(255, 255, 255, 0.4);
 
-  /* One solid block color per body metric (fill behind ink text, and the metric's icon and line). */
+  /* One color per body metric, used only on its icon disc and its chart marks. */
   --lu-fat: #ff8a3d;
   --lu-fat-hi: #ffc46b;
   --lu-fat-core: #fff1d6;
