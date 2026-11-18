@@ -1,6 +1,6 @@
 # LevelUP
 
-The LevelUP gym member app: a member signs in with the Fit ID the front desk gives them and follows their body-composition scans, goals, and gym ranking. Built with Ionic React, Vite, and Capacitor. English and Egyptian Arabic (right-to-left), light and dark themes, phones to desktop.
+LevelUP is a gym member app for body composition scans, personal goals, and medals. Members sign in with a Fit ID from the front desk. Built with Ionic React, Vite, and Capacitor. It supports English and Egyptian Arabic (right-to-left), light and dark themes, and phones through desktop.
 
 Try it: **[alielmayyah.github.io/LevelUP](https://alielmayyah.github.io/LevelUP/)** (the `staging` branch, on mock data; sign in with `101`).
 
@@ -31,14 +31,13 @@ With mock data on (the default), sign in with any of these Fit IDs:
 
 | Fit ID | Member | Shows |
 |---|---|---|
-| `101` | Mohamed Omran | Everything, as the gym's top member: 183 cm, 80 kg, 8% body fat, 6 scans with body-part readings, FitScore 91, #1 on every board, an active mission, 2 unread notifications |
-| `102` | Lina Haddad | A brand-new member: empty states everywhere, not on the leaderboard |
-| `103` | Omar Aziz | One scan only, FitScore hidden |
-| `104`–`139` | Filler members | Fill out both leaderboards |
+| `101` | Mohamed Omran | Six scans with body-part readings, FitScore, active goals, and unread notifications |
+| `102` | Lina Haddad | New member with no scans or goals and the female portrait editor |
+| `103` | Omar Aziz | One scan |
 
-`999` shows "not found". Six quick wrong tries show "too many tries". The mock data resets when you reload the page; settings are kept.
+`999` shows "not found". Six quick wrong tries show "too many tries". Mock avatars, member-created goals, and device settings persist across reloads.
 
-Demo path: tap the splash → sign in as `101` → Home → switch to Arabic in Profile → switch to dark mode → visit every tab → turn off Show FitScore and go back to Home → sign out → sign in as `102` to see the empty states.
+Demo path: tap the splash → onboarding → sign in as `101` → visit the four tabs → open the Trophy Room → switch to Arabic and dark mode in Settings → sign out → sign in as `102` for the empty states and hijab option.
 
 ## Android test build
 
@@ -87,13 +86,14 @@ Measured with `npm run build` at the end of Sprint 1 (gzip):
 | Home tab | 5.3 KB | ≤ 80 KB |
 | Progress tab | 1.9 KB, plus charts 2.6 KB (loaded after the page) | ≤ 80 KB |
 | Goals tab | 2.0 KB | ≤ 80 KB |
-| Leaderboard tab | 2.6 KB | ≤ 80 KB |
 | Profile tab | 3.8 KB | ≤ 80 KB |
 | GSAP (splash exit, FitScore count-up; loaded on demand) | 27.4 KB | — |
 | Motion animation features (loaded on demand) | 18.9 KB | — |
 
 ## Project guides
 
+- [Avatars](docs/avatar-handoff.md) covers portrait options, saved settings, and rebuilding the artwork.
+- [Business plan](docs/LevelUP-Business-Plan.md) and its [PDF edition](docs/LevelUP-Business-Plan.pdf).
 - [CLAUDE.md](CLAUDE.md): rules for every change (two languages, two themes, responsive, safe areas, tests, budgets).
 - `ui-standards` skill (`.claude/skills/ui-standards/SKILL.md`): the clean modern visual style, accessibility rules, animation tools, and performance budgets.
-- [Sprint 1 backlog](docs/sprints/sprint-1-backlog.md) and [plan](docs/superpowers/plans/2026-11-13-sprint-1-frontend-mvp.md).
+- [Sprint 1 plan](docs/superpowers/plans/2026-11-13-sprint-1-frontend-mvp.md).

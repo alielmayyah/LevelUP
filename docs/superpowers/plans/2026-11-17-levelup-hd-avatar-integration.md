@@ -1,25 +1,6 @@
 # Illustrative Pixel HD avatar handoff and plan
 
-The Casual figure is the art baseline for the HD avatar work. It is one full-body character in a front three-quarter view, assembled from nine editable raster layers. The live Character editor and Profile still use the renderer described in the [avatar editor handoff](../../avatar-handoff.md). Start by proving one clothing swap on this figure.
-
-## Pick up the asset
-
-| File | Purpose |
-| --- | --- |
-| [hd-casual.png](../../../public/avatar/hd-casual.png) | Transparent 1024 × 1536 composite and the simplest preview. Use this to compare future work against the art baseline. |
-| [hd-casual.svg](../../../public/avatar/hd-casual.svg) | Standalone layered preview with all raster layers embedded. Open it to inspect or hide groups without resolving external files. |
-| [Layer manifest](../../../public/avatar/hd-casual-layers/manifest.json) | File names, draw order, native offsets and dimensions, clothing slots, and body anchors. Each cropped PNG sits beside the manifest. |
-| [Build script](../../../scripts/build-hd-casual.mjs) | Native-resolution masks, underpainting, and generator for all of the above. |
-
-The supplied HD illustration provides the visible pixel artwork. The build script removes the backdrop, separates the parts, and paints the scalp and hoodie areas that become visible when their covering layers are removed. The script checks that the assembled layers reproduce the matted composite pixel for pixel. The body underpainting supports alignment checks and replacement garment authoring. A fully rendered alternate base would need its own art pass.
-
-To reproduce the current asset, install FFmpeg and FFprobe on the command path, then run this from the frontend root:
-
-```powershell
-node scripts/build-hd-casual.mjs
-```
-
-The command uses the existing transparent composite as input and regenerates the files under `public/avatar/`. To start again from the original uncropped 1024 × 1536 reference, pass its PNG path as the first argument. Save proposed figures or alternate outfits under a different name while comparing them with the Casual baseline.
+This archived plan records the original HD Casual sprite pilot. See the [avatar handoff](../../avatar-handoff.md) for the current front-facing portraits and their build pipeline.
 
 ## Layer contract
 

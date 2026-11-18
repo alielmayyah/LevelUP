@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build all 17 LevelUP core features from scratch: a white-label Ionic gym member app on a NestJS + Prisma + PostgreSQL API.
+**Goal:** Build all 14 LevelUP core features from scratch: a white-label Ionic gym member app on a NestJS + Prisma + PostgreSQL API.
 
-**Architecture:** Two repos. [`levelup-backend`](https://github.com/alielmayyah/levelup-backend) is a NestJS REST API (Phase 1). Members sign in with a Fit ID and get a JWT; staff endpoints use an API key. Domain rules (FitScore, goal progress, monthly wins) are pure functions with unit tests, and services call them. [`LevelUP`](https://github.com/alielmayyah/LevelUP) (this repo) is an Ionic React app (Vite + Capacitor) with five tabs, branded from one config file (Phase 2). The API is the source of truth for the contract: its DTO classes carry `@nestjs/swagger` decorators, and it commits the generated `openapi.json`. The app generates its types from that file with `openapi-typescript`, so drift between the two sides shows up as a type error in the app. This plan, the spec, and the backlog live in this repo; the API repo links here.
+**Architecture:** Two repos. [`levelup-backend`](https://github.com/alielmayyah/levelup-backend) is a NestJS REST API (Phase 1). Members sign in with a Fit ID and get a JWT; staff endpoints use an API key. Domain rules (FitScore, goal progress) are pure functions with unit tests, and services call them. [`LevelUP`](https://github.com/alielmayyah/LevelUP) (this repo) is an Ionic React app (Vite + Capacitor) with four tabs, branded from one config file (Phase 2). The API is the source of truth for the contract: its DTO classes carry `@nestjs/swagger` decorators, and it commits the generated `openapi.json`. The app generates its types from that file with `openapi-typescript`, so drift between the two sides shows up as a type error in the app. This plan and the spec live in this repo; the API repo links here.
 
 **Tech Stack:** Node 22 LTS, TypeScript (strict), NestJS 11, Prisma 6, PostgreSQL 16 (docker-compose), Jest + supertest (API), Ionic 8 + React 18 + Vite + Capacitor 7, Vitest + Testing Library (mobile), Chart.js via react-chartjs-2, date-fns + date-fns-tz.
 
@@ -12,14 +12,14 @@
 
 ## Global Constraints
 
-- Scope is the 17 core features only. Do not build XP, levels, or XP rewards anywhere (no columns, DTO fields, or copy). Do not count or track workouts or visits anywhere. Do not build Gym Streak, Gym Visit Tracking UI, XP History, Achievements, Trophies, Challenges, or Community Page.
+- Product scope follows the [core feature list](../../../LevelUP-Features-Core.md). Medals use the member's body composition scans.
 - Tagline copy, verbatim: `Track. Improve. Transform.`
 - Splash call to action, verbatim: `Tap to Begin`.
 - Login uses a numeric Fit ID only. There is no password field.
-- FitScore is private by default. The API returns another member's FitScore only when that member has `fitScoreOnLeaderboard = true`, and only in leaderboard data.
-- FitScore is an integer from 0 to 100. Tiers run from `Elite` down to `Needs Improvement`.
+- FitScore is private.
+- FitScore is an integer from 0 to 100.
 - Branding (gym name, logo, colors) comes from one file in the app repo: `src/brand.config.ts`. No other file hard-codes a brand value.
-- The tab bar is a floating bar with exactly 5 tabs: Home, Progress, Goals, Leaderboard, Profile.
+- The tab bar is a floating bar with exactly 4 tabs: Home, Progress, Goals, Profile.
 - One deployment serves one gym (single-tenant). There is no `gymId` column.
 - All month and day boundaries use the `GYM_TZ` env var (IANA zone, default `UTC`).
 - Each task follows the `CLAUDE.md` of the repo it runs in. App tasks follow [this repo's CLAUDE.md](../../../CLAUDE.md): English + Arabic (RTL), light + dark themes, responsive from 320 px, safe-area aware, and within the performance budgets in `.claude/skills/ui-standards`. Mobile tasks add `en` and `ar` strings and Playwright coverage per `.claude/skills/e2e-testing`.
@@ -30,23 +30,17 @@
 | Topic | Decision |
 |---|---|
 | FitScore formula | InBody Score method: `80 + (lean − standardLean) − max(0, fat − standardFat)` in kg (fat below standard earns nothing; checked against two real InBody sheets), rounded and clamped to 0–100. Standard weight = 22·h² (men) / 21.5·h² (women), h in m; ideal fat = 15% (men) / 23% (women) of it, the rest lean. Lean = weight − body-fat kg. Mirrors `computeFitScore` in the app's `src/api/mock/domain.ts` (Task 3) |
-| FitScore tiers | InBody's bands: Elite ≥80, Strong 70–79, On Track 60–69, Building 50–59, Needs Improvement <50 |
-| FitScore "daily change" | Difference from the previous assessment, labelled "since last scan" |
-| Leaderboard ranking | Opt-in only (`fitScoreOnLeaderboard`, default `false`). There are 4 boards: `score` (latest fitScore), `progress` (FitScore points gained this month), `muscle` (kg of skeletal muscle gained this month), and `fatLoss` (body-fat % points lost this month). All rank descending, and ties go to the lower member id. Monthly boards include only members with a non-null monthly delta. The dashboard summary uses `score`. |
-| Leaderboard streak column | Dropped, because Gym Streak is out of scope |
 | Workouts / visits | Not tracked. There is no Visit model. |
-| Assessments, goals, members | Created through staff endpoints protected by `x-staff-key` |
+| Assessments and members | Created through staff endpoints protected by `x-staff-key` |
+| Personal goals | Created by the member through `POST /me/goals` |
 | Sound preference | Stored on the device (Capacitor Preferences), not on the server |
 | Repos and contract | Two repos: `levelup-backend` (Phase 1) and `LevelUP` (Phase 2). The API commits `openapi.json` (`npm run openapi`), and the app regenerates `src/api/schema.d.ts` from it (`npm run api:types`). A change to a DTO is two PRs: the API PR first, then the app PR that regenerates types, each linking the other. |
-| FitScore visibility | Per-member setting `showFitScore` stored on the server, default `true`. When `false`, the app hides the FitScore card, the change indicator, and the FitScore chart. The score is still computed and stored, and turning the setting back on restores it. This setting is independent of the leaderboard opt-in. |
 
 ## Review Focus
 
 1. **Fit ID guessing.** Fit IDs are short numbers, so someone can try many in a row. Expected: login is limited to 5 attempts per minute per IP (the 6th gets 429), and an unknown ID gets the same 401 body as a malformed one. Test: Task 5.
-2. **FitScore leaking through the leaderboard.** Expected: members who have not opted in never appear in leaderboard rows or count toward `totalMembers`, and a member who opts out disappears on the next request. Test: Task 8.
-3. **A new member with 0 or 1 assessments.** Expected: the dashboard returns `null` for fitScore and change, and monthly-wins deltas are `null`, never `NaN`. The cards show empty states. Tests: Tasks 7 and 13.
-4. **Month boundary in the gym's timezone.** Expected: with `GYM_TZ=Asia/Dubai`, a scan at `2026-10-31T21:30Z` (01:30 Nov 1 local) counts as November's scan in Monthly Wins. Test: Task 7.
-5. **Goal overshoot or regression.** Expected: progress is clamped to 0–100%, and estimated completion is `null` when the trend is flat or moving away from the target. Test: Task 4.
+2. **A new member with 0 or 1 assessments.** Home shows an empty state until the first assessment. Progress trends require two. See Tasks 7 and 13.
+3. **Goal overshoot or regression.** Expected: progress is clamped to 0–100%, and estimated completion is `null` when the trend is flat or moving away from the target. Test: Task 4.
 
 ---
 
@@ -59,13 +53,11 @@ levelup-backend/                    (separate repo; Phase 1)
   prisma/schema.prisma, prisma/seed.ts
   src/main.ts, src/app.module.ts
   src/prisma/prisma.service.ts
-  src/domain/fitscore.ts        pure: computeFitScore, fitScoreTier
+  src/domain/fitscore.ts        pure: computeFitScore
   src/domain/goal-progress.ts   pure: goalProgress
-  src/domain/month.ts           pure: monthRange(date, tz)
   src/auth/                     auth.controller, auth.service, jwt.guard, staff-key.guard, dto/
   src/staff/                    staff.controller, ingest.service (assessments, members, goals), dto/
   src/me/                       me.controller, dashboard.service, progress.service, goals.service, dto/
-  src/leaderboard/              leaderboard.controller, leaderboard.service, dto/
   src/notifications/            notifications.controller, notifications.service, dto/
   test/*.e2e-spec.ts
 LevelUP/                        (this repo; Phase 2)
@@ -74,9 +66,9 @@ LevelUP/                        (this repo; Phase 2)
   src/api/client.ts, src/api/types.ts (DTO names), src/api/schema.d.ts (generated)
   src/auth/AuthContext.tsx, src/sound/useSound.ts
   src/lib/greeting.ts
-  src/pages/{Splash,Login,Dashboard,Progress,Goals,Leaderboard,Profile}.tsx
+  src/pages/{Splash,Login,Dashboard,Progress,Goals,Profile}.tsx
   src/components/{TabBar,NotificationBell,NotificationsModal}.tsx
-  src/components/dashboard/{Greeting,LeaderboardSummaryCard,FitScoreCard,MissionCard,MonthlyWins}.tsx
+  src/components/dashboard/{Greeting,FitScoreCard,MissionCard}.tsx
 ```
 
 `src/api/types.ts` is the only file components import DTO types from. In Sprint 1 it holds hand-written interfaces copied from this plan. Once the API exists, each type becomes a re-export from the generated schema (`export type DashboardDto = components['schemas']['DashboardDto']`), so components never change.
@@ -121,10 +113,9 @@ From Task 5 on, every task that adds or changes a DTO ends by running `npm run o
 
 **Interfaces:**
 - Produces these models, with field names used by every later task:
-  - `Coach { id, name }`
-  - `Member { id Int, fitId String @unique, firstName, lastName, sex Sex(MALE|FEMALE), birthDate DateTime, heightCm Float, membershipPlan String, membershipStart DateTime, membershipEnd DateTime, coachId Int?, showFitScore Boolean @default(true), fitScoreOnLeaderboard Boolean @default(false), createdAt }`
+  - `Member { id Int, fitId String @unique, firstName, lastName, sex Sex(MALE|FEMALE), birthDate DateTime, heightCm Float, createdAt }`
   - `Assessment { id, memberId, takenAt, weightKg, skeletalMuscleKg, bodyFatKg, bodyFatPct, bmi, visceralFatLevel Int, totalBodyWaterKg, proteinKg, mineralsKg, bmrKcal Int, fitScore Int }`. All unspecified numbers are `Float`. Index on `(memberId, takenAt)`.
-  - `Goal { id, memberId, title, metric GoalMetric(BODY_FAT_KG|MUSCLE_KG|WEIGHT_KG), startValue Float, targetValue Float, startDate, deadline, status GoalStatus(ACTIVE|COMPLETED|UPCOMING), coachNote String?, completedAt DateTime? }`
+  - `Goal { id, memberId, title, metric GoalMetric(BODY_FAT_KG|MUSCLE_KG|WEIGHT_KG), startValue Float, targetValue Float, startDate, status GoalStatus(ACTIVE|COMPLETED), completedAt DateTime? }`
   - `Notification { id, memberId, title, body, readAt DateTime?, createdAt }`
   - `PrismaService extends PrismaClient` (global module).
 
@@ -138,7 +129,7 @@ expect(await prisma.goal.count({ where: { memberId: demo.id, status: 'ACTIVE' } 
 ```
 
 - [ ] **Step 2:** Run `npm run test:e2e -- seed`. Expected: FAIL (the models do not exist).
-- [ ] **Step 3:** Write the schema. Run `npx prisma migrate dev --name init`. Write the seed: 2 coaches; 20 members with fitIds `100001`–`100020`; 6 monthly assessments for the demo member and 1–4 for the others; one ACTIVE, one COMPLETED, and one UPCOMING goal for the demo member; set `fitScoreOnLeaderboard = true` on 15 of the 20 members (including the demo member) so the leaderboard has a spread. Compute the seed's `fitScore` values with Task 3's function if it exists, or hard-code them for now and re-seed after Task 3. Add the script `db:reset` (`prisma migrate reset --force`, which re-runs the seed); the app repo's e2e setup calls it.
+- [ ] **Step 3:** Write the schema. Run `npx prisma migrate dev --name init`. Write the seed: 20 members with fitIds `100001`–`100020`; 6 monthly assessments for the demo member and 1–4 for the others; one ACTIVE and one COMPLETED goal for the demo member. Compute the seed's `fitScore` values with Task 3's function if it exists, or hard-code them for now and re-seed after Task 3. Add the script `db:reset` (`prisma migrate reset --force`, which re-runs the seed); the app repo's e2e setup calls it.
 - [ ] **Step 4:** Re-run the test. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): prisma schema and seed`.
 
@@ -149,7 +140,7 @@ expect(await prisma.goal.count({ where: { memberId: demo.id, status: 'ACTIVE' } 
 - Test: `src/domain/fitscore.spec.ts`
 
 **Interfaces:**
-- Produces: `computeFitScore(a: { sex: 'MALE'|'FEMALE'; weightKg: number; skeletalMuscleKg: number; bodyFatPct: number; visceralFatLevel: number }): number` and `fitScoreTier(score: number): 'Elite'|'Strong'|'On Track'|'Building'|'Needs Improvement'`.
+- Produces: `computeFitScore(a: { sex: 'MALE'|'FEMALE'; weightKg: number; skeletalMuscleKg: number; bodyFatPct: number; visceralFatLevel: number }): number`.
 
 The sub-scores, each clamped to 0–100:
 - **fat:** 100 when inside the healthy band (MALE 10–20%, FEMALE 18–28%). Subtract 5 per percentage point outside the band.
@@ -164,26 +155,22 @@ it('perfect male scores 100', () => expect(computeFitScore(base)).toBe(100));
 it('fat 30% male loses 50 fat pts', () => expect(computeFitScore({ ...base, bodyFatPct: 30 })).toBe(80));
 it('clamps to 0', () => expect(computeFitScore({ ...base, bodyFatPct: 60, skeletalMuscleKg: 10, visceralFatLevel: 30 })).toBe(0));
 it('female band differs', () => expect(computeFitScore({ ...base, sex: 'FEMALE', bodyFatPct: 25, skeletalMuscleKg: 30.4 })).toBe(100));
-it.each([[85,'Elite'],[84,'Strong'],[70,'Strong'],[55,'On Track'],[40,'Building'],[39,'Needs Improvement']])
-  ('tier(%i)=%s', (s, t) => expect(fitScoreTier(s)).toBe(t));
 ```
 
 - [ ] **Step 2:** Run `npm test -- fitscore`. Expected: FAIL (the module is not found).
-- [ ] **Step 3:** Implement both functions in `fitscore.ts`.
+- [ ] **Step 3:** Implement `computeFitScore` in `fitscore.ts`.
 - [ ] **Step 4:** Re-run. Expected: PASS.
-- [ ] **Step 5:** Commit: `feat(api): fitscore formula and tiers`.
+- [ ] **Step 5:** Commit: `feat(api): fitscore formula`.
 
-### Task 4: Goal progress and month domain
+### Task 4: Goal progress domain
 
 **Files:**
-- Create: `src/domain/goal-progress.ts`, `src/domain/month.ts`
-- Test: `src/domain/{goal-progress,month}.spec.ts`
+- Create: `src/domain/goal-progress.ts`
+- Test: `src/domain/goal-progress.spec.ts`
 
 **Interfaces:**
 - Produces:
   - `goalProgress(g: { startValue: number; targetValue: number; startDate: Date }, current: number, now: Date): { percent: number; doneKg: number; remainingKg: number; estimatedCompletion: Date | null; reached: boolean }`
-  - `monthRange(at: Date, tz: string): { start: Date; end: Date }`. `end` is exclusive, and both values are UTC instants.
-  - `monthDelta(scans: { takenAt: Date; value: number }[], range: { start: Date; end: Date }): number | null`. It returns the latest value inside the range minus a baseline. The baseline is the latest value before `range.start`, or, if there is none, the first value inside the range. It returns `null` when there is no scan in the range or only one scan in total. Monthly Wins (Task 7) and the monthly boards (Task 8) both use it.
 
 Goal direction comes from the sign of `targetValue - startValue`. `percent` is clamped to 0–100 and rounded to an integer. `estimatedCompletion` is a linear projection of the progress rate since `startDate`. It is `null` when `doneKg <= 0`.
 
@@ -197,20 +184,12 @@ it('projects completion', () => expect(goalProgress(g, 17.5, now).estimatedCompl
 it('overshoot clamps 100 and reached', () => expect(goalProgress(g, 14, now)).toMatchObject({ percent: 100, reached: true, remainingKg: 0 }));
 it('regression clamps 0, no estimate', () => expect(goalProgress(g, 21, now)).toMatchObject({ percent: 0, estimatedCompletion: null }));
 it('gain goal works', () => expect(goalProgress({ ...g, startValue: 30, targetValue: 34 }, 31, now).percent).toBe(25));
-const nov = { start: new Date('2026-11-01T00:00:00Z'), end: new Date('2026-12-01T00:00:00Z') };
-const sc = (d: string, value: number) => ({ takenAt: new Date(d), value });
-it('delta vs last scan before month', () => expect(monthDelta([sc('2026-10-20', 60), sc('2026-11-05', 62), sc('2026-11-20', 65)], nov)).toBe(5));
-it('delta within month when no earlier scan', () => expect(monthDelta([sc('2026-11-05', 62), sc('2026-11-20', 65)], nov)).toBe(3));
-it('null when no scan this month', () => expect(monthDelta([sc('2026-10-20', 60)], nov)).toBeNull());
-it('null with a single scan', () => expect(monthDelta([sc('2026-11-05', 62)], nov)).toBeNull());
-it('month in gym tz', () => expect(monthRange(new Date('2026-10-31T21:30:00Z'), 'Asia/Dubai').start)
-  .toEqual(new Date('2026-10-31T20:00:00Z')));
 ```
 
 - [ ] **Step 2:** Run `npm test -- domain`. Expected: FAIL.
-- [ ] **Step 3:** Implement. Use `date-fns-tz` (`toZonedTime` / `fromZonedTime`) for `monthRange`.
+- [ ] **Step 3:** Implement.
 - [ ] **Step 4:** Re-run. Expected: PASS.
-- [ ] **Step 5:** Commit: `feat(api): goal progress and month helpers`.
+- [ ] **Step 5:** Commit: `feat(api): goal progress helper`.
 
 ### Task 5: Fit ID auth and staff key
 
@@ -248,7 +227,7 @@ it('staff route without key is 401', () => request(s).post('/staff/members').sen
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): fit id login, jwt and staff guards`.
 
-### Task 6: Staff ingest (members, assessments, goals)
+### Task 6: Staff ingest (members and assessments)
 
 **Files:**
 - Create: `src/staff/{staff.module,staff.controller,ingest.service}.ts`, `src/notifications/notifications.service.ts` (the `create` method only)
@@ -259,10 +238,10 @@ it('staff route without key is 401', () => request(s).post('/staff/members').sen
 - Produces (all behind `StaffKeyGuard`):
   - `POST /staff/members` (Member fields minus id) → `{ id, fitId }`
   - `POST /staff/assessments { memberId, takenAt, weightKg, skeletalMuscleKg, bodyFatKg, bodyFatPct, bmi, visceralFatLevel, totalBodyWaterKg, proteinKg, mineralsKg, bmrKcal }` → the Assessment with `fitScore`
-  - `POST /staff/goals` (Goal fields minus id/completedAt)
+    - Sample InBody payload and CSV export, with each field mapped to these: [docs/inbody](../../inbody/README.md).
   - `NotificationsService.create(memberId: number, title: string, body: string): Promise<void>`
 
-`IngestService.recordAssessment` runs in one transaction. It saves the assessment with its computed fitScore and evaluates the ACTIVE goal. If `goalProgress(...).reached`: the goal is marked COMPLETED with `completedAt`, the earliest UPCOMING goal is promoted to ACTIVE, and the notification "Mission complete!" is created. Every assessment also creates the notification "New scan results are in". The current value for each metric comes from the assessment: `BODY_FAT_KG` uses `bodyFatKg`, `MUSCLE_KG` uses `skeletalMuscleKg`, and `WEIGHT_KG` uses `weightKg`.
+`IngestService.recordAssessment` runs in one transaction. It saves the assessment with its computed fitScore and evaluates the ACTIVE goal. If `goalProgress(...).reached`: the goal is marked COMPLETED with `completedAt`, and the notification "Mission complete!" is created. Every assessment also creates the notification "New scan results are in". The current value for each metric comes from the assessment: `BODY_FAT_KG` uses `bodyFatKg`, `MUSCLE_KG` uses `skeletalMuscleKg`, and `WEIGHT_KG` uses `weightKg`.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -271,10 +250,9 @@ it('assessment stores computed fitScore', async () => {
   const r = await staff.post('/staff/assessments').send(scan).expect(201);
   expect(r.body.fitScore).toBe(computeFitScore({ ...scan, sex: 'MALE' }));
 });
-it('reaching target completes goal and promotes upcoming', async () => {
+it('reaching target completes goal', async () => {
   await staff.post('/staff/assessments').send({ ...scan, bodyFatKg: activeGoal.targetValue - 0.1 }).expect(201);
   expect((await prisma.goal.findUniqueOrThrow({ where: { id: activeGoal.id } })).status).toBe('COMPLETED');
-  expect(await prisma.goal.findUniqueOrThrow({ where: { id: upcomingGoal.id } })).toMatchObject({ status: 'ACTIVE' });
   expect(await prisma.notification.count({ where: { memberId: id, title: 'Mission complete!' } })).toBe(1);
 });
 it('rejects negative weight with 400', () => staff.post('/staff/assessments').send({ ...scan, weightKg: -1 }).expect(400));
@@ -293,22 +271,20 @@ it('rejects negative weight with 400', () => staff.post('/staff/assessments').se
 - Test: `test/dashboard.e2e-spec.ts`
 
 **Interfaces:**
-- Consumes: `fitScoreTier`, `goalProgress`, `monthRange`, `monthDelta`, `JwtGuard`, `LeaderboardService.monthlySummary` (Task 8; build Task 8 first or stub it and fill it in during Task 8)
+- Consumes: `goalProgress`, `JwtGuard`
 - Produces: `GET /me/dashboard` → `DashboardDto`:
 
 ```ts
 interface DashboardDto {
-  member: { firstName: string; showFitScore: boolean };
-  fitScore: { score: number; tier: string; changeSinceLastScan: number | null } | null;
+  member: { firstName: string };
+  fitScore: { score: number } | null;
   mission: { goalId: number; title: string; percent: number; doneKg: number; remainingKg: number;
-             estimatedCompletion: string | null; coachNote: string | null; deadline: string } | null;
-  monthlyWins: { bodyFatChangePct: number | null; muscleGainedKg: number | null };
-  leaderboard: { optedIn: boolean; standing: { rank: number; totalMembers: number; topPercent: number; membersBehind: number; pointsToNextRank: number | null } | null };
+             estimatedCompletion: string | null } | null;
   unreadNotifications: number;
 }
 ```
 
-Monthly-wins deltas compare the latest assessment in the current month (in `GYM_TZ`) with the latest assessment before the month started. If there is no earlier one, they use the first assessment in the month. They are `null` when fewer than 2 assessments are available. The mission is the ACTIVE goal with the earliest deadline.
+The mission summarizes an active member-set goal.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -317,21 +293,10 @@ it('demo member gets full dashboard', async () => {
   const d: DashboardDto = (await authed('100001').get('/me/dashboard').expect(200)).body;
   expect(d.fitScore!.score).toBeGreaterThanOrEqual(0);
   expect(d.mission!.percent).toBeGreaterThanOrEqual(0);
-  expect(d.leaderboard.standing!.rank).toBeGreaterThanOrEqual(1);
 });
 it('member with no scans gets nulls, not NaN', async () => {
   const d = (await authed(newMemberFitId).get('/me/dashboard').expect(200)).body;
-  expect(d.fitScore).toBeNull(); expect(d.monthlyWins.bodyFatChangePct).toBeNull(); expect(d.mission).toBeNull();
-});
-it('scan at 01:30 local Nov 1 (Dubai) counts in November', async () => {
-  process.env.GYM_TZ = 'Asia/Dubai'; jest.setSystemTime(new Date('2026-11-15T08:00:00Z'));
-  await staff.post('/staff/assessments').send({ ...scan, memberId, takenAt: '2026-10-25T08:00:00Z', skeletalMuscleKg: 30 });
-  await staff.post('/staff/assessments').send({ ...scan, memberId, takenAt: '2026-10-31T21:30:00Z', skeletalMuscleKg: 31 });
-  expect((await authed(fid).get('/me/dashboard')).body.monthlyWins.muscleGainedKg).toBeCloseTo(1);
-});
-it('opted-out member gets optedIn false and no standing', async () => {
-  const d = (await authed(optedOutFitId).get('/me/dashboard')).body;
-  expect(d.leaderboard).toEqual({ optedIn: false, standing: null });
+  expect(d.fitScore).toBeNull(); expect(d.mission).toBeNull();
 });
 it('401 without token', () => request(s).get('/me/dashboard').expect(401));
 ```
@@ -341,79 +306,22 @@ it('401 without token', () => request(s).get('/me/dashboard').expect(401));
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(api): member dashboard endpoint`.
 
-### Task 8: Leaderboard
-
-**Files:**
-- Create: `src/leaderboard/{leaderboard.module,leaderboard.controller,leaderboard.service}.ts`
-- Create: `src/leaderboard/dto/leaderboard.dto.ts` (`LeaderboardDto`, `LeaderboardBoard`)
-- Test: `test/leaderboard.e2e-spec.ts`
-
-**Interfaces:**
-- Consumes: `monthRange`, `monthDelta` (Task 4), `PATCH /me/settings` (Task 9) for the opt-out test
-- Produces:
-  - `LeaderboardService.monthlySummary(memberId: number, now: Date): Promise<DashboardDto['leaderboard']>`
-  - `GET /leaderboard?board=score|progress|muscle|fatLoss` (default `score`, JWT required) → `LeaderboardDto { board: LeaderboardBoard; optedIn: boolean; rows: { rank: number; memberId: number; name: string; value: number; isMe: boolean }[] }`. `LeaderboardBoard = 'score'|'progress'|'muscle'|'fatLoss'` is a swagger `enum`, so the app gets it as a string union. An unknown board is a 400.
-- The pool is members with `fitScoreOnLeaderboard = true`. The `value` for each board:
-  - `score`: the latest fitScore. Requires ≥1 assessment.
-  - `progress`: `monthDelta` of fitScore.
-  - `muscle`: `monthDelta` of skeletalMuscleKg, rounded to 0.1.
-  - `fatLoss`: `-monthDelta` of bodyFatPct, rounded to 0.1.
-  Members whose value is `null` are left out of that board. Rows sort by `value` descending, with `id` ascending as the tie-break. The summary below always uses the `score` board. `topPercent = ceil(rank / total * 100)`. `membersBehind = total - rank`. `pointsToNextRank = (score of rank-1) - (my score) + 1`, or `null` at rank 1. `standing` is `null` when the caller has not opted in or has no assessment. An opted-out caller still gets the rows (so they can see what they'd join), but `optedIn` is `false` and none of the rows are theirs. Names display as `"FirstName L."`.
-
-- [ ] **Step 1: Write the failing tests**
-
-```ts
-it('only opted-in members appear', async () => {
-  const rows = (await authed('100001').get('/leaderboard').expect(200)).body.rows;
-  expect(rows).toHaveLength(15); expect(rows.map(r => r.memberId)).not.toContain(optedOutId);
-});
-it('opting out removes me on next request', async () => {
-  await authed('100001').patch('/me/settings').send({ fitScoreOnLeaderboard: false });
-  expect((await authed('100001').get('/leaderboard')).body.rows.some(r => r.isMe)).toBe(false);
-});
-it.each(['score','progress','muscle','fatLoss'])('board %s orders by value desc', async (board) => {
-  const r = (await authed('100001').get(`/leaderboard?board=${board}`).expect(200)).body;
-  expect(r.board).toBe(board);
-  expect(r.rows.map(x => x.value)).toEqual([...r.rows.map(x => x.value)].sort((a,b)=>b-a));
-});
-it('progress board omits members with no scan this month', async () => {
-  const rows = (await authed('100001').get('/leaderboard?board=progress')).body.rows;
-  expect(rows.map(r => r.memberId)).not.toContain(noScanThisMonthId);
-});
-it('fatLoss value is positive when fat dropped', async () => {
-  const me = (await authed('100001').get('/leaderboard?board=fatLoss')).body.rows.find(r => r.isMe);
-  expect(me.value).toBeCloseTo(demoFatPctStartOfMonth - demoFatPctLatest, 1);
-});
-it('unknown board is 400', () => authed('100001').get('/leaderboard?board=visits').expect(400));
-it('no row exposes xp or level', async () => {
-  for (const row of (await authed('100001').get('/leaderboard')).body.rows) { expect(row).not.toHaveProperty('totalXp'); expect(row).not.toHaveProperty('level'); }
-});
-it('summary math', async () => {
-  const s = await svc.monthlySummary(lastPlaceId, now);
-  expect(s).toMatchObject({ optedIn: true, standing: { rank: 15, totalMembers: 15, topPercent: 100, membersBehind: 0 } });
-});
-```
-
-- [ ] **Step 2:** Run `npm run test:e2e -- leaderboard`. Expected: FAIL.
-- [ ] **Step 3:** Implement. One query fetches opted-in members with their assessments from the start of the previous month onward, plus the latest assessment before that. Values come from `monthDelta` and ranks are computed in memory. Seed data must give at least 3 opted-in members scans this month so each monthly board has rows. Return an explicit DTO; never spread the Member object.
-- [ ] **Step 4:** Re-run. Expected: PASS.
-- [ ] **Step 5:** Commit: `feat(api): opt-in fitscore leaderboard`.
-
 ### Task 9: Progress, goals, profile, and notifications endpoints
 
 **Files:**
 - Create: `src/me/{progress.service,goals.service}.ts`, `src/notifications/notifications.controller.ts`
-- Create: `src/me/dto/{progress,assessment,goals,profile,settings}.dto.ts`, `src/notifications/dto/notification.dto.ts`
+- Create: `src/me/dto/{progress,assessment,goals,profile}.dto.ts`, `src/notifications/dto/notification.dto.ts`
 - Modify: `src/me/me.controller.ts`, `src/notifications/notifications.service.ts`
 - Test: `test/me.e2e-spec.ts`
 
 **Interfaces:**
 - Produces (all JWT-guarded):
-  - `GET /me/progress` → `ProgressDto { assessments: { takenAt; weightKg; skeletalMuscleKg; bodyFatPct; fitScore }[] }` (ascending)
+  - `GET /me/progress` → `ProgressDto { assessments: { takenAt; weightKg; skeletalMuscleKg; bodyFatPct }[] }` (ascending)
   - `GET /me/assessments` → the full Assessment records (all 9 metrics plus fitScore), newest first
-  - `GET /me/goals` → `GoalsDto { active: GoalView[]; completed: GoalView[]; upcoming: GoalView[] }`, where `GoalView = { id; title; metric; startValue; targetValue; deadline; coachNote; percent; completedAt }`
-  - `GET /me` → `ProfileDto { firstName; lastName; fitId; sex; birthDate; heightCm; membershipPlan; membershipStart; membershipEnd; coach: { name } | null; showFitScore; fitScoreOnLeaderboard }`
-  - `PATCH /me/settings { showFitScore?: boolean; fitScoreOnLeaderboard?: boolean }` → `{ showFitScore: boolean; fitScoreOnLeaderboard: boolean }`. Both fields are optional `@IsBoolean`; a non-boolean or an empty body is a 400.
+  - `GET /me/goals` → active and completed member goals with their targets, progress, and completion dates
+  - `POST /me/goals` → create a member-set weight, muscle, or body-fat target from the latest scan
+  - `GET /me` → `ProfileDto { memberId; firstName; lastName; fitId; sex; birthDate; heightCm; avatar }`
+  - `PUT /me/avatar` → save the member's portrait options using the [avatar handoff](../../avatar-handoff.md)
   - `GET /me/notifications` → `NotificationDto[]` (newest first, at most 50)
   - `PATCH /me/notifications/:id/read`
   - `POST /me/notifications/read-all`
@@ -426,16 +334,10 @@ it('progress is empty array for new member', async () => {
 });
 it('goals grouped by status', async () => {
   const g = (await authed('100001').get('/me/goals')).body;
-  expect([g.active.length, g.completed.length, g.upcoming.length]).toEqual([1, 1, 1]);
+  expect([g.active.length, g.completed.length]).toEqual([1, 1]);
 });
 it('cannot mark another member notification read', async () => {
   await authed('100002').patch(`/me/notifications/${demoNotificationId}/read`).expect(404);
-});
-it('hiding fitScore persists and shows in dashboard', async () => {
-  await authed('100001').patch('/me/settings').send({ showFitScore: false }).expect(200, { showFitScore: false, fitScoreOnLeaderboard: true });
-  expect((await authed('100001').get('/me/dashboard')).body.member.showFitScore).toBe(false);
-  await authed('100001').patch('/me/settings').send({ showFitScore: 'nope' }).expect(400);
-  await authed('100001').patch('/me/settings').send({}).expect(400);
 });
 it('read-all zeroes unread count', async () => {
   await authed('100001').post('/me/notifications/read-all').expect(201);
@@ -465,7 +367,7 @@ All paths and commands in Phase 2 are relative to the root of this repo. Running
   - `brand: { gymName: string; logo: string; tagline: string; colors: { primary: string; secondary: string; background: string; surface: string; text: string } }`
   - `applyBrand(b = brand, root = document.documentElement): void`. It sets `--ion-color-primary`, `--ion-color-secondary`, `--ion-background-color`, `--lu-surface`, and `--ion-text-color`, and sets `document.title = gymName`.
   - `api<T>(path: string, init?: RequestInit): Promise<T>`. It reads the base URL from `VITE_API_URL` and adds `Authorization: Bearer <token>` from `getToken()`. On 401 it calls the registered `onUnauthorized()` handler.
-  - Routes: `/splash`, `/login`, `/tabs/home`, `/tabs/progress`, `/tabs/goals`, `/tabs/leaderboard`, `/tabs/profile`
+  - Routes include `/splash`, `/intro`, `/login`, and four tab roots under `/tabs`. Profile opens the avatar editor, Trophy Room, and Settings.
 
 - [ ] **Step 1:** Scaffold with `npx @ionic/cli start levelup tabs --type=react --capacitor --no-git` and move the generated files to the repo root. Add `openapi-typescript` and the script `api:types`, which runs `openapi-typescript ${OPENAPI_SRC:-../levelup-backend/openapi.json} -o src/api/schema.d.ts`. `OPENAPI_SRC` can also be the raw GitHub URL of the API repo's `openapi.json`. Run it, and make `src/api/types.ts` re-export each DTO from the generated `components['schemas']`.
 - [ ] **Step 2: Write the failing tests**
@@ -476,9 +378,9 @@ it('applyBrand sets css vars and title', () => {
   expect(document.documentElement.style.getPropertyValue('--ion-color-primary')).toBe('#ff0000');
   expect(document.title).toBe('Iron Gym');
 });
-it('tab bar has 5 tabs in order', () => {
+it('tab bar has 4 tabs in order', () => {
   render(<MemoryRouter><TabBar /></MemoryRouter>);
-  expect(screen.getAllByRole('tab').map(t => t.textContent)).toEqual(['Home','Progress','Goals','Leaderboard','Profile']);
+  expect(screen.getAllByRole('tab').map(t => t.textContent)).toEqual(['Home','Progress','Goals','Profile']);
 });
 ```
 
@@ -528,7 +430,7 @@ it('sound off means play is a no-op', () => {
 ### Task 12: Dashboard (Home tab)
 
 **Files:**
-- Create: `src/lib/greeting.ts`, `src/pages/Dashboard.tsx`, `src/components/dashboard/{Greeting,LeaderboardSummaryCard,FitScoreCard,MissionCard,MonthlyWins}.tsx`, `src/components/NotificationBell.tsx`
+- Create: `src/lib/greeting.ts`, `src/pages/Dashboard.tsx`, `src/components/dashboard/{Greeting,FitScoreCard,MissionCard}.tsx`, `src/components/NotificationBell.tsx`
 - Test: `src/lib/greeting.test.ts`, `src/pages/Dashboard.test.tsx`
 
 **Interfaces:**
@@ -538,10 +440,8 @@ it('sound off means play is a no-op', () => {
   - `<NotificationBell unread={number} onClick={() => void} />`. It shows a dot when `unread > 0` and has `aria-label="Notifications, {n} unread"`.
 
 Card copy:
-- **Leaderboard:** `#{rank} in the gym · Top {topPercent}%`, `{membersBehind} members behind you`. The nudge is `{pointsToNextRank} FitScore points to climb to #{rank-1}`, or `You're #1, defend it!` at rank 1. When `optedIn` is `false`, the card says "Join the FitScore leaderboard" and links to Profile → Settings. When opted in but `standing` is `null`, it says "You'll be ranked after your first scan."
-- **FitScore:** the score, the tier, and `▲ +n` / `▼ −n` / `—` since last scan. The card is labelled "Private". When `member.showFitScore` is `false`, the card is not rendered.
-- **Mission:** a percent ring, `{doneKg} of {doneKg+remainingKg} kg`, the estimated date or "Keep going to see your ETA", and the coach note.
-- **Monthly Wins:** 2 tiles (body fat change, muscle gained). A null delta shows `—`.
+- **FitScore** shows the member's latest private number.
+- **Mission** shows progress on an active personal goal.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -558,14 +458,6 @@ it('renders empty states for new member', async () => {
   expect(screen.getByText(/no active mission/i)).toBeInTheDocument();
   expect(screen.queryByText('NaN')).toBeNull();
 });
-it('hides FitScore card when showFitScore is false', async () => {
-  mockApi.get('/me/dashboard', { ...demoDashboard, member: { ...demoDashboard.member, showFitScore: false } }); render(<Dashboard />);
-  await screen.findByText(/Good|Late/); expect(screen.queryByTestId('fitscore-card')).toBeNull();
-});
-it('opted-out member sees join prompt', async () => {
-  mockApi.get('/me/dashboard', { ...demoDashboard, leaderboard: { optedIn: false, standing: null } }); render(<Dashboard />);
-  expect(await screen.findByText('Join the FitScore leaderboard')).toBeInTheDocument();
-});
 it('bell shows unread dot', () => { render(<NotificationBell unread={3} onClick={vi.fn()} />);
   expect(screen.getByLabelText('Notifications, 3 unread')).toBeInTheDocument(); });
 ```
@@ -573,12 +465,12 @@ it('bell shows unread dot', () => { render(<NotificationBell unread={3} onClick=
 - [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Use `IonRefresher` for pull-to-refresh and `IonSkeletonText` while loading. The bell opens `NotificationsModal` (Task 15); until then it can be a no-op.
 - [ ] **Step 4:** Re-run. Expected: PASS.
-- [ ] **Step 5:** Commit: `feat(mobile): dashboard with greeting, fitscore, mission, wins, leaderboard summary`.
+- [ ] **Step 5:** Commit: `feat(mobile): dashboard with greeting, fitscore, mission`.
 
 ### Task 13: Progress page
 
 **Files:**
-- Create: `src/pages/Progress.tsx`, `src/components/progress/{BodyCompChart,FitScoreChart,LatestScanTable}.tsx`
+- Create: `src/pages/Progress.tsx`, `src/components/progress/{BodyCompChart,LatestScanTable}.tsx`
 - Test: `src/pages/Progress.test.tsx`
 
 **Interfaces:**
@@ -586,10 +478,9 @@ it('bell shows unread dot', () => { render(<NotificationBell unread={3} onClick=
 
 Layout, top to bottom:
 1. A body-composition line chart with 3 series: weight kg, muscle kg, body fat %. Body fat uses the right y-axis.
-2. A FitScore line chart with a fixed 0–100 y-axis.
-3. A latest-scan table with all 9 metrics: weight, muscle, fat, BMI, visceral fat, water, protein, minerals, BMR.
+2. A latest-scan table with all 9 metrics: weight, muscle, fat, BMI, visceral fat, water, protein, minerals, BMR.
 
-With fewer than 2 assessments, the line charts are replaced by "Your trends appear after your second scan." When the member's `showFitScore` is `false` (read from `GET /me`), the FitScore chart and the fitScore value in the latest-scan table are not rendered.
+With fewer than 2 assessments, the line chart is replaced by "Your trends appear after your second scan."
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -598,10 +489,6 @@ it('shows all 9 metrics of latest scan', async () => {
   render(<Progress />);
   for (const label of ['Weight','Muscle','Body Fat','BMI','Visceral Fat','Water','Protein','Minerals','BMR'])
     expect(await screen.findByText(label)).toBeInTheDocument();
-});
-it('no FitScore chart when hidden', async () => {
-  mockApi.get('/me', { ...profile, showFitScore: false }); render(<Progress />);
-  await screen.findByText('Weight'); expect(screen.queryByTestId('fitscore-chart')).toBeNull();
 });
 it('one scan shows trend placeholder', async () => {
   mockApi.get('/me/progress', oneScanProgress); render(<Progress />);
@@ -614,18 +501,16 @@ it('one scan shows trend placeholder', async () => {
 - [ ] **Step 4:** Re-run. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat(mobile): progress page charts`.
 
-### Task 14: Goals page and Leaderboard page
+### Task 14: Goals page
 
 **Files:**
-- Create: `src/pages/Goals.tsx`, `src/pages/Leaderboard.tsx`
-- Test: `src/pages/Goals.test.tsx`, `src/pages/Leaderboard.test.tsx`
+- Create: `src/pages/Goals.tsx`
+- Test: `src/pages/Goals.test.tsx`
 
 **Interfaces:**
-- Consumes: `GET /me/goals` → `GoalsDto`, `GET /leaderboard` → `LeaderboardDto`
+- Consumes: `GET /me/goals` → `GoalsDto`
 
-**Goals:** an `IonSegment` with Active / Completed / Upcoming. Each card shows the title, `start → target kg`, the deadline, and a progress bar (Active only) or the completed date. Empty segments say "Nothing here yet".
-
-**Leaderboard:** an `IonSegment` switches between the boards: "Top Score", "Top Progress", "Most Muscle", and "Most Fat Lost". Switching refetches `?board=`, and the chosen board is remembered in Preferences under `lu.board`. Each row shows the rank, name, and value: `72` for score, `+4 pts` for progress, `+0.8 kg` for muscle, and `−1.2%` for fatLoss. An empty board says "No results yet this month". The caller's row (`isMe`) is highlighted and auto-scrolled into view. When `optedIn` is `false`, a banner at the top says "Your FitScore is hidden from the leaderboard" with a "Join" button that calls `PATCH /me/settings { fitScoreOnLeaderboard: true }` and refetches.
+The Goals tab shows Active and Completed sections. Members can set weight, muscle, and body-fat targets. Goal cards show the starting value, target, and progress or completion date.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -634,28 +519,12 @@ it('switching segment shows completed goals', async () => {
   render(<Goals />); await user.click(await screen.findByText('Completed'));
   expect(screen.getByText(seedCompletedGoal.title)).toBeInTheDocument();
 });
-it('my row is highlighted', async () => {
-  render(<Leaderboard />); expect((await screen.findByTestId('row-me'))).toHaveClass('is-me');
-});
-it('switching to Top Progress refetches with board=progress', async () => {
-  render(<Leaderboard />); await user.click(await screen.findByText('Top Progress'));
-  expect(mockApi.lastPath()).toBe('/leaderboard?board=progress');
-});
-it('formats muscle value', async () => {
-  mockApi.get('/leaderboard', { board: 'muscle', optedIn: true, rows: [{ rank: 1, memberId: 1, name: 'Sam K.', value: 0.8, isMe: true }] });
-  render(<Leaderboard />); expect(await screen.findByText('+0.8 kg')).toBeInTheDocument();
-});
-it('join button opts in and refetches', async () => {
-  mockApi.get('/leaderboard', { optedIn: false, rows: [] }); render(<Leaderboard />);
-  await user.click(await screen.findByRole('button', { name: 'Join' }));
-  expect(mockApi.calls()).toContainEqual(['PATCH', '/me/settings', { fitScoreOnLeaderboard: true }]);
-});
 ```
 
 - [ ] **Step 2:** Run `npm test`. Expected: FAIL.
 - [ ] **Step 3:** Implement.
 - [ ] **Step 4:** Re-run. Expected: PASS.
-- [ ] **Step 5:** Commit: `feat(mobile): goals and opt-in leaderboard pages`.
+- [ ] **Step 5:** Commit: `feat(mobile): goals page`.
 
 ### Task 15: Profile page and notifications
 
@@ -667,28 +536,15 @@ it('join button opts in and refetches', async () => {
 **Interfaces:**
 - Consumes: `GET /me` → `ProfileDto`, `GET /me/notifications`, `PATCH /me/notifications/:id/read`, `POST /me/notifications/read-all`, `useSound`, `useAuth`
 
-**Profile** has three sections:
-- **Personal:** name, Fit ID, age (derived from `birthDate`), and height.
-- **Membership:** the plan, the `start – end` dates, and a "Renews soon" badge when the end date is ≤ 14 days away.
-- **Coach:** the coach's name, or "No coach assigned".
+**Profile** shows name, Fit ID, age, height, and a customizable portrait. It links to the avatar editor and Trophy Room. Medals recognize supported scan milestones and show an unlock celebration.
 
-The Settings area has the sound toggle, a "Show FitScore" toggle, a "Show my FitScore on the leaderboard" toggle, and Sign out. Both FitScore toggles call `PATCH /me/settings` with only their own field, and updates the screen right away. If the request fails, the toggle reverts and a toast says "Couldn't save. Try again." Sign out clears the token and goes to `/login`.
+Settings has language, theme, sound, and sign-out. Signing out clears the token and goes to `/login`.
 
 **NotificationsModal:** a list with unread items in bold. Tapping an item marks it read. There is a "Mark all read" button. When the modal closes, the bell's count refreshes.
 
 - [ ] **Step 1: Write the failing tests**
 
 ```tsx
-it('shows renews-soon when membership ends in 10 days', async () => {
-  mockApi.get('/me', { ...profile, membershipEnd: addDays(new Date(), 10).toISOString() }); render(<Profile />);
-  expect(await screen.findByText('Renews soon')).toBeInTheDocument();
-});
-it('Show FitScore toggle saves and reverts on failure', async () => {
-  mockApi.reject('PATCH', '/me/settings', 500); render(<Profile />);
-  const t = await screen.findByLabelText('Show FitScore'); await user.click(t);
-  expect(mockApi.lastCall()).toEqual(['PATCH', '/me/settings']);
-  expect(await screen.findByText("Couldn't save. Try again.")).toBeInTheDocument(); expect(t).toBeChecked();
-});
 it('sign out clears token and routes to login', async () => {
   render(<Profile />); await user.click(await screen.findByText('Sign out'));
   expect(logout).toHaveBeenCalled(); expect(history.location.pathname).toBe('/login');
@@ -710,7 +566,7 @@ it('mark all read calls endpoint', async () => {
 - Create: `playwright.config.ts`, `e2e/{fixtures,smoke}.spec.ts` (remove the Cypress folder Ionic scaffolds), `README.md`
 - Modify: `package.json` scripts: `dev` (the app only), `test`, `test:e2e`
 
-- [ ] **Step 1: Write the smoke test.** Visit `/`, click `Tap to Begin`, type `100001`, and sign in. Assert that the Home tab shows `Good` or `Late` in the greeting, a FitScore number, and the mission percent. Visit each of the 5 tabs and assert each one's page heading. Sign out from Profile and assert that `/login` is shown.
+- [ ] **Step 1: Write the smoke test.** Visit `/`, click `Tap to Begin`, type `100001`, and sign in. Assert that the Home tab shows `Good` or `Late` in the greeting, a FitScore number, and the mission percent. Visit each of the 4 tabs and assert each one's page heading. Sign out from Profile and assert that `/login` is shown.
 - [ ] **Step 2:** In the `levelup-backend` checkout, run `docker compose up -d && npm run db:reset && npm run start:dev`. In this repo, run `npm run test:e2e`. Expected: PASS.
 - [ ] **Step 3:** Write the README with setup steps (including cloning `levelup-backend` next to this repo), the env vars, `npm run api:types`, how to rebrand (edit only `brand.config.ts` and `public/brand/logo.png`), and the Capacitor build steps (`npx cap add ios|android`, `npx cap sync`). The staff API examples (`curl` with `x-staff-key`) go in the `levelup-backend` README.
 - [ ] **Step 4:** Commit: `test: e2e smoke; docs: readme`.
@@ -725,16 +581,13 @@ it('mark all read calls endpoint', async () => {
 | 2 | Fit ID Login | 5, 11 |
 | 3 | Sound Toggle | 11, 15 |
 | 4 | Personalized Greeting | 12 |
-| 5 | Leaderboard Summary | 8, 12 |
 | 6 | FitScore | 3, 7, 12 |
 | 7 | Current Mission | 4, 6, 7, 12 |
-| 8 | Monthly Wins | 4, 7, 12 |
 | 9 | Notifications | 6, 9, 12, 15 |
 | 10 | Body Composition Assessments | 2, 6, 9, 13 |
 | 11 | Progress Page | 9, 13 |
 | 12 | Goals Page | 9, 14 |
-| 13 | Full Gym Leaderboard | 8, 14 |
 | 14 | Member Profile | 9, 15 |
 | 15 | White-Label Branding | 10 |
 | 16 | Bottom Tab Navigation | 10 |
-| 17 | Backend API | 1–9 (`levelup-backend` repo) |
+| 17 | Backend API | 1–7, 9 (`levelup-backend` repo) |

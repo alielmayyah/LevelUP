@@ -4,8 +4,8 @@ White-label gym member app. This repo is the Ionic React app (Vite + Capacitor),
 
 - Spec: [LevelUP-Features-Core.md](LevelUP-Features-Core.md)
 - Plan: [docs/superpowers/plans/2026-11-13-levelup-core.md](docs/superpowers/plans/2026-11-13-levelup-core.md) (Phase 1 runs in `levelup-backend`, Phase 2 here)
-- Sprint 1: [plan](docs/superpowers/plans/2026-11-13-sprint-1-frontend-mvp.md) and [backlog](docs/sprints/sprint-1-backlog.md)
-- This repo holds the spec, plans, and backlog for both repos.
+- Sprint 1: [plan](docs/superpowers/plans/2026-11-13-sprint-1-frontend-mvp.md)
+- This repo holds the spec and plans for both repos.
 - Local layout: clone both repos into one workspace folder, `LevelUP/levelup-frontend` (this repo) and `LevelUP/levelup-backend`. Paths like `../levelup-backend` depend on it.
 
 ## Rules for every task

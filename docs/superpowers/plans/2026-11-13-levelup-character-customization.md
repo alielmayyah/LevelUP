@@ -1,5 +1,7 @@
 # LevelUP member characters
 
+This is the original pixel-character proposal. See the [avatar handoff](../../avatar-handoff.md) for the current portrait editor, artwork, and save contract.
+
 Give each member a persistent, customizable pixel-art character that looks like the gym characters in the splash screen. Use one library of SVG parts and palettes. The same saved character renders full-body in the editor and as a portrait in Profile and, when sharing is available, the Leaderboard.
 
 ## 1. Release scope
