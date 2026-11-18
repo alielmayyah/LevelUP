@@ -348,6 +348,52 @@
       "year_few": "{{count}} years",
       "year_many": "{{count}} years",
       "year_other": "{{count}} years"
+    },
+    "insight": {
+      "title": "What it means",
+      "next": "Next step:",
+      "kind": {
+        "recomp": {
+          "title": "Stronger and leaner",
+          "body": "You added {{muscle}} of muscle and lost {{fat}} of fat. That's the best kind of change, even when the scale barely moves.",
+          "next": "Keep your training and protein the same. It's working."
+        },
+        "leanGain": {
+          "title": "Building muscle",
+          "body": "You added {{muscle}} of muscle and your fat stayed about the same.",
+          "next": "Keep lifting heavy and eat enough protein so the muscle keeps coming."
+        },
+        "fatLoss": {
+          "title": "Losing fat",
+          "body": "You lost {{fat}} of fat and kept your muscle.",
+          "next": "Keep strength training so the weight you lose stays fat, not muscle."
+        },
+        "bulk": {
+          "title": "Gaining size",
+          "body": "You added {{muscle}} of muscle and {{fat}} of fat.",
+          "next": "Want less fat with the muscle? Cut the extra snacks and keep training."
+        },
+        "cutting": {
+          "title": "Losing weight",
+          "body": "You lost {{fat}} of fat, but also {{muscle}} of muscle.",
+          "next": "Add protein and keep lifting so you only lose fat."
+        },
+        "fatGain": {
+          "title": "Fat went up",
+          "body": "Your fat went up {{fat}} and your muscle didn't grow.",
+          "next": "Talk to your coach about your meals and add some cardio."
+        },
+        "muscleLoss": {
+          "title": "Muscle dipped",
+          "body": "You lost {{muscle}} of muscle while your fat stayed about the same.",
+          "next": "Train each muscle group twice a week and eat protein at every meal."
+        },
+        "steady": {
+          "title": "Holding steady",
+          "body": "Your muscle and fat barely changed.",
+          "next": "Ready for more? Ask your coach for a new goal."
+        }
+      }
     }
   },
   "goals": {

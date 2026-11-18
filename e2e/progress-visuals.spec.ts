@@ -89,3 +89,20 @@ test('with reduced motion the scan sweep is off', async ({ page, loginAs }) => {
   await openDetails(page);
   await expect(page.getByTestId('segments').locator('.lu-holo-sweep')).toBeHidden();
 });
+
+test('the scan says what the change means and what to do next', async ({ page, loginAs }) => {
+  await loginAs();
+  await page.goto('/tabs/progress');
+  const card = page.getByTestId('scan-insight');
+  // Demo member 101 gained muscle and lost fat since the scan before.
+  await expect(card).toHaveAttribute('data-kind', 'recomp');
+  await expect(card.getByTestId('insight-headline')).toHaveText(en.progress.insight.kind.recomp.title);
+  await expect(card.getByTestId('insight-next')).toContainText(en.progress.insight.kind.recomp.next);
+});
+
+test('a single scan has nothing to explain yet', async ({ page, loginAs }) => {
+  await loginAs('103');
+  await page.goto('/tabs/progress');
+  await expect(page.getByTestId('latest-scan')).toBeVisible();
+  await expect(page.getByTestId('scan-insight')).toHaveCount(0);
+});

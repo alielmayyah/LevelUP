@@ -13,6 +13,7 @@ import './progress/Progress.scss';
 import MetricInfo, { InfoButton, type InfoTopic } from './progress/MetricInfo';
 import ScanCalendar from './progress/ScanCalendar';
 import ScanHistory from './progress/ScanHistory';
+import ScanInsight from './progress/ScanInsight';
 import { daysBetween, spanOf } from './progress/scanAge';
 
 // The chart is the heaviest part of the page, so it loads after it, behind a skeleton.
@@ -515,6 +516,9 @@ const Progress: React.FC = () => {
                   )
                 ))}
             </section>
+
+            {/* What the change adds up to, against the same scan the numbers above compare with. */}
+            {before && <ScanInsight scan={scan} before={before} />}
 
             <button
               type="button"
