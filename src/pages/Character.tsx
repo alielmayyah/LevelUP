@@ -264,7 +264,7 @@ const Character: React.FC = () => {
                     crop="full"
                     label={t('avatar.preview')}
                     testId="character-preview"
-                    className="relative z-1 block h-[clamp(200px,38vh,380px)] w-auto max-w-full short-landscape:h-[56vh] split:h-[min(66vh,520px)]"
+                    className="relative z-1 block h-[clamp(200px,50vh,460px)] w-auto max-w-full short-landscape:h-[56vh] split:h-[min(66vh,520px)]"
                   />
                 </div>
                 <p
