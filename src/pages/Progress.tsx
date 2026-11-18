@@ -20,6 +20,7 @@ import { daysBetween, spanOf } from './progress/scanAge';
 const TrendChart = lazy(() => import('./progress/ProgressCharts'));
 // The InBody-style analysis sits below the fold, so it loads in its own chunk too.
 const BodyComposition = lazy(() => import('./progress/BodyComposition'));
+const HowYouCompare = lazy(() => import('./progress/HowYouCompare'));
 
 /** Whether the full scan is open, remembered per device. */
 const DETAILS_KEY = 'lu.progress.details';
@@ -594,6 +595,14 @@ const Progress: React.FC = () => {
                 </section>
                 <Suspense fallback={<div className="lu-skeleton-card min-h-96" data-testid="body-comp-loading" />}>
                   <BodyComposition scan={scan} compare={before} heightCm={me.data.heightCm} sex={me.data.sex} />
+                </Suspense>
+                <Suspense fallback={<div className="lu-skeleton-card min-h-60" />}>
+                  <HowYouCompare
+                    scan={scan}
+                    sex={me.data.sex}
+                    birthDate={me.data.birthDate}
+                    heightCm={me.data.heightCm}
+                  />
                 </Suspense>
                 {progress.status === 'loading' ? (
                   <div className="lu-skeleton-card min-h-60" data-testid="charts-loading" />

@@ -106,3 +106,21 @@ test('a single scan has nothing to explain yet', async ({ page, loginAs }) => {
   await expect(page.getByTestId('latest-scan')).toBeVisible();
   await expect(page.getByTestId('scan-insight')).toHaveCount(0);
 });
+
+test('trend cards show a sparkline and open their chart', async ({ page, loginAs }) => {
+  await loginAs();
+  await openDetails(page);
+  const trend = page.getByTestId('trend');
+  await expect(trend.getByTestId('trend-muscle').locator('svg.lu-spark')).toBeVisible();
+  await trend.getByTestId('trend-muscle').click();
+  await expect(trend.getByTestId('trend-muscle')).toHaveAttribute('aria-checked', 'true');
+  await expect(trend.getByTestId('trend-headline')).toContainText('41.3');
+});
+
+test('how you compare ranks body fat against people the same age', async ({ page, loginAs }) => {
+  await loginAs();
+  await openDetails(page);
+  const card = page.getByTestId('how-you-compare');
+  await expect(card.getByTestId('fat-percentile')).toContainText(/Leaner than .*\d+%.* of men your age/);
+  for (const k of ['muscle', 'bmi', 'belly']) await expect(card.getByTestId(`compare-${k}`)).toBeVisible();
+});

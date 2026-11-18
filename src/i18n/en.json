@@ -394,6 +394,24 @@
           "next": "Ready for more? Ask your coach for a new goal."
         }
       }
+    },
+    "rank": {
+      "title": "How you compare",
+      "leanerMale": "Leaner than {{pct}} of men your age",
+      "leanerFemale": "Leaner than {{pct}} of women your age",
+      "moreFat": "More fat",
+      "lessFat": "Leaner",
+      "source": "Based on published fitness norms for adults, not this gym's members.",
+      "muscle": "Muscle for your height",
+      "bmi": "BMI",
+      "belly": "Belly fat",
+      "ofNormal": "{{pct}} of normal",
+      "level": "Level {{n}}",
+      "status": {
+        "under": "Below normal",
+        "normal": "Normal",
+        "over": "Above normal"
+      }
     }
   },
   "goals": {

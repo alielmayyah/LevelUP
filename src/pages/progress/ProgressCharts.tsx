@@ -7,6 +7,31 @@ import { focusSibling, rovingTarget } from '../../components/roving';
 import { formatNumber, numberLocale } from '../../i18n/format';
 import LineChart, { type Series } from './LineChart';
 
+/** A tiny line of every scan, oldest first; decoration only (the card's values and the chart carry the meaning). */
+const Sparkline: React.FC<{ values: number[]; rtl: boolean }> = ({ values, rtl }) => {
+  const lo = Math.min(...values);
+  const hi = Math.max(...values);
+  const n = values.length;
+  const pts = values
+    .map((v, i) => {
+      const t = n === 1 ? 0.5 : i / (n - 1);
+      const x = 2 + (rtl ? 1 - t : t) * 96;
+      const y = 22 - ((v - lo) / (hi - lo || 1)) * 18;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
+  return (
+    <svg
+      className="lu-spark my-0.5 block h-6 w-full"
+      viewBox="0 0 100 26"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <polyline points={pts} vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
+};
+
 const month = (iso: string) => new Intl.DateTimeFormat(numberLocale(), { month: 'short' }).format(new Date(iso));
 const day = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
@@ -113,32 +138,49 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
         {t('progress.trend')}
       </h2>
 
-      <div
-        role="radiogroup"
-        aria-label={t('progress.trendPick')}
-        className={`grid gap-1 rounded-[14px] bg-surface-2 p-1 ${keys.length === 4 ? 'grid-cols-2 min-[360px]:grid-cols-4' : 'grid-cols-3'}`}
-      >
-        {keys.map((k, i) => (
-          <button
-            key={k}
-            type="button"
-            role="radio"
-            aria-checked={current === k}
-            tabIndex={current === k ? 0 : -1}
-            data-testid={`trend-${k}`}
-            className="flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 rounded-[10px] border-0 bg-transparent px-1 py-1.5 font-inherit text-[0.78rem] leading-tight font-semibold [overflow-wrap:normal] text-muted transition-[background-color,color,box-shadow] duration-[180ms] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-surface aria-checked:text-ink aria-checked:shadow-card motion-reduce:transition-none dark:aria-checked:bg-line"
-            onClick={() => setPick(k)}
-            onKeyDown={(e) => {
-              const to = rovingTarget(e, i, keys.length, rtl);
-              if (to === null) return;
-              setPick(keys[to]);
-              focusSibling(e, to);
-            }}
-          >
-            <Icon name={ICON[k].name} className={`text-[1.15rem] ${ICON[k].colors}`} />
-            {all[k].label}
-          </button>
-        ))}
+      {/* Each metric is a small card with its latest value and a sparkline; picking one opens its full chart below. */}
+      <div role="radiogroup" aria-label={t('progress.trendPick')} className="grid grid-cols-2 gap-2 md:grid-cols-4">
+        {keys.map((k, i) => {
+          const series = all[k];
+          const v = series.values;
+          const d = Math.round((v[v.length - 1] - v[0]) * 10 ** series.digits) / 10 ** series.digits;
+          const b = BETTER[k];
+          const dTone = d === 0 || b === null ? 'text-muted' : (b === 'up') === d > 0 ? 'text-success' : 'text-danger';
+          return (
+            <button
+              key={k}
+              type="button"
+              role="radio"
+              aria-checked={current === k}
+              tabIndex={current === k ? 0 : -1}
+              data-testid={`trend-${k}`}
+              className={`lu-trend-card grid cursor-pointer content-start gap-1 rounded-2xl border border-line bg-surface p-2.5 text-start font-inherit text-ink transition-[border-color,box-shadow] duration-[180ms] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary motion-reduce:transition-none ${series.colorClass}`}
+              onClick={() => setPick(k)}
+              onKeyDown={(e) => {
+                const to = rovingTarget(e, i, keys.length, rtl);
+                if (to === null) return;
+                setPick(keys[to]);
+                focusSibling(e, to);
+              }}
+            >
+              <span className="flex items-center gap-1.5 text-[0.78rem] leading-tight font-semibold text-muted">
+                <Icon name={ICON[k].name} className={`flex-none text-[1rem] ${ICON[k].colors}`} />
+                {series.label}
+              </span>
+              <span className="lu-display text-[1.2rem] leading-none whitespace-nowrap">
+                {formatNumber(v[v.length - 1], series.digits)}
+                <span className="text-[0.7em] font-semibold text-muted">
+                  {series.unit === '%' ? '%' : series.unit ? ` ${series.unit}` : ''}
+                </span>
+              </span>
+              <Sparkline values={v} rtl={rtl} />
+              <span className={`text-[0.72rem] font-semibold ${dTone}`} aria-hidden="true">
+                {d > 0 ? '+' : d < 0 ? '−' : '±'}
+                {formatNumber(Math.abs(d), series.digits)}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* The headline: where you are now and how far you've come since the first scan. */}

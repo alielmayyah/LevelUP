@@ -16,6 +16,36 @@
     background: color-mix(in srgb, var(--lu-surface-2) 55%, var(--lu-surface));
   }
 
+  /* How you compare: a bar from more fat to leaner, with a marker for the member. */
+  .lu-pct-bar {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--lu-tier-2) 55%, var(--lu-surface-2)),
+      color-mix(in srgb, var(--lu-tier-3) 55%, var(--lu-surface-2)),
+      color-mix(in srgb, var(--lu-tier-4) 60%, var(--lu-surface-2))
+    );
+
+    &:dir(rtl) {
+      background: linear-gradient(
+        to left,
+        color-mix(in srgb, var(--lu-tier-2) 55%, var(--lu-surface-2)),
+        color-mix(in srgb, var(--lu-tier-3) 55%, var(--lu-surface-2)),
+        color-mix(in srgb, var(--lu-tier-4) 60%, var(--lu-surface-2))
+      );
+    }
+  }
+
+  .lu-pct-marker {
+    border: 3px solid var(--lu-surface);
+    background: var(--lu-text);
+    box-shadow: var(--lu-shadow);
+    translate: -50% -50%;
+
+    &:dir(rtl) {
+      translate: 50% -50%;
+    }
+  }
+
   /* Belly-fat verdict: a neutral chip with a dot in the verdict's color. */
   .lu-verdict {
     --verdict: var(--lu-tier-4);
@@ -40,7 +70,8 @@
 
   .lu-scan-tile > dt > .lu-icon,
   .lu-more-card .lu-metric-name > .lu-icon,
-  .lu-insight-badge {
+  .lu-insight-badge,
+  .lu-compare-badge {
     box-sizing: content-box;
     padding: 0.3em;
     border-radius: 999px;

@@ -92,4 +92,26 @@
       transform: translateX(50%);
     }
   }
+
+  /* Trend cards (ProgressCharts.tsx): a sparkline in the metric's color; the picked card gets a ring of it. */
+  .lu-spark {
+    overflow: visible;
+
+    polyline {
+      fill: none;
+      stroke: var(--series);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    circle {
+      fill: var(--series);
+    }
+  }
+
+  .lu-trend-card[aria-checked='true'] {
+    border-color: var(--series);
+    box-shadow: 0 0 0 1px var(--series);
+  }
 }
