@@ -69,7 +69,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <IonPage className="text-splash-text" data-testid="page-login">
+    <IonPage className="lu-on-ink text-splash-text" data-testid="page-login">
       <IonContent className="[--background:var(--lu-splash-bg)] [--color:var(--lu-splash-text)] ar:font-arabic" scrollY>
         <div className="lu-login-bg relative grid min-h-full grid-rows-[auto_auto] content-center pb-[8vh] split:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] split:grid-rows-[1fr] split:content-stretch split:pb-0 wide:grid-cols-[minmax(0,1fr)_minmax(400px,40%)]">
           {/*

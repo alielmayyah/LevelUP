@@ -19,24 +19,24 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
   const { t } = useTranslation();
   if (slide === 'numbers') {
     const chips: [IconName, string, string][] = [
-      ['muscle', 'lu-intro-muscle', t('intro.chip.muscle')],
-      ['bodyFat', 'lu-intro-fat', t('intro.chip.fat')],
-      ['drop', 'lu-intro-water', t('intro.chip.water')],
-      ['bolt', 'lu-intro-energy', t('intro.chip.energy')],
+      ['muscle', 'lu-block-muscle', t('intro.chip.muscle')],
+      ['bodyFat', 'lu-block-fat', t('intro.chip.fat')],
+      ['drop', 'lu-block-weight', t('intro.chip.water')],
+      ['bolt', 'lu-block-lime', t('intro.chip.energy')],
     ];
     return (
       <ul className="m-0 grid w-full max-w-[300px] list-none gap-2.5 p-0">
         {chips.map(([icon, tone, label], i) => (
           <li
             key={icon}
-            className={`lu-card flex items-center gap-3 px-3.5 py-2.5 ${tone}`}
+            className={`lu-block lu-intro-row flex items-center gap-3 rounded-[20px] px-3.5 py-3 ${tone}`}
             // Every other row steps in a little, so the stack reads as a loose fan of cards.
             style={{ marginInlineStart: `${(i % 2) * 28}px`, inlineSize: 'calc(100% - 28px)' }}
           >
-            <span className="lu-intro-badge grid size-9 flex-none place-items-center rounded-full text-[1.1rem]">
+            <span className="lu-block-badge size-9 flex-none text-[1.1rem]">
               <Icon name={icon} />
             </span>
-            <span className="font-semibold text-ink">{label}</span>
+            <span className="font-display font-semibold">{label}</span>
           </li>
         ))}
       </ul>
@@ -45,10 +45,10 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
   if (slide === 'meaning')
     return (
       <div className="grid w-full max-w-[300px] gap-3 text-start">
-        <div className="lu-card grid gap-1.5 p-4">
-          <span className="lu-card-kicker">{t('intro.demo.muscle')}</span>
-          <span className="lu-display text-[1.8rem] leading-none text-ink">
-            {formatNumber(41.3, 1)} <span className="text-[0.55em] text-muted">{t('units.kg')}</span>
+        <div className="lu-block lu-block-muscle grid gap-1.5 p-4">
+          <span className="lu-block-muted text-[0.8125rem] font-semibold">{t('intro.demo.muscle')}</span>
+          <span className="lu-display text-[2.2rem] leading-none">
+            {formatNumber(41.3, 1)} <span className="lu-block-muted text-[0.5em]">{t('units.kg')}</span>
           </span>
           <svg
             className="lu-intro-spark block h-10 w-full"
@@ -60,7 +60,7 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
           </svg>
         </div>
         <div className="lu-card flex items-start gap-3 p-3.5">
-          <span className="lu-intro-badge lu-intro-good grid size-9 flex-none place-items-center rounded-full text-[1.1rem]">
+          <span className="lu-intro-good grid size-9 flex-none place-items-center rounded-full text-[1.1rem]">
             <Icon name="sparkles" />
           </span>
           <span className="grid gap-0.5">
@@ -74,8 +74,8 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
     <div className="grid w-full max-w-[300px] grid-cols-[1fr_auto] items-center gap-3 text-start">
       <div className="lu-card grid gap-2 p-4">
         <span className="lu-card-kicker">{t('intro.demo.goal')}</span>
-        <strong className="text-ink">{t('intro.demo.goalTitle')}</strong>
-        <span className="lu-bar">
+        <strong className="font-display text-ink">{t('intro.demo.goalTitle')}</strong>
+        <span className="lu-bar [--bar-color:var(--lu-muscle)]">
           <span style={{ '--lu-bar': '67%' } as CSSProperties} />
         </span>
       </div>
@@ -109,12 +109,17 @@ const Intro: React.FC = () => {
   });
 
   return (
-    <IonPage data-testid="page-intro">
-      <IonContent>
-        <div className="lu-tab-body box-border flex min-h-full flex-col px-5 pt-[calc(16px+var(--ion-safe-area-top,0px))] pb-[calc(20px+var(--ion-safe-area-bottom,0px))]">
+    <IonPage className="lu-on-ink text-splash-text" data-testid="page-intro">
+      <IonContent className="[--background:var(--lu-splash-bg)] [--color:var(--lu-splash-text)]">
+        <div className="lu-tab-body lu-login-bg box-border flex min-h-full flex-col px-5 pt-[calc(16px+var(--ion-safe-area-top,0px))] pb-[calc(20px+var(--ion-safe-area-bottom,0px))]">
           <div className="flex min-h-11 justify-end">
             {!last && (
-              <button type="button" className="lu-link-button" onClick={finish} data-testid="intro-skip">
+              <button
+                type="button"
+                className="lu-link-button text-splash-muted"
+                onClick={finish}
+                data-testid="intro-skip"
+              >
                 {t('intro.skip')}
               </button>
             )}
@@ -130,10 +135,10 @@ const Intro: React.FC = () => {
               <Picture slide={slide} />
             </div>
             <div className="grid gap-2" aria-live="polite">
-              <h1 className="lu-display m-0 text-[clamp(1.6rem,7vw,2.1rem)] leading-tight text-ink">
+              <h1 className="lu-display m-0 text-[clamp(1.8rem,8vw,2.4rem)] leading-[1.1] text-splash-text">
                 {t(`intro.${slide}.title`)}
               </h1>
-              <p className="m-0 text-[1rem] leading-relaxed text-muted">{t(`intro.${slide}.body`)}</p>
+              <p className="m-0 text-[1rem] leading-relaxed text-splash-muted">{t(`intro.${slide}.body`)}</p>
             </div>
           </section>
           <div className="mx-auto grid w-full max-w-[420px] gap-5">

@@ -1,32 +1,26 @@
-/* Intro slides: soft metric badges, a sparkline, a medal, and the page dots. */
+/*
+ * Intro slides, on the ink backdrop shared with the splash and login: a fan
+ * of metric color blocks, a muscle block with its sparkline, a goal card with
+ * a medal, and the page dots.
+ */
 @layer components {
-  .lu-intro-badge {
-    background: color-mix(in srgb, var(--icon-color) 14%, transparent);
+  /* The fan of blocks: each row tilts a hair, like cards dealt onto a table. */
+  .lu-intro-row:nth-child(odd) {
+    rotate: -1.5deg;
   }
 
-  .lu-intro-muscle {
-    --icon-color: var(--lu-muscle);
-  }
-
-  .lu-intro-fat {
-    --icon-color: var(--lu-fat);
-  }
-
-  .lu-intro-water {
-    --icon-color: var(--lu-tier-5);
-  }
-
-  .lu-intro-energy {
-    --icon-color: var(--lu-gold);
+  .lu-intro-row:nth-child(even) {
+    rotate: 1.5deg;
   }
 
   .lu-intro-good {
-    --icon-color: var(--lu-success);
+    background: var(--lu-lime);
+    --icon-color: var(--lu-on-block);
   }
 
   .lu-intro-spark polyline {
     fill: none;
-    stroke: var(--lu-muscle);
+    stroke: var(--lu-on-block);
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -41,13 +35,13 @@
   }
 
   .lu-intro-dot {
-    background: var(--lu-border);
+    background: color-mix(in srgb, var(--lu-splash-text) 25%, transparent);
     transition:
       inline-size 200ms ease-out,
       background-color 200ms ease-out;
 
     &.is-on {
-      background: var(--ion-color-primary);
+      background: var(--lu-splash-text);
     }
   }
 
