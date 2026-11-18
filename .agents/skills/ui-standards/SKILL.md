@@ -44,7 +44,7 @@ Three layers. Components use only the tokens below (CSS variables or the Tailwin
 | `--lu-brand-gradient` | `linear-gradient(135deg, #E19CFB 0%, #B98CFF 45%, #6B3BF5 100%)` | same | Only the road, the emblem rim, the active-tab indicator and the wordmark. **Never under text**: no text color passes across all of it |
 
 A gym sets one brand color (plus its logo) in `brand.config.ts`; `applyBrand` derives the rest for both themes and writes them on `<html>`:
-- `--lu-brand-strong`: the brand darkened until white reaches 4.5:1. If that takes it more than about 25% toward black, keep the brand and set `--lu-on-brand` to `#0C0A14` instead (Iron Box orange `#FF6A1A` and Pulse Gym teal `#12B5A6` both take the dark label).
+- `--lu-brand-strong`: the brand darkened until white reaches 4.5:1. If that takes it more than 15% toward black, keep the brand and set `--lu-on-brand` to `#0C0A14` instead (Iron Box orange `#FF6A1A` and Pulse Gym teal `#12B5A6` both take the dark label).
 - `--lu-brand-soft`: lightened (dark theme) or darkened (light theme) until it reaches 4.5:1 on `--lu-surface-2`.
 - `--lu-brand-tint`: the brand mixed about 20% into `--lu-surface-1` (dark) or 12% into white (light).
 - The gradient: two stops, `--lu-brand-soft` to `--lu-brand-strong`.

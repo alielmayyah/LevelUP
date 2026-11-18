@@ -25,10 +25,13 @@ function watchSystem(): void {
   systemQuery.addEventListener('change', onSystemChange);
 }
 
-/** Restores the saved theme (default System) and starts following the device. */
+/** The app is dark-first (docs/redesign/PLAN.md, decision 16): a new install starts on Dark. */
+const DEFAULT_MODE: ThemeMode = 'dark';
+
+/** Restores the saved theme (default Dark) and watches the device for System. */
 export async function initTheme(): Promise<void> {
   const { value } = await Preferences.get({ key: STORAGE_KEY });
-  mode = isMode(value) ? value : 'system';
+  mode = isMode(value) ? value : DEFAULT_MODE;
   watchSystem();
   apply();
 }

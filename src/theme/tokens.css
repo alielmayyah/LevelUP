@@ -1,7 +1,14 @@
 /*
  * LevelUP theme tokens. This file and brand.config.ts are the only places
  * allowed to contain color literals (see npm run check-colors).
- * Light is the default palette; dark applies when <html> has .ion-palette-dark.
+ * Light values sit on :root; dark applies when <html> has .ion-palette-dark
+ * (the app's default theme, see theme.ts).
+ *
+ * The redesign tokens (ui-standards → Colors) come first in each block:
+ * neutrals, the brand layer (default LevelUP violet; applyBrand.ts overrides
+ * it per gym) and the fixed meaning layer. The old glass, hero, medal and
+ * splash tokens below them are still used by screens not yet rebuilt; delete
+ * each one when its last user goes.
  */
 
 :root {
@@ -11,12 +18,36 @@
    * the main button, the active tab and the hero. Body metrics keep their own
    * colors, but only on icon discs and chart marks.
    */
-  --lu-bg: #f2effb;
-  --lu-surface: #ffffff;
-  --lu-surface-2: #f2effa;
-  --lu-text: #120f1f;
-  --lu-text-muted: #5a5670;
-  --lu-border: #e4dff3;
+  /* Neutrals (fixed). */
+  --lu-bg: #f6f4fb;
+  --lu-surface-1: #ffffff;
+  --lu-surface-2: #f1eef8;
+  --lu-surface-3: #e8e3f4;
+  --lu-border: #dcd5ec;
+  --lu-text: #15121f;
+  --lu-text-muted: #5b5470;
+  /* Dashed lines, gridlines, locked outlines. Never text. */
+  --lu-line: #8e87a6;
+
+  /* Brand layer: LevelUP violet. applyBrand() rewrites these for a gym's brand. */
+  --lu-brand: #6b3bf5;
+  --lu-brand-strong: #5a2be0;
+  --lu-brand-soft: #5b2ee0;
+  --lu-brand-tint: #eee7ff;
+  --lu-on-brand: #ffffff;
+  --lu-brand-gradient: linear-gradient(135deg, #e19cfb 0%, #b98cff 45%, #6b3bf5 100%);
+
+  /* Meaning layer (fixed in every gym). Light values pass 4.5:1 as text on bg, surface-1 and surface-2. */
+  --lu-good: #0f7a4a;
+  --lu-attention: #8a5800;
+  --lu-attention-fill: #ffc857;
+  --lu-on-attention: #2a1d00;
+  --lu-stable: #62617a;
+  --lu-water: #0a7380;
+  --lu-lean: #6a638e;
+
+  /* Legacy alias for surface-1, used by screens not yet rebuilt. */
+  --lu-surface: var(--lu-surface-1);
   /* Tab labels: at least 6:1 on the dock. */
   --lu-tab-muted: #48445c;
 
@@ -68,11 +99,11 @@
   /* A frosted white wash on a block or the hero (icon discs, chips). */
   --lu-frost: rgba(255, 255, 255, 0.4);
 
-  /* One color per body metric, used only on its icon disc and its chart marks. */
-  --lu-fat: #ff8a3d;
+  /* Body metric colors (meaning layer). The -hi/-core shades are legacy art. */
+  --lu-fat: #a4500f;
   --lu-fat-hi: #ffc46b;
   --lu-fat-core: #fff1d6;
-  --lu-muscle: #4d8dff;
+  --lu-muscle: #2160d2;
   --lu-muscle-hi: #9cc0ff;
   --lu-weight: #a58bff;
   --lu-lime: #c6f24e;
@@ -139,12 +170,31 @@
 
 :root.ion-palette-dark {
   /* Night: deep violet-black page with the logo's glow, smoky glass cards. */
-  --lu-bg: #0b0916;
-  --lu-surface: #17132a;
-  --lu-surface-2: #201b38;
-  --lu-text: #f5f3fc;
-  --lu-text-muted: #aaa4c4;
-  --lu-border: #2b2546;
+  /* Neutrals (fixed). */
+  --lu-bg: #0c0a14;
+  --lu-surface-1: #15121f;
+  --lu-surface-2: #1d1929;
+  --lu-surface-3: #26213a;
+  --lu-border: #2e2843;
+  --lu-text: #f4f2fa;
+  --lu-text-muted: #a9a3bf;
+  --lu-line: #6f6987;
+
+  /* Brand layer: LevelUP violet. --lu-brand is for graphics only here (white text on it is 4.23:1). */
+  --lu-brand: #8b5cf6;
+  --lu-brand-strong: #6b3bf5;
+  --lu-brand-soft: #b98cff;
+  --lu-brand-tint: #2a1f4d;
+  --lu-on-brand: #ffffff;
+
+  /* Meaning layer (fixed in every gym). */
+  --lu-good: #4ade9a;
+  --lu-attention: #ffc857;
+  --lu-stable: #8b8aa3;
+  --lu-muscle: #5b9cff;
+  --lu-fat: #f2a65a;
+  --lu-water: #3fd0e0;
+  --lu-lean: #c9c3e3;
   --lu-tab-muted: #bdb7d6;
 
   --lu-page-bg:
@@ -191,9 +241,12 @@
 /* Ionic reads its own variables; point them at the tokens in both palettes. */
 :root,
 :root.ion-palette-dark {
-  /* Body text: Plex Sans for Latin, Plex Sans Arabic for Arabic. Titles and numbers use Alexandria (--lu-font-display). */
-  --ion-font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', system-ui, sans-serif;
-  --lu-font-display: 'Alexandria Variable', 'IBM Plex Sans', 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  /* Text: Readex Pro (Arabic and Latin). Standalone numbers: Alexandria, which has tabular figures. */
+  --lu-font-text: 'Readex Pro Variable', system-ui, sans-serif;
+  --lu-font-num: 'Alexandria Variable', 'Readex Pro Variable', system-ui, sans-serif;
+  --ion-font-family: var(--lu-font-text);
+  /* Legacy: titles on screens not yet rebuilt. */
+  --lu-font-display: 'Alexandria Variable', 'Readex Pro Variable', system-ui, sans-serif;
   --ion-background-color: var(--lu-bg);
   /* Ionic paints each page's background from this: the lit lavender page. */
   --ion-text-color: var(--lu-text);

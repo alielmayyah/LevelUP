@@ -3,8 +3,9 @@
  *
  * LevelUP is the product: its name, logo, and colors are the same in every
  * gym's deployment. A gym brings only its own logo, shown alongside LevelUP's.
- * To set up a gym, add its logo under public/gym/ and point `gym.logo` at it.
- * No other file contains brand values.
+ * To set up a gym, add its logo under public/gym/ and point `gym.logo` at it,
+ * and optionally set `gym.brand` to recolor the app's brand layer (buttons,
+ * the active tab, the road). No other file contains brand values.
  *
  * Only brand hues live here. Backgrounds, surfaces, and text come from the
  * light and dark theme tokens (src/theme/tokens.css), because one brand
@@ -33,6 +34,11 @@ export interface AppBrand {
 export interface GymConfig {
   /** The gym's logo, path under public/. null hides the gym logo slot. */
   logo: string | null;
+  /**
+   * The gym's brand color (hex). null keeps LevelUP violet. applyBrand derives
+   * the rest of the brand layer from it; the meaning colors never change.
+   */
+  brand: string | null;
 }
 
 /** Where public files are served from: / in dev and the app, /LevelUP/ on GitHub Pages. Node (e2e) has no import.meta.env. */
@@ -53,4 +59,5 @@ export const brand: AppBrand = {
 
 export const gym: GymConfig = {
   logo: null,
+  brand: null,
 };

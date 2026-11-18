@@ -51,10 +51,17 @@ describe('theme', () => {
     expect(isDark()).toBe(false);
   });
 
-  it('defaults to system and follows the device live', async () => {
+  it('defaults to dark, whatever the device says', async () => {
+    mockSystemDark(false);
+    await initTheme();
+    expect(getThemeMode()).toBe('dark');
+    expect(isDark()).toBe(true);
+  });
+
+  it('system follows the device live', async () => {
     const system = mockSystemDark(false);
     await initTheme();
-    expect(getThemeMode()).toBe('system');
+    await setTheme('system');
     expect(isDark()).toBe(false);
     system.set(true);
     expect(isDark()).toBe(true);
@@ -81,11 +88,11 @@ describe('theme', () => {
     expect(isDark()).toBe(true);
   });
 
-  it('an unknown stored value falls back to system', async () => {
-    mockSystemDark(true);
+  it('an unknown stored value falls back to dark', async () => {
+    mockSystemDark(false);
     await Preferences.set({ key: 'lu.theme', value: 'purple' });
     await initTheme();
-    expect(getThemeMode()).toBe('system');
+    expect(getThemeMode()).toBe('dark');
     expect(isDark()).toBe(true);
   });
 });
