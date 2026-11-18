@@ -1,16 +1,21 @@
 import { IonContent, IonPage } from '@ionic/react';
-import { useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
+import { brand } from '../brand.config';
 import CtaButton from '../components/CtaButton';
 import Icon, { type IconName } from '../components/Icon';
 import { useSwipe } from '../components/useSwipe';
 import { formatNumber } from '../i18n/format';
+import type { IntroSlide } from './intro/introMotion';
 import { markIntroSeen } from './intro/introSeen';
 import './intro/Intro.scss';
 
-type SlideKey = 'numbers' | 'meaning' | 'goals';
+type SlideKey = IntroSlide;
+type Motion = typeof import('./intro/introMotion');
+
+const REDUCED = '(prefers-reduced-motion: reduce)';
 
 const SLIDES: SlideKey[] = ['numbers', 'meaning', 'goals'];
 
@@ -45,7 +50,7 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
   if (slide === 'meaning')
     return (
       <div className="grid w-full max-w-[300px] gap-3 text-start">
-        <div className="lu-card grid gap-1.5 p-4">
+        <div className="lu-card grid gap-1.5 p-4" data-intro-card>
           <span className="flex items-center gap-2 text-[0.8125rem] font-semibold text-muted">
             <span className="lu-disc lu-disc-muscle size-7 text-[0.95rem]">
               <Icon name="muscle" />
@@ -61,10 +66,10 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            <polyline points="2,26 20,22 38,20 56,14 74,11 98,4" vectorEffect="non-scaling-stroke" />
+            <polyline points="2,26 20,22 38,20 56,14 74,11 98,4" pathLength={1} vectorEffect="non-scaling-stroke" />
           </svg>
         </div>
-        <div className="lu-card flex items-start gap-3 p-3.5">
+        <div className="lu-card flex items-start gap-3 p-3.5" data-intro-card>
           <span className="lu-intro-good grid size-9 flex-none place-items-center rounded-full text-[1.1rem]">
             <Icon name="sparkles" />
           </span>
@@ -77,7 +82,7 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
     );
   return (
     <div className="grid w-full max-w-[300px] grid-cols-[1fr_auto] items-center gap-3 text-start">
-      <div className="lu-card grid gap-2 p-4">
+      <div className="lu-card grid gap-2 p-4" data-intro-card>
         <span className="lu-card-kicker">{t('intro.demo.goal')}</span>
         <strong className="font-display text-ink">{t('intro.demo.goalTitle')}</strong>
         <span className="lu-bar">
@@ -92,8 +97,11 @@ const Picture: React.FC<{ slide: SlideKey }> = ({ slide }) => {
 };
 
 /**
- * First-launch intro: three short slides on what the app does, before sign-in.
- * Skip or Get started both go to Login, and the slides never show again.
+ * First-launch intro: three short slides on what the app does, before sign-in,
+ * over a slowly moving aurora in the logo's colors. Each new slide's pieces
+ * fly in from the side the member is moving toward (GSAP, loaded on demand;
+ * skipped under reduced motion). Skip or Get started both go to Login, and
+ * the slides never show again.
  */
 const Intro: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -101,6 +109,35 @@ const Intro: React.FC = () => {
   const [index, setIndex] = useState(0);
   const last = index === SLIDES.length - 1;
   const slide = SLIDES[index];
+  const rtl = i18n.dir() === 'rtl';
+
+  // GSAP comes in its own chunk once the intro is on screen.
+  const motion = useRef<Motion | null>(null);
+  const [motionReady, setMotionReady] = useState(false);
+  useEffect(() => {
+    let live = true;
+    void import('./intro/introMotion').then((m) => {
+      if (!live) return;
+      motion.current = m;
+      setMotionReady(true);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const stage = useRef<HTMLElement | null>(null);
+  const shown = useRef(index);
+  useLayoutEffect(() => {
+    const from = shown.current;
+    shown.current = index;
+    const el = stage.current;
+    if (from === index || !el || !motion.current || window.matchMedia?.(REDUCED).matches) return;
+    // Forward: pieces come from the reading end (right in English, left in Arabic).
+    const forward = index > from;
+    const dir = (forward !== rtl ? 1 : -1) as 1 | -1;
+    return motion.current.enterSlide(el, slide, dir, rtl);
+  }, [index, slide, rtl]);
 
   const finish = () => {
     void markIntroSeen();
@@ -110,14 +147,29 @@ const Intro: React.FC = () => {
   const swipe = useSwipe({
     onNext: () => setIndex((i) => Math.min(SLIDES.length - 1, i + 1)),
     onPrev: () => setIndex((i) => Math.max(0, i - 1)),
-    rtl: i18n.dir() === 'rtl',
+    rtl,
   });
+  // One stable ref for both the swipe listener and the entrance animations.
+  const stageRef = useCallback(
+    (el: HTMLElement | null) => {
+      swipe(el);
+      stage.current = el;
+    },
+    [swipe],
+  );
 
   return (
     <IonPage className="lu-on-ink text-splash-text" data-testid="page-intro">
       <IonContent className="[--background:var(--lu-splash-bg)] [--color:var(--lu-splash-text)]">
-        <div className="lu-tab-body lu-login-bg box-border flex min-h-full flex-col px-5 pt-[calc(16px+var(--ion-safe-area-top,0px))] pb-[calc(20px+var(--ion-safe-area-bottom,0px))]">
-          <div className="flex min-h-11 justify-end">
+        <div className="lu-tab-body relative isolate box-border flex min-h-full flex-col px-5 pt-[calc(16px+var(--ion-safe-area-top,0px))] pb-[calc(20px+var(--ion-safe-area-bottom,0px))]">
+          {/* The aurora: three soft lights in the logo's colors that drift slowly behind everything. */}
+          <div className="lu-intro-sky" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="flex min-h-11 items-center justify-between">
+            <img className="lu-intro-mark block h-9 w-auto" src={brand.mark} alt="" />
             {!last && (
               <button
                 type="button"
@@ -130,16 +182,20 @@ const Intro: React.FC = () => {
             )}
           </div>
           <section
-            ref={swipe}
+            ref={stageRef}
             className="mx-auto grid w-full max-w-[420px] flex-1 content-center justify-items-center gap-8 py-4 text-center"
             aria-roledescription={t('intro.slide')}
             aria-label={t('intro.position', { n: formatNumber(index + 1), total: formatNumber(SLIDES.length) })}
             data-testid={`intro-slide-${slide}`}
           >
-            <div key={slide} className="lu-intro-picture grid w-full justify-items-center">
+            {/* The first slide rises in with CSS; later ones fly in with GSAP once it has loaded. */}
+            <div
+              key={slide}
+              className={`grid w-full justify-items-center ${motionReady && index > 0 ? '' : 'lu-intro-picture'}`}
+            >
               <Picture slide={slide} />
             </div>
-            <div className="grid gap-2" aria-live="polite">
+            <div className="grid gap-2" aria-live="polite" data-intro-text>
               <h1 className="lu-display m-0 text-[clamp(1.8rem,8vw,2.4rem)] leading-[1.1] text-splash-text">
                 {t(`intro.${slide}.title`)}
               </h1>
@@ -149,7 +205,7 @@ const Intro: React.FC = () => {
           <div className="mx-auto grid w-full max-w-[420px] gap-5">
             <div className="flex justify-center gap-2" aria-hidden="true">
               {SLIDES.map((s, i) => (
-                <span key={s} className={`lu-intro-dot h-2 rounded-full ${i === index ? 'is-on w-6' : 'w-2'}`} />
+                <span key={s} className={`lu-intro-dot h-2 rounded-full ${i === index ? 'is-on w-7' : 'w-2'}`} />
               ))}
             </div>
             <CtaButton className="w-full" onClick={next} data-testid="intro-next">

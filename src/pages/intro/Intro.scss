@@ -37,12 +37,66 @@
   .lu-intro-dot {
     background: color-mix(in srgb, var(--lu-splash-text) 25%, transparent);
     transition:
-      inline-size 200ms ease-out,
+      inline-size 380ms cubic-bezier(0.34, 1.5, 0.64, 1),
       background-color 200ms ease-out;
 
     &.is-on {
-      background: var(--lu-splash-text);
+      background: linear-gradient(90deg, var(--lu-brand-lilac), var(--lu-brand-mid));
+      box-shadow: 0 0 12px color-mix(in srgb, var(--lu-brand-lilac) 60%, transparent);
     }
+  }
+
+  /* The aurora behind the slides: three big soft lights in the logo's colors, drifting. */
+  .lu-intro-sky {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+
+    span {
+      position: absolute;
+      border-radius: 50%;
+      will-change: transform;
+    }
+
+    span:nth-child(1) {
+      inset-block-start: -28vmax;
+      inset-inline-end: -26vmax;
+      inline-size: 80vmax;
+      block-size: 80vmax;
+      background: radial-gradient(circle, color-mix(in srgb, var(--lu-brand-lilac) 70%, transparent), transparent 62%);
+      animation: lu-sky-a 18s ease-in-out infinite alternate;
+    }
+
+    span:nth-child(2) {
+      inset-block-end: -30vmax;
+      inset-inline-start: -30vmax;
+      inline-size: 85vmax;
+      block-size: 85vmax;
+      background: radial-gradient(circle, color-mix(in srgb, var(--lu-brand-deep) 85%, transparent), transparent 62%);
+      animation: lu-sky-b 22s ease-in-out infinite alternate;
+    }
+
+    span:nth-child(3) {
+      inset-block-start: 30%;
+      inset-inline-start: 20%;
+      inline-size: 60vmax;
+      block-size: 60vmax;
+      background: radial-gradient(circle, color-mix(in srgb, var(--lu-brand-mid) 45%, transparent), transparent 60%);
+      animation: lu-sky-c 26s ease-in-out infinite alternate;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      span {
+        animation: none;
+      }
+    }
+  }
+
+  /* The logo mark in the corner, with a soft glow. */
+  .lu-intro-mark {
+    filter: drop-shadow(0 6px 18px color-mix(in srgb, var(--lu-brand-mid) 60%, transparent));
   }
 
   /* Each slide's picture rises in. */
@@ -58,6 +112,24 @@
     .lu-intro-dot {
       transition: none;
     }
+  }
+}
+
+@keyframes lu-sky-a {
+  to {
+    transform: translate(-8vmax, 10vmax) scale(1.15);
+  }
+}
+
+@keyframes lu-sky-b {
+  to {
+    transform: translate(10vmax, -8vmax) scale(1.1);
+  }
+}
+
+@keyframes lu-sky-c {
+  to {
+    transform: translate(-12vmax, -6vmax) scale(0.85);
   }
 }
 
