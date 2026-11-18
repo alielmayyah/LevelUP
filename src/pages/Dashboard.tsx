@@ -1,35 +1,85 @@
 import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
-import type { DashboardDto } from '../api/types';
+import type { DashboardDto, JourneyDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
-import Avatar from '../avatar/Avatar';
-import { memberAvatar } from '../avatar/catalog';
-import '../avatar/avatar.scss';
-import CtaButton from '../components/CtaButton';
-import { formatNumber } from '../i18n/format';
-import { useReveal } from '../motion/gsapMotion';
-import FitScoreCard from './home/FitScoreCard';
+import { adviceText } from '../body/planText';
 import Icon from '../components/Icon';
-import { formatToday } from './home/homeText';
-import MissionCard from './home/MissionCard';
+import { Button, FeedCard, StateCard } from '../components/ui';
+import { formatNumber } from '../i18n/format';
+import AppHeader from './home/AppHeader';
 import NotificationsSheet from './home/NotificationsSheet';
-import PlanTeaser from './home/PlanTeaser';
-import { HOME_GRID } from './home/layout';
-import './home/Dashboard.scss';
+import ChangeRow from './journey/ChangeRow';
+import { formatDay, formatFromNow } from './journey/dates';
+import LevelEmblem from './journey/LevelEmblem';
+import Road from './journey/Road';
+import WeightSplit from './journey/WeightSplit';
 
-/** Home tab. Everything on it comes from one request: GET /me/dashboard. */
+/** A chevron row: the quiet action at the bottom of a feed card. */
+const CardLink: React.FC<{ to: string; testId: string; children: React.ReactNode }> = ({ to, testId, children }) => (
+  <Link
+    to={to}
+    className="lu-press lu-focus flex min-h-11 w-full items-center justify-between gap-2 rounded-[12px] text-label text-brand-soft no-underline"
+    data-testid={testId}
+  >
+    {children}
+    <Icon name="chevronForward" className="rtl:-scale-x-100" />
+  </Link>
+);
+
+/** Level, verdict and the road: where the member is, why, and how they got here. */
+const Hero: React.FC<{ journey: JourneyDto }> = ({ journey }) => {
+  const { t } = useTranslation();
+  const kg = t('units.kg');
+  return (
+    <section
+      aria-labelledby="journey-title"
+      className="grid gap-4 rounded-[20px] border border-line bg-surface-1 p-4 md:col-span-2 md:p-5"
+      data-testid="journey-hero"
+    >
+      <div className="flex items-center gap-4">
+        <LevelEmblem level={journey.level} />
+        <div className="grid min-w-0 gap-1.5">
+          <h2 id="journey-title" className="m-0 text-label text-muted">
+            {t('journey.sinceFirst')}
+          </h2>
+          <p className="m-0 text-verdict text-ink" data-testid="verdict" data-verdict={journey.verdict}>
+            {t(`journey.verdict.${journey.verdict}`)}
+          </p>
+        </div>
+      </div>
+      <Road stops={journey.stops} nextDue={journey.nextScanDue} />
+      {journey.nextLevel && (
+        <p className="m-0 flex items-start gap-2 text-label text-muted" data-testid="next-level">
+          <Icon name="flag" className="mt-0.5 flex-none text-brand-soft" />
+          <span>
+            {t('journey.nextLevel', {
+              muscle: `${formatNumber(journey.nextLevel.muscleKg, 1)}\u00a0${kg}`,
+              fat: `${formatNumber(journey.nextLevel.fatKg, 1)}\u00a0${kg}`,
+            })}
+          </span>
+        </p>
+      )}
+    </section>
+  );
+};
+
+/**
+ * Home: a short story about the member's body, told top to bottom in cards
+ * (ui-standards → Screens). Everything comes from one request, /me/dashboard;
+ * the API decides the level, the verdict and what counts as a real change.
+ */
 const Dashboard: React.FC = () => {
   const { t } = useTranslation();
+  const history = useHistory();
   const dashboard = useApi<DashboardDto>('/me/dashboard');
   const [notifOpen, setNotifOpen] = useState(false);
   // Refreshed with the data, so an app left open overnight greets the new day.
   const [today, setToday] = useState(() => new Date());
 
   const { setData, reload } = dashboard;
-  // Back on Home: fresh numbers (a new scan, a goal reached) without pulling to refresh.
   useRefreshOnEnter(reload);
   const syncUnread = useCallback(
     (unread: number) => setData((d) => (d.unreadNotifications === unread ? d : { ...d, unreadNotifications: unread })),
@@ -37,11 +87,8 @@ const Dashboard: React.FC = () => {
   );
 
   const d = dashboard.status === 'ready' ? dashboard.data : null;
-  const unread = d?.unreadNotifications ?? 0;
-
-  // Home's one big moment: the cards rise in one after another when the data first lands.
-  const grid = useRef<HTMLDivElement>(null);
-  useReveal(grid, dashboard.status);
+  const j = d?.journey ?? null;
+  const hasScans = !!j && j.level > 0 && !!j.latest;
 
   return (
     <IonPage data-testid="page-home">
@@ -57,88 +104,170 @@ const Dashboard: React.FC = () => {
         </IonRefresher>
 
         <div className="lu-page-body lu-tab-body" data-testid="page-body">
-          <div className="mb-4">
-            <div className="flex items-start gap-3">
-              {/* Same size as the picture, so the greeting doesn't jump when it loads. */}
-              {!d && dashboard.status === 'loading' && (
-                <span
-                  className="lu-skeleton-card block size-14 min-h-0 flex-none rounded-[18px]"
-                  aria-hidden="true"
-                  data-testid="home-avatar-skeleton"
-                />
-              )}
-              {d && (
-                <Link
-                  to="/tabs/profile"
-                  className="lu-avatar-frame lu-home-pfp block size-14 flex-none overflow-hidden rounded-[18px]"
-                  aria-label={t('home.openProfile')}
-                  data-testid="home-avatar"
-                >
-                  <Avatar config={memberAvatar(d.member)} sex={d.member.sex} className="block size-full" />
-                </Link>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="m-0 mb-1 text-[0.875rem] font-normal text-muted" data-testid="today">
-                  {formatToday(today)}
-                </p>
-                <h1
-                  className="lu-display m-0 text-[clamp(1.6rem,7vw,2rem)] leading-[1.1] wrap-anywhere text-ink"
-                  data-testid="greeting"
-                >
-                  {d ? (
-                    t('home.hello', { name: d.member.firstName })
-                  ) : (
-                    <>
-                      <span className="lu-skeleton h-[1em] w-[70%]" aria-hidden="true" />
-                      <span className="sr-only">{t('common.loading')}</span>
-                    </>
-                  )}
-                </h1>
-              </div>
-              <button
-                type="button"
-                className="lu-icon-button"
-                data-testid="bell"
-                aria-label={
-                  unread > 0 ? t('home.notifications.bellUnread', { n: unread }) : t('home.notifications.bell')
-                }
-                onClick={() => setNotifOpen(true)}
-              >
-                <Icon name="bell" />
-                {unread > 0 && (
-                  <span
-                    className="absolute -end-[7px] -top-[7px] box-border grid h-[22px] min-w-[22px] place-items-center rounded-full border border-page bg-danger px-[5px] text-[0.72rem] leading-none font-bold text-surface dark:text-scrim"
-                    data-testid="bell-dot"
-                    aria-hidden="true"
-                  >
-                    {unread > 9 ? `${formatNumber(9)}+` : formatNumber(unread)}
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
+          <AppHeader
+            firstName={d?.member.firstName ?? null}
+            today={today}
+            unread={d?.unreadNotifications ?? 0}
+            onBell={() => setNotifOpen(true)}
+          />
 
           {dashboard.status === 'loading' && (
-            <div className={HOME_GRID} aria-busy="true" data-testid="home-loading">
-              <div className="lu-skeleton-card min-h-[150px]" />
-              <div className="lu-skeleton-card" />
-              <div className="lu-skeleton-card" />
+            <div className="grid gap-3" aria-busy="true" data-testid="home-loading">
+              <div className="lu-skeleton-card min-h-[220px] rounded-[20px]" />
+              <div className="lu-skeleton-card min-h-[160px] rounded-[20px]" />
             </div>
           )}
 
           {dashboard.status === 'error' && (
-            <div className="lu-state" role="alert">
-              <p>{t('home.error')}</p>
-              <CtaButton onClick={() => void dashboard.retry()}>{t('common.retry')}</CtaButton>
-            </div>
+            <StateCard
+              icon="warning"
+              tone="attention"
+              title={t('journey.errorTitle')}
+              message={t('home.error')}
+              action={
+                <Button variant="secondary" icon="refresh" onClick={() => void dashboard.retry()}>
+                  {t('common.retry')}
+                </Button>
+              }
+              testId="home-error"
+            />
           )}
 
-          {d && (
-            <div className={HOME_GRID} ref={grid}>
-              <FitScoreCard fitScore={d.fitScore} />
-              {/* What to do next: the plan from the last scan (empty until there is one). */}
-              {d.plan[0] && <PlanTeaser top={d.plan[0]} />}
-              <MissionCard mission={d.mission} />
+          {d && !hasScans && (
+            <StateCard
+              icon="scan"
+              tone="brand"
+              title={t('journey.empty.title')}
+              message={t('journey.empty.message')}
+              testId="home-empty"
+            />
+          )}
+
+          {d && j && hasScans && j.latest && (
+            <div className="grid gap-3 md:grid-cols-2 md:gap-4" data-testid="home-feed">
+              <Hero journey={j} />
+
+              <FeedCard
+                icon="scale"
+                iconTone="lean"
+                title={t('journey.body.title')}
+                subtitle={[formatDay(j.latest.takenAt), j.latest.place, j.latest.machine].filter(Boolean).join(' · ')}
+                testId="home-body"
+                action={
+                  <Button icon="arrowForward" onClick={() => history.push('/tabs/scans')} data-testid="home-report">
+                    {t('journey.body.report')}
+                  </Button>
+                }
+              >
+                <WeightSplit
+                  weightKg={j.latest.weightKg}
+                  fatKg={j.latest.fatKg}
+                  fatFreeMassKg={j.latest.fatFreeMassKg}
+                />
+                {j.sinceFirst && (
+                  <div className="grid gap-3 border-t border-line pt-3">
+                    <ChangeRow metric="muscleKg" change={j.sinceFirst.muscleKg} />
+                    <ChangeRow metric="fatKg" change={j.sinceFirst.fatKg} />
+                  </div>
+                )}
+              </FeedCard>
+
+              {j.milestone && (
+                <FeedCard
+                  icon={j.milestone.key === 'levelUp' ? 'trophy' : 'flag'}
+                  iconTone="brand"
+                  title={t(`journey.milestone.${j.milestone.key}.title`, { level: j.milestone.level })}
+                  subtitle={t(`journey.milestone.${j.milestone.key}.body`)}
+                  testId="home-milestone"
+                />
+              )}
+
+              {j.nextScanDue && (
+                <FeedCard
+                  icon="calendar"
+                  iconTone="brand"
+                  title={t('journey.next.title')}
+                  subtitle={`${formatDay(j.nextScanDue)} · ${formatFromNow(j.nextScanDue, today)}`}
+                  testId="home-next"
+                >
+                  <div className="grid gap-2">
+                    <p className="m-0 text-label text-muted">{t('journey.next.conditions')}</p>
+                    <ul className="m-0 grid list-none gap-2 p-0">
+                      {(
+                        [
+                          ['clock', 'eat'],
+                          ['dumbbell', 'train'],
+                          ['history', 'time'],
+                        ] as const
+                      ).map(([icon, key]) => (
+                        <li key={key} className="flex items-center gap-2 text-body text-ink">
+                          <Icon name={icon} className="flex-none text-brand-soft" />
+                          {t(`journey.next.${key}`)}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </FeedCard>
+              )}
+
+              {d.plan[0] && (
+                <FeedCard
+                  icon="target"
+                  iconTone={d.plan[0].level === 'keep' ? 'good' : d.plan[0].level === 'act' ? 'attention' : 'brand'}
+                  title={t('journey.plan.title')}
+                  testId="home-plan"
+                  action={
+                    <CardLink to="/tabs/scans" testId="home-plan-open">
+                      {t('journey.plan.action')}
+                    </CardLink>
+                  }
+                >
+                  <div className="grid gap-1">
+                    <strong className="text-body font-semibold text-ink">{adviceText(t, d.plan[0]).title}</strong>
+                    <span className="text-label font-normal text-muted">{adviceText(t, d.plan[0]).why}</span>
+                  </div>
+                </FeedCard>
+              )}
+
+              <FeedCard
+                icon="target"
+                iconTone="brand"
+                title={t('journey.goal.title')}
+                subtitle={d.mission ? d.mission.title : t('journey.goal.none')}
+                testId="home-goal"
+                action={
+                  d.mission ? (
+                    <CardLink to="/tabs/account/goals" testId="home-goal-all">
+                      {t('journey.goal.all')}
+                    </CardLink>
+                  ) : (
+                    <CardLink to="/tabs/account/goals/new" testId="home-goal-set">
+                      {t('journey.goal.set')}
+                    </CardLink>
+                  )
+                }
+              >
+                {d.mission && (
+                  <div className="grid gap-2">
+                    <div
+                      className="h-2.5 overflow-hidden rounded-full bg-surface-3"
+                      role="progressbar"
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={d.mission.percent}
+                      aria-label={d.mission.title}
+                    >
+                      <span
+                        className="block h-full rounded-full bg-brand"
+                        style={{ inlineSize: `${d.mission.percent}%` }}
+                      />
+                    </div>
+                    <span className="text-label text-muted" data-testid="home-goal-percent">
+                      {t('journey.goal.done', { percent: formatNumber(d.mission.percent) })}
+                    </span>
+                  </div>
+                )}
+              </FeedCard>
             </div>
           )}
         </div>

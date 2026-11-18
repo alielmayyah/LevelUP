@@ -124,7 +124,7 @@ const NewGoal: React.FC = () => {
 
   const leave = useCallback(() => {
     if (router.canGoBack()) router.goBack();
-    else router.push('/tabs/goals', 'back', 'replace');
+    else router.push('/tabs/account/goals', 'back', 'replace');
   }, [router]);
 
   const scan = scans.status === 'ready' ? (scans.data[0] ?? null) : null;

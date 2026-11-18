@@ -462,7 +462,7 @@ describe('Profile', () => {
     expect(within(medals).getAllByRole('listitem')).toHaveLength(3);
     expect(within(medals).getByTestId('profile-medal-bodyFat')).toHaveTextContent('Legendary');
     expect(within(medals).getByTestId('profile-medal-bmi')).toHaveTextContent('Gold');
-    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/tabs/profile/settings');
+    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/tabs/account/settings');
     expect(screen.queryByText('Rami Saad')).toBeNull();
     expect(screen.queryByText(/Premium/)).toBeNull();
   });

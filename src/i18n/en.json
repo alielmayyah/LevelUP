@@ -2,14 +2,15 @@
   "tabs": {
     "navLabel": "Main navigation",
     "home": "Home",
-    "progress": "Progress",
+    "scans": "Scans",
+    "compare": "Compare",
+    "account": "Account",
     "goals": "Goals",
-    "profile": "Profile",
     "short": {
       "home": "Home",
-      "progress": "Progress",
-      "goals": "Goals",
-      "profile": "Profile"
+      "scans": "Scans",
+      "compare": "Compare",
+      "account": "Account"
     }
   },
   "common": {
@@ -709,5 +710,94 @@
     "prevPage": "Previous page",
     "nextPage": "Next page",
     "pageOf": "Page {{page}} of {{pages}}"
+  },
+  "journey": {
+    "level": "Level",
+    "levelAria": "Level {{level}}",
+    "nextLevel": "Next level: muscle +{{muscle}} or fat −{{fat}}",
+    "nextLevelHint": "Either one is enough. A level counts only when the change is bigger than the machine's margin.",
+    "sinceFirst": "Your progress since your first scan",
+    "scanCount": "Scans: {{count}}",
+    "verdict": {
+      "noScans": "You haven't had your first scan yet.",
+      "firstScan": "This is your first scan. From the next one, you'll see how your body changes.",
+      "recomposition": "Your body has changed since your first scan: more muscle, less fat.",
+      "muscleGain": "You've gained muscle since your first scan.",
+      "fatLoss": "You've lost fat since your first scan.",
+      "muscleLoss": "Your muscle is down since your first scan. Talk to your coach about why.",
+      "fatGain": "Your fat is up since your first scan. Talk to your coach about a next step.",
+      "steady": "Your body is about the same since your first scan. The change is still smaller than the machine's margin.",
+      "differentMachine": "Your latest scan was on a different machine, so we only show the direction."
+    },
+    "road": {
+      "aria": "{{count}} scans from {{from}} to {{to}}. Next scan: {{next}}.",
+      "latest": "Latest",
+      "next": "Next"
+    },
+    "body": {
+      "title": "Your body today",
+      "weight": "Weight",
+      "fat": "Fat",
+      "fatFree": "Fat-free mass",
+      "splitAria": "Weight {{weight}}: {{fat}} fat and {{lean}} fat-free mass.",
+      "report": "See your scan report"
+    },
+    "change": {
+      "muscleKg": "Muscle",
+      "fatKg": "Fat",
+      "weightKg": "Weight",
+      "fatPct": "Body fat %"
+    },
+    "chip": {
+      "better": "Improved",
+      "worse": "Needs attention",
+      "same": "About the same"
+    },
+    "milestone": {
+      "levelUp": {
+        "title": "You reached level {{level}}",
+        "body": "A real change in your body, bigger than the machine's margin."
+      },
+      "firstScan": {
+        "title": "The first stop on your journey",
+        "body": "Every bit of progress is measured from here."
+      }
+    },
+    "next": {
+      "title": "Your next scan",
+      "conditions": "So you can compare it with this one:",
+      "eat": "Come 3 hours after eating",
+      "train": "No workout before the scan",
+      "time": "Same time as last time"
+    },
+    "plan": {
+      "title": "Your next step",
+      "action": "See your plan"
+    },
+    "goal": {
+      "title": "Your goal",
+      "done": "{{percent}}% done",
+      "all": "All your goals",
+      "set": "Set a goal",
+      "none": "Pick one thing to work on until your next scan."
+    },
+    "empty": {
+      "title": "No scans yet",
+      "message": "Book your first InBody scan at the front desk. Your result will show up here by itself."
+    },
+    "openAccount": "Open your account",
+    "errorTitle": "We couldn't load your data"
+  },
+  "compare": {
+    "subtitle": "How your scans differ",
+    "last": "Latest vs the one before",
+    "first": "Latest vs your first scan",
+    "sameMachine": "Same machine: an accurate comparison",
+    "otherMachine": "Different machine: direction only",
+    "allSame": "Every change is smaller than the machine's margin, so it reads \"about the same\". Look at the trend since your first scan.",
+    "needTwo": {
+      "title": "Compare shows after your second scan",
+      "message": "Take another scan in 4 weeks and we'll put the two side by side."
+    }
   }
 }

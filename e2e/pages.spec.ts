@@ -8,8 +8,8 @@ const tab = (name: string) => `[data-testid="page-${name}"]`;
 test.describe('Progress', () => {
   test("Mohamed's key numbers, their change, and one trend at a time", async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/progress');
-    const p = page.locator(tab('progress'));
+    await page.goto('/tabs/scans');
+    const p = page.locator(tab('scans'));
     await expect(p.getByTestId('metric-weight')).toContainText(/80\.0\s?kg/);
     await expect(p.getByTestId('change-muscle')).toContainText('0.9 kg');
     await expect(p.getByTestId('change-muscle').locator('[data-icon="trendUp"]')).toBeVisible();
@@ -63,7 +63,7 @@ test.describe('Progress', () => {
       test('body composition bars, body parts, and comparing with any scan', async ({ page, loginAs }) => {
         const s = { en, ar }[lang];
         await loginAs();
-        await page.goto('/tabs/progress');
+        await page.goto('/tabs/scans');
         await page.getByTestId('progress-more').click();
         const bc = page.getByTestId('body-comp');
         await expect(bc.getByTestId('bar-weight')).toHaveAttribute('data-status', 'normal');
@@ -104,7 +104,7 @@ test.describe('Progress', () => {
 
   test('Omar: one scan, so changes and trends wait for the second', async ({ page, loginAs }) => {
     await loginAs('103');
-    await page.goto('/tabs/progress');
+    await page.goto('/tabs/scans');
     await page.getByTestId('progress-more').click();
     await expect(page.getByText(en.progress.secondScan)).toBeVisible();
     await expect(page.getByTestId('change-muscle')).toHaveText(en.progress.changeLater);
@@ -115,7 +115,7 @@ test.describe('Progress', () => {
 test.describe('Goals', () => {
   test('every goal is on one page', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/goals');
+    await page.goto('/tabs/account/goals');
     const g = page.locator(tab('goals'));
     await expect(g.getByTestId('section-active').getByTestId('goal')).toHaveCount(2);
     await expect(g.getByTestId('section-completed').getByTestId('goal')).toHaveCount(2);
@@ -130,7 +130,7 @@ test.describe('Goals', () => {
 
   test('a member creates their own goal and it goes live at once', async ({ page, loginAs }) => {
     await loginAs('103');
-    await page.goto('/tabs/goals');
+    await page.goto('/tabs/account/goals');
     const g = page.locator(tab('goals'));
     // One primary button on the empty screen: the empty state's.
     await expect(g.getByTestId('goal-new')).toHaveCount(0);
@@ -145,17 +145,17 @@ test.describe('Goals', () => {
     await expect(n.getByText(/^Due /)).toHaveCount(0);
     await n.getByTestId('goal-create').click();
 
-    await expect(page).toHaveURL(/\/tabs\/goals$/);
+    await expect(page).toHaveURL(/\/tabs\/account\/goals$/);
     await expect(page.getByTestId('toast')).toHaveText(en.goals.created);
     await expect(g.getByTestId('section-active').getByTestId('goal')).toContainText('Gain 2.5 kg of muscle');
     // It is also today's mission on Home.
     await page.goto('/tabs/home');
-    await expect(page.getByTestId('mission-card')).toContainText('Gain 2.5 kg of muscle');
+    await expect(page.getByTestId('home-goal')).toContainText('Gain 2.5 kg of muscle');
   });
 
   test('the new goal page has a way back and keyboard choices', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/goals');
+    await page.goto('/tabs/account/goals');
     await page.locator(tab('goals')).getByTestId('goal-new').click();
     const n = page.locator(tab('new-goal'));
     await expect(n.getByTestId('goal-starts')).toHaveText(en.newGoal.startsNow);
@@ -164,14 +164,14 @@ test.describe('Goals', () => {
     await expect(n.getByTestId('goal-type-MUSCLE_KG')).toBeFocused();
     await expect(n.getByTestId('goal-type-MUSCLE_KG')).toHaveAttribute('aria-checked', 'true');
     await n.getByTestId('new-goal-back').click();
-    await expect(page).toHaveURL(/\/tabs\/goals$/);
+    await expect(page).toHaveURL(/\/tabs\/account\/goals$/);
   });
 });
 
 test.describe('Profile', () => {
   test('language and theme switch the whole app at once', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/profile/settings');
+    await page.goto('/tabs/account/settings');
     await page.getByTestId('setting-language').getByRole('radio', { name: 'عربي' }).click();
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(ar.profile.settings);
@@ -181,11 +181,11 @@ test.describe('Profile', () => {
 
   test('cancelling sign out keeps the member signed in', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/profile/settings');
+    await page.goto('/tabs/account/settings');
     await page.getByRole('button', { name: en.profile.signOut }).click();
     await expect(page.getByRole('dialog')).toContainText(en.profile.signOutNote);
     await page.getByRole('dialog').getByRole('button', { name: en.profile.cancel }).click();
-    await expect(page).toHaveURL(/\/tabs\/profile\/settings$/);
+    await expect(page).toHaveURL(/\/tabs\/account\/settings$/);
   });
 });
 
@@ -198,7 +198,7 @@ test.describe('Character', () => {
       test.describe(`${lang}/${theme}`, () => {
         test.use({ lang, theme });
 
-        test('shows the face on Home and Profile, and saves portrait styles and colors', async ({ page, loginAs }) => {
+        test('shows the face on Account and saves portrait styles and colors', async ({ page, loginAs }) => {
           const copy = lang === 'ar' ? ar : en;
           await loginAs();
           await page.addInitScript((key) => {
@@ -212,10 +212,8 @@ test.describe('Character', () => {
               );
             }
           }, AVATAR_KEY);
-          await page.goto('/tabs/home');
-          const homeAvatar = page.getByTestId('home-avatar');
-          await expect(homeAvatar.locator('svg')).toHaveAttribute('data-figure', 'hd-portrait');
-          await homeAvatar.click();
+          // Home shows initials now; the character lives on Account until the Account rebuild.
+          await page.goto('/tabs/account');
           await expect(page.getByTestId('profile-avatar')).toHaveAttribute('data-crop', 'portrait');
           await page.getByTestId('customize-character').click();
           const editor = page.locator(tab('character'));
@@ -288,16 +286,10 @@ test.describe('Character', () => {
     test.describe(`${lang}/${theme}`, () => {
       test.use({ lang, theme });
 
-      test('a female member can save her hairstyle, hijab color, and outfit across Home and Profile', async ({
-        page,
-        loginAs,
-      }) => {
+      test('a female member can save her hairstyle, hijab color, and outfit', async ({ page, loginAs }) => {
         const { avatar: copy } = { en, ar }[lang];
         await loginAs('102');
-        await page.goto('/tabs/home');
-        const home = page.getByTestId('home-avatar');
-        await expect(home.locator('svg')).toHaveAttribute('data-portrait-sex', 'FEMALE');
-        await home.click();
+        await page.goto('/tabs/account');
         await expect(page.getByTestId('profile-avatar')).toHaveAttribute('data-portrait-sex', 'FEMALE');
         await page.getByTestId('customize-character').click();
         const editor = page.locator(tab('character'));
@@ -335,7 +327,7 @@ test.describe('Character', () => {
 
   test('arrow keys move through the parts and a color group', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/profile/character');
+    await page.goto('/tabs/account/character');
     const editor = page.locator(tab('character'));
     const skinTab = editor.getByRole('tab', { name: en.avatar.tab.skin, exact: true });
     await skinTab.focus();
@@ -354,19 +346,19 @@ test.describe('Character', () => {
 
   test('a change saves on its own, even when leaving right away', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/profile/character');
+    await page.goto('/tabs/account/character');
     const editor = page.locator(tab('character'));
     await editor.getByTestId('character-random').click();
     // Leave before the half-second autosave: the pending save is still sent, no dialog.
     await editor.getByTestId('character-back').click();
-    await expect(page).toHaveURL(/\/tabs\/profile$/);
+    await expect(page).toHaveURL(/\/tabs\/account$/);
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), AVATAR_KEY)).not.toBeNull();
   });
 
   test('a failed autosave keeps the edit available to retry or discard', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/profile/character');
+    await page.goto('/tabs/account/character');
     const editor = page.locator(tab('character'));
     const preview = editor.getByTestId('character-preview');
     await expect(preview).toBeVisible();

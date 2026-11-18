@@ -39,7 +39,7 @@ for (const lang of LOCALES)
         await loginAs();
         await page.goto('/tabs/home');
         const home = await page.getByTestId('tab-home').boundingBox();
-        const profile = await page.getByTestId('tab-profile').boundingBox();
+        const profile = await page.getByTestId('tab-account').boundingBox();
         if (lang === 'ar') expect(home!.x).toBeGreaterThan(profile!.x);
         else expect(home!.x).toBeLessThan(profile!.x);
       });
@@ -47,14 +47,14 @@ for (const lang of LOCALES)
 
 test('the pill lines up with the active tab', async ({ page, loginAs }) => {
   await loginAs();
-  await page.goto('/tabs/goals');
+  await page.goto('/tabs/compare');
   const pill = page.getByTestId('tab-pill');
   // Wait for the slide to finish before measuring.
   await expect(pill).toHaveAttribute('style', /translateX\(200%\)/);
   await expect
     .poll(async () => {
       const p = (await pill.boundingBox())!;
-      const t = (await page.getByTestId('tab-goals').boundingBox())!;
+      const t = (await page.getByTestId('tab-compare').boundingBox())!;
       return Math.abs(p.x + p.width / 2 - (t.x + t.width / 2));
     })
     .toBeLessThan(2);
@@ -83,7 +83,7 @@ test('the dock is inset from the sides, centered, at most 520 px wide', async ({
   expect(bar.x).toBeGreaterThanOrEqual(8);
   expect(Math.abs(bar.x + bar.width / 2 - width / 2)).toBeLessThan(2);
   const first = (await page.getByTestId('tab-home').boundingBox())!;
-  const last = (await page.getByTestId('tab-profile').boundingBox())!;
+  const last = (await page.getByTestId('tab-account').boundingBox())!;
   expect(Math.min(first.x, last.x)).toBeGreaterThanOrEqual(bar.x);
   expect(Math.max(first.x, last.x) + last.width).toBeLessThanOrEqual(bar.x + bar.width + 1);
 });
@@ -133,10 +133,7 @@ base('the app title is LevelUP', async ({ page }) => {
   await expect(page).toHaveTitle('LevelUP');
 });
 
-test('retired Community addresses redirect to Home', async ({
-  page,
-  loginAs,
-}) => {
+test('retired Community addresses redirect to Home', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');
   const tablist = page.getByRole('navigation', { name: en.tabs.navLabel });
@@ -147,7 +144,7 @@ test('retired Community addresses redirect to Home', async ({
     await page.goto(path);
     await expect(page).toHaveURL(/\/tabs\/home$/);
   }
-  await page.goto('/tabs/profile/settings');
+  await page.goto('/tabs/account/settings');
   await expect(page.getByTestId('setting-show-fitscore')).toHaveCount(0);
   await expect(page.getByTestId('setting-leaderboard')).toHaveCount(0);
 });

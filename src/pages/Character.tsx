@@ -236,7 +236,7 @@ const Character: React.FC = () => {
       return;
     }
     if (router.canGoBack()) router.goBack();
-    else router.push('/tabs/profile', 'back', 'replace');
+    else router.push('/tabs/account', 'back', 'replace');
   }, [flush, router]);
 
   const setPart = (part: 'skin' | 'hair' | 'top', id: string) => {

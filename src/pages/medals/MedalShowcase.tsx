@@ -73,7 +73,7 @@ export default function MedalShowcase({
           <Icon name="trophy" />
           {t('medals.link')}
         </h2>
-        <Link to="/tabs/profile/medals" className="lu-link-button inline-flex items-center gap-1.5 no-underline">
+        <Link to="/tabs/account/medals" className="lu-link-button inline-flex items-center gap-1.5 no-underline">
           {t('profile.viewMedals')}
           <Icon name="chevronForward" className="rtl:-scale-x-100" />
         </Link>

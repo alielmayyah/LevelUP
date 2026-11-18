@@ -9,6 +9,8 @@ import Icon from '../../components/Icon';
 import { formatCount } from '../../i18n/format';
 import { useReveal } from '../../motion/gsapMotion';
 import { formatTimeAgo } from './homeText';
+// The sheet's tints live with Home's custom styles.
+import './Dashboard.scss';
 
 interface Props {
   open: boolean;

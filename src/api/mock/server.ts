@@ -25,6 +25,7 @@ import {
 } from '../types';
 import { goalProgress, metricValue, round1 } from './domain';
 import type { GoalRecord } from './fixtures';
+import { journeyFor } from './journey';
 import { buildMembers, type MockMember } from './members';
 
 export interface MockResponse {
@@ -188,6 +189,7 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
           }
         : null,
     unreadNotifications: m.notifications.filter((n) => n.readAt === null).length,
+    journey: journeyFor(scans),
   };
 }
 

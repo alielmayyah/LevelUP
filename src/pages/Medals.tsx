@@ -214,7 +214,7 @@ export default function Medals() {
               aria-label={t('medals.back')}
               onClick={() => {
                 if (router.canGoBack()) router.goBack();
-                else router.push('/tabs/profile', 'back', 'replace');
+                else router.push('/tabs/account', 'back', 'replace');
               }}
             >
               <Icon name="arrowBack" className="rtl:-scale-x-100" />

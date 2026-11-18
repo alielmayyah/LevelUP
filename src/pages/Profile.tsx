@@ -39,14 +39,14 @@ const Profile: React.FC = () => {
 
   return (
     <TabPage
-      testId="page-profile"
-      title={t('tabs.profile')}
+      testId="page-account"
+      title={t('tabs.account')}
       titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="person" />}
       onRefresh={refresh}
       actions={
         <Link
           className="lu-link-button inline-flex shrink-0 items-center gap-1.5 no-underline"
-          to="/tabs/profile/settings"
+          to="/tabs/account/settings"
         >
           <Icon name="settings" />
           {t('profile.settings')}
@@ -114,7 +114,7 @@ const Profile: React.FC = () => {
               </div>
             </div>
             <Link
-              to="/tabs/profile/character"
+              to="/tabs/account/character"
               className="lu-hero-button inline-flex min-h-12 items-center justify-center gap-2 px-5 text-[0.95rem] no-underline transition-transform duration-150 active:scale-[0.97] motion-reduce:transition-none"
               data-testid="customize-character"
             >
@@ -124,6 +124,16 @@ const Profile: React.FC = () => {
           </section>
 
           <MedalShowcase categories={categories} failed={medals.failed} retry={medals.retry} />
+          {/* Goals moved here from their own tab: one active goal shows on Home, the rest live here. */}
+          <Link
+            to="/tabs/account/goals"
+            className="lu-card flex min-h-14 items-center gap-3 text-ink no-underline"
+            data-testid="account-goals"
+          >
+            <Icon className="flex-none text-[1.25rem] text-brand-soft" name="target" />
+            <span className="flex-1 font-semibold">{t('tabs.goals')}</span>
+            <Icon className="flex-none text-muted rtl:-scale-x-100" name="chevronForward" />
+          </Link>
         </div>
       )}
     </TabPage>

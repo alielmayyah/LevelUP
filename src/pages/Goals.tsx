@@ -110,7 +110,7 @@ const Goals: React.FC = () => {
   const { t } = useTranslation();
   const router = useIonRouter();
   const goals = useApi<GoalsDto>('/me/goals');
-  const newGoal = () => router.push('/tabs/goals/new', 'forward');
+  const newGoal = () => router.push('/tabs/account/goals/new', 'forward');
   useRefreshOnEnter(goals.reload);
 
   // "Goal set!" once, when New goal sends the member back here: read on first
@@ -130,6 +130,7 @@ const Goals: React.FC = () => {
   return (
     <TabPage
       testId="page-goals"
+      backTo="/tabs/account"
       title={t('tabs.goals')}
       titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="target" />}
       subtitle={t('goals.subtitle')}

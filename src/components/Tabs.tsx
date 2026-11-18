@@ -18,7 +18,8 @@ const withSuspense = (Page: LazyExoticComponent<ComponentType>) => {
 
 const LOADERS = {
   home: () => import('../pages/Dashboard'),
-  progress: () => import('../pages/Progress'),
+  scans: () => import('../pages/Progress'),
+  compare: () => import('../pages/Compare'),
   goals: () => import('../pages/Goals'),
   newGoal: () => import('../pages/NewGoal'),
   character: () => import('../pages/Character'),
@@ -27,7 +28,8 @@ const LOADERS = {
 };
 
 const Home = withSuspense(lazy(LOADERS.home));
-const Progress = withSuspense(lazy(LOADERS.progress));
+const Scans = withSuspense(lazy(LOADERS.scans));
+const Compare = withSuspense(lazy(LOADERS.compare));
 const Goals = withSuspense(lazy(LOADERS.goals));
 const NewGoal = withSuspense(lazy(LOADERS.newGoal));
 const Character = withSuspense(lazy(LOADERS.character));
@@ -42,8 +44,7 @@ const Medals = withSuspense(lazy(() => import('../pages/Medals')));
  */
 function usePrefetchTabs(): void {
   useEffect(() => {
-    const prefetch = () =>
-      Object.values(LOADERS).forEach((load) => void load().catch(() => undefined));
+    const prefetch = () => Object.values(LOADERS).forEach((load) => void load().catch(() => undefined));
     if ('requestIdleCallback' in window) {
       const id = window.requestIdleCallback(prefetch, { timeout: 2000 });
       return () => window.cancelIdleCallback(id);
@@ -66,13 +67,14 @@ const Tabs: React.FC = () => {
     <IonTabs>
       <IonRouterOutlet>
         <Route exact path="/tabs/home" component={Home} />
-        <Route exact path="/tabs/progress" component={Progress} />
-        <Route exact path="/tabs/goals" component={Goals} />
-        <Route exact path="/tabs/goals/new" component={NewGoal} />
-        <Route exact path="/tabs/profile" component={Profile} />
-        <Route exact path="/tabs/profile/settings" component={Settings} />
-        <Route exact path="/tabs/profile/character" component={Character} />
-        <Route exact path="/tabs/profile/medals" component={Medals} />
+        <Route exact path="/tabs/scans" component={Scans} />
+        <Route exact path="/tabs/compare" component={Compare} />
+        <Route exact path="/tabs/account/goals" component={Goals} />
+        <Route exact path="/tabs/account/goals/new" component={NewGoal} />
+        <Route exact path="/tabs/account" component={Profile} />
+        <Route exact path="/tabs/account/settings" component={Settings} />
+        <Route exact path="/tabs/account/character" component={Character} />
+        <Route exact path="/tabs/account/medals" component={Medals} />
         <Route exact path="/tabs">
           <Redirect to="/tabs/home" />
         </Route>

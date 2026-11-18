@@ -46,7 +46,7 @@ const LIT_FALLBACK_MS = 520;
  * sits white-on-white mid-move.
  */
 /** Full-screen pages: the tab bar steps aside; they carry their own Back button. */
-const FULL_SCREEN = new Set(['/tabs/profile/character']);
+const FULL_SCREEN = new Set(['/tabs/account/character']);
 
 const TabBar: React.FC = () => {
   const { t, i18n } = useTranslation();

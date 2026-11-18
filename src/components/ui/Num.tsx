@@ -19,13 +19,11 @@ export interface NumProps {
  * the sentence's font instead.
  */
 export function Num({ value, unit, digits, signed = false, className, testId }: NumProps) {
-  let text: string;
-  if (signed) {
-    text = formatSigned(value, unit, { digits });
-  } else {
-    const n = formatNumber(value, digits);
-    text = !unit || value === null || value === undefined ? n : unit === '%' ? `${n}%` : `${n} ${unit}`;
-  }
+  // The signed number keeps its own left-to-right isolate (so "−" stays in front); a word unit
+  // sits outside it, so in Arabic the number reads first, then "كجم", like an unsigned value.
+  const n = signed ? formatSigned(value, unit === '%' ? '%' : undefined, { digits }) : formatNumber(value, digits);
+  const missing = value === null || value === undefined || !Number.isFinite(value);
+  const text = missing || !unit ? n : unit === '%' ? (signed ? n : `${n}%`) : `${n}\u00a0${unit}`;
   return (
     <bdi className={`font-num tabular-nums ${className ?? ''}`} data-testid={testId}>
       {text}

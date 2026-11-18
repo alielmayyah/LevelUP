@@ -124,7 +124,7 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <TabPage testId="page-settings" title={t('profile.settings')} backTo="/tabs/profile" fill>
+    <TabPage testId="page-settings" title={t('profile.settings')} backTo="/tabs/account" fill>
       {/* Rows keep their natural height (no stretching to fill the screen); Sign out follows the card. */}
       <div className="mx-auto flex w-full max-w-[620px] flex-col gap-3.5">
         <section className="lu-card flex flex-col py-1.5" aria-labelledby="sec-settings">

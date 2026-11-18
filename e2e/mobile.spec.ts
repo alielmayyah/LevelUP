@@ -46,13 +46,13 @@ test.describe('navigation has no dead ends', () => {
 
 test('Android back closes the sign-out dialog and stays in Settings', async ({ page, loginAs }) => {
   await loginAs();
-  await page.goto('/tabs/profile/settings');
+  await page.goto('/tabs/account/settings');
   await page.getByRole('button', { name: en.profile.signOut }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   const priorities = await pressHardwareBack(page);
   expect(priorities[0]).toBeGreaterThanOrEqual(100); // the dialog outranks navigation
   await expect(page.getByRole('dialog')).toBeHidden();
-  await expect(page).toHaveURL(/\/tabs\/profile\/settings$/);
+  await expect(page).toHaveURL(/\/tabs\/account\/settings$/);
 });
 
 /**
@@ -85,16 +85,16 @@ test.describe('tab gestures', () => {
     await page.goto('/tabs/home');
     await expect(page.getByTestId('page-home')).toBeVisible();
     await swipe(page, 0.8, 0.3);
-    await expect(page).toHaveURL(/\/tabs\/progress$/);
-    await expect(page.getByTestId('page-progress')).toBeVisible();
+    await expect(page).toHaveURL(/\/tabs\/scans$/);
+    await expect(page.getByTestId('page-scans')).toBeVisible();
     await swipe(page, 0.8, 0.3);
-    await expect(page).toHaveURL(/\/tabs\/goals$/);
-    await expect(page.getByTestId('page-goals')).toBeVisible();
+    await expect(page).toHaveURL(/\/tabs\/compare$/);
+    await expect(page.getByTestId('page-compare')).toBeVisible();
     await swipe(page, 0.3, 0.8);
-    await expect(page).toHaveURL(/\/tabs\/progress$/);
+    await expect(page).toHaveURL(/\/tabs\/scans$/);
     // A swipe from the very edge belongs to the system back gesture.
     await swipe(page, 0.01, 0.6);
-    await expect(page).toHaveURL(/\/tabs\/progress$/);
+    await expect(page).toHaveURL(/\/tabs\/scans$/);
   });
 
   test('swiping is mirrored in Arabic', async ({ page, loginAs, hasTouch }) => {
@@ -105,13 +105,13 @@ test.describe('tab gestures', () => {
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page.getByTestId('page-home')).toBeVisible();
     await swipe(page, 0.3, 0.8);
-    await expect(page).toHaveURL(/\/tabs\/progress$/);
+    await expect(page).toHaveURL(/\/tabs\/scans$/);
   });
 
   test('Android back on another tab goes Home', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/goals');
-    await expect(page.getByTestId('page-goals')).toBeVisible();
+    await page.goto('/tabs/compare');
+    await expect(page.getByTestId('page-compare')).toBeVisible();
     await pressHardwareBack(page);
     await expect(page).toHaveURL(/\/tabs\/home$/);
   });
@@ -123,34 +123,34 @@ test.describe('scrolling on a phone-height screen', () => {
 
   test('re-tapping the active tab scrolls it back to the top', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/progress');
-    const content = page.getByTestId('page-progress').locator('ion-content');
+    await page.goto('/tabs/scans');
+    const content = page.getByTestId('page-scans').locator('ion-content');
     // Open the details and wait for the lazy charts so the page is at full height before scrolling.
     await page.getByTestId('progress-more').click();
     await expect(page.getByTestId('chart-trend')).toBeVisible();
     await content.evaluate((el) => (el as IonContentEl).scrollToPoint(0, 300, 0));
     const scrollTop = () => content.evaluate(async (el) => (await (el as IonContentEl).getScrollElement()).scrollTop);
     await expect.poll(scrollTop).toBeGreaterThan(100);
-    await page.getByTestId('tab-progress').click();
+    await page.getByTestId('tab-scans').click();
     await expect.poll(scrollTop).toBeLessThan(5);
   });
 
   test('switching tabs keeps each tab where the member left it', async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/progress');
-    const content = page.getByTestId('page-progress').locator('ion-content');
+    await page.goto('/tabs/scans');
+    const content = page.getByTestId('page-scans').locator('ion-content');
     const scrollTop = () => content.evaluate(async (el) => (await (el as IonContentEl).getScrollElement()).scrollTop);
     // Open the details; the charts load after, so wait until the page is at its full height.
     await page.getByTestId('progress-more').click();
     await expect(page.getByTestId('chart-trend')).toBeVisible();
     await content.evaluate((el) => (el as IonContentEl).scrollToPoint(0, 250, 0));
     await expect.poll(scrollTop).toBeGreaterThan(200);
-    await page.getByTestId('tab-goals').click();
-    await expect(page).toHaveURL(/\/tabs\/goals$/);
-    await page.getByTestId('tab-progress').click();
-    await expect(page).toHaveURL(/\/tabs\/progress$/);
+    await page.getByTestId('tab-compare').click();
+    await expect(page).toHaveURL(/\/tabs\/compare$/);
+    await page.getByTestId('tab-scans').click();
+    await expect(page).toHaveURL(/\/tabs\/scans$/);
     // A page still hidden mid-transition reports 0, so wait until it is shown again.
-    await expect(page.getByTestId('page-progress')).not.toHaveClass(/ion-page-hidden/);
+    await expect(page.getByTestId('page-scans')).not.toHaveClass(/ion-page-hidden/);
     await expect.poll(scrollTop).toBeGreaterThan(200);
   });
 });

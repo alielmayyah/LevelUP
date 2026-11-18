@@ -79,6 +79,77 @@ export interface DashboardDto {
   plan: Advice[];
   mission: MissionSummary | null;
   unreadNotifications: number;
+  /** The redesign's Home: level, verdict, the road and the next stop. Computed by the API. */
+  journey?: JourneyDto;
+}
+
+/* ---------- Journey (redesign Home; docs/redesign/PLAN.md, ui-standards → Data on screen) ---------- */
+
+/** better/worse are judged per metric (more muscle is better, more fat is worse); same = inside the noise. */
+export type ChangeVerdict = 'better' | 'worse' | 'same';
+
+export interface MetricChange {
+  /** Later minus earlier, in the metric's unit (kg, or points for fat %). */
+  delta: number;
+  /** "same" when the change is inside the machine's noise for that metric. */
+  verdict: ChangeVerdict;
+}
+
+/** Two scans compared. Across machines only the direction is meaningful, so every verdict is "same". */
+export interface ScanChange {
+  fromAt: string;
+  toAt: string;
+  sameMachine: boolean;
+  muscleKg: MetricChange;
+  fatKg: MetricChange;
+  weightKg: MetricChange;
+  fatPct: MetricChange;
+}
+
+/** The sentence on top of Home, written by the app from this key (`home.verdict.<key>`). */
+export type JourneyVerdict =
+  | 'noScans'
+  | 'firstScan'
+  | 'recomposition'
+  | 'muscleGain'
+  | 'fatLoss'
+  | 'muscleLoss'
+  | 'fatGain'
+  | 'steady'
+  | 'differentMachine';
+
+export interface JourneyStop {
+  id: number;
+  takenAt: string;
+  /** Same machine as the first scan; other machines get a hollow stamp on the road. */
+  sameMachine: boolean;
+}
+
+export type JourneyMilestone = 'firstScan' | 'levelUp';
+
+export interface JourneyDto {
+  /** 1 at the first scan, +1 per real change since it (muscle ≈ 0.9 kg up, fat ≈ 1.5 kg down). Never goes down. 0 with no scans. */
+  level: number;
+  /** What the next level takes, as body targets: either one is enough. null with no scans. */
+  nextLevel: { muscleKg: number; fatKg: number } | null;
+  verdict: JourneyVerdict;
+  /** Oldest first. */
+  stops: JourneyStop[];
+  sinceFirst: ScanChange | null;
+  sinceLast: ScanChange | null;
+  /** The latest scan's body, split the way Home draws it. */
+  latest: {
+    takenAt: string;
+    weightKg: number;
+    fatKg: number;
+    fatFreeMassKg: number;
+    place: string | null;
+    machine: string | null;
+  } | null;
+  /** When the next scan is due (4 weeks after the latest). */
+  nextScanDue: string | null;
+  /** What the latest scan earned, shown as a card on Home. */
+  milestone: { key: JourneyMilestone; level: number } | null;
 }
 
 /* ---------- Progress, goals, profile, notifications (core plan Task 9) ---------- */

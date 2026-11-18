@@ -1,6 +1,7 @@
 import {
   Activity,
   ArrowLeft,
+  ArrowLeftRight,
   ArrowRight,
   Atom,
   Award,
@@ -35,7 +36,9 @@ import {
   Info,
   Lightbulb,
   Lock,
+  MapPin,
   LogOut,
+  MessageCircle,
   Minus,
   Palette,
   PersonStanding,
@@ -74,6 +77,9 @@ export const ICONS = {
   // Navigation
   house: House,
   chart: ChartLine,
+  compare: ArrowLeftRight,
+  chat: MessageCircle,
+  place: MapPin,
   target: Target,
   flag: Flag,
   person: User,

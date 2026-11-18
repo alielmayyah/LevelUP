@@ -53,7 +53,7 @@ export { expect };
 
 export const LOCALES: Locale[] = ['en', 'ar'];
 
-export const TABS = ['home', 'progress', 'goals', 'profile'] as const;
+export const TABS = ['home', 'scans', 'compare', 'account'] as const;
 export const THEMES: Theme[] = ['light', 'dark'];
 
 /** True when the page has no horizontal scroll. */

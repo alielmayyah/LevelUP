@@ -4,7 +4,7 @@ import en from '../src/i18n/en.json' with { type: 'json' };
 import { expect, noHorizontalOverflow, test } from './fixtures';
 
 const openDetails = async (page: import('@playwright/test').Page) => {
-  await page.goto('/tabs/progress');
+  await page.goto('/tabs/scans');
   await page.getByTestId('progress-more').click();
   await expect(page.getByTestId('body-comp')).toBeVisible();
 };
@@ -41,7 +41,7 @@ for (const lang of ['en', 'ar'] as const)
     test('See full scan is one disclosure, remembered after a reload', async ({ page, loginAs }) => {
       const s = { en, ar }[lang];
       await loginAs();
-      await page.goto('/tabs/progress');
+      await page.goto('/tabs/scans');
       const toggle = page.getByTestId('progress-more');
       await expect(toggle).toHaveText(s.progress.moreDetails);
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -67,15 +67,15 @@ for (const lang of ['en', 'ar'] as const)
     test('the plan says what to do, and Home shows its first step', async ({ page, loginAs }) => {
       const s = { en, ar }[lang];
       await loginAs();
-      await page.goto('/tabs/progress');
+      await page.goto('/tabs/scans');
       const plan = page.getByTestId('action-plan');
       await expect(plan.getByRole('heading', { name: s.plan.title })).toBeVisible();
       await expect(plan.getByTestId('advice-fatLow')).toContainText(s.plan.item.fatLow.title);
       await page.getByTestId('tab-home').click();
-      const teaser = page.getByTestId('plan-teaser');
-      await expect(teaser.getByTestId('plan-teaser-top')).toContainText(s.plan.item.fatLow.title);
-      await teaser.click();
-      await expect(page).toHaveURL(/\/tabs\/progress$/);
+      const card = page.getByTestId('home-plan');
+      await expect(card).toContainText(s.plan.item.fatLow.title);
+      await card.getByTestId('home-plan-open').click();
+      await expect(page).toHaveURL(/\/tabs\/scans$/);
     });
   });
 
@@ -89,7 +89,7 @@ test('the body parts fit a 320 px screen', async ({ page, loginAs }) => {
 
 test('the plan opens with what the change means', async ({ page, loginAs }) => {
   await loginAs();
-  await page.goto('/tabs/progress');
+  await page.goto('/tabs/scans');
   const card = page.getByTestId('scan-insight');
   // Demo member 101 gained muscle and lost fat since the scan before.
   await expect(card).toHaveAttribute('data-kind', 'recomp');
@@ -98,7 +98,7 @@ test('the plan opens with what the change means', async ({ page, loginAs }) => {
 
 test('a single scan has a plan but no change to explain yet', async ({ page, loginAs }) => {
   await loginAs('103');
-  await page.goto('/tabs/progress');
+  await page.goto('/tabs/scans');
   await expect(page.getByTestId('latest-scan')).toBeVisible();
   await expect(page.getByTestId('action-plan')).toBeVisible();
   await expect(page.getByTestId('scan-insight')).toHaveCount(0);

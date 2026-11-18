@@ -43,7 +43,7 @@ for (const lang of LOCALES)
         await expect(page).toHaveURL(/\/login$/);
 
         // The tabs stay locked until the member signs in again.
-        await page.goto('/tabs/progress');
+        await page.goto('/tabs/scans');
         await expect(page).toHaveURL(/\/login$/);
       });
     });
@@ -51,10 +51,10 @@ for (const lang of LOCALES)
 test('a brand-new member (102) sees empty states on every tab, never NaN or undefined', async ({ page, loginAs }) => {
   await loginAs('102');
   const checks: Record<string, string> = {
-    home: en.home.fitScore.empty,
-    progress: en.progress.empty,
-    goals: en.goals.empty,
-    profile: en.profile.settings,
+    home: en.journey.empty.title,
+    scans: en.progress.empty,
+    compare: en.compare.needTwo.title,
+    account: en.profile.settings,
   };
   for (const tab of TABS) {
     await page.goto(`/tabs/${tab}`);

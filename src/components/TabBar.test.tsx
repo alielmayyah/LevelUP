@@ -24,7 +24,7 @@ describe('TabBar', () => {
 
   it('tab bar has 4 tabs in order, named by their visible labels', () => {
     renderAt('/tabs/home');
-    expect(tabs().map((t) => t.textContent)).toEqual(['Home', 'Progress', 'Goals', 'Profile']);
+    expect(tabs().map((t) => t.textContent)).toEqual(['Home', 'Scans', 'Compare', 'Account']);
     // No aria-label on the buttons: the visible label is the name (WCAG 2.5.3).
     expect(tabs().some((t) => t.hasAttribute('aria-label'))).toBe(false);
   });
@@ -35,13 +35,13 @@ describe('TabBar', () => {
   });
 
   it('pill sits under the active tab', () => {
-    renderAt('/tabs/profile');
+    renderAt('/tabs/account');
     expect(screen.getByTestId('tab-pill').style.transform).toBe('translateX(300%)');
   });
 
   it('pill mirrors in rtl', async () => {
     await setLanguage('ar');
-    renderAt('/tabs/goals');
+    renderAt('/tabs/compare');
     expect(screen.getByTestId('tab-pill').style.transform).toBe('translateX(-200%)');
     expect(tabs()[0]).toHaveTextContent('الرئيسية');
   });
@@ -55,12 +55,15 @@ describe('TabBar', () => {
 describe('tabIndex / pillTransform', () => {
   it('matches a tab and its sub-pages', () => {
     expect(tabIndex('/tabs/home')).toBe(0);
-    expect(tabIndex('/tabs/profile')).toBe(3);
-    expect(tabIndex('/tabs/profile/settings')).toBe(3);
+    expect(tabIndex('/tabs/account')).toBe(3);
+    expect(tabIndex('/tabs/account/settings')).toBe(3);
     expect(tabIndex('/tabs/community/leaderboard')).toBe(-1);
     expect(tabIndex('/tabs/leaderboard')).toBe(-1);
-    expect(tabIndex('/tabs/goals/12')).toBe(2);
-    expect(tabIndex('/tabs/goalsx')).toBe(-1);
+    // Goals live under Account now.
+    expect(tabIndex('/tabs/account/goals/new')).toBe(3);
+    expect(tabIndex('/tabs/compare')).toBe(2);
+    expect(tabIndex('/tabs/accountx')).toBe(-1);
+    expect(tabIndex('/tabs/progress')).toBe(-1);
   });
 
   it('never prints -0%', () => {
