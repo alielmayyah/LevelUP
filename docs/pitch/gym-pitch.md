@@ -6,7 +6,7 @@ A 15-minute meeting with an owner of a gym that already runs InBody scans. It is
 
 | Step | Time | Goal |
 |---|---|---|
-| 1. Hook | 1 min | A member who almost quit because they couldn't read the sheet |
+| 1. Hook | 1 min | The friend who couldn't read or compare his sheets |
 | 2. Questions | 4 min | Their numbers, written down |
 | 3. Demo | 3 min | The owner holds the phone and sees their own logo |
 | 4. Money line | 2 min | The math, with their own prices |
@@ -27,13 +27,24 @@ A 15-minute meeting with an owner of a gym that already runs InBody scans. It is
 
 ## 1. The hook (1 minute)
 
-Tell it as an example member, not as a real person, until a pilot gives you a real story with the member's permission.
+**This is where LevelUP came from; tell it as it happened.** A friend started CrossFit and a diet, and took an InBody scan at a gym near him. He got the printed sheet and couldn't understand any of it, so he asked me, and explaining it took a long time. A month later he scanned again at the same gym. Now he had one sheet in his hand and a phone photo of the old one, and he still couldn't tell what had changed. His body fat % had barely moved, so he thought he hadn't improved, when in fact his muscle had gone up and his fat had come down. After a few scans it was a pile of papers and photos, and there was no way to see his progress since the first one.
 
-> «تخيّل عضو عندك عمل 3 قياسات InBody في 3 شهور ونص. الميزان نزل كيلو واحد بس، فافتكر إن مفيش فايدة وكان هيبطّل. الحقيقة إن عضله زاد كيلو ودهونه قلّت 2.3 كيلو. جسمه اتغيّر، هو بس ما كانش عارف يقرا الورقة.»
+> «صاحبي بدأ كروس فت ودايت، وراح عمل قياس InBody في جيم جنبه. أخد الورقة وبصّ فيها وما فهمش منها حاجة، فجه يسألني، وأخدت وقت طويل أشرحله. بعد شهر عمل قياس تاني في نفس الجيم، ومسك الورقة الجديدة في إيده والقديمة صورة على موبايله، وبرضه مش عارف إيه اللي اتحسّن. نسبة الدهون كانت تقريباً زي ما هي، فافتكر إنه ما اتحسنش، والحقيقة إن عضله زاد ودهونه قلّت. وبعد كام قياس بقى عنده كومة ورق وصور، ومش قادر يشوف تقدّمه من أول يوم. وأنا متأكد إن عندك أعضاء كتير زيه.»
 
-> "Picture a member who took three InBody scans in three and a half months. The scale dropped just one kilo, so he thought it wasn't working and was about to quit. In fact he gained a kilo of muscle and lost 2.3 kilos of fat. His body changed; he just couldn't read the sheet."
+> "A friend of mine started CrossFit and a diet, and took an InBody scan at a gym near him. He looked at the sheet and couldn't understand any of it, so he came to me, and it took a long time to explain. A month later he scanned again at the same gym. He had the new sheet in his hand and a photo of the old one on his phone, and he still couldn't tell what had improved. His body fat % had barely moved, so he thought he hadn't made progress, when actually his muscle went up and his fat went down. After a few scans it was a pile of papers and photos, and he couldn't see his progress since day one. I'm sure you have plenty of members like him."
 
-Why this story: it is physically consistent (fat % falls from 21.8% to 19.2%), and the change is bigger than the machine's measurement noise (about 0.9 kg for muscle and 1.5 kg for fat on an InBody 770). Plan v2's original hook ("same fat %, +1.1 kg muscle, −0.9 kg fat") can't happen and a nutritionist would catch it, so don't use it.
+**The problems in his story, and what the app does about each:**
+
+| His problem | The app |
+|---|---|
+| Couldn't read the sheet | A verdict sentence in plain Egyptian Arabic, and every number on its normal range with one word |
+| Needed someone to explain it, for a long time | Tap any number to see what it means; the gym's trainers stop repeating the same explanation |
+| Couldn't compare two sheets | Compare puts two scans side by side with the change worked out |
+| Fat % "the same" read as "no progress" | Muscle and fat changes come first; weight is shown as fat + fat-free mass |
+| Papers and photos pile up | Every scan in one timeline, from the first one |
+| No all-time progress | "Since your first scan" is the headline on Home |
+
+**Get the numbers right before telling it.** Fat % can't stay *exactly* the same when fat falls and muscle rises (the % has to drop), and one month's change is often inside the machine's noise (about 0.9 kg muscle, 1.5 kg fat on an InBody 770). So say "barely moved", not "stayed the same", and don't quote one-month numbers you can't show. Better: ask your friend for photos of his sheets and his permission to use them. His real numbers become the best demo you can have, and if he has three or more scans, the trend since the first scan will show the change clearly.
 
 ---
 
