@@ -140,9 +140,9 @@ test.describe('unlock celebration', () => {
     const celebration = page.getByTestId('medal-celebration');
     await expect(page.getByTestId('medal-celebration-title')).toHaveText(copy.medal.growingStrong.title);
     await expect(celebration).not.toContainText('XP');
-    await celebration.getByRole('button', { name: copy.celebrate.continue }).click();
-    await expect(page.getByTestId('medal-celebration-title')).toHaveText(copy.medal.muscleStarter.title);
-    await celebration.getByRole('button', { name: copy.celebrate.continue }).click();
+    // One popup for both: the rarest medal, with a count of the rest.
+    await expect(page.getByTestId('medal-celebration-more')).toBeVisible();
+    await celebration.getByRole('button', { name: copy.celebrate.seeAll }).click();
     await expect(celebration).toHaveCount(0);
 
     await page.reload();

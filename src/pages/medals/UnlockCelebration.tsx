@@ -14,8 +14,9 @@ interface Props {
 }
 
 /**
- * "Medal unlocked!" for each newly earned medal, one at a time. Continue moves
- * to the next; Skip (or closing it any other way) marks the rest as seen too.
+ * One "Medal unlocked!" for everything new since the last visit: the rarest
+ * medal is shown, with a count of the others. Continue (or closing it any way)
+ * marks them all as seen, so the member is never walked through a chain of popups.
  */
 const UnlockCelebration: React.FC<Props> = ({ queue, onSeen }) => {
   const { t } = useTranslation();
@@ -37,7 +38,7 @@ const UnlockCelebration: React.FC<Props> = ({ queue, onSeen }) => {
     >
       {medal && (
         <div className="lu-medal-celebrate-card lu-tab-body" data-testid="medal-celebration">
-          <p className="lu-display m-0 text-[2rem] leading-none text-[var(--lu-rarity-gold)]">
+          <p className="lu-display m-0 text-[2rem] leading-none text-[var(--lu-hero-text)]">
             {t('medals.celebrate.title')}
           </p>
           {/* Keyed so the pop-in replays for each medal in the queue. */}
@@ -48,18 +49,17 @@ const UnlockCelebration: React.FC<Props> = ({ queue, onSeen }) => {
           <p className="m-0 text-[0.85rem] text-[var(--lu-splash-text-muted)]">
             {t(`medals.rarity.${medal.rarity}`)} · <bdi>{medalTarget(t, medal)}</bdi>
           </p>
-          <CtaButton className="mt-1 w-full" onClick={() => onSeen([medal.id])}>
-            {t('medals.celebrate.continue')}
-          </CtaButton>
           {rest > 0 && (
-            <button
-              type="button"
-              className="lu-link-button text-[var(--lu-splash-text-muted)]"
-              onClick={() => onSeen(queue.map((m) => m.id))}
+            <p
+              className="m-0 text-[0.85rem] font-semibold text-[var(--lu-splash-text)]"
+              data-testid="medal-celebration-more"
             >
-              {t('medals.celebrate.skip')} · {t('medals.celebrate.more', { count: rest })}
-            </button>
+              {t('medals.celebrate.alsoEarned', { count: rest })}
+            </p>
           )}
+          <CtaButton className="mt-1 w-full" onClick={() => onSeen(queue.map((m) => m.id))}>
+            {t(rest > 0 ? 'medals.celebrate.seeAll' : 'medals.celebrate.continue')}
+          </CtaButton>
         </div>
       )}
     </IonModal>

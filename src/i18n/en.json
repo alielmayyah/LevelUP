@@ -128,7 +128,14 @@
       "more_two": "{{count}} more new medals",
       "more_few": "{{count}} more new medals",
       "more_many": "{{count}} more new medals",
-      "more_other": "{{count}} more new medals"
+      "more_other": "{{count}} more new medals",
+      "seeAll": "See my medals",
+      "alsoEarned_zero": "And {{count}} more new medals",
+      "alsoEarned_one": "And {{count}} more new medal",
+      "alsoEarned_two": "And {{count}} more new medals",
+      "alsoEarned_few": "And {{count}} more new medals",
+      "alsoEarned_many": "And {{count}} more new medals",
+      "alsoEarned_other": "And {{count}} more new medals"
     },
     "medal": {
       "fatBurner": {

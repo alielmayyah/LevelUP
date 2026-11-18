@@ -5,8 +5,7 @@ import { Link } from 'react-router-dom';
 
 import Icon from '../../components/Icon';
 import { formatNumber, formatPercent } from '../../i18n/format';
-import { MEDAL_CONFIG } from './config';
-import { medalTarget, medalTitle, medalValue } from './format';
+import { medalTarget, medalValue } from './format';
 import MedalArt from './MedalArt';
 import MedalSheet from './MedalSheet';
 import { medalShowcase } from './rules';
@@ -26,9 +25,6 @@ function ShowcaseCard({ medal, next, onOpen }: { medal: MedalStatus; next?: Meda
     >
       <span className="text-[0.8rem] leading-tight font-semibold">{t(`medals.category.${medal.category}`)}</span>
       <MedalArt category={medal.category} rarity={medal.rarity} locked={!medal.unlocked} />
-      {MEDAL_CONFIG[medal.category].ids && (
-        <span className="text-[0.72rem] leading-tight font-semibold">{medalTitle(t, medal)}</span>
-      )}
       <span className="lu-rarity" data-rarity={medal.rarity}>
         {t(`medals.rarity.${medal.rarity}`)}
       </span>
@@ -72,8 +68,8 @@ export default function MedalShowcase({
   return (
     <section className="lu-card grid gap-2" aria-labelledby="profile-medals">
       <div className="flex flex-wrap items-center justify-between gap-x-2">
-        <h2 id="profile-medals" className="lu-display m-0 flex items-center gap-2 text-[1.8rem] leading-tight">
-          <Icon name="trophy" className="text-[0.75em]" />
+        <h2 id="profile-medals" className="lu-card-title">
+          <Icon name="trophy" />
           {t('medals.link')}
         </h2>
         <Link to="/tabs/profile/medals" className="lu-link-button inline-flex items-center gap-1.5 no-underline">

@@ -64,7 +64,7 @@ const Profile: React.FC = () => {
         <div className="grid gap-4 wide:grid-cols-[1fr_1fr] wide:items-start">
           <section className="lu-card grid gap-4" aria-labelledby="profile-name">
             <div className="flex items-center gap-4">
-              <div className="lu-avatar-frame grid h-40 w-[clamp(5rem,27vw,8rem)] shrink-0 place-items-center overflow-hidden rounded-[12px]">
+              <div className="lu-avatar-frame grid h-32 w-[clamp(4.5rem,22vw,6.5rem)] shrink-0 place-items-center overflow-hidden rounded-[12px]">
                 <Avatar
                   config={memberAvatar(member)}
                   crop="full"
@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
               </div>
               <div className="min-w-0">
                 <h2
-                  className="m-0 text-[1.5rem] leading-[1.2] font-semibold wrap-anywhere"
+                  className="m-0 text-[1.375rem] leading-[1.2] font-bold wrap-anywhere"
                   id="profile-name"
                   data-testid="profile-name"
                 >

@@ -1,16 +1,56 @@
 @layer components {
+  /* Vector medals (MedalArt.tsx): the rarity's color, set per data-rarity as --m. */
   .lu-medal-art {
+    --m: var(--lu-rarity-bronze);
     display: block;
     inline-size: 100%;
     block-size: auto;
     aspect-ratio: 1;
-    overflow: hidden;
-    border-radius: 16px;
+    overflow: visible;
+
+    &[data-rarity='silver'] {
+      --m: var(--lu-rarity-silver);
+    }
+
+    &[data-rarity='gold'] {
+      --m: var(--lu-rarity-gold);
+    }
+
+    &[data-rarity='epic'] {
+      --m: var(--lu-rarity-epic);
+    }
+
+    &[data-rarity='legendary'] {
+      --m: var(--lu-rarity-legendary);
+    }
 
     &[data-locked='true'] {
-      filter: grayscale(0.94);
-      opacity: 0.72;
+      --m: var(--lu-text-muted);
+      opacity: 0.55;
     }
+  }
+
+  .lu-medal-halo {
+    fill: color-mix(in srgb, var(--m) 18%, transparent);
+  }
+
+  .lu-medal-rim {
+    fill: color-mix(in srgb, var(--m) 85%, var(--lu-text));
+  }
+
+  .lu-medal-face {
+    fill: color-mix(in srgb, var(--m) 22%, var(--lu-surface));
+    stroke: color-mix(in srgb, var(--m) 55%, var(--lu-surface));
+    stroke-width: 1.5;
+  }
+
+  .lu-medal-glyph {
+    color: color-mix(in srgb, var(--m) 60%, var(--lu-text));
+    stroke: color-mix(in srgb, var(--m) 60%, var(--lu-text));
+  }
+
+  .lu-medal-pips circle {
+    fill: color-mix(in srgb, var(--m) 70%, var(--lu-text));
   }
 
   /* ---------- Overview ---------- */
@@ -19,10 +59,12 @@
     display: grid;
     gap: 14px;
     padding: 16px;
-    border: 1px solid color-mix(in srgb, var(--lu-rarity-epic) 45%, var(--lu-splash-bg-2));
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--lu-splash-bg-2), var(--lu-splash-bg));
-    color: var(--lu-splash-text);
+    border: 0;
+    border-radius: 20px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--lu-hero-bg-2) 90%, transparent), transparent 60%),
+      var(--lu-hero-bg);
+    color: var(--lu-hero-text);
     box-shadow: var(--lu-shadow);
   }
 
@@ -249,9 +291,9 @@
     gap: 0.2rem;
     inline-size: 100%;
     block-size: 100%;
-    padding: 0.5rem 0.25rem;
-    border: 1px solid var(--lu-border);
-    border-radius: 14px;
+    padding: 0.65rem 0.35rem;
+    border: 0;
+    border-radius: 16px;
     background: var(--lu-surface-2);
     color: var(--lu-text);
     font: inherit;
@@ -299,13 +341,11 @@
     justify-items: center;
     gap: 10px;
     padding: 22px 18px 18px;
-    border: 1px solid color-mix(in srgb, var(--lu-rarity-gold) 50%, var(--lu-splash-bg-2));
-    border-radius: 12px;
-    background: radial-gradient(
-      circle at 50% 30%,
-      color-mix(in srgb, var(--lu-rarity-epic) 30%, var(--lu-splash-bg-2)),
-      var(--lu-splash-bg) 70%
-    );
+    border: 0;
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--lu-hero-bg-2) 85%, transparent), transparent 65%),
+      var(--lu-hero-bg);
     color: var(--lu-splash-text);
     box-shadow: var(--lu-shadow-raised);
     text-align: center;

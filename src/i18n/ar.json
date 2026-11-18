@@ -128,7 +128,14 @@
       "more_two": "فاضل ميداليتين جداد",
       "more_few": "فاضل {{count}} ميداليات جديدة",
       "more_many": "فاضل {{count}} ميدالية جديدة",
-      "more_other": "فاضل {{count}} ميدالية جديدة"
+      "more_other": "فاضل {{count}} ميدالية جديدة",
+      "seeAll": "شوف ميدالياتي",
+      "alsoEarned_zero": "و{{count}} ميداليات جديدة كمان",
+      "alsoEarned_one": "وميدالية جديدة كمان",
+      "alsoEarned_two": "وميداليتين جداد كمان",
+      "alsoEarned_few": "و{{count}} ميداليات جديدة كمان",
+      "alsoEarned_many": "و{{count}} ميدالية جديدة كمان",
+      "alsoEarned_other": "و{{count}} ميدالية جديدة كمان"
     },
     "medal": {
       "fatBurner": {

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
-import { medalSprite } from './art';
-import type { MedalCategory, MedalRarity } from './types';
+import { ICONS, type IconName } from '../../components/iconMap';
+import { MEDAL_RARITIES, type MedalCategory, type MedalRarity } from './types';
 
 interface Props {
   category: MedalCategory;
@@ -10,23 +10,63 @@ interface Props {
   className?: string;
 }
 
-/** Art only. The surrounding card or dialog provides the achievement's name and target. */
+/** The exercise or body measurement each medal is for, as the app's line icons. */
+const GLYPH: Record<MedalCategory, IconName> = {
+  pushUps: 'pushUp',
+  bench: 'barbell',
+  squat: 'dumbbell',
+  deadlift: 'barbell',
+  militaryPress: 'dumbbell',
+  pullUps: 'pullUp',
+  plank: 'stopwatch',
+  muscle: 'muscle',
+  bodyFat: 'bodyFat',
+  bmi: 'gauge',
+};
+
+/** A hexagon for the two top rarities; the metals are round. */
+const HEXAGON = '50,4 90,27 90,73 50,96 10,73 10,27';
+
+/**
+ * A clean vector medal: a disc (or hexagon for Epic and Legendary) in the
+ * rarity's color, the category's line icon in the middle, and one pip per
+ * rarity step along the bottom. Art only: the surrounding card names it.
+ */
 const MedalArt: React.FC<Props> = ({ category, rarity, locked, className }) => {
-  const { sheet, crop } = medalSprite(category, rarity);
-  const [x, y, width, height] = crop;
-  const viewBox = crop.join(' ');
+  const Glyph = ICONS[GLYPH[category]];
+  const level = MEDAL_RARITIES.indexOf(rarity) + 1;
+  const hex = level >= 4;
   return (
     <svg
       className={['lu-medal-art', className].filter(Boolean).join(' ')}
       data-rarity={rarity}
       data-locked={locked}
-      viewBox={viewBox}
+      viewBox="0 0 100 100"
       aria-hidden="true"
       focusable="false"
     >
-      <svg x={x} y={y} width={width} height={height} viewBox={viewBox} overflow="hidden">
-        <image href={sheet.src} width={sheet.width} height={sheet.height} preserveAspectRatio="none" />
-      </svg>
+      {/* Legendary gets a soft halo behind the badge. */}
+      {level === 5 && <circle className="lu-medal-halo" cx="50" cy="50" r="49" />}
+      {hex ? (
+        <polygon className="lu-medal-rim" points={HEXAGON} />
+      ) : (
+        <circle className="lu-medal-rim" cx="50" cy="50" r="44" />
+      )}
+      {hex ? (
+        <polygon
+          className="lu-medal-face"
+          points={HEXAGON}
+          transform="translate(50 50) scale(0.8) translate(-50 -50)"
+        />
+      ) : (
+        <circle className="lu-medal-face" cx="50" cy="50" r="35" />
+      )}
+      <Glyph className="lu-medal-glyph" x={31} y={27} width={38} height={38} strokeWidth={1.9} />
+      <g className="lu-medal-pips">
+        {Array.from({ length: level }, (_, i) => (
+          <circle key={i} cx={50 + (i - (level - 1) / 2) * 6} cy={74} r={1.9} />
+        ))}
+      </g>
     </svg>
   );
 };
