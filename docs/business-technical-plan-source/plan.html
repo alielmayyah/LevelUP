@@ -1,0 +1,1297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LevelUP — Business &amp; Technical Plan v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Jersey+10&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F0B1A; --surface:#191330; --surface2:#231B40; --surface3:#2A2150; --line:#2F2654;
+  --ink:#F3F0FF; --ink2:#BDB5DC; --muted:#8A80AE;
+  --accent:#B77CF7; --accent-soft:rgba(124,77,242,.20); --violet:#22D3EE; --violet-soft:rgba(34,211,238,.12);
+  --amber:#F5A524; --amber-soft:rgba(245,165,36,.13); --good:#4ADE80; --warn:#F5A524; --bad:#F87171;
+  --grad:linear-gradient(135deg,#E19CFB 0%,#B77CF7 40%,#6C3CF0 100%);
+  --c-teal:#7C4DF2; --c-amber:#D9731A; --c-violet:#0E9AB8;
+}
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:Inter,"IBM Plex Sans Arabic","Segoe UI",sans-serif;font-size:9.6pt;line-height:1.5}
+.ar,[dir=rtl]{font-family:"IBM Plex Sans Arabic",Inter,"Segoe UI",sans-serif}
+.page{width:210mm;height:297mm;padding:15mm 16mm 16mm;position:relative;overflow:hidden;break-after:page;page-break-after:always;background:var(--bg)}
+.page:last-child{break-after:auto;page-break-after:auto}
+.foot{position:absolute;left:16mm;right:16mm;bottom:8mm;display:flex;justify-content:space-between;color:var(--muted);font-size:7.5pt;border-top:1px solid var(--line);padding-top:2.5mm}
+.eyebrow{font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 2mm}
+h1{font-size:34pt;line-height:1.05;margin:0;font-weight:800;letter-spacing:-.02em}
+h2{position:relative;z-index:1;font-size:21pt;line-height:1.15;margin:0 0 3mm;font-weight:800;letter-spacing:-.015em}
+h3{font-size:11.5pt;margin:5mm 0 2mm;font-weight:700}
+h4{font-size:9.6pt;margin:0 0 1mm;font-weight:700}
+p{margin:0 0 2.5mm;color:var(--ink2)}
+.lead{font-size:11pt;color:var(--ink2);margin-bottom:5mm;max-width:165mm}
+strong{color:var(--ink)}
+ul{margin:0 0 2.5mm;padding-left:4.5mm;color:var(--ink2)} li{margin:0 0 1.2mm}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:4mm;padding:4.5mm}
+.card.tint{background:linear-gradient(160deg,rgba(124,77,242,.10),rgba(20,22,28,1) 60%)}
+.card.vtint{background:linear-gradient(160deg,rgba(34,211,238,.12),rgba(20,22,28,1) 60%)}
+.card.atint{background:linear-gradient(160deg,rgba(245,165,36,.10),rgba(20,22,28,1) 60%)}
+.card p:last-child,.card ul:last-child{margin-bottom:0}
+.stat .v{font-size:19pt;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.stat .l{font-size:7.8pt;color:var(--ink2);margin-top:1mm}
+.tag{display:inline-block;font-size:7pt;font-weight:700;padding:.6mm 2mm;border-radius:10mm;background:var(--accent-soft);color:var(--accent);letter-spacing:.04em}
+.tag.v{background:var(--violet-soft);color:var(--violet)} .tag.a{background:var(--amber-soft);color:var(--amber)} .tag.r{background:rgba(248,113,113,.12);color:var(--bad)}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:8.4pt;background:var(--surface);border:1px solid var(--line);border-radius:3mm;overflow:hidden;margin-bottom:3mm}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:7.4pt;text-transform:uppercase;letter-spacing:.06em;padding:2.2mm 3mm;background:var(--surface2);border-bottom:1px solid var(--line)}
+td{padding:2.1mm 3mm;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td strong{color:var(--ink)}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+code,.mono{font-family:"Cascadia Code",Consolas,monospace;font-size:7.6pt}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:3mm;padding:3.5mm;margin:0 0 3mm;font-size:6.6pt;line-height:1.5;color:#DCD5F5;white-space:pre;overflow:hidden}
+.tight td{padding:1.3mm 2.6mm;font-size:7.8pt}.tight h3{margin:3mm 0 1.5mm}.tight table{margin-bottom:2mm}
+.k{color:var(--accent)} .t{color:var(--violet)} .c{color:var(--muted)}
+.callout{border-left:2px solid var(--accent);background:var(--accent-soft);padding:3mm 4mm;border-radius:0 3mm 3mm 0;margin:3mm 0;color:var(--ink)}
+.callout.a{border-color:var(--amber);background:var(--amber-soft)}
+.check li{list-style:none;position:relative;padding-left:5mm} .check{padding-left:0}
+.check li:before{content:"";position:absolute;left:0;top:1.2mm;width:2.6mm;height:2.6mm;border:1.2px solid var(--muted);border-radius:.8mm}
+.dot{display:inline-block;width:2.2mm;height:2.2mm;border-radius:50%;margin-right:1.5mm;vertical-align:middle}
+.quote{font-size:12.5pt;line-height:1.45;color:var(--ink);font-weight:600}
+.small{font-size:7.8pt;color:var(--muted)}
+.sec-num{z-index:0;position:absolute;right:16mm;top:13mm;font-size:46pt;font-weight:800;color:#1D1636;letter-spacing:-.04em}
+
+/* ---------- phone mockups ---------- */
+.phones{display:flex;gap:6mm;justify-content:center;align-items:flex-start}
+.pwrap{width:54mm}
+.phone{width:54mm;height:110mm;border-radius:8mm;background:#07050E;padding:1.6mm;border:1px solid #3A2F66;box-shadow:0 6mm 14mm rgba(0,0,0,.55),0 0 0 .5mm #0A0714 inset;position:relative}
+.scr{direction:rtl;font-family:"IBM Plex Sans Arabic",Inter,sans-serif;height:100%;border-radius:6.5mm;background:#120D22;overflow:hidden;position:relative;font-size:7.2px;color:var(--ink);padding:8mm 3mm 3mm}
+.scr .notch{position:absolute;top:1.6mm;left:50%;transform:translateX(-50%);width:15mm;height:3.6mm;background:#000;border-radius:3mm}
+.scr .sb{position:absolute;top:1.8mm;right:4mm;left:4mm;display:flex;justify-content:space-between;font-size:6px;color:var(--ink2);direction:ltr;font-family:Inter}
+.cap{margin-top:3mm} .cap h4{font-size:8.8pt} .cap p{font-size:7.8pt;margin:0}
+.s-h{font-size:10.5px;font-weight:700;margin:0 0 1.5mm}
+.s-sub{font-size:6.6px;color:var(--ink2)}
+.s-card{background:#1B1534;border:1px solid #2F2654;border-radius:3mm;padding:2.4mm;margin-bottom:2mm}
+.s-hero{background:radial-gradient(120% 90% at 100% 0%,rgba(124,77,242,.28),rgba(23,26,34,1) 60%);border:1px solid rgba(124,77,242,.25)}
+.big{font-size:17px;font-weight:700;letter-spacing:-.01em;direction:ltr;display:inline-block}
+.g{color:var(--good)} .am{color:var(--amber)} .vi{color:var(--violet)}
+.chip{display:inline-block;padding:.5mm 1.8mm;border-radius:5mm;background:#261E45;color:var(--ink2);font-size:6.2px;margin-left:1mm}
+.chip.on{background:var(--grad);color:#fff;font-weight:700}
+.btn{display:block;text-align:center;background:var(--grad);color:#fff;font-weight:700;border-radius:2.6mm;padding:2.2mm;font-size:7.6px}
+.btn.ghost{background:#211A3D;color:var(--ink);border:1px solid #3A2F66}
+.nav{position:absolute;bottom:0;left:0;right:0;height:9mm;background:rgba(18,13,34,.96);border-top:1px solid #261E45;display:flex;justify-content:space-around;align-items:center;font-size:5.8px;color:var(--muted)}
+.nav span{text-align:center} .nav span i{display:block;width:2.8mm;height:2.8mm;border-radius:1mm;background:#322858;margin:0 auto .6mm} .nav .on{color:var(--accent)} .nav .on i{background:var(--accent)}
+.row{display:flex;justify-content:space-between;align-items:center}
+.mcard{background:#1B1534;border:1px solid #2F2654;border-radius:2.4mm;padding:1.8mm}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.6mm}
+.bar{height:1.3mm;border-radius:1mm;background:#2A2150;overflow:hidden} .bar>b{display:block;height:100%;border-radius:1mm}
+.ring{width:13mm;height:13mm;border-radius:50%;background:conic-gradient(#6C3CF0 0,#B77CF7 39%,#E19CFB 78%,#2A2150 78% 100%);display:grid;place-items:center}
+.ring>div{width:10.4mm;height:10.4mm;border-radius:50%;background:#1B1534;display:grid;place-items:center;font-weight:700;font-size:9px;direction:ltr}
+
+/* ---------- desktop mockups ---------- */
+.desk{background:#120D22;border:1px solid #3A2F66;border-radius:3.5mm;overflow:hidden;box-shadow:0 6mm 14mm rgba(0,0,0,.5);font-size:7.2px}
+.desk .top{height:6mm;background:#1A1430;border-bottom:1px solid #2F2654;display:flex;align-items:center;gap:1.4mm;padding:0 3mm}
+.desk .top i{width:1.8mm;height:1.8mm;border-radius:50%;background:#3D3366;display:inline-block}
+.desk .top .url{margin-left:4mm;background:#120D22;border-radius:1.5mm;padding:.6mm 3mm;color:var(--muted);font-size:6.2px}
+.desk .body{display:grid;grid-template-columns:30mm 1fr;min-height:60mm}
+.side{background:#140F26;border-right:1px solid #261E45;padding:3mm 2.5mm;color:var(--ink2)}
+.side .logo{font-weight:800;color:var(--ink);font-size:8.5px;margin-bottom:3mm;letter-spacing:.06em}
+.side div.it{padding:1.2mm 2mm;border-radius:1.5mm;margin-bottom:.6mm}
+.side div.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.main{padding:3.5mm 4mm}
+.main h5{font-size:10px;margin:0 0 2.5mm;font-weight:700}
+.dt{width:100%;border-collapse:collapse;font-size:6.8px;background:transparent;border:none;border-radius:0;margin:0}
+.dt th{background:transparent;font-size:6px;padding:1.2mm 1.5mm;border-bottom:1px solid #2F2654}
+.dt td{padding:1.3mm 1.5mm;border-bottom:1px solid #261E45;color:var(--ink2)}
+.ok{color:var(--good);font-weight:700} .wa{display:inline-block;background:#1F3A2E;color:#6EE7A8;border-radius:1.2mm;padding:.4mm 1.6mm;font-weight:600}
+.pill{display:inline-block;border-radius:5mm;padding:.3mm 1.6mm;font-size:6px;font-weight:600}
+.p-new{background:var(--accent-soft);color:var(--accent)} .p-con{background:var(--violet-soft);color:var(--violet)} .p-sold{background:rgba(74,222,128,.14);color:var(--good)} .p-warn{background:var(--amber-soft);color:var(--amber)}
+.kpi{background:#1B1534;border:1px solid #2F2654;border-radius:2.4mm;padding:2mm 2.4mm}
+.kpi b{display:block;font-size:12px;margin-top:.6mm}
+
+/* flow */
+.flow{display:flex;align-items:stretch;gap:0}
+.fstep{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:3mm;padding:3mm;position:relative}
+.fstep .n{font-size:7pt;color:var(--accent);font-weight:800}
+.farrow{width:6mm;display:grid;place-items:center;color:var(--muted);font-size:12pt}
+.swatch{height:13mm;border-radius:2.5mm;margin-bottom:1.5mm;border:1px solid rgba(255,255,255,.06)}
+</style>
+</head>
+<body>
+
+<!-- ======================= 1. COVER ======================= -->
+<section class="page" style="background:radial-gradient(90% 60% at 85% 20%,rgba(124,77,242,.16),transparent 60%),radial-gradient(70% 50% at 10% 90%,rgba(34,211,238,.14),transparent 60%),var(--bg)">
+  <div style="display:grid;grid-template-columns:1fr 60mm;gap:8mm;height:100%;align-items:center">
+    <div>
+      <img src="logo.png" alt="LevelUP · Track. Improve. Transform." style="width:64mm;display:block;margin:0 0 9mm -2mm">
+      <p class="eyebrow">Business &amp; Technical Plan · v2 · November 2026</p>
+      <h1>Every body scan,<br>finally <span style="background:var(--grad);-webkit-background-clip:text;color:transparent">understood.</span></h1>
+      <p class="lead" style="margin-top:6mm">LevelUP: gyms and clinics upload each InBody result in under a minute. Members see every scan from every place, explained in plain Arabic. The gym pays because the app brings it more re-scans and more personal-training sales.</p>
+      <div class="grid3" style="margin-top:8mm;max-width:120mm">
+        <div class="stat"><div class="v" style="color:#B77CF7">B2B2C</div><div class="l">Gyms pay, members use it free</div></div>
+        <div class="stat"><div class="v">~92%</div><div class="l">Gross margin at 50 venues</div></div>
+        <div class="stat"><div class="v">9 wks</div><div class="l">Design prototype + MVP</div></div>
+      </div>
+      <div style="margin-top:14mm;color:var(--ink2);font-size:8.5pt">Ali Elmayyah<br><span class="small">All prices and numbers are estimates to confirm in pilots.</span></div>
+    </div>
+    <div class="phone" style="transform:rotate(-4deg)">
+      <div class="scr">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span>IRON BOX</span></div>
+        <div class="s-sub">صباح الخير يا كريم</div>
+        <div class="s-h">تقدّمك من أول قياس</div>
+        <div class="s-card s-hero">
+          <div class="s-sub">آخر 3 شهور · 4 قياسات</div>
+          <div class="big g" style="margin-top:1mm">+2.1 kg</div><div style="font-weight:600">عضل زيادة</div>
+          <div class="row" style="margin-top:2mm"><span>دهون <b class="g" dir="ltr">−1.8 kg</b></span><span>وزن <b dir="ltr">+0.3 kg</b></span></div>
+        </div>
+        <div class="s-card" style="font-size:7.4px;line-height:1.55">وزنك تقريباً ثابت، بس جسمك اتغيّر: <b class="g">عضل أكتر ودهون أقل.</b> ده أحسن تقدّم ممكن.</div>
+        <div class="s-card row"><div><div class="s-sub">القياس الجاي</div><b>بعد 9 أيام</b></div><div class="ring"><div>78</div></div></div>
+        <div class="nav"><span class="on"><i></i>الرئيسية</span><span><i></i>القياسات</span><span><i></i>مقارنة</span><span><i></i>حسابي</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 2. AT A GLANCE ======================= -->
+<section class="page">
+  <span class="sec-num">01</span>
+  <p class="eyebrow">At a glance</p>
+  <h2>The whole plan on one page</h2>
+  <div class="grid3" style="margin-bottom:5mm">
+    <div class="card"><span class="tag a">PROBLEM</span><h4 style="margin-top:2mm">Members can't read their sheet</h4><p>A friend took two InBody scans a month apart. Body fat % stayed the same, so he thought nothing changed. He had gained muscle and lost fat. Paper sheets pile up and real progress stays invisible.</p></div>
+    <div class="card"><span class="tag">SOLUTION</span><h4 style="margin-top:2mm">One upload, a beautiful explanation</h4><p>Staff upload the LookinBody120 export to the member's profile. The member logs in with their phone number and sees every scan from every place, explained in plain Arabic.</p></div>
+    <div class="card"><span class="tag v">MODEL</span><h4 style="margin-top:2mm">The gym pays, the member doesn't</h4><p>Venues pay monthly per branch. Members use the app free through their gym. A small consumer plan covers members whose gym hasn't joined yet.</p></div>
+  </div>
+  <h3>Key numbers (estimates to validate)</h3>
+  <div class="grid4" style="margin-bottom:5mm">
+    <div class="card stat"><div class="v">990–2,490</div><div class="l">EGP per branch per month</div></div>
+    <div class="card stat"><div class="v">15</div><div class="l">EGP per scan for clinics and nutritionists</div></div>
+    <div class="card stat"><div class="v">$25–85</div><div class="l">Running cost per month at launch</div></div>
+    <div class="card stat"><div class="v">75k</div><div class="l">EGP per month at month 12 (50 venues)</div></div>
+  </div>
+  <h3>Why a gym owner says yes</h3>
+  <div class="grid3" style="margin-bottom:5mm">
+    <div class="card tint"><div class="stat"><div class="v" style="color:var(--accent)">Re-scans</div></div><p style="margin-top:1.5mm">Reminders every 4–6 weeks bring members back for paid scans.</p></div>
+    <div class="card tint"><div class="stat"><div class="v" style="color:var(--accent)">PT leads</div></div><p style="margin-top:1.5mm">Flags like "muscle loss" become a list of people trainers can call, with a reason.</p></div>
+    <div class="card tint"><div class="stat"><div class="v" style="color:var(--accent)">Packages</div></div><p style="margin-top:1.5mm">"3-month transformation" bundles become a real product to sell.</p></div>
+  </div>
+  <h3>How we build it</h3>
+  <div class="flow">
+    <div class="fstep"><div class="n">PHASE 0 · WEEKS 1–2</div><h4>Design prototype</h4><p class="small" style="margin:0">Clickable, animated, Arabic-first. Tested with real members before any code.</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">PHASE 1 · WEEKS 3–9</div><h4>Build the MVP</h4><p class="small" style="margin:0">Ionic React app, React dashboard, NestJS + MongoDB.</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">MONTHS 3–4</div><h4>3–5 free pilots</h4><p class="small" style="margin:0">Measure re-scans, PT leads and the money they bring the gym.</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">MONTHS 5–12</div><h4>Paid + partners</h4><p class="small" style="margin:0">20 venues by month 6, 50 by month 12.</p></div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>02</span></div>
+</section>
+
+<!-- ======================= 3. PROBLEM & MARKET ======================= -->
+<section class="page">
+  <span class="sec-num">02</span>
+  <p class="eyebrow">Problem and market</p>
+  <h2>Egypt prints InBody results on paper</h2>
+  <p class="lead">InBody's cloud sync (LookinBody Web) is only offered in the United States. Nobody fills the gap in Arabic, so results stay on paper or in phone photos.</p>
+  <div class="grid3" style="margin-bottom:4mm">
+    <div class="card"><h4>Members</h4><p>Can't read the sheet, can't compare scans, lose old papers, and give up when the scale doesn't move even while they improve.</p></div>
+    <div class="card"><h4>Gyms</h4><p>Members who don't see progress cancel. The scan earns no follow-up sale. Staff explain sheets one by one, or not at all.</p></div>
+    <div class="card"><h4>Trainers and nutritionists</h4><p>Explain the same numbers to every client and track progress in notebooks or WhatsApp photos.</p></div>
+  </div>
+  <h3>What already exists</h3>
+  <table>
+    <tr><th style="width:26%">Product</th><th style="width:30%">What it does</th><th>Why it doesn't solve this in Egypt</th></tr>
+    <tr><td><strong>InBody app</strong></td><td>History and graphs</td><td>Auto-sync is US-only; manual entry otherwise; reviews say it doesn't explain the numbers</td></tr>
+    <tr><td><strong>LookinBody Web</strong></td><td>Gym cloud, $30/device/month in the US</td><td>Not offered in Egypt</td></tr>
+    <tr><td><strong>MyBody Scans</strong></td><td>Snap a photo, track results</td><td>English only, consumer only, no gym version</td></tr>
+    <tr><td><strong>Scan Progress</strong></td><td>Gym-provided member scan app</td><td>Not in Egypt; proves gyms buy this model</td></tr>
+    <tr><td><strong>Fit Boost, Rakiz, SigmaGym</strong></td><td>Memberships, attendance, member apps</td><td>No body-composition explanation. These are partners, not rivals</td></tr>
+  </table>
+  <div class="grid2">
+    <div>
+      <h3 style="margin-top:2mm">Who to sell to first</h3>
+      <table>
+        <tr><th>#</th><th>Segment</th><th>Why</th></tr>
+        <tr><td class="num">1</td><td><strong>Nutritionists, diet clinics</strong></td><td>Explain sheets daily, see clients monthly</td></tr>
+        <tr><td class="num">2</td><td><strong>CrossFit, performance gyms</strong></td><td>Members care about muscle, not weight</td></tr>
+        <tr><td class="num">3</td><td><strong>Slimming, bariatric centres</strong></td><td>Regular scans are part of the service</td></tr>
+        <tr><td class="num">4</td><td><strong>Large chains</strong></td><td>More members per deal, slower to sign</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3 style="margin-top:2mm">Market size</h3>
+      <div class="card">
+        <div class="grid2"><div class="stat"><div class="v">~5,300</div><div class="l">gyms listed in Egypt</div></div><div class="stat"><div class="v">879</div><div class="l">in Cairo Governorate</div></div></div>
+        <p style="margin-top:3mm">No public count of InBody machines exists. Assume a few hundred to low thousands of venues and confirm by visiting.</p>
+      </div>
+      <div class="callout a" style="font-size:8.4pt"><strong>Biggest assumption to check first:</strong> how many venues run LookinBody120 on a PC, versus only printing. If few do, reading a photo of the result sheet becomes the main way data comes in.</div>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>03</span></div>
+</section>
+
+<!-- ======================= 4. B2B2C MODEL ======================= -->
+<section class="page">
+  <span class="sec-num">03</span>
+  <p class="eyebrow">How the business works</p>
+  <h2>B2B2C: the gym pays, the member gets the experience</h2>
+  <p class="lead">We sell to the business (B2B). The business gives the app to its customers (B2C). The member's great experience is what makes the gym earn more, and that is why the gym keeps paying.</p>
+  <svg viewBox="0 0 680 330" width="100%" style="display:block;margin-bottom:4mm">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8A80AE"/></marker>
+      <marker id="aht" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#B77CF7"/></marker>
+      <marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#F5A524"/></marker>
+    </defs>
+    <!-- nodes -->
+    <rect x="10" y="110" width="170" height="110" rx="14" fill="#191330" stroke="#2F2654"/>
+    <text x="95" y="145" fill="#F3F0FF" font-size="15" font-weight="700" text-anchor="middle">Gym / Clinic</text>
+    <text x="95" y="166" fill="#BDB5DC" font-size="10.5" text-anchor="middle">Pays monthly per branch</text>
+    <text x="95" y="182" fill="#BDB5DC" font-size="10.5" text-anchor="middle">or per scan</text>
+    <text x="95" y="204" fill="#F5A524" font-size="11" font-weight="700" text-anchor="middle">EGP 990–2,490</text>
+
+    <rect x="255" y="95" width="170" height="140" rx="14" fill="rgba(124,77,242,.10)" stroke="#B77CF7"/>
+    <text x="340" y="135" fill="#F3F0FF" font-size="15" font-weight="700" text-anchor="middle">Our platform</text>
+    <text x="340" y="156" fill="#BDB5DC" font-size="10.5" text-anchor="middle">Dashboard · member app</text>
+    <text x="340" y="172" fill="#BDB5DC" font-size="10.5" text-anchor="middle">trainer view · rules engine</text>
+    <text x="340" y="200" fill="#B77CF7" font-size="11" font-weight="700" text-anchor="middle">~92% gross margin</text>
+
+    <rect x="500" y="110" width="170" height="110" rx="14" fill="#191330" stroke="#2F2654"/>
+    <text x="585" y="145" fill="#F3F0FF" font-size="15" font-weight="700" text-anchor="middle">Member</text>
+    <text x="585" y="166" fill="#BDB5DC" font-size="10.5" text-anchor="middle">Uses it free</text>
+    <text x="585" y="182" fill="#BDB5DC" font-size="10.5" text-anchor="middle">through their gym</text>
+    <text x="585" y="204" fill="#22D3EE" font-size="11" font-weight="700" text-anchor="middle">Member Plus: EGP 49–79</text>
+
+    <!-- gym -> platform money -->
+    <path d="M180,140 L252,140" stroke="#F5A524" stroke-width="2" fill="none" marker-end="url(#aha)"/>
+    <text x="216" y="132" fill="#F5A524" font-size="9.5" text-anchor="middle">money</text>
+    <!-- platform -> gym value -->
+    <path d="M255,190 L183,190" stroke="#B77CF7" stroke-width="2" fill="none" marker-end="url(#aht)"/>
+    <text x="219" y="206" fill="#B77CF7" font-size="9.5" text-anchor="middle">leads, stats</text>
+    <!-- platform -> member -->
+    <path d="M425,165 L497,165" stroke="#B77CF7" stroke-width="2" fill="none" marker-end="url(#aht)"/>
+    <text x="461" y="157" fill="#B77CF7" font-size="9.5" text-anchor="middle">reports</text>
+    <!-- member -> gym loop -->
+    <path d="M585,220 C585,300 95,300 95,223" stroke="#F5A524" stroke-width="2" fill="none" marker-end="url(#aha)" stroke-dasharray="5 4"/>
+    <text x="340" y="318" fill="#F5A524" font-size="11" font-weight="600" text-anchor="middle">Member spends more at the gym: re-scans, personal training, packages, renewals</text>
+    <!-- gym -> member scans -->
+    <path d="M95,110 C95,30 585,30 585,107" stroke="#8A80AE" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+    <text x="340" y="48" fill="#BDB5DC" font-size="10.5" text-anchor="middle">Gym uploads each scan, the member sees it in LevelUP with the gym's logo</text>
+  </svg>
+  <div class="grid3">
+    <div class="card"><h4>Who pays</h4><p>Gyms and clinics, monthly per branch. Nutritionists and small clinics pay per scan. Members pay only if their gym isn't on the app yet (Member Plus).</p></div>
+    <div class="card"><h4>Who uses it</h4><p><strong>Members:</strong> timeline, reports, compare.<br><strong>Staff:</strong> upload and follow-up.<br><strong>Trainers:</strong> their clients and leads.<br><strong>Owner:</strong> stats and money earned.</p></div>
+    <div class="card"><h4>Why it sticks</h4><p>The member's whole history lives in LevelUP, next to the gym's logo. Leaving means members lose their timeline and the gym loses its lead list. That's a strong reason to stay.</p></div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>04</span></div>
+</section>
+
+<!-- ======================= 5. WHAT THE GYM GAINS ======================= -->
+<section class="page">
+  <span class="sec-num">04</span>
+  <p class="eyebrow">What the gym gains</p>
+  <h2>The member gets the experience.<br>The gym gets money it can count.</h2>
+  <p class="lead">The gym is the one paying, so its gain has to be concrete. The benefits, ranked by how much an owner will care:</p>
+  <div class="card tint" style="margin-bottom:3mm">
+    <span class="tag">STRONG · MONEY THE OWNER CAN COUNT</span>
+    <div class="grid3" style="margin-top:3mm">
+      <div><h4>1. More paid re-scans</h4><p>Many gyms and clinics charge for each InBody scan. Today a member scans once and forgets. With the app, they get a "time for your next scan" reminder every 4–6 weeks and can see their progress, so they come back. At about EGP 150 a scan, 7–10 extra re-scans a month already cover the EGP 990 plan. This is the best pitch: direct, fast and easy to prove in a 60-day pilot.</p></div>
+      <div><h4>2. Personal-training and nutrition sales</h4><p>The "muscle loss", "imbalance" and "no scan in 60 days" flags give trainers a list of people to approach, each with a reason: <em>"Your scan shows you lost 0.8 kg of muscle. Let me help you fix that."</em> One PT package sold usually pays for months of the subscription. Anything that produces leads for trainers sells.</p></div>
+      <div><h4>3. Progress-tracking packages</h4><p>The gym can sell a "3-month transformation" bundle (3 scans, the app report, a trainer review) for more than single scans. The app is what makes that bundle feel like a real product.</p></div>
+    </div>
+  </div>
+  <div class="grid2" style="margin-bottom:4mm">
+    <div class="card"><span class="tag v">REAL · HARD TO PROVE QUICKLY</span>
+      <p style="margin-top:2mm"><strong>Retention.</strong> Members who see progress cancel less. Use it as the story, not the proof, because 60 days is too short to show it.</p>
+      <p><strong>Free marketing.</strong> Share cards carry the gym's logo to Instagram and WhatsApp.</p>
+      <p><strong>Looking modern.</strong> "We have our own app" helps gyms compete.</p></div>
+    <div class="card"><span class="tag r">WEAK · KEEP OUT OF THE PITCH</span>
+      <p style="margin-top:2mm"><strong>No paper, less staff time.</strong> Paper costs almost nothing and many gyms don't explain sheets anyway. It's a member benefit, not a gym saving.</p></div>
+  </div>
+  <h3>A Starter gym's month, with the app (example)</h3>
+  <div class="grid2" style="grid-template-columns:1.45fr 1fr;align-items:center">
+    <svg viewBox="0 0 520 190" width="100%" role="img" aria-label="Plan cost EGP 990 versus gains: 8 extra re-scans EGP 1,200, one PT package EGP 3,000, total EGP 4,200">
+      <g font-size="11" fill="#BDB5DC">
+        <line x1="150" y1="5" x2="150" y2="180" stroke="#2F2654"/>
+        <text x="140" y="27" text-anchor="end">Plan cost</text>
+        <path d="M150,14 H235.6 Q239.6,14 239.6,18 V32 Q239.6,36 235.6,36 H150 Z" fill="#D9731A"/>
+        <text x="247" y="29" fill="#F3F0FF" font-weight="700">EGP 990</text>
+        <text x="140" y="70" text-anchor="end">8 extra re-scans</text>
+        <path d="M150,57 H254.6 Q258.6,57 258.6,61 V75 Q258.6,79 254.6,79 H150 Z" fill="#7C4DF2"/>
+        <text x="266" y="72" fill="#F3F0FF" font-weight="700">EGP 1,200</text>
+        <text x="140" y="113" text-anchor="end">1 PT package</text>
+        <path d="M150,100 H417.4 Q421.4,100 421.4,104 V118 Q421.4,122 417.4,122 H150 Z" fill="#7C4DF2"/>
+        <text x="429" y="115" fill="#F3F0FF" font-weight="700">EGP 3,000</text>
+        <text x="140" y="156" text-anchor="end" fill="#F3F0FF" font-weight="700">Total gain</text>
+        <path d="M150,143 H526 V165 H150 Z" fill="#7C4DF2" opacity=".0"/>
+        <path d="M150,143 H476 Q480,143 480,147 V161 Q480,165 476,165 H150 Z" fill="#7C4DF2"/>
+        <text x="472" y="158" fill="#F3F0FF" font-weight="800" text-anchor="end">EGP 4,200</text>
+      </g>
+    </svg>
+    <div>
+      <div class="stat"><div class="v" style="color:var(--accent);font-size:28pt">≈ 4×</div><div class="l">what the gym pays, in one example month</div></div>
+      <p class="small" style="margin-top:3mm">Assumes EGP 150 per scan and a EGP 3,000 PT package. Confirm both prices in the venue interviews. Even with no PT sale, re-scans alone cover the plan.</p>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>05</span></div>
+</section>
+
+<!-- ======================= 6. PRICING ======================= -->
+<section class="page">
+  <span class="sec-num">05</span>
+  <p class="eyebrow">Business model</p>
+  <h2>Pricing plans</h2>
+  <p class="lead">Three paid tiers for venues, one consumer plan, and a free pilot. All prices are hypotheses to test in pilots, not market prices.</p>
+  <div class="grid3" style="margin-bottom:4mm">
+    <div class="card"><span class="tag v">PILOT</span><div class="stat" style="margin-top:2mm"><div class="v">Free</div><div class="l">60 days</div></div>
+      <ul class="small" style="margin-top:2mm"><li>Up to 100 members</li><li>All features</li><li>Paid price agreed in writing before it starts</li><li>Written success metric</li></ul></div>
+    <div class="card"><span class="tag">STARTER</span><div class="stat" style="margin-top:2mm"><div class="v">EGP 990</div><div class="l">per branch / month</div></div>
+      <ul class="small" style="margin-top:2mm"><li>Small single-branch gyms</li><li>Up to 150 active members</li><li>Arabic reports, member app, timeline</li><li>Re-scan reminders</li></ul></div>
+    <div class="card tint" style="border-color:rgba(124,77,242,.4)"><span class="tag">PRO · MOST VALUE</span><div class="stat" style="margin-top:2mm"><div class="v" style="color:var(--accent)">EGP 2,490</div><div class="l">per branch / month</div></div>
+      <ul class="small" style="margin-top:2mm"><li>Unlimited members</li><li>Gym logo in the app and on share cards</li><li>Trainer view and lead tracker</li><li>Flags, re-scan list, owner stats</li></ul></div>
+  </div>
+  <div class="grid2" style="margin-bottom:4mm">
+    <div class="card"><span class="tag a">PAY PER SCAN</span><div class="stat" style="margin-top:2mm"><div class="v">EGP 15</div><div class="l">per scan, bundles of 100</div></div><p class="small" style="margin-top:2mm">Nutritionists and small clinics. Same reports, no monthly fee.</p></div>
+    <div class="card"><span class="tag v">MEMBER PLUS</span><div class="stat" style="margin-top:2mm"><div class="v">EGP 49–79</div><div class="l">per month, paid by the member</div></div><p class="small" style="margin-top:2mm">For members whose gym isn't on the app: manual entry, unlimited history, charts, PDF export. It also brings in leads ("ask your gym to join").</p></div>
+  </div>
+  <div class="grid3">
+    <div class="card"><h4>Discounts</h4><p>About 2 months free on yearly plans. A lower price for gyms that sign during the pilot.</p></div>
+    <div class="card"><h4>Extra revenue later</h4><p><strong>Gym-software partners</strong> (Fit Boost, SigmaGym, Rakiz): white-label, revenue share. <strong>Coaching marketplace:</strong> 10–15% of plans sold. <strong>Scan packages</strong> that raise the plan's value.</p></div>
+    <div class="card"><h4>How we get paid</h4><p>Invoice gyms monthly or quarterly: bank transfer, InstaPay or Fawry codes (no card fees). Paymob subscriptions for Member Plus (about 2.75% + EGP 3). Register the company and get a Tax Card first.</p></div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>06</span></div>
+</section>
+
+<!-- ======================= 7. REVENUE & GROSS PROFIT ======================= -->
+<section class="page">
+  <span class="sec-num">06</span>
+  <p class="eyebrow">Revenue and gross profit</p>
+  <h2>Small running costs, high margin</h2>
+  <p class="lead">No AI is needed to read the sheets, so a scan costs almost nothing beyond hosting. The real costs are sales time and on-site setup, which sit below gross profit.</p>
+  <h3>Monthly revenue split into running costs and gross profit (EGP)</h3>
+  <div style="display:flex;gap:5mm;font-size:8pt;color:var(--ink2);margin-bottom:1mm">
+    <span><span class="dot" style="background:#7C4DF2"></span>Gross profit</span>
+    <span><span class="dot" style="background:#D9731A"></span>Running costs</span>
+    <span><span class="dot" style="background:#0E9AB8"></span>Partner revenue share</span>
+  </div>
+  <svg viewBox="0 0 640 262" width="100%" role="img" aria-label="Revenue scenarios stacked by gross profit, running costs and partner share">
+    <g font-size="10.5" fill="#8A80AE">
+      <line x1="60" y1="220" x2="630" y2="220" stroke="#3D3366"/>
+      <line x1="60" y1="153.3" x2="630" y2="153.3" stroke="#221A3E"/><text x="52" y="157" text-anchor="end">50k</text>
+      <line x1="60" y1="86.7" x2="630" y2="86.7" stroke="#221A3E"/><text x="52" y="90" text-anchor="end">100k</text>
+      <line x1="60" y1="20" x2="630" y2="20" stroke="#221A3E"/><text x="52" y="24" text-anchor="end">150k</text>
+      <text x="52" y="224" text-anchor="end">0</text>
+    </g>
+    <!-- bar 1 -->
+    <rect x="100" y="217.7" width="80" height="2.3" fill="#D9731A"/>
+    <path d="M100,215.7 V212 Q100,210 102,210 H178 Q180,210 180,212 V215.7 Z" fill="#7C4DF2"/>
+    <!-- bar 2 -->
+    <rect x="235" y="215.3" width="80" height="4.7" fill="#D9731A"/>
+    <path d="M235,213.3 V184.6 Q235,180.6 239,180.6 H311 Q315,180.6 315,184.6 V213.3 Z" fill="#7C4DF2"/>
+    <!-- bar 3 -->
+    <rect x="370" y="211.7" width="80" height="8.3" fill="#D9731A"/>
+    <path d="M370,209.7 V122 Q370,118 374,118 H446 Q450,118 450,122 V209.7 Z" fill="#7C4DF2"/>
+    <!-- bar 4 -->
+    <rect x="505" y="204.7" width="80" height="15.3" fill="#D9731A"/>
+    <rect x="505" y="142.7" width="80" height="60" fill="#0E9AB8"/>
+    <path d="M505,140.7 V20 Q505,16 509,16 H581 Q585,16 585,20 V140.7 Z" fill="#7C4DF2"/>
+    <g font-size="11" fill="#F3F0FF" font-weight="700" text-anchor="middle">
+      <text x="140" y="203">6k</text><text x="275" y="173">28k</text><text x="410" y="111">75k</text><text x="545" y="11" dy="0" fill="#0F0B1A">.</text>
+    </g>
+    <g font-size="10" fill="#F3F0FF" text-anchor="middle">
+      <text x="545" y="85" font-weight="700">150k</text><text x="545" y="99" fill="#FFFFFF">GP 62%</text>
+      <text x="545" y="177" fill="#FFFFFF">share 30%</text>
+    </g>
+    <g font-size="10" fill="#BDB5DC" text-anchor="middle">
+      <text x="140" y="236">First paid month</text><text x="140" y="250">5 venues · GP 71%</text>
+      <text x="275" y="236">Month 6</text><text x="275" y="250">20 venues · GP 88%</text>
+      <text x="410" y="236">Month 12</text><text x="410" y="250">50 venues · GP 92%</text>
+      <text x="545" y="236">With a software partner</text><text x="545" y="250">150 venues</text>
+    </g>
+  </svg>
+  <table style="margin-top:2mm">
+    <tr><th>Scenario</th><th class="num">Venues</th><th class="num">Avg / venue</th><th class="num">Revenue</th><th class="num">Running costs</th><th class="num">Partner share</th><th class="num">Gross profit</th><th class="num">Margin</th></tr>
+    <tr><td>First paid month</td><td class="num">5</td><td class="num">1,200</td><td class="num">6,000</td><td class="num">1,750</td><td class="num">—</td><td class="num"><strong>4,250</strong></td><td class="num">71%</td></tr>
+    <tr><td>Month 6</td><td class="num">20</td><td class="num">1,400</td><td class="num">28,000</td><td class="num">3,500</td><td class="num">—</td><td class="num"><strong>24,500</strong></td><td class="num">88%</td></tr>
+    <tr><td>Month 12</td><td class="num">50</td><td class="num">1,500</td><td class="num">75,000</td><td class="num">6,250</td><td class="num">—</td><td class="num"><strong>68,750</strong></td><td class="num">92%</td></tr>
+    <tr><td>With a software partner</td><td class="num">150</td><td class="num">1,000</td><td class="num">150,000</td><td class="num">11,500</td><td class="num">45,000</td><td class="num"><strong>93,500</strong></td><td class="num">62%</td></tr>
+  </table>
+  <div class="grid3">
+    <div class="card"><div class="stat"><div class="v">≈ 385k</div><div class="l">EGP total revenue in year one (ramp from 5 to 50 venues, months 3–12)</div></div></div>
+    <div class="card"><div class="stat"><div class="v">≈ 900k</div><div class="l">EGP yearly run rate at month 12 (≈ $18k)</div></div></div>
+    <div class="card"><div class="stat"><div class="v">≈ 1,375</div><div class="l">EGP gross profit per venue per month at month 12</div></div></div>
+  </div>
+  <p class="small" style="margin-top:3mm"><strong>Assumptions:</strong> about EGP 50 per USD. Running costs = hosting ($25–150), WhatsApp/SMS login codes and storage. Partner share of 30% is a guess. Not included (operating costs): sales visits, the lawyer, the PDPC licence fee (ask the lawyer), company registration, Apple developer account ($99/year), Google Play ($25 once).</p>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>07</span></div>
+</section>
+
+<!-- ======================= 8. GYM PITCH 1 ======================= -->
+<section class="page">
+  <span class="sec-num">07</span>
+  <p class="eyebrow">The gym pitch · part 1</p>
+  <h2>How to talk to a gym owner</h2>
+  <p class="lead">Talk about their money, not our software. The meeting takes 15 minutes: a hook, five questions, a 3-minute demo, the money line, and a pilot offer.</p>
+  <div class="flow" style="margin-bottom:5mm">
+    <div class="fstep"><div class="n">1 · 1 MIN</div><h4>Hook</h4><p class="small" style="margin:0">The friend's story</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">2 · 4 MIN</div><h4>Questions</h4><p class="small" style="margin:0">Their numbers</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">3 · 3 MIN</div><h4>Demo</h4><p class="small" style="margin:0">Upload live</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">4 · 2 MIN</div><h4>Money line</h4><p class="small" style="margin:0">Their math</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">5 · 5 MIN</div><h4>Close</h4><p class="small" style="margin:0">Free pilot</p></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <h3 style="margin-top:0">1 · The hook</h3>
+      <div class="card" dir="rtl" style="margin-bottom:2mm"><p class="quote ar" style="font-size:10.5pt">"عضو عندكم عمل قياسين InBody. نسبة الدهون ما اتغيرتش، فافتكر إنه ما اتحسنش وكان هيبطّل. الحقيقة إنه زاد 1.1 كيلو عضل وخس 0.9 كيلو دهون. هو بس ما كانش فاهم الورقة."</p></div>
+      <p class="small">"A member here took two scans. Body fat % didn't move, so he thought he failed and almost quit. He actually gained 1.1 kg of muscle and lost 0.9 kg of fat. He just couldn't read the sheet."</p>
+      <h3>2 · Five questions (write down the answers)</h3>
+      <ul>
+        <li>Do you use LookinBody120 on a PC? Can you export a test as CSV?</li>
+        <li>How much do you charge per scan? How many scans a month?</li>
+        <li>How many members come back for a second scan?</li>
+        <li>What does a PT or nutrition package cost? How do trainers find clients today?</li>
+        <li>Who explains the sheet to the member today, and how long does it take?</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-top:0">3 · The demo (3 minutes)</h3>
+      <ol style="color:var(--ink2);padding-left:4.5mm;margin:0 0 3mm">
+        <li style="margin-bottom:1.5mm">Open the dashboard on your laptop and upload a real export. Show the check screen confirming name, mobile and height.</li>
+        <li style="margin-bottom:1.5mm">Hand the owner your phone. The result is already there, with <strong>their</strong> logo next to LevelUP, with the plain-Arabic headline.</li>
+        <li style="margin-bottom:1.5mm">Show the friend's before/after: "same fat %, +1.1 kg muscle".</li>
+        <li>End on the <strong>Follow-up</strong> screen: "These are 12 members your trainers could call this week, each with a reason."</li>
+      </ol>
+      <div class="callout"><strong>Rule:</strong> the owner should hold the phone. Seeing their own logo on a beautiful screen sells better than any sentence.</div>
+      <h3>What to bring</h3>
+      <ul class="check"><li>Laptop with the dashboard and a real CSV</li><li>Phone with LevelUP, showing their logo (prepared the night before)</li><li>One-page Arabic case study, after the first pilot</li><li>Printed pilot agreement with the price filled in</li></ul>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>08</span></div>
+</section>
+
+<!-- ======================= 9. GYM PITCH 2 ======================= -->
+<section class="page">
+  <span class="sec-num">08</span>
+  <p class="eyebrow">The gym pitch · part 2</p>
+  <h2>The money line, objections and the close</h2>
+  <h3 style="margin-top:2mm">4 · The money line (use their own numbers)</h3>
+  <div class="card tint" dir="rtl" style="margin-bottom:2mm"><p class="quote ar">"كل عضو هيجيله تذكير يعيد القياس كل 4 لـ 6 أسابيع، والمدربين بتوعك هياخدوا ليستة بالناس اللي محتاجة برايفت، ومع كل اسم السبب. لو 8 أعضاء بس رجعوا يقيسوا في الشهر، الاشتراك دفع تمنه."</p></div>
+  <p class="small" style="margin-bottom:4mm">"Every member gets a reminder to re-scan every 4–6 weeks, and your trainers get a list of people who need PT, each with a reason. If just 8 members come back for a scan each month, the plan has paid for itself."</p>
+  <h3>Objections and answers</h3>
+  <table>
+    <tr><th style="width:27%">They say</th><th>You answer</th></tr>
+    <tr><td><strong>"My staff are too busy."</strong></td><td>One upload takes under a minute, or they upload everything once at the end of the day. Nothing to install.</td></tr>
+    <tr><td><strong>"Members won't download an app."</strong></td><td>Their result is already waiting when they log in with their phone number. There's a QR code at the desk and a web version for people who won't install.</td></tr>
+    <tr><td><strong>"We already have gym software."</strong></td><td>We don't replace it. We're the part it doesn't do: explaining the scan and turning it into sales. We're working on integrations with Fit Boost, Rakiz and SigmaGym.</td></tr>
+    <tr><td><strong>"It's expensive."</strong></td><td>Run the math with their scan price. Then offer the 60-day free pilot: "If it doesn't bring you more than it costs, don't pay."</td></tr>
+    <tr><td><strong>"What about member privacy?"</strong></td><td>Members give consent, the gym only sees its own scans unless the member allows more, and every action is logged. You can delete any data.</td></tr>
+    <tr><td><strong>"InBody has its own app."</strong></td><td>Its cloud sync isn't available in Egypt, it isn't in Arabic, and it doesn't carry your logo or give your trainers leads.</td></tr>
+  </table>
+  <h3>5 · The close: a free pilot with a price agreed in advance</h3>
+  <div class="grid2">
+    <div class="card" dir="rtl"><p class="quote ar" style="font-size:11pt">"جرّبه 60 يوم ببلاش. هنتفق دلوقتي على هدف واضح وعلى السعر بعد التجربة. لو ما جابلكش أكتر من تمنه، ما تدفعش."</p><p class="small" style="direction:ltr;text-align:left;margin-top:2mm">"Try it free for 60 days. We agree now on a clear goal and the price after the pilot. If it doesn't bring you more than it costs, you don't pay."</p></div>
+    <div class="card"><h4>The pilot agreement (one page)</h4><ul class="small" style="margin-top:1.5mm"><li><strong>Goal:</strong> e.g. +20 re-scans or 10 PT leads in 60 days</li><li><strong>Price after day 60:</strong> written in, with a pilot discount</li><li><strong>Gym does:</strong> upload every scan the same day, put up the QR sign</li><li><strong>We do:</strong> onboarding visit, import history, weekly check-in</li><li><strong>Day 60:</strong> review the numbers together, convert, and ask for 2 referrals</li></ul></div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>09</span></div>
+</section>
+
+<!-- ======================= 10. DESIGN FIRST ======================= -->
+<section class="page" style="background:radial-gradient(80% 50% at 90% 0%,rgba(34,211,238,.13),transparent 60%),var(--bg)">
+  <span class="sec-num">09</span>
+  <p class="eyebrow">Design first</p>
+  <h2>Prototype #1 is the experience, not the code</h2>
+  <p class="lead">The first thing we build is a clickable, animated design prototype. Opening the app should feel like stepping into another world: calm, beautiful, and instantly clear. We only start coding once real members understand their results from the prototype in seconds.</p>
+  <div class="grid2" style="margin-bottom:4mm">
+    <div class="card vtint">
+      <h4>Design principles</h4>
+      <ul style="margin-top:2mm">
+        <li><strong>One answer per screen.</strong> "Did I improve?" is answered in 3 seconds, before any number.</li>
+        <li><strong>Words before numbers.</strong> The headline is a sentence in Egyptian Arabic; numbers support it.</li>
+        <li><strong>Calm dark canvas.</strong> One accent colour for progress, amber for attention, never alarming red on someone's body.</li>
+        <li><strong>Motion that means something.</strong> Numbers count up, rings fill, a new scan arrives with a reveal moment.</li>
+        <li><strong>Arabic-first, not translated.</strong> Designed RTL from the start, with a real Arabic typeface.</li>
+        <li><strong>Fast.</strong> Opens in under a second, works offline with the last data, no spinners, only skeletons.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>The "new result" moment</h4>
+      <p style="margin-top:2mm">The most important 5 seconds in the app. A push arrives: <span class="ar">"نتيجتك الجديدة وصلت"</span>. Tapping it opens a full-screen reveal: the background glows, the headline fades in, the main change counts up (+0.8 kg muscle), a light haptic tap, then the 3 key changes slide up.</p>
+      <p>This is the moment members screenshot and share. It's also why they come back for the next scan.</p>
+      <h4 style="margin-top:3mm">Quality bar</h4>
+      <p>Match the polish of the best health and finance apps (Apple Fitness, Oura, Revolut), applied to Arabic and to InBody data. Learn from them, don't copy them.</p>
+    </div>
+  </div>
+  <h3>How we test the prototype (weeks 1–2)</h3>
+  <div class="grid4">
+    <div class="card"><div class="n tag">STEP 1</div><h4 style="margin-top:2mm">Design</h4><p class="small">Figma, Arabic-first. Real data from the friend's two scans.</p></div>
+    <div class="card"><div class="tag">STEP 2</div><h4 style="margin-top:2mm">Animate</h4><p class="small">Figma Smart Animate + ProtoPie for the reveal; Lottie files for celebrations.</p></div>
+    <div class="card"><div class="tag">STEP 3</div><h4 style="margin-top:2mm">Test</h4><p class="small">5 members and 2 front-desk staff, on a real phone. Watch them; don't explain.</p></div>
+    <div class="card"><div class="tag">STEP 4</div><h4 style="margin-top:2mm">Gate</h4><p class="small">5 of 5 explain their progress in their own words in under 10 seconds. Staff upload a scan with no help.</p></div>
+  </div>
+  <div class="callout" style="margin-top:4mm">The same prototype is the sales demo. While coding starts, use it to sign the first 3 pilot letters.</div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>10</span></div>
+</section>
+
+<!-- ======================= 11. DESIGN SYSTEM ======================= -->
+<section class="page">
+  <span class="sec-num">10</span>
+  <p class="eyebrow">Design system</p>
+  <h2>LevelUP colours, type, motion</h2>
+  <p class="lead">Taken from the LevelUP logo and the app's own tokens (<span class="mono">brand.config.ts</span>, <span class="mono">src/theme/tokens.css</span>). Dark mode shown; light mode uses the same brand hues.</p>
+  <h3>Colour</h3>
+  <div class="swatch" style="height:8mm;background:linear-gradient(90deg,#E19CFB,#B77CF7 40%,#6C3CF0);margin-bottom:1.5mm"></div>
+  <div class="small" style="margin-bottom:3mm"><b style="color:var(--ink)">Logo gradient</b> · <span class="mono">#E19CFB → #B77CF7 → #6C3CF0</span> · buttons, rings, the "UP" in the wordmark</div>
+  <div class="grid4" style="margin-bottom:3mm"><div><div class="swatch" style="background:#6C3CF0"></div><b style="font-size:8pt">Primary</b><div class="small mono">#6C3CF0</div></div><div><div class="swatch" style="background:#B77CF7"></div><b style="font-size:8pt">Secondary</b><div class="small mono">#B77CF7</div></div><div><div class="swatch" style="background:#F5A524"></div><b style="font-size:8pt">Accent</b><div class="small mono">#F5A524</div></div><div><div class="swatch" style="background:#4ADE80"></div><b style="font-size:8pt">Success</b><div class="small mono">#4ADE80</div></div><div><div class="swatch" style="background:#22D3EE"></div><b style="font-size:8pt">Muscle</b><div class="small mono">#22D3EE</div></div><div><div class="swatch" style="background:#FB923C"></div><b style="font-size:8pt">Fat</b><div class="small mono">#FB923C</div></div><div><div class="swatch" style="background:#0F0B1A"></div><b style="font-size:8pt">Background</b><div class="small mono">#0F0B1A</div></div><div><div class="swatch" style="background:#191330"></div><b style="font-size:8pt">Surface</b><div class="small mono">#191330</div></div></div>
+  <div class="grid2">
+    <div>
+      <h3 style="margin-top:0">Type</h3>
+      <div class="card">
+        <div dir="rtl" class="ar" style="font-size:22pt;font-weight:700;line-height:1.2">عضل أكتر، دهون أقل</div>
+        <div class="small" style="margin-bottom:2mm">IBM Plex Sans Arabic · headline 28/34 · bold</div>
+        <div style="font-size:20pt;font-weight:800;letter-spacing:-.02em">+2.1 kg</div>
+        <div class="small" style="margin-bottom:2mm">Inter · numbers, tabular figures · 32/36</div>
+        <div dir="rtl" class="ar" style="font-size:10pt;color:var(--ink2)">وزنك تقريباً ثابت، بس جسمك اتغيّر.</div>
+        <div class="small">Body 15/22 · secondary text colour</div>
+        <div style="font-family:'Jersey 10',Inter;font-size:17pt;line-height:1.1;margin-top:2mm;color:var(--accent)">FITSCORE 80</div><div class="small">Jersey 10 · pixel display accents, as in the app</div>
+      </div>
+      <h3>Spacing and shape</h3>
+      <div class="card"><p>4-point grid. Card radius 20, buttons 14, chips full. Tap targets at least 44 × 44. Minimum text contrast 4.5:1 on dark surfaces.</p></div>
+    </div>
+    <div>
+      <h3 style="margin-top:0">Motion</h3>
+      <table>
+        <tr><th>Token</th><th>Value</th><th>Used for</th></tr>
+        <tr><td><strong>fast</strong></td><td class="mono">120 ms</td><td>Taps, toggles, chips</td></tr>
+        <tr><td><strong>base</strong></td><td class="mono">240 ms</td><td>Screen transitions, sheets</td></tr>
+        <tr><td><strong>reveal</strong></td><td class="mono">spring 0.5 s</td><td>New result, count-up, rings</td></tr>
+        <tr><td><strong>stagger</strong></td><td class="mono">60 ms</td><td>The 3 key changes sliding in</td></tr>
+      </table>
+      <p class="small">Respect "reduce motion" in phone settings: crossfades only. Haptics: light tap on reveal and goal reached.</p>
+      <h3>Core components</h3>
+      <div class="card" style="display:flex;flex-wrap:wrap;gap:2.5mm;align-items:center">
+        <span class="tag">+1.1 kg muscle</span><span class="tag a">check hydration</span><span class="tag v">different machine</span>
+        <span style="background:var(--grad);color:#fff;font-weight:700;border-radius:3mm;padding:1.5mm 4mm;font-size:8pt">Primary button</span>
+        <span style="border:1px solid var(--line);border-radius:3mm;padding:1.5mm 4mm;font-size:8pt">Secondary</span>
+        <p class="small" style="width:100%;margin:1mm 0 0">Metric card · Delta chip · Headline card · Ring score · Timeline row · Compare row · Body map · Share card · Bottom sheet "tap to explain"</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>11</span></div>
+</section>
+
+<!-- ======================= 12. SCREENS 1 ======================= -->
+<section class="page">
+  <span class="sec-num">11</span>
+  <p class="eyebrow">Member app · screens 1 of 3</p>
+  <h2>Log in, see progress, read the report</h2>
+  <p class="lead">Ionic React on iOS, Android and web. Arabic first, RTL. LevelUP's look in every gym, with the gym's logo alongside.</p>
+  <div class="phones">
+    <div class="pwrap">
+      <div class="phone"><div class="scr" style="display:flex;flex-direction:column">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span>●●●</span></div>
+        <img src="mark.webp" alt="" style="height:13mm;width:auto;display:block;margin:5mm auto 2mm">
+        <div style="text-align:center;font-weight:800;font-size:10px;font-family:Inter;direction:ltr">Level<span style="background:var(--grad);-webkit-background-clip:text;color:transparent">UP</span></div>
+        <div style="text-align:center;font-size:5.6px;color:var(--muted);font-family:Inter;direction:ltr;margin-top:.6mm">with IRON BOX</div>
+        <div class="s-h" style="text-align:center;margin-top:4mm;font-size:11px;line-height:1.4">نتايج الـ InBody بتاعتك<br>في مكان واحد</div>
+        <div class="s-sub" style="text-align:center;margin-bottom:5mm">كل قياساتك من كل جيم وعيادة</div>
+        <div class="s-sub" style="margin-bottom:1mm">رقم الموبايل</div>
+        <div class="s-card" style="direction:ltr;font-family:Inter;font-size:8px">🇪🇬 +20 &nbsp;101 234 5678</div>
+        <div class="row" style="direction:ltr;gap:1.5mm;margin:1mm 0 3mm">
+          <div class="s-card" style="flex:1;text-align:center;font-size:10px;font-weight:700;margin:0">4</div><div class="s-card" style="flex:1;text-align:center;font-size:10px;font-weight:700;margin:0">8</div><div class="s-card" style="flex:1;text-align:center;font-size:10px;margin:0;border-color:var(--accent)">|</div><div class="s-card" style="flex:1;margin:0"></div>
+        </div>
+        <div class="btn">ادخل</div>
+        <div class="s-sub" style="text-align:center;margin-top:2mm">بعتنالك الكود على واتساب</div>
+      </div></div>
+      <div class="cap"><h4>Login</h4><p>Phone number and a one-time code by WhatsApp or SMS. Scans the gym already saved under that number appear straight away.</p></div>
+    </div>
+    <div class="pwrap">
+      <div class="phone"><div class="scr">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span>IRON BOX</span></div>
+        <div class="s-sub">صباح الخير يا كريم</div>
+        <div class="s-h">تقدّمك من أول قياس</div>
+        <div class="s-card s-hero">
+          <div class="s-sub">آخر 3 شهور · 4 قياسات</div>
+          <div class="big g" style="margin-top:1mm">+2.1 kg</div><div style="font-weight:600">عضل زيادة</div>
+          <div class="row" style="margin-top:2mm"><span>دهون <b class="g" dir="ltr">−1.8 kg</b></span><span>وزن <b dir="ltr">+0.3 kg</b></span></div>
+        </div>
+        <div class="s-card" style="line-height:1.55">وزنك تقريباً ثابت، بس جسمك اتغيّر: <b class="g">عضل أكتر ودهون أقل.</b> ده أحسن تقدّم ممكن.</div>
+        <div class="s-card row"><div><div class="s-sub">القياس الجاي</div><b>بعد 9 أيام</b><div class="s-sub" style="margin-top:.5mm">صايم · من غير تمرين</div></div><div class="ring"><div>78</div></div></div>
+        <div class="s-card"><div class="row"><b>هدفك: +3 كجم عضل</b><span class="s-sub" dir="ltr">70%</span></div><div class="bar" style="margin-top:1.2mm"><b style="width:70%;background:var(--accent)"></b></div></div>
+        <div class="nav"><span class="on"><i></i>الرئيسية</span><span><i></i>القياسات</span><span><i></i>مقارنة</span><span><i></i>حسابي</span></div>
+      </div></div>
+      <div class="cap"><h4>Home</h4><p>"Since your first scan" card: muscle, fat and weight change plus a one-line verdict. Next-scan reminder with test conditions, InBody score, goal progress.</p></div>
+    </div>
+    <div class="pwrap">
+      <div class="phone"><div class="scr">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span>‹</span></div>
+        <div class="s-sub">12 نوفمبر · Iron Box التجمع · InBody 570</div>
+        <div class="s-card s-hero" style="margin-top:1.5mm"><div class="s-h" style="margin:0;line-height:1.4">أحسن نتيجة ممكنة:<br>عضل زاد ودهون قلّت</div></div>
+        <b style="font-size:7.6px">أهم 3 تغييرات</b>
+        <div class="s-card" style="margin-top:1mm;padding:1.8mm 2.4mm">
+          <div class="row"><span>كتلة العضلات</span><b class="g" dir="ltr">+1.1 kg</b></div>
+          <div class="row" style="margin-top:1mm"><span>كتلة الدهون</span><b class="g" dir="ltr">−0.9 kg</b></div>
+          <div class="row" style="margin-top:1mm"><span>نسبة الدهون</span><b dir="ltr">22.4% =</b></div>
+          <div class="s-sub" style="margin-top:1mm">النسبة ثابتة لأن العضل زاد. ده طبيعي.</div>
+        </div>
+        <div class="mgrid">
+          <div class="mcard"><div class="s-sub">الوزن</div><b dir="ltr">82.3 kg</b></div>
+          <div class="mcard"><div class="s-sub">العضل</div><b dir="ltr">36.8 kg</b></div>
+          <div class="mcard"><div class="s-sub">الدهون</div><b dir="ltr">18.4 kg</b></div>
+          <div class="mcard"><div class="s-sub">الدهون الحشوية</div><b dir="ltr">7</b></div>
+        </div>
+        <div class="s-sub" style="text-align:center;margin:1.5mm 0">اضغط على أي رقم عشان تفهمه</div>
+        <div class="btn ghost">شوف الورقة الأصلية</div>
+        <div class="s-sub" style="margin-top:1.5mm;font-size:5.6px">معلومات للياقة، مش تشخيص طبي.</div>
+      </div></div>
+      <div class="cap"><h4>Report</h4><p>Plain-Arabic headline, the 3 key changes, metric cards with tap-to-explain sheets, the original result-sheet image and a disclaimer.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>12</span></div>
+</section>
+
+<!-- ======================= 13. SCREENS 2 ======================= -->
+<section class="page">
+  <span class="sec-num">12</span>
+  <p class="eyebrow">Member app · screens 2 of 3</p>
+  <h2>Timeline, compare and charts</h2>
+  <p class="lead">Every scan from every place in one history, with honest warnings when machines differ.</p>
+  <div class="phones">
+    <div class="pwrap">
+      <div class="phone"><div class="scr">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
+        <div class="s-h">كل قياساتك</div>
+        <div style="margin-bottom:2mm"><span class="chip on">الكل</span><span class="chip">Iron Box</span><span class="chip">عيادة د. سارة</span></div>
+        <div class="s-card"><div class="row"><b>12 نوفمبر</b><span class="chip" style="background:rgba(74,222,128,.14);color:var(--good)" dir="ltr">+1.1 kg عضل</span></div><div class="s-sub">Iron Box · التجمع · InBody 570</div></div>
+        <div class="s-card"><div class="row"><b>14 أكتوبر</b><span class="chip" style="background:rgba(74,222,128,.14);color:var(--good)" dir="ltr">−0.6 kg دهون</span></div><div class="s-sub">Iron Box · التجمع · InBody 570</div></div>
+        <div class="s-card" style="border-style:dashed;border-color:rgba(34,211,238,.5);padding:1.6mm 2.4mm"><span class="vi" style="font-weight:600">جهاز مختلف:</span> <span class="s-sub">قارن الاتجاه العام بس</span></div>
+        <div class="s-card"><div class="row"><b>10 سبتمبر</b><span class="chip">ثابت</span></div><div class="s-sub">عيادة د. سارة · المعادي · InBody 270</div></div>
+        <div class="s-card"><div class="row"><b>2 أغسطس</b><span class="chip">أول قياس</span></div><div class="s-sub">يدوي · من ورقة قديمة</div></div>
+        <div class="nav"><span><i></i>الرئيسية</span><span class="on"><i></i>القياسات</span><span><i></i>مقارنة</span><span><i></i>حسابي</span></div>
+      </div></div>
+      <div class="cap"><h4>Timeline and places</h4><p>Each scan is labelled with the gym or clinic, branch, machine and source. Filter by place. Machine changes are marked.</p></div>
+    </div>
+    <div class="pwrap">
+      <div class="phone"><div class="scr">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
+        <div class="s-h">مقارنة قياسين</div>
+        <div class="row" style="gap:1.5mm;margin-bottom:2mm"><div class="s-card" style="flex:1;margin:0;text-align:center"><div class="s-sub">قبل</div><b>14 أكتوبر</b></div><div class="s-card" style="flex:1;margin:0;text-align:center;border-color:var(--accent)"><div class="s-sub">بعد</div><b>12 نوفمبر</b></div></div>
+        <div class="s-card" style="padding:1.4mm 2.4mm;background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3)"><span class="g">✓</span> نفس الجهاز · المقارنة دقيقة</div>
+        <div class="s-card" style="padding:2mm 2.4mm;line-height:2">
+          <div class="row"><span>الوزن</span><span dir="ltr" class="s-sub">82.1 → <b style="color:var(--ink)">82.3</b></span></div>
+          <div class="row"><span>العضل</span><span dir="ltr" class="s-sub">35.7 → <b class="g">36.8</b></span></div>
+          <div class="row"><span>الدهون</span><span dir="ltr" class="s-sub">19.3 → <b class="g">18.4</b></span></div>
+          <div class="row"><span>نسبة الدهون</span><span dir="ltr" class="s-sub">22.6 → <b style="color:var(--ink)">22.4</b></span></div>
+          <div class="row"><span>المية</span><span dir="ltr" class="s-sub">47.6 → <b style="color:var(--ink)">48.1</b></span></div>
+          <div class="row"><span>الحشوية</span><span dir="ltr" class="s-sub">8 → <b class="g">7</b></span></div>
+        </div>
+        <div class="s-card s-hero" style="line-height:1.5">الخلاصة: نفس الوزن تقريباً، بس <b class="g">1.1 كجم عضل زيادة</b> و<b class="g">0.9 كجم دهون أقل</b>.</div>
+        <div class="nav"><span><i></i>الرئيسية</span><span><i></i>القياسات</span><span class="on"><i></i>مقارنة</span><span><i></i>حسابي</span></div>
+      </div></div>
+      <div class="cap"><h4>Compare</h4><p>Any two scans side by side, also across places. Shows whether the machine matched and only highlights changes bigger than the error margin.</p></div>
+    </div>
+    <div class="pwrap">
+      <div class="phone"><div class="scr">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
+        <div class="s-h">الرسوم</div>
+        <div style="margin-bottom:2mm"><span class="chip on">3 شهور</span><span class="chip">6 شهور</span><span class="chip">الكل</span></div>
+        <div class="s-card"><b>وزنك: دهون ولا عضل؟</b>
+          <svg viewBox="0 0 160 70" width="100%" style="margin-top:1mm;direction:ltr">
+            <rect x="10" y="12" width="22" height="18" rx="2" fill="#FB923C"/><rect x="10" y="32" width="22" height="34" fill="#22D3EE"/>
+            <rect x="50" y="14" width="22" height="16" rx="2" fill="#FB923C"/><rect x="50" y="32" width="22" height="34" fill="#22D3EE"/>
+            <rect x="90" y="16" width="22" height="15" rx="2" fill="#FB923C"/><rect x="90" y="33" width="22" height="33" fill="#22D3EE"/>
+            <rect x="130" y="18" width="22" height="13" rx="2" fill="#FB923C"/><rect x="130" y="33" width="22" height="33" fill="#22D3EE"/>
+          </svg>
+          <div class="s-sub"><span class="dot" style="background:#FB923C;width:1.6mm;height:1.6mm"></span>دهون &nbsp; <span class="dot" style="background:#22D3EE;width:1.6mm;height:1.6mm"></span>كتلة بدون دهون</div>
+        </div>
+        <div class="s-card"><b>عضل مقابل دهون (كجم)</b>
+          <svg viewBox="0 0 160 62" width="100%" style="margin-top:1mm;direction:ltr">
+            <line x1="5" y1="56" x2="155" y2="56" stroke="#2F2654"/>
+            <polyline points="12,30 55,26 100,20 148,12" fill="none" stroke="#22D3EE" stroke-width="2"/>
+            <polyline points="12,22 55,28 100,34 148,40" fill="none" stroke="#FB923C" stroke-width="2"/>
+            <circle cx="148" cy="12" r="3" fill="#22D3EE" stroke="#1B1534" stroke-width="1.5"/><circle cx="148" cy="40" r="3" fill="#FB923C" stroke="#1B1534" stroke-width="1.5"/>
+            <text x="144" y="8" font-size="7" fill="#F3F0FF" text-anchor="end">36.8</text><text x="144" y="50" font-size="7" fill="#F3F0FF" text-anchor="end">18.4</text>
+          </svg>
+          <div class="s-sub"><span class="dot" style="background:#22D3EE;width:1.6mm;height:1.6mm"></span>عضل &nbsp; <span class="dot" style="background:#FB923C;width:1.6mm;height:1.6mm"></span>دهون</div>
+        </div>
+        <div class="nav"><span><i></i>الرئيسية</span><span class="on"><i></i>القياسات</span><span><i></i>مقارنة</span><span><i></i>حسابي</span></div>
+      </div></div>
+      <div class="cap"><h4>Charts</h4><p>Weight split into fat and lean mass, so "the scale didn't move" stops being scary. Muscle and fat lines, plus a trend for every metric (ECharts).</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>13</span></div>
+</section>
+
+<!-- ======================= 14. SCREENS 3 ======================= -->
+<section class="page">
+  <span class="sec-num">13</span>
+  <p class="eyebrow">Member app · screens 3 of 3</p>
+  <h2>Body map, the reveal moment and sharing</h2>
+  <p class="lead">The screens members remember, screenshot and send to friends.</p>
+  <div class="phones">
+    <div class="pwrap">
+      <div class="phone"><div class="scr">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
+        <div class="s-h">توازن الجسم</div>
+        <div class="s-sub" style="margin-bottom:1mm">كتلة العضل في كل جزء (كجم)</div>
+        <svg viewBox="0 0 160 170" width="100%" style="direction:ltr">
+          <circle cx="80" cy="18" r="11" fill="#2A2150"/>
+          <rect x="58" y="33" width="44" height="58" rx="10" fill="#22D3EE" opacity=".9"/>
+          <rect x="38" y="35" width="15" height="52" rx="7" fill="#22D3EE" opacity=".75"/>
+          <rect x="107" y="35" width="15" height="52" rx="7" fill="#22D3EE" opacity=".75"/>
+          <rect x="60" y="95" width="18" height="66" rx="8" fill="#22D3EE" opacity=".8"/>
+          <rect x="82" y="95" width="18" height="66" rx="8" fill="#FB923C" opacity=".95"/>
+          <g font-size="8" fill="#F3F0FF" font-family="Inter" text-anchor="middle">
+            <text x="80" y="65">27.9</text><text x="23" y="62">3.6</text><text x="137" y="62">3.4</text>
+            <text x="44" y="132">9.8</text><text x="116" y="132">8.9</text>
+          </g>
+        </svg>
+        <div class="s-card" style="background:var(--amber-soft);border-color:rgba(245,165,36,.35);line-height:1.5"><b class="am">الرجل الشمال أقل 9%</b><br><span class="s-sub">فرق بسيط. اسأل مدربك عن تمارين الرجل الواحدة.</span></div>
+        <div class="nav"><span><i></i>الرئيسية</span><span class="on"><i></i>القياسات</span><span><i></i>مقارنة</span><span><i></i>حسابي</span></div>
+      </div></div>
+      <div class="cap"><h4>Body map</h4><p>Arms, legs and trunk with left/right balance. Imbalances above about 8% get a gentle note and also become a trainer lead.</p></div>
+    </div>
+    <div class="pwrap">
+      <div class="phone"><div class="scr" style="background:radial-gradient(90% 60% at 50% 35%,rgba(124,77,242,.35),#120D22 70%);text-align:center">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
+        <div style="margin:2mm 2mm 0;background:rgba(35,27,64,.92);border-radius:3mm;padding:2mm;text-align:right;display:flex;gap:2mm;align-items:center">
+          <div style="width:6mm;height:6mm;border-radius:1.6mm;background:linear-gradient(135deg,#E19CFB,#6C3CF0);flex:none"></div><div><b style="font-size:6.8px">Iron Box</b><div class="s-sub">نتيجتك الجديدة وصلت 🎉</div></div></div>
+        <div style="margin:9mm auto 3mm;width:28mm;height:28mm;border-radius:50%;background:conic-gradient(#6C3CF0 0,#B77CF7 40%,#E19CFB 80%,rgba(255,255,255,.08) 80% 100%);display:grid;place-items:center;box-shadow:0 0 12mm rgba(124,77,242,.35)">
+          <div style="width:23mm;height:23mm;border-radius:50%;background:#120D22;display:grid;place-items:center"><div><div class="big g" style="font-size:15px">+0.8</div><div class="s-sub">كجم عضل</div></div></div></div>
+        <div class="s-h" style="font-size:11px">شغلك باين!</div>
+        <div class="s-sub" style="margin-bottom:4mm;line-height:1.6">عضلك زاد للشهر التالت على التوالي</div>
+        <div class="s-card" style="text-align:right;opacity:.95"><div class="row"><span>دهون</span><b class="g" dir="ltr">−0.5 kg</b></div></div>
+        <div class="s-card" style="text-align:right;opacity:.7"><div class="row"><span>InBody Score</span><b dir="ltr">78 → 80</b></div></div>
+        <div class="s-sub" style="position:absolute;bottom:4mm;left:0;right:0">اسحب لفوق للتفاصيل ⌃</div>
+      </div></div>
+      <div class="cap"><h4>New result reveal</h4><p>Push notification, then a full-screen moment: glowing ring fills, the main change counts up, haptic tap, then the key changes slide in.</p></div>
+    </div>
+    <div class="pwrap">
+      <div class="phone"><div class="scr">
+        <div class="notch"></div><div class="sb"><span>9:41</span><span></span></div>
+        <div class="s-h">شارك تقدّمك</div>
+        <div style="border-radius:4mm;padding:4mm 3mm;background:linear-gradient(150deg,#4A2399,#120D22 55%,#2A1250);border:1px solid rgba(255,255,255,.08);text-align:center;margin-bottom:3mm">
+          <div style="display:flex;justify-content:center;align-items:center;gap:1.5mm;direction:ltr"><img src="mark.webp" alt="" style="height:4mm"><span style="font-family:Inter;font-weight:700;letter-spacing:.14em;font-size:6px;color:var(--ink2)">× IRON BOX</span></div>
+          <div class="big g" style="font-size:22px;margin-top:4mm">+2.1 kg</div>
+          <div style="font-weight:700;font-size:9px">عضل في 3 شهور</div>
+          <div class="s-sub" style="margin:2mm 0 4mm" dir="ltr">−1.8 kg fat · same weight</div>
+          <div style="display:flex;justify-content:center;gap:1mm;direction:ltr">
+            <i style="width:3mm;height:6mm;background:#22D3EE;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:8mm;background:#22D3EE;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:10mm;background:#22D3EE;border-radius:1mm;display:block;align-self:flex-end"></i><i style="width:3mm;height:13mm;background:#B77CF7;border-radius:1mm;display:block;align-self:flex-end"></i>
+          </div>
+          <div class="s-sub" style="margin-top:3mm;font-size:5.6px">تتبّع تقدّمك في Iron Box</div>
+        </div>
+        <div class="row" style="gap:1.5mm"><div class="btn" style="flex:1">واتساب</div><div class="btn ghost" style="flex:1">انستجرام</div></div>
+        <div class="s-sub" style="text-align:center;margin-top:2mm">الأرقام بس، من غير وزنك أو صورتك</div>
+      </div></div>
+      <div class="cap"><h4>Share card</h4><p>A branded image for Instagram stories or WhatsApp. Shows only the change, never weight or photos. Free marketing for the gym. Hidden for under-18s.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>14</span></div>
+</section>
+
+<!-- ======================= 15. DASHBOARD 1 ======================= -->
+<section class="page">
+  <span class="sec-num">14</span>
+  <p class="eyebrow">Gym dashboard · screens 1 of 2</p>
+  <h2>Adding a scan takes under a minute</h2>
+  <p class="lead">A website on the PC the gym already uses. Nothing to install. Staff always choose the member; the file only confirms it.</p>
+  <div class="desk" style="margin-bottom:3mm">
+    <div class="top"><i></i><i></i><i></i><span class="url">app.example.com/ironbox/members/karim-adel/add-scan</span></div>
+    <div class="body">
+      <div class="side"><div class="logo" style="display:flex;align-items:center;gap:1.5mm"><img src="mark.webp" alt="" style="height:4.5mm"><span>LevelUP<br><span style="font-weight:500;color:var(--muted);letter-spacing:0;font-size:6px">Iron Box</span></span></div><div class="it on">Add scan</div><div class="it">Bulk upload</div><div class="it">Unassigned · 3</div><div class="it">Members</div><div class="it">Follow-up · 12</div><div class="it">Stats</div><div class="it">Branding</div><div class="it">Staff</div></div>
+      <div class="main">
+        <h5>Add scan · Karim Adel <span class="small" style="font-weight:400">· 010 1234 5678</span></h5>
+        <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:3mm">
+          <div>
+            <div style="border:1.5px dashed #B77CF7;border-radius:2.4mm;padding:3mm;text-align:center;background:var(--accent-soft);margin-bottom:2mm"><b style="color:var(--accent)">Karim_20261112.csv</b><br><span class="small">+ result sheet image · 312 KB</span></div>
+            <div class="kpi" style="margin-bottom:2mm"><span class="small">Test date (from the machine)</span><b>12 Nov 2026 · 08:14</b></div>
+            <div class="kpi"><span class="small">Machine</span><b>InBody 570 · Branch: New Cairo</b></div>
+          </div>
+          <div>
+            <b style="font-size:7.4px">Does the file match this member?</b>
+            <table class="dt" style="margin-top:1mm">
+              <tr><th>Field</th><th>In the file</th><th>Member</th><th></th></tr>
+              <tr><td>Name</td><td>Karim Adel</td><td>Karim Adel</td><td class="ok">✓</td></tr>
+              <tr><td>Mobile</td><td>01012345678</td><td>01012345678</td><td class="ok">✓</td></tr>
+              <tr><td>Height</td><td>178 cm</td><td>178 cm</td><td class="ok">✓</td></tr>
+              <tr><td>Age / Sex</td><td>29 · M</td><td>29 · M</td><td class="ok">✓</td></tr>
+              <tr><td>Duplicate?</td><td colspan="2">Not saved before</td><td class="ok">✓</td></tr>
+            </table>
+            <div style="display:flex;gap:2mm;margin-top:2.5mm"><span class="btn" style="flex:1.4;padding:1.6mm">Confirm and send to Karim</span><span class="btn ghost" style="flex:1;padding:1.6mm">Cancel</span></div>
+            <div class="small" style="margin-top:1.5mm;font-size:6px">Saved as: Mona (front desk) · logged</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="desk">
+    <div class="top"><i></i><i></i><i></i><span class="url">app.example.com/ironbox/imports/2291</span></div>
+    <div class="body" style="min-height:52mm">
+      <div class="side"><div class="logo" style="display:flex;align-items:center;gap:1.5mm"><img src="mark.webp" alt="" style="height:4.5mm"><span>LevelUP<br><span style="font-weight:500;color:var(--muted);letter-spacing:0;font-size:6px">Iron Box</span></span></div><div class="it">Add scan</div><div class="it on">Bulk upload</div><div class="it">Unassigned · 3</div><div class="it">Members</div><div class="it">Follow-up · 12</div><div class="it">Stats</div></div>
+      <div class="main">
+        <div class="row" style="margin-bottom:2mm"><h5 style="margin:0">Bulk upload · LookinBody120 Excel export</h5><span class="small">412 rows · <span style="color:var(--accent)">388 matched</span> · <span style="color:var(--amber)">21 check</span> · 3 unknown</span></div>
+        <div class="bar" style="margin-bottom:2.5mm;height:1.6mm"><b style="width:94%;background:var(--accent)"></b></div>
+        <table class="dt">
+          <tr><th>Test date</th><th>Name in file</th><th>Mobile in file</th><th>Suggested member</th><th>Match</th><th>Action</th></tr>
+          <tr><td>03 Mar 2025</td><td>Karim Adel</td><td>0101…678</td><td>Karim Adel</td><td><span class="pill p-sold">Exact</span></td><td class="ok">Approved</td></tr>
+          <tr><td>11 Apr 2025</td><td>Nour H.</td><td>0112…903</td><td>Nour Hassan</td><td><span class="pill p-new">Mobile</span></td><td class="ok">Approved</td></tr>
+          <tr><td>19 Apr 2025</td><td>M. Samir</td><td>—</td><td>Mohamed Samir?</td><td><span class="pill p-warn">Name only</span></td><td><span class="wa" style="background:#3A2A12;color:var(--amber)">Review</span></td></tr>
+          <tr><td>02 May 2025</td><td>(masked)</td><td>(masked)</td><td>—</td><td><span class="pill p-con">Unknown</span></td><td>→ Unassigned</td></tr>
+        </table>
+        <div class="small" style="margin-top:2mm;font-size:6.2px">Nothing is saved until a person approves each row. Processing runs in the background (BullMQ).</div>
+      </div>
+    </div>
+  </div>
+  <p class="small" style="margin-top:3mm"><strong>Top:</strong> Add scan with the identity check. <strong>Bottom:</strong> importing years of history at onboarding, approved row by row.</p>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>15</span></div>
+</section>
+
+<!-- ======================= 16. DASHBOARD 2 ======================= -->
+<section class="page">
+  <span class="sec-num">15</span>
+  <p class="eyebrow">Gym dashboard · screens 2 of 2</p>
+  <h2>Where the gym makes money</h2>
+  <p class="lead">The Follow-up list turns scans into sales. The owner's Stats page shows, in EGP, what the app earned the gym this month.</p>
+  <div class="desk" style="margin-bottom:3mm">
+    <div class="top"><i></i><i></i><i></i><span class="url">app.example.com/ironbox/follow-up</span></div>
+    <div class="body" style="min-height:58mm">
+      <div class="side"><div class="logo" style="display:flex;align-items:center;gap:1.5mm"><img src="mark.webp" alt="" style="height:4.5mm"><span>LevelUP<br><span style="font-weight:500;color:var(--muted);letter-spacing:0;font-size:6px">Iron Box</span></span></div><div class="it">Add scan</div><div class="it">Members</div><div class="it on">Follow-up · 12</div><div class="it">Stats</div><div class="it">Trainers</div></div>
+      <div class="main">
+        <div class="row" style="margin-bottom:2mm"><h5 style="margin:0">Follow-up · leads for trainers</h5><span><span class="chip on" style="font-size:6px">All 12</span><span class="chip" style="font-size:6px">Muscle loss 4</span><span class="chip" style="font-size:6px">Re-scan due 5</span><span class="chip" style="font-size:6px">Imbalance 3</span></span></div>
+        <table class="dt">
+          <tr><th>Member</th><th>Reason</th><th>Trainer</th><th>Status</th><th>Value</th><th></th></tr>
+          <tr><td><b style="color:var(--ink)">Ahmed Fathy</b></td><td><span class="pill p-warn">Muscle −0.8 kg</span> in 5 weeks</td><td>Coach Omar</td><td><span class="pill p-new">New</span></td><td>—</td><td><span class="wa">WhatsApp</span></td></tr>
+          <tr><td><b style="color:var(--ink)">Salma Youssef</b></td><td><span class="pill p-warn">Left leg −9%</span> imbalance</td><td>Coach Hana</td><td><span class="pill p-con">Contacted</span></td><td>—</td><td><span class="wa">WhatsApp</span></td></tr>
+          <tr><td><b style="color:var(--ink)">Karim Adel</b></td><td><span class="pill p-new">Re-scan due</span> in 2 days</td><td>Front desk</td><td><span class="pill p-con">Reminded</span></td><td>—</td><td><span class="wa">WhatsApp</span></td></tr>
+          <tr><td><b style="color:var(--ink)">Mai Tarek</b></td><td><span class="pill p-warn">No scan</span> in 63 days</td><td>Coach Omar</td><td><span class="pill p-sold">Sold PT</span></td><td>EGP 3,000</td><td></td></tr>
+          <tr><td><b style="color:var(--ink)">Youssef Nabil</b></td><td><span class="pill p-warn">Muscle −0.6 kg</span></td><td>Coach Hana</td><td><span class="pill p-sold">Sold package</span></td><td>EGP 1,800</td><td></td></tr>
+        </table>
+        <div class="small" style="margin-top:2mm;font-size:6.2px">WhatsApp opens a ready message: "Hi Ahmed, your last scan showed some muscle loss. Want 10 minutes with Coach Omar this week?"</div>
+      </div>
+    </div>
+  </div>
+  <div class="desk">
+    <div class="top"><i></i><i></i><i></i><span class="url">app.example.com/ironbox/stats</span></div>
+    <div class="body" style="min-height:60mm">
+      <div class="side"><div class="logo" style="display:flex;align-items:center;gap:1.5mm"><img src="mark.webp" alt="" style="height:4.5mm"><span>LevelUP<br><span style="font-weight:500;color:var(--muted);letter-spacing:0;font-size:6px">Iron Box</span></span></div><div class="it">Add scan</div><div class="it">Members</div><div class="it">Follow-up · 12</div><div class="it on">Stats</div><div class="it">Billing</div></div>
+      <div class="main">
+        <h5>November · New Cairo branch</h5>
+        <div style="background:linear-gradient(135deg,rgba(124,77,242,.22),#1B1534 70%);border:1px solid rgba(124,77,242,.35);border-radius:2.6mm;padding:3mm;margin-bottom:2.5mm">
+          <span class="small">Money the app brought you this month</span>
+          <div style="font-size:20px;font-weight:800;letter-spacing:-.02em;margin-top:.6mm">EGP 11,700 <span style="font-size:8px;color:var(--ink2);font-weight:500">vs EGP 2,490 plan · 4.7×</span></div>
+          <span class="small">46 re-scans × EGP 150 = 6,900 · 2 PT/packages sold = 4,800</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2mm">
+          <div class="kpi"><span class="small">Scans</span><b>128</b><span class="small" style="color:var(--good)">+31 vs Oct</span></div>
+          <div class="kpi"><span class="small">Members on the app</span><b>212</b><span class="small">68% of scanned</span></div>
+          <div class="kpi"><span class="small">PT leads</span><b>12 → 2 sold</b><span class="small">17% converted</span></div>
+          <div class="kpi"><span class="small">Shared cards</span><b>39</b><span class="small">with your logo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="small" style="margin-top:3mm">Numbers in these mockups are examples. The "money the app brought you" figure uses the gym's own scan price and the sales trainers mark as done.</p>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>16</span></div>
+</section>
+
+<!-- ======================= 17. EXPLANATION ENGINE ======================= -->
+<section class="page">
+  <span class="sec-num">16</span>
+  <p class="eyebrow">The explanation engine</p>
+  <h2>Code decides what changed. Words make it human.</h2>
+  <p class="lead">Rules in code compare scans and pick a pattern. Each pattern has messages written by a person in Egyptian Arabic and in English. No AI ever invents or changes a number.</p>
+  <div class="flow" style="margin-bottom:4mm">
+    <div class="fstep"><div class="n">1</div><h4>Two scans</h4><p class="small" style="margin:0">Same member, fields both have</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">2</div><h4>Rules</h4><p class="small" style="margin:0">Thresholds, noise, machine checks</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">3</div><h4>Pattern</h4><p class="small" style="margin:0">e.g. "recomposition"</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">4</div><h4>Message</h4><p class="small" style="margin:0">Human-written template + real numbers</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">5</div><h4>Flags</h4><p class="small" style="margin:0">Leads for the gym's trainers</p></div>
+  </div>
+  <table>
+    <tr><th style="width:17%">Pattern</th><th style="width:31%">Rule (scan to scan)</th><th>Message (example)</th><th style="width:12%">Lead?</th></tr>
+    <tr><td><strong>Recomposition</strong></td><td>Muscle up &gt;0.3 kg, fat down &gt;0.3 kg, fat % within 0.5</td><td>"Same fat %, but +1.1 kg muscle and −0.9 kg fat. The best result."</td><td>—</td></tr>
+    <tr><td><strong>Healthy fat loss</strong></td><td>Fat down, muscle stable or up</td><td>"You lost 2 kg of fat and kept your muscle."</td><td>—</td></tr>
+    <tr><td><strong>Muscle gain</strong></td><td>Muscle up, fat stable</td><td>"+0.8 kg muscle. Keep going."</td><td>—</td></tr>
+    <tr><td><strong>Muscle loss</strong></td><td>Muscle down &gt;0.5 kg</td><td>"You lost some muscle. Talk to your coach about protein and strength work."</td><td><span class="tag a">PT lead</span></td></tr>
+    <tr><td><strong>Imbalance</strong></td><td>Left/right limb difference &gt;~8%</td><td>"Your left leg is a bit weaker. Ask your coach about single-leg work."</td><td><span class="tag a">PT lead</span></td></tr>
+    <tr><td><strong>Water noise</strong></td><td>Big water change, lean trend flat</td><td>"Probably hydration or test timing, not real change."</td><td>—</td></tr>
+    <tr><td><strong>Within noise</strong></td><td>All changes under about 0.5 kg</td><td>"Stable. Small changes are normal between scans."</td><td>—</td></tr>
+    <tr><td><strong>Different machine</strong></td><td>Device changed</td><td>"Different machine, so compare big trends only."</td><td>—</td></tr>
+    <tr><td><strong>Re-scan due</strong></td><td>4–6 weeks since last scan</td><td>"Time for your next scan. Come fasted, before training."</td><td><span class="tag">Re-scan</span></td></tr>
+    <tr><td><strong>Gone quiet</strong></td><td>No scan in 60 days</td><td>"We miss you. Your next scan shows how far you've come."</td><td><span class="tag a">Lead</span></td></tr>
+  </table>
+  <div class="grid2">
+    <div class="callout">Thresholds are starting points. Tune them with real pilot data. Trends over 3+ scans count more than the last change.</div>
+    <div class="callout a"><strong>Why templates, not live AI:</strong> the privacy plan says no third-party AI processing of scan data. Human-written templates keep that promise and still read naturally. AI can help write the templates offline.</div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>17</span></div>
+</section>
+
+<!-- ======================= 18. ARCHITECTURE ======================= -->
+<section class="page">
+  <span class="sec-num">17</span>
+  <p class="eyebrow">Technical model</p>
+  <h2>Architecture</h2>
+  <p class="lead">Data comes from LookinBody120's own exports, uploaded by staff in the dashboard. Nothing is installed at the gym. One NestJS API serves every app.</p>
+  <svg viewBox="0 0 680 300" width="100%" style="display:block;margin-bottom:4mm" font-family="Inter">
+    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8A80AE"/></marker></defs>
+    <rect x="215" y="8" width="455" height="78" rx="12" fill="none" stroke="#2F2654" stroke-dasharray="5 4"/>
+    <text x="660" y="24" fill="#8A80AE" font-size="9.5" text-anchor="end">On the gym's existing PC</text>
+    <rect x="10" y="30" width="170" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="95" y="50" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">InBody machine</text><text x="95" y="66" fill="#BDB5DC" font-size="9.5" text-anchor="middle">runs the test</text>
+    <rect x="230" y="30" width="190" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="325" y="50" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">LookinBody120</text><text x="325" y="66" fill="#BDB5DC" font-size="9.5" text-anchor="middle">exports CSV, image, Excel</text>
+    <rect x="460" y="30" width="190" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="555" y="50" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Gym dashboard (web)</text><text x="555" y="66" fill="#BDB5DC" font-size="9.5" text-anchor="middle">pick member, upload, confirm</text>
+    <path d="M180,53 H227" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/><path d="M420,53 H457" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/>
+    <path d="M555,76 V118" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/>
+    <rect x="200" y="120" width="470" height="92" rx="12" fill="rgba(124,77,242,.10)" stroke="#B77CF7"/>
+    <text x="435" y="142" fill="#F3F0FF" font-size="13" font-weight="700" text-anchor="middle">NestJS API</text>
+    <text x="435" y="161" fill="#BDB5DC" font-size="9.8" text-anchor="middle">auth · orgs · members · scans · imports · access · leads · billing</text>
+    <text x="435" y="177" fill="#BDB5DC" font-size="9.8" text-anchor="middle">file reader for CSV and Excel with identity and duplicate checks</text>
+    <text x="435" y="193" fill="#BDB5DC" font-size="9.8" text-anchor="middle">rules engine explains changes and creates flags</text>
+    <rect x="10" y="120" width="160" height="92" rx="12" fill="#191330" stroke="#2F2654"/>
+    <text x="90" y="140" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Data and jobs</text>
+    <text x="90" y="157" fill="#BDB5DC" font-size="9.5" text-anchor="middle">MongoDB Atlas</text><text x="90" y="171" fill="#BDB5DC" font-size="9.5" text-anchor="middle">Cloudflare R2 (images)</text><text x="90" y="185" fill="#BDB5DC" font-size="9.5" text-anchor="middle">Redis + BullMQ</text><text x="90" y="199" fill="#BDB5DC" font-size="9.5" text-anchor="middle">FCM push · WhatsApp codes</text>
+    <path d="M170,166 H197" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/><path d="M200,172 H173" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/>
+    <path d="M300,212 V244" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/><path d="M435,212 V244" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/><path d="M570,212 V244" stroke="#8A80AE" stroke-width="1.5" marker-end="url(#a2)"/>
+    <rect x="225" y="246" width="150" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="300" y="266" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Member app</text><text x="300" y="282" fill="#BDB5DC" font-size="9.5" text-anchor="middle">iOS · Android · web</text>
+    <rect x="360" y="246" width="150" height="46" rx="10" fill="#191330" stroke="#2F2654" transform="translate(0,0)" opacity="0"/>
+    <rect x="385" y="246" width="100" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="435" y="266" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Trainer view</text><text x="435" y="282" fill="#BDB5DC" font-size="9.5" text-anchor="middle">clients · leads</text>
+    <rect x="495" y="246" width="150" height="46" rx="10" fill="#191330" stroke="#2F2654"/><text x="570" y="266" fill="#F3F0FF" font-size="12" font-weight="700" text-anchor="middle">Owner stats</text><text x="570" y="282" fill="#BDB5DC" font-size="9.5" text-anchor="middle">money earned · KPIs</text>
+  </svg>
+  <h3>Ways to get data in</h3>
+  <table>
+    <tr><th style="width:22%">Route</th><th>How</th><th style="width:24%">When</th></tr>
+    <tr><td><strong>One test: CSV + image</strong></td><td>"Export Data as CSV/Image Files" saves a CSV and result image per test, automatically after each test or on demand (manual p.113)</td><td><span class="tag">MAIN METHOD</span></td></tr>
+    <tr><td><strong>Excel export</strong></td><td>"Export Data as Excel": all data, or by name, ID or test date (p.114)</td><td>History at onboarding</td></tr>
+    <tr><td><strong>Typed by staff</strong></td><td>Short form: weight, muscle, fat, fat % required</td><td>No file available</td></tr>
+    <tr><td><strong>Member manual entry</strong></td><td>Member types results from old paper; labelled "manual"</td><td>Old results only</td></tr>
+    <tr><td><strong>Later: photo of sheet</strong></td><td>Photo of the printed sheet read by OCR, numbers confirmed by staff</td><td>Venues with no PC</td></tr>
+    <tr><td><strong>Later: automatic</strong></td><td>Folder watcher, FTP sheets (p.124), or LookinBody120's built-in integrations (p.123)</td><td>After pilots</td></tr>
+  </table>
+  <p class="small">From the LookinBody120 manual: members already have name, ID and mobile (pp.28–29). Privacy masking hides them in Excel exports (p.99). Tests in "Temporary Data" must be completed before export (p.119). <strong>Not in the manual:</strong> the CSV column names, so get sample exports first.</p>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>18</span></div>
+</section>
+
+<!-- ======================= 19. STACK & LIBRARIES ======================= -->
+<section class="page tight">
+  <span class="sec-num">18</span>
+  <p class="eyebrow">Technical model</p>
+  <h2>Stack and libraries</h2>
+  <p class="lead">TypeScript everywhere. One monorepo, shared types and validation between the apps and the API.</p>
+  <div class="grid2" style="gap:4mm">
+    <div>
+      <h3 style="margin-top:0"><span class="dot" style="background:var(--accent)"></span>Member app</h3>
+      <table>
+        <tr><td style="width:44%"><strong>Ionic React + Capacitor</strong></td><td>iOS, Android and web from one codebase</td></tr>
+        <tr><td><strong>React + TypeScript + Vite</strong></td><td>UI and build</td></tr>
+        <tr><td><strong>Framer Motion (motion)</strong></td><td>Count-ups, reveals, page transitions</td></tr>
+        <tr><td><strong>lottie-react</strong></td><td>Celebration animations from the design</td></tr>
+        <tr><td><strong>Apache ECharts</strong></td><td>Charts with RTL support</td></tr>
+        <tr><td><strong>TanStack Query</strong></td><td>Server data, caching, offline last view</td></tr>
+        <tr><td><strong>Zustand</strong></td><td>Small app state</td></tr>
+        <tr><td><strong>i18next + react-i18next</strong></td><td>Arabic first, English, RTL</td></tr>
+        <tr><td><strong>Day.js (ar locale)</strong></td><td>Dates in Arabic</td></tr>
+        <tr><td><strong>@capacitor/push-notifications</strong></td><td>"New result" and reminders</td></tr>
+        <tr><td><strong>@capacitor/haptics, /share</strong></td><td>Haptic reveal, native share sheet</td></tr>
+        <tr><td><strong>html-to-image</strong></td><td>Renders the share card to PNG</td></tr>
+      </table>
+      <h3><span class="dot" style="background:var(--violet)"></span>Gym dashboard</h3>
+      <table>
+        <tr><td style="width:44%"><strong>React + Vite + Tailwind</strong></td><td>Your strongest stack</td></tr>
+        <tr><td><strong>shadcn/ui (Radix)</strong></td><td>Accessible components, RTL-ready</td></tr>
+        <tr><td><strong>TanStack Table</strong></td><td>Members, bulk review, leads</td></tr>
+        <tr><td><strong>react-dropzone</strong></td><td>Drag-and-drop upload</td></tr>
+        <tr><td><strong>SheetJS + Papa Parse</strong></td><td>Preview Excel and CSV in the browser</td></tr>
+        <tr><td><strong>React Hook Form + Zod</strong></td><td>Forms and validation</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3 style="margin-top:0"><span class="dot" style="background:var(--amber)"></span>API and data</h3>
+      <table>
+        <tr><td style="width:44%"><strong>NestJS</strong></td><td>Modules: auth, orgs, members, scans, imports, access, leads, billing</td></tr>
+        <tr><td><strong>MongoDB + Mongoose</strong></td><td>Different machines export different fields</td></tr>
+        <tr><td><strong>Zod (shared)</strong></td><td>One schema for API and apps</td></tr>
+        <tr><td><strong>@nestjs/jwt + Passport</strong></td><td>Sessions after the phone code</td></tr>
+        <tr><td><strong>@nestjs/throttler, Helmet</strong></td><td>Rate limits on codes, security headers</td></tr>
+        <tr><td><strong>BullMQ + Redis</strong></td><td>Bulk imports, reminders, notifications</td></tr>
+        <tr><td><strong>SheetJS + Papa Parse</strong></td><td>Server-side file reading</td></tr>
+        <tr><td><strong>AWS SDK v3 (S3)</strong></td><td>Cloudflare R2, signed expiring links</td></tr>
+        <tr><td><strong>firebase-admin</strong></td><td>Push via Firebase Cloud Messaging</td></tr>
+        <tr><td><strong>WhatsApp Cloud API</strong></td><td>Login codes; SMS provider as fallback</td></tr>
+        <tr><td><strong>@nestjs/swagger</strong></td><td>API docs</td></tr>
+        <tr><td><strong>Pino + Sentry</strong></td><td>Logs and import errors</td></tr>
+      </table>
+      <h3><span class="dot" style="background:var(--good)"></span>Quality, tools, hosting</h3>
+      <table>
+        <tr><td style="width:44%"><strong>Figma + ProtoPie</strong></td><td>Design prototype (phase 0)</td></tr>
+        <tr><td><strong>Vitest, Jest, Supertest</strong></td><td>Unit and API tests, incl. gym-isolation tests</td></tr>
+        <tr><td><strong>Playwright</strong></td><td>End-to-end: upload → member sees it</td></tr>
+        <tr><td><strong>pnpm + Turborepo</strong></td><td>Monorepo with shared packages</td></tr>
+        <tr><td><strong>GitHub Actions</strong></td><td>Tests and deploys</td></tr>
+        <tr><td><strong>Railway or Render</strong></td><td>API + Redis hosting</td></tr>
+        <tr><td><strong>Capacitor Live Updates / Appflow</strong></td><td>Optional: ship fixes without store review</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>19</span></div>
+</section>
+
+<!-- ======================= 20. DATA MODEL & API ======================= -->
+<section class="page">
+  <span class="sec-num">19</span>
+  <p class="eyebrow">Technical model</p>
+  <h2>Data model and API</h2>
+  <div class="grid2" style="grid-template-columns:1.15fr 1fr">
+    <div>
+<pre><span class="t">Member</span>    { id, phone, oldPhones[], name, sex, birthYear,
+            height, locale, consents[] }
+<span class="t">Profile</span>   { id, memberId, name, sex, birthYear }   <span class="c">// family on one phone</span>
+<span class="t">Org</span>       { id, code, name, type: <span class="k">'gym'|'clinic'|'nutritionist'</span>,
+            branding, plan, scanPrice?, branches[] }
+<span class="t">OrgMember</span> { orgId, memberId, localName, lb120Id?,
+            trainerId?, joinedAt }               <span class="c">// the gym's view</span>
+<span class="t">Device</span>    { id, orgId, branchId, brand, model, serial? }
+<span class="t">Import</span>    { id, orgId, fileUrl, kind: <span class="k">'csv'|'excel'</span>, rows,
+            approved, status, createdBy, createdAt }
+<span class="t">Scan</span> {
+  id, orgId, branchId, deviceId?, memberId, profileId?,
+  fileIdentity: { name?, id?, mobile?, height?, age?, sex? },
+  source: <span class="k">'csv'|'excel'|'typed'|'manual'</span>,
+  trust:  <span class="k">'verified'|'typed'|'manual'</span>,
+  testDate, conditions?: { fasted?, workedOut? },
+  values: { weight, smm, bfm, pbf, tbw, icw, ecw, ecwTbw,
+            bmr, visceralFat, inbodyScore,
+            segmentalLean, segmentalFat },     <span class="c">// all optional</span>
+  sheetImageUrl?, testHash, addedBy, importId?,
+  edits[], moves[]
+}
+<span class="t">Lead</span>      { id, orgId, memberId, scanId, reason,
+            trainerId?, status: <span class="k">'new'|'contacted'|'sold'|'lost'</span>,
+            valueEgp?, createdAt }              <span class="c">// gym ROI</span>
+<span class="t">Access</span>    { memberId, orgId, shareFullHistory,
+            grantedAt, revokedAt? }
+<span class="t">AuditLog</span>  { orgId, actor, action, target, at }</pre>
+      <p class="small"><strong>Indexes:</strong> scans(memberId, testDate) · scans(orgId, testDate) · scans(testHash) unique · members(phone) unique · orgMembers(orgId, memberId) unique · leads(orgId, status)</p>
+      <p class="small"><strong>New in v2:</strong> OrgMember (the gym's own member list), Profile (family on one phone), Lead (tracks the money the app earns the gym).</p>
+    </div>
+    <div>
+      <h3 style="margin-top:0">Main API endpoints</h3>
+      <table style="font-size:7.6pt">
+        <tr><th>Area</th><th>Endpoints</th></tr>
+        <tr><td><strong>Auth</strong></td><td class="mono">POST /auth/otp<br>POST /auth/verify</td></tr>
+        <tr><td><strong>Members</strong></td><td class="mono">GET|POST|PATCH /orgs/:id/members<br>POST /orgs/:id/members/import</td></tr>
+        <tr><td><strong>Add scan</strong></td><td class="mono">POST …/members/:mid/scans/preview<br>POST …/members/:mid/scans</td></tr>
+        <tr><td><strong>Bulk</strong></td><td class="mono">POST /orgs/:id/imports<br>GET /imports/:id/rows<br>PATCH /imports/:id/rows/:row</td></tr>
+        <tr><td><strong>Fix</strong></td><td class="mono">PATCH /scans/:id/move<br>DELETE /scans/:id</td></tr>
+        <tr><td><strong>Member</strong></td><td class="mono">GET /me/timeline?orgId=<br>GET /me/places<br>GET /scans/compare?a=&amp;b=<br>PATCH /me/access/:orgId<br>POST /me/export · DELETE /me</td></tr>
+        <tr><td><strong>Gym</strong></td><td class="mono">GET /orgs/:id/due-rescan<br>GET /orgs/:id/flags<br>GET|PATCH /orgs/:id/leads<br>GET /orgs/:id/stats<br>GET /orgs/:id/audit</td></tr>
+      </table>
+      <h3>Running cost (monthly, estimates)</h3>
+      <table>
+        <tr><td>Server for NestJS + Redis</td><td class="num">$10–25</td></tr>
+        <tr><td>MongoDB Atlas (small tier)</td><td class="num">$0–25</td></tr>
+        <tr><td>Object storage (R2)</td><td class="num">$1–5</td></tr>
+        <tr><td>Push notifications (FCM)</td><td class="num">free</td></tr>
+        <tr><td>Domain, email, WhatsApp/SMS codes</td><td class="num">$10–30</td></tr>
+        <tr><td><strong>Total</strong></td><td class="num"><strong>$25–85</strong></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>20</span></div>
+</section>
+
+<!-- ======================= 21. TRUST, PRIVACY, LEGAL ======================= -->
+<section class="page">
+  <span class="sec-num">20</span>
+  <p class="eyebrow">Trust, privacy and legal</p>
+  <h2>Five checks before a scan reaches a member</h2>
+  <div class="flow" style="margin:3mm 0 5mm">
+    <div class="fstep"><div class="n">1</div><h4>Staff pick</h4><p class="small" style="margin:0">The system suggests, never decides</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">2</div><h4>Identity check</h4><p class="small" style="margin:0">Name, ID, mobile, height, age, sex</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">3</div><h4>Duplicate check</h4><p class="small" style="margin:0">Same test can't be saved twice</p></div><div class="farrow">›</div>
+    <div class="fstep"><div class="n">4</div><h4>Audit + undo</h4><p class="small" style="margin:0">Move within 30 days, logged</p></div><div class="farrow">›</div>
+    <div class="fstep" style="border-color:var(--accent)"><div class="n">5</div><h4>Member check</h4><p class="small" style="margin:0">"This isn't my scan"</p></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <h3 style="margin-top:0">Egypt's Personal Data Protection Law (151/2020)</h3>
+      <p>Body-composition results are health data, which the law treats as sensitive. Get a lawyer's advice before the first paying gym. This is a summary, not legal advice.</p>
+      <ul>
+        <li>Explicit written consent from the member</li>
+        <li>A licence or permit from the PDPC</li>
+        <li>Guardian consent for children under 15</li>
+        <li>Hosting outside Egypt counts as a cross-border transfer</li>
+        <li>Serious penalties: plan as if the law is enforced now</li>
+      </ul>
+      <h3>Medical claims and trademark</h3>
+      <ul>
+        <li>Fitness information, not diagnosis. No disease names; flags say "consider talking to a doctor". Disclaimer on every report.</li>
+        <li>LevelUP keeps "InBody" out of its name and logo. Say "works with InBody, Tanita and other scan sheets".</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-top:0">How the design responds</h3>
+      <ul class="check">
+        <li>Consent when the gym registers the member and again at first login, with timestamp and version</li>
+        <li>Separate consent for each gym that can see the member's data</li>
+        <li>Minimum data: phone, first name, sex, birth year, height. No national ID</li>
+        <li>Result images encrypted, behind expiring links. No third-party AI on scan data</li>
+        <li>Export and delete buttons for members</li>
+        <li>Data processing agreement with every gym (gym = controller, we = processor)</li>
+        <li>Privacy notice in Arabic and English</li>
+        <li>Every query filtered by organization, with automated isolation tests</li>
+        <li>Roles with least access; every upload, edit and move logged</li>
+        <li>Ask the lawyer: licence type and fees, hosting location, scans saved before sign-up</li>
+      </ul>
+      <div class="callout a" style="font-size:8.4pt"><strong>Register first:</strong> Commercial Register and Tax Card before taking money. Paymob and invoicing both need them.</div>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>21</span></div>
+</section>
+
+<!-- ======================= 22. EDGE CASES ======================= -->
+<section class="page">
+  <span class="sec-num">21</span>
+  <p class="eyebrow">Problems and edge cases</p>
+  <h2>Every case has a fix in the design</h2>
+  <p class="lead">Core rules: the phone number is the account and the member owns their history. Every scan records its organization, machine and source. Code, not AI, decides what changed.</p>
+  <div class="grid2">
+    <table>
+      <tr><th>Uploading and data</th><th>Fix</th></tr>
+      <tr><td><strong>Wrong member</strong></td><td>Identity check warns; move within 30 days; member can flag it</td></tr>
+      <tr><td><strong>Same test twice</strong></td><td>Hashed: "This test is already saved"</td></tr>
+      <tr><td><strong>Privacy masking on</strong></td><td>Warn; rely on the picked member; suggest turning masking off</td></tr>
+      <tr><td><strong>Unknown columns</strong></td><td>Common fields still read; unknown kept raw and logged</td></tr>
+      <tr><td><strong>Staff forget to upload</strong></td><td>"Scans this week" per branch with reminders when it drops</td></tr>
+      <tr><td><strong>Machine clock wrong</strong></td><td>Date shown on the check screen; edit logged</td></tr>
+      <tr><td><strong>Fake manual results</strong></td><td>Labelled "manual", left out of gym stats</td></tr>
+      <tr><td><strong>Ate or trained before</strong></td><td>Pre-scan checklist saved; note when conditions differ</td></tr>
+      <tr><td><strong>Ramadan</strong></td><td>Seasonal note on hydration; compare with care</td></tr>
+      <tr><td><strong>High ECW/TBW repeatedly</strong></td><td>"Consider talking to a doctor", never a diagnosis</td></tr>
+      <tr><td><strong>Export format changes</strong></td><td>Mapping per version; test with a partner gym</td></tr>
+    </table>
+    <table>
+      <tr><th>Accounts and places</th><th>Fix</th></tr>
+      <tr><td><strong>Member moves gym</strong></td><td>History moves with them; new gym sees it only if allowed</td></tr>
+      <tr><td><strong>Different machine or brand</strong></td><td>Marker on charts; warning; no verdict across brands</td></tr>
+      <tr><td><strong>Fields missing on a model</strong></td><td>Compare only fields both scans have; never guess</td></tr>
+      <tr><td><strong>Scans before sign-up</strong></td><td>Saved under the phone; appear at first login</td></tr>
+      <tr><td><strong>Phone number changes</strong></td><td>Verify both numbers; old one stays linked</td></tr>
+      <tr><td><strong>Recycled number</strong></td><td>Confirm name and birth year; mismatch goes to support</td></tr>
+      <tr><td><strong>Family on one phone</strong></td><td>Several profiles; unclear scans ask "Is this you?"</td></tr>
+      <tr><td><strong>Under 18</strong></td><td>Guardian consent; youth ranges; no share cards</td></tr>
+      <tr><td><strong>Gym stops paying</strong></td><td>Members keep their history; gym features pause</td></tr>
+      <tr><td><strong>Trainer leaves</strong></td><td>Access ends at once; notes stay with the gym</td></tr>
+      <tr><td><strong>Women-only gyms</strong></td><td>Private by default; female-only staff access</td></tr>
+    </table>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>22</span></div>
+</section>
+
+<!-- ======================= 23. ROADMAP & METRICS ======================= -->
+<section class="page">
+  <span class="sec-num">22</span>
+  <p class="eyebrow">Roadmap</p>
+  <h2>Design first, then build, then sell with proof</h2>
+  <p class="lead">Each phase has a gate. If the gate isn't met, fix sales or the product before building more.</p>
+  <svg viewBox="0 0 680 150" width="100%" style="display:block;margin-bottom:4mm" font-family="Inter">
+    <line x1="10" y1="128" x2="670" y2="128" stroke="#2F2654" stroke-width="2"/>
+    <g>
+      <rect x="10" y="8" width="120" height="98" rx="10" fill="rgba(34,211,238,.12)" stroke="#22D3EE"/>
+      <text x="20" y="28" fill="#22D3EE" font-size="9" font-weight="700">WEEKS 1–2</text><text x="20" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Design prototype</text>
+      <text x="20" y="63" fill="#BDB5DC" font-size="9">Figma + motion</text><text x="20" y="77" fill="#BDB5DC" font-size="9">Test with 5 members</text><text x="20" y="91" fill="#BDB5DC" font-size="9">Demo for pilots</text>
+      <rect x="142" y="8" width="125" height="98" rx="10" fill="rgba(124,77,242,.10)" stroke="#B77CF7"/>
+      <text x="152" y="28" fill="#B77CF7" font-size="9" font-weight="700">WEEKS 3–9</text><text x="152" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Build MVP</text>
+      <text x="152" y="63" fill="#BDB5DC" font-size="9">File reader + upload</text><text x="152" y="77" fill="#BDB5DC" font-size="9">App, dashboard, rules</text><text x="152" y="91" fill="#BDB5DC" font-size="9">Push, consent</text>
+      <rect x="279" y="8" width="125" height="98" rx="10" fill="#191330" stroke="#2F2654"/>
+      <text x="289" y="28" fill="#8A80AE" font-size="9" font-weight="700">MONTHS 3–4</text><text x="289" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Pilots</text>
+      <text x="289" y="63" fill="#BDB5DC" font-size="9">3–5 free pilots</text><text x="289" y="77" fill="#BDB5DC" font-size="9">Tune rules</text><text x="289" y="91" fill="#BDB5DC" font-size="9">Arabic case study</text>
+      <rect x="416" y="8" width="125" height="98" rx="10" fill="#191330" stroke="#2F2654"/>
+      <text x="426" y="28" fill="#8A80AE" font-size="9" font-weight="700">MONTHS 5–6</text><text x="426" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Paid + partners</text>
+      <text x="426" y="63" fill="#BDB5DC" font-size="9">Convert to paid</text><text x="426" y="77" fill="#BDB5DC" font-size="9">Paymob, invoices</text><text x="426" y="91" fill="#BDB5DC" font-size="9">Software partner</text>
+      <rect x="553" y="8" width="117" height="98" rx="10" fill="#191330" stroke="#2F2654"/>
+      <text x="563" y="28" fill="#8A80AE" font-size="9" font-weight="700">MONTHS 7–12</text><text x="563" y="45" fill="#F3F0FF" font-size="12" font-weight="700">Grow</text>
+      <text x="563" y="63" fill="#BDB5DC" font-size="9">Automatic sync</text><text x="563" y="77" fill="#BDB5DC" font-size="9">Tanita, Evolt, photo</text><text x="563" y="91" fill="#BDB5DC" font-size="9">Distributor, GCC</text>
+    </g>
+    <g font-size="8.5" fill="#BDB5DC" text-anchor="middle">
+      <rect x="131" y="123" width="10" height="10" transform="rotate(45 136 128)" fill="#22D3EE"/><text x="136" y="146">5/5 understand</text>
+      <rect x="268" y="123" width="10" height="10" transform="rotate(45 273 128)" fill="#B77CF7"/><text x="273" y="146">3 pilots signed</text>
+      <rect x="405" y="123" width="10" height="10" transform="rotate(45 410 128)" fill="#8A80AE"/><text x="410" y="146">3 of 5 pay</text>
+      <rect x="542" y="123" width="10" height="10" transform="rotate(45 547 128)" fill="#8A80AE"/><text x="547" y="146">20 paying venues</text>
+    </g>
+  </svg>
+  <div class="grid2">
+    <div>
+      <h3 style="margin-top:0">Week by week</h3>
+      <table style="font-size:8pt">
+        <tr><td class="num"><strong>1–2</strong></td><td>Design prototype; get real exports from 2–3 gyms; sign pilot letters using the prototype</td></tr>
+        <tr><td class="num"><strong>3</strong></td><td>File reader and scan model on real files</td></tr>
+        <tr><td class="num"><strong>4</strong></td><td>API: phone-code login, orgs, members, scans, imports, access, audit</td></tr>
+        <tr><td class="num"><strong>5</strong></td><td>Dashboard: members, Add scan + check screen, typed entry, branding</td></tr>
+        <tr><td class="num"><strong>6</strong></td><td>Bulk upload, Unassigned, move scan, staff roles</td></tr>
+        <tr><td class="num"><strong>7</strong></td><td>Member app: login, home, timeline, report, compare, charts, RTL</td></tr>
+        <tr><td class="num"><strong>8</strong></td><td>Rules engine, flags and Follow-up list, push, consent, export/delete</td></tr>
+        <tr><td class="num"><strong>9</strong></td><td>Reveal moment, share card, test with the friend and one gym, publish, launch pilots</td></tr>
+      </table>
+      <p class="small"><strong>Out of MVP:</strong> payments, other brands, automatic sync, marketplace, separate trainer app (the Follow-up list covers it).</p>
+    </div>
+    <div>
+      <h3 style="margin-top:0">Pilot metrics</h3>
+      <table style="font-size:8pt">
+        <tr><th>Metric</th><th>Target (guess)</th></tr>
+        <tr><td><strong>Extra paid re-scans</strong></td><td>+20 per gym in 60 days</td></tr>
+        <tr><td><strong>PT leads → sold</strong></td><td>5+ leads a month, 15%+ sold</td></tr>
+        <tr><td><strong>Money brought vs plan price</strong></td><td>2× or more</td></tr>
+        <tr><td><strong>Member activation</strong></td><td>60%+ log in</td></tr>
+        <tr><td><strong>Scans uploaded same day</strong></td><td>90%+</td></tr>
+        <tr><td><strong>Shares</strong></td><td>10%+ of reports</td></tr>
+        <tr><td><strong>Pilot → paid</strong></td><td>3 of 5</td></tr>
+      </table>
+      <h3>Year-one milestones</h3>
+      <table style="font-size:8pt">
+        <tr><td>Prototype tested, 3 pilot letters</td><td class="num">Week 2</td></tr>
+        <tr><td>3–5 pilots live</td><td class="num">Month 3</td></tr>
+        <tr><td>First paying venue</td><td class="num">Month 4</td></tr>
+        <tr><td>20 venues · ≈ EGP 28k/month</td><td class="num">Month 6</td></tr>
+        <tr><td>50 venues · ≈ EGP 75k/month</td><td class="num">Month 12</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>23</span></div>
+</section>
+
+<!-- ======================= 24. RISKS & THIS MONTH ======================= -->
+<section class="page">
+  <span class="sec-num">23</span>
+  <p class="eyebrow">Risks and next steps</p>
+  <h2>The biggest risk is slow sales,<br>not technology</h2>
+  <table>
+    <tr><th style="width:28%">Risk</th><th style="width:12%">Likelihood</th><th style="width:10%">Impact</th><th>Mitigation</th></tr>
+    <tr><td><strong>Building too much before selling</strong></td><td><span class="tag r">High</span></td><td><span class="tag r">High</span></td><td>Design prototype first; fixed MVP scope; pilot letters signed during weeks 1–2</td></tr>
+    <tr><td><strong>Gyms are slow to buy</strong></td><td><span class="tag r">High</span></td><td><span class="tag r">High</span></td><td>Pitch on money (re-scans, PT leads); free pilots with price agreed; start with nutritionists and CrossFit boxes</td></tr>
+    <tr><td><strong>Staff forget to upload</strong></td><td><span class="tag r">High</span></td><td><span class="tag a">Medium</span></td><td>One-minute upload; end-of-day batch; weekly "scans uploaded" count; automatic folder sync after pilots</td></tr>
+    <tr><td><strong>Few venues use LookinBody120 on a PC</strong></td><td><span class="tag a">Unknown</span></td><td><span class="tag r">High</span></td><td>Ask in the first 10 visits; if true, photo-of-sheet reading becomes the main input</td></tr>
+    <tr><td><strong>Members don't install the app</strong></td><td><span class="tag a">Medium</span></td><td><span class="tag a">Medium</span></td><td>Results already waiting; QR at the desk; web version; push notifications</td></tr>
+    <tr><td><strong>Privacy law compliance</strong></td><td><span class="tag">Low–med</span></td><td><span class="tag r">High</span></td><td>Lawyer before the first paying gym; consent, minimisation, deletion from day one</td></tr>
+    <tr><td><strong>InBody launches cloud in Egypt</strong></td><td><span class="tag">Low–med</span></td><td><span class="tag r">High</span></td><td>Brand-neutral; Arabic, gym branding and leads as the edge; integrate with their API</td></tr>
+  </table>
+  <h3>This month</h3>
+  <div class="grid2">
+    <ul class="check">
+      <li>Design the member app (login, home, report, reveal) and the Add scan screen in Figma, Arabic first, dark mode</li>
+      <li>Animate the "new result" reveal and test it with your friend and 4 other members</li>
+      <li>Get sample exports from 2–3 gyms: one test as CSV + image, full history as Excel</li>
+      <li>Visit 10 venues. Ask: LookinBody120 on a PC? Scan price? Scans a month? PT package price?</li>
+      <li>Check whether privacy masking is on in each gym</li>
+    </ul>
+    <ul class="check">
+      <li>Build a weekend prototype: upload a real CSV, read it, show the check screen</li>
+      <li>Sign 3 pilot letters with a written goal and price</li>
+      <li>Book a 1–2 hour data-protection consultation</li>
+      <li>Send InBody's Data Integration Inquiry form</li>
+      <li>Register the LevelUP name; check the domain and app-store names</li>
+    </ul>
+  </div>
+  <div class="card tint" style="margin-top:4mm;text-align:center;padding:6mm">
+    <div class="quote" style="font-size:14pt">"Your members finally understand their InBody, see their progress, and come back.<br><span style="background:var(--grad);-webkit-background-clip:text;color:transparent">With your logo, and with money you can count."</span></div>
+  </div>
+  <div class="foot"><span>LevelUP · Business &amp; Technical Plan v2</span><span>24</span></div>
+</section>
+
+</body>
+</html>
