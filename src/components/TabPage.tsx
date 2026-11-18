@@ -1,7 +1,8 @@
 import { IonContent, IonPage, IonRefresher, IonRefresherContent, useIonRouter } from '@ionic/react';
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useReveal } from '../motion/gsapMotion';
 import Icon from './Icon';
 
 interface TabPageProps {
@@ -21,19 +22,17 @@ interface TabPageProps {
   children: ReactNode;
 }
 
-/** A tab page in the clean modern style: bold app-font title, muted subtitle, notch-safe body that clears the tab bar. */
-const TabPage: React.FC<TabPageProps> = ({
-  testId,
-  title,
-  subtitle,
-  onRefresh,
-  actions,
-  backTo,
-  fill,
-  children,
-}) => {
+/**
+ * A tab page: a big Alexandria title, muted subtitle, and a notch-safe body
+ * that clears the tab bar. Its sections rise in one after another the first
+ * time they appear (GSAP, skipped under reduced motion).
+ */
+const TabPage: React.FC<TabPageProps> = ({ testId, title, subtitle, onRefresh, actions, backTo, fill, children }) => {
   const { t } = useTranslation();
   const router = useIonRouter();
+  const body = useRef<HTMLDivElement>(null);
+  // Children change when data arrives; only sections not seen before play the entrance.
+  useReveal(body, children);
   return (
     <IonPage data-testid={testId}>
       <IonContent>
@@ -42,7 +41,7 @@ const TabPage: React.FC<TabPageProps> = ({
             <IonRefresherContent />
           </IonRefresher>
         )}
-        <div className={`lu-page-body lu-tab-body ${fill ? 'flex flex-col' : ''}`} data-testid="page-body">
+        <div className={`lu-page-body lu-tab-body ${fill ? 'flex flex-col' : ''}`} data-testid="page-body" ref={body}>
           <div className="mb-4 flex items-start gap-3">
             {backTo && (
               <button
@@ -59,7 +58,7 @@ const TabPage: React.FC<TabPageProps> = ({
             )}
             <div className="min-w-0 flex-1">
               {/* No icon before the title: the tab bar already shows it. */}
-              <h1 className="lu-display m-0 text-[clamp(1.5rem,5vw,2rem)] leading-[1.15] wrap-break-word text-ink">
+              <h1 className="lu-display m-0 text-[clamp(1.75rem,7.5vw,2.375rem)] leading-[1.08] wrap-break-word text-ink">
                 {title}
               </h1>
               {subtitle && <p className="mx-0 mt-1 mb-0 text-[0.875rem] text-muted">{subtitle}</p>}

@@ -42,6 +42,9 @@ for (const lang of LOCALES)
       for (const s of SCREENS)
         test(`${s.name} has no accessibility violations`, async ({ page, loginAs }, info) => {
           test.skip(info.project.name !== 'iphone', 'One device size is enough for markup and contrast checks.');
+          // Contrast is checked on the settled screen: with reduced motion the GSAP entrances
+          // (sections fading in) don't run, so no text is measured mid-fade on a busy machine.
+          await page.emulateMedia({ reducedMotion: 'reduce' });
           if (s.fitId) await loginAs(s.fitId);
           await page.goto(s.url);
           await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
@@ -55,6 +58,8 @@ for (const lang of LOCALES)
           }
           // Let intro and count-up animations finish so contrast is measured on final colors.
           await page.waitForTimeout(1200);
+          // GSAP entrances (src/motion/gsapMotion.ts) mark their section while they run.
+          await expect(page.locator('[data-revealing]')).toHaveCount(0);
           // On a busy machine some entrances run late: wait for every finite animation to end
           // (looping glows never finish, so they are left alone).
           await page.evaluate(() =>
