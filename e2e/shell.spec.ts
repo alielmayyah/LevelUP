@@ -44,18 +44,22 @@ for (const lang of LOCALES)
     });
 
 test.describe('first launch', () => {
-  base.use({ locale: 'ar-EG' });
+  base.use({ locale: 'en-US' });
 
-  base('follows an Arabic device language when nothing is saved', async ({ page }) => {
+  base('is Arabic and dark when nothing is saved, whatever the device says', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
     await seedToken(page);
     await page.goto('/tabs/home');
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    const html = page.locator('html');
+    await expect(html).toHaveAttribute('dir', 'rtl');
+    await expect(html).toHaveClass(/ion-palette-dark/);
     await expect(page.getByTestId('tab-home')).toHaveText(ar.tabs.short.home);
   });
 });
 
 base.describe('system theme', () => {
   base('follows the device while the app is open', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('CapacitorStorage.lu.theme', 'system'));
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto('/');
     const html = page.locator('html');

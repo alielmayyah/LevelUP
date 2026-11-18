@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import ar from './ar.json';
 import en from './en.json';
-import i18n, { currentLanguage, detectDeviceLanguage, initLanguage, setLanguage } from './index';
+import i18n, { currentLanguage, initLanguage, setLanguage } from './index';
 
 type Tree = { [key: string]: string | Tree };
 
@@ -60,22 +60,16 @@ describe('i18n', () => {
     expect(document.documentElement.dir).toBe('rtl');
   });
 
-  it('first launch follows an Arabic device', async () => {
-    vi.spyOn(navigator, 'language', 'get').mockReturnValue('ar-EG');
+  it('first launch is Arabic, whatever the device language', async () => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('en-US');
     await initLanguage();
     expect(currentLanguage()).toBe('ar');
+    expect(document.documentElement.dir).toBe('rtl');
   });
 
-  it('first launch falls back to English for any other device language', async () => {
-    vi.spyOn(navigator, 'language', 'get').mockReturnValue('fr-FR');
+  it('a stored English choice is kept', async () => {
+    await Preferences.set({ key: 'lu.lang', value: 'en' });
     await initLanguage();
     expect(currentLanguage()).toBe('en');
-  });
-
-  it('detectDeviceLanguage', () => {
-    expect(detectDeviceLanguage('ar')).toBe('ar');
-    expect(detectDeviceLanguage('AR-sa')).toBe('ar');
-    expect(detectDeviceLanguage('en-GB')).toBe('en');
-    expect(detectDeviceLanguage('')).toBe('en');
   });
 });

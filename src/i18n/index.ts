@@ -30,15 +30,13 @@ async function switchTo(lang: Lang): Promise<void> {
   applyToDocument(lang);
 }
 
-/** Arabic when the device's primary language is Arabic, otherwise English. */
-export function detectDeviceLanguage(deviceLanguage: string = navigator.language ?? ''): Lang {
-  return deviceLanguage.toLowerCase().startsWith('ar') ? 'ar' : 'en';
-}
+/** The app is Arabic-first (docs/redesign/PLAN.md, decision 17); English is a setting. */
+export const DEFAULT_LANG: Lang = 'ar';
 
-/** Order: the saved choice, then the device language, then English. */
+/** Order: the saved choice, then Arabic. The device language doesn't decide. */
 export async function initLanguage(): Promise<void> {
   const { value } = await Preferences.get({ key: STORAGE_KEY });
-  await switchTo(isLang(value) ? value : detectDeviceLanguage());
+  await switchTo(isLang(value) ? value : DEFAULT_LANG);
 }
 
 export async function setLanguage(lang: Lang): Promise<void> {
