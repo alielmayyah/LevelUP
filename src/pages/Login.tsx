@@ -71,7 +71,7 @@ const Login: React.FC = () => {
   return (
     <IonPage className="text-splash-text" data-testid="page-login">
       <IonContent className="[--background:var(--lu-splash-bg)] [--color:var(--lu-splash-text)] ar:font-arabic" scrollY>
-        <div className="relative grid min-h-full grid-rows-[auto_1fr] split:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] split:grid-rows-[1fr] wide:grid-cols-[minmax(0,1fr)_minmax(400px,40%)]">
+        <div className="lu-login-bg relative grid min-h-full grid-rows-[auto_auto] content-center pb-[8vh] split:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] split:grid-rows-[1fr] split:content-stretch split:pb-0 wide:grid-cols-[minmax(0,1fr)_minmax(400px,40%)]">
           {/*
            * Back to the splash. iPhones have no hardware back button, so every
            * screen that isn't a tab carries its own way out. First in the page so

@@ -3,9 +3,9 @@
  * inline-end corner of the full-bleed screens (splash and login), over the dusk backdrop.
  */
 export const CORNER_BUTTON = [
-  'inline-grid size-11 cursor-pointer place-items-center rounded-lg p-0 text-splash-text',
-  'border border-[color-mix(in_srgb,var(--ion-color-secondary)_55%,var(--lu-splash-bg))]',
-  'bg-[color-mix(in_srgb,var(--lu-splash-bg)_80%,var(--ion-color-primary))]',
+  'inline-grid size-11 cursor-pointer place-items-center rounded-full p-0 text-splash-text',
+  'border border-[color-mix(in_srgb,var(--lu-splash-text)_18%,transparent)]',
+  'bg-[color-mix(in_srgb,var(--lu-splash-text)_8%,transparent)]',
   'focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-splash-text',
 ].join(' ');
 

@@ -8,6 +8,7 @@ import { clearToken } from './auth/token';
 import Tabs from './components/Tabs';
 import './i18n';
 import MotionProvider from './motion/MotionProvider';
+import Intro from './pages/Intro';
 import Login from './pages/Login';
 import Splash from './pages/Splash';
 
@@ -35,7 +36,7 @@ onUnauthorized(() => void clearToken());
  * It sits beside the outlet, not inside it as a catch-all <Route>: Ionic's
  * outlet would also match a catch-all against real pages and stack a second copy.
  */
-const KNOWN = /^\/(splash|login|tabs(\/.*)?)?$/;
+const KNOWN = /^\/(splash|intro|login|tabs(\/.*)?)?$/;
 const UnknownAddress: React.FC = () => {
   const { pathname } = useLocation();
   return KNOWN.test(pathname) ? null : <Redirect to="/splash" />;
@@ -54,6 +55,7 @@ const App: React.FC = () => (
       <IonReactRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
         <IonRouterOutlet>
           <Route exact path="/splash" component={Splash} />
+          <Route exact path="/intro" component={Intro} />
           <Route exact path="/login" component={Login} />
           <Route path="/tabs" component={TabsWhenSignedIn} />
           <Route exact path="/">

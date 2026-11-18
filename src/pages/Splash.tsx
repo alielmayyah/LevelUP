@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { getToken } from '../auth/token';
 import { brand } from '../brand.config';
+import { introSeen } from './intro/introSeen';
 import { playIntroSoon } from '../sound/useSound';
 import './Splash.scss';
 import LoadingLine from './splash/LoadingLine';
@@ -17,7 +18,7 @@ const EXIT_MAX_MS = 600;
 
 /**
  * Launch screen only: the logo on a soft dusk gradient, then the app moves on by
- * itself, to Login when signed out or straight to Home with a session.
+ * itself, to the intro slides (first launch) or Login when signed out or straight to Home with a session.
  * Nothing to tap, so there is no way to get stuck here.
  * `?stay` keeps it on screen (screenshots and accessibility checks).
  */
@@ -48,7 +49,8 @@ const Splash: React.FC = () => {
     const motion = motionOk ? import('./splash/splashMotion') : null;
 
     const timer = window.setTimeout(async () => {
-      const to = (await getToken()) ? '/tabs/home' : '/login';
+      // Signed in: Home. Signed out: the intro slides on first launch, then Login.
+      const to = (await getToken()) ? '/tabs/home' : (await introSeen()) ? '/login' : '/intro';
       if (!live) return;
       const go = () => live && history.replace(to);
       const m = motion ? await motion.catch(() => null) : null;

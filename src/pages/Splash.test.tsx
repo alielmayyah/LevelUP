@@ -6,12 +6,14 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { setToken } from '../auth/token';
 import { brand } from '../brand.config';
 import { setLanguage } from '../i18n';
+import { markIntroSeen } from './intro/introSeen';
 import Splash, { SPLASH_MS } from './Splash';
 
 const renderSplash = (path = '/splash') =>
   render(
     <MemoryRouter initialEntries={[path]}>
       <Route exact path="/splash" component={Splash} />
+      <Route exact path="/intro" render={() => <p>intro page</p>} />
       <Route exact path="/login" render={() => <p>login page</p>} />
       <Route path="/tabs/home" render={() => <p>home page</p>} />
     </MemoryRouter>,
@@ -37,7 +39,13 @@ describe('Splash', () => {
     expect(screen.queryAllByRole('button')).toHaveLength(0);
   });
 
-  it('moves on to login by itself when signed out', async () => {
+  it('shows the intro slides on first launch when signed out', async () => {
+    renderSplash();
+    expect(await screen.findByText('intro page', {}, WAIT)).toBeInTheDocument();
+  });
+
+  it('moves on to login by itself when signed out and the intro was seen', async () => {
+    await markIntroSeen();
     renderSplash();
     expect(screen.queryByText('login page')).toBeNull();
     expect(await screen.findByText('login page', {}, WAIT)).toBeInTheDocument();
@@ -53,6 +61,7 @@ describe('Splash', () => {
     renderSplash('/splash?stay');
     await new Promise((r) => setTimeout(r, SPLASH_MS + 300));
     expect(screen.queryByText('login page')).toBeNull();
+    expect(screen.queryByText('intro page')).toBeNull();
   });
 
   it('renders the Arabic copy', async () => {

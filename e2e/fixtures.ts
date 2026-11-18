@@ -28,6 +28,8 @@ export const test = base.extend<Options & Fixtures>({
       ({ prefix, lang, theme }) => {
         localStorage.setItem(`${prefix}lu.lang`, lang);
         localStorage.setItem(`${prefix}lu.theme`, theme);
+        // The first-launch intro slides are skipped unless a test clears this (see splash.spec.ts).
+        localStorage.setItem(`${prefix}lu.intro`, 'seen');
       },
       { prefix: PREFS, lang, theme },
     );

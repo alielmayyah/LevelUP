@@ -5,8 +5,9 @@
  */
 @layer components {
   .lu-login-input {
-    border: 1px solid color-mix(in srgb, var(--ion-color-secondary) 40%, var(--lu-splash-bg));
-    background: color-mix(in srgb, var(--lu-splash-bg) 86%, var(--ion-color-primary));
+    /* Frosted white on the navy backdrop: neutral, so the purple stays for the button. */
+    border: 1px solid color-mix(in srgb, var(--lu-splash-text) 22%, transparent);
+    background: color-mix(in srgb, var(--lu-splash-text) 8%, transparent);
     outline: none;
     transition:
       border-color 120ms ease-out,
@@ -14,7 +15,7 @@
 
     &:focus-visible {
       border-color: var(--ion-color-secondary);
-      box-shadow: 0 0 0 4px color-mix(in srgb, var(--ion-color-primary) 40%, transparent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--ion-color-secondary) 30%, transparent);
     }
 
     &[aria-invalid='true'] {
@@ -24,5 +25,16 @@
     @media (prefers-reduced-motion: reduce) {
       transition: none;
     }
+  }
+}
+
+/* A soft brand glow at the top of the navy backdrop. */
+@layer components {
+  .lu-login-bg {
+    background: radial-gradient(
+      90% 55% at 50% 0%,
+      color-mix(in srgb, var(--lu-splash-bg-2) 90%, transparent),
+      transparent 70%
+    );
   }
 }

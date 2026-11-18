@@ -1,0 +1,75 @@
+/* Intro slides: soft metric badges, a sparkline, a medal, and the page dots. */
+@layer components {
+  .lu-intro-badge {
+    background: color-mix(in srgb, var(--icon-color) 14%, transparent);
+  }
+
+  .lu-intro-muscle {
+    --icon-color: var(--lu-muscle);
+  }
+
+  .lu-intro-fat {
+    --icon-color: var(--lu-fat);
+  }
+
+  .lu-intro-water {
+    --icon-color: var(--lu-tier-5);
+  }
+
+  .lu-intro-energy {
+    --icon-color: var(--lu-gold);
+  }
+
+  .lu-intro-good {
+    --icon-color: var(--lu-success);
+  }
+
+  .lu-intro-spark polyline {
+    fill: none;
+    stroke: var(--lu-muscle);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .lu-intro-medal {
+    --icon-color: var(--lu-gold);
+    background: color-mix(in srgb, var(--lu-gold) 18%, var(--lu-surface));
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--lu-gold) 10%, transparent),
+      var(--lu-shadow);
+  }
+
+  .lu-intro-dot {
+    background: var(--lu-border);
+    transition:
+      inline-size 200ms ease-out,
+      background-color 200ms ease-out;
+
+    &.is-on {
+      background: var(--ion-color-primary);
+    }
+  }
+
+  /* Each slide's picture rises in. */
+  .lu-intro-picture {
+    animation: lu-intro-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-intro-picture {
+      animation: none;
+    }
+
+    .lu-intro-dot {
+      transition: none;
+    }
+  }
+}
+
+@keyframes lu-intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}

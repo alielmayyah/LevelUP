@@ -64,3 +64,16 @@ test.describe('reduced motion', () => {
     await expect(page).toHaveURL(/\/login$/, { timeout: 5000 });
   });
 });
+
+test('first launch shows the intro slides, then login, and never again', async ({ page }) => {
+  await page.addInitScript(() => localStorage.removeItem('CapacitorStorage.lu.intro'));
+  await page.goto('/splash');
+  await expect(page).toHaveURL(/\/intro$/, { timeout: 5000 });
+  await expect(page.getByTestId('intro-slide-numbers')).toBeVisible();
+  await page.getByTestId('intro-next').click();
+  await expect(page.getByTestId('intro-slide-meaning')).toBeVisible();
+  await page.getByTestId('intro-next').click();
+  await page.getByTestId('intro-next').click();
+  await expect(page).toHaveURL(/\/login$/);
+  expect(await page.evaluate(() => localStorage.getItem('CapacitorStorage.lu.intro'))).toBe('seen');
+});

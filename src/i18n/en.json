@@ -754,6 +754,7 @@
     "leanNote": "Muscle in each part, as % of the normal for your height. Seen from behind: your left is on the left.",
     "fatNote": "Fat in each part (estimated), as % of the normal for your height. Seen from behind: your left is on the left.",
     "noSegments": "This scan has no body-part readings.",
+    "figureNote": "Illustration based on your scan. Body proportions are approximate.",
     "legendNow": "This scan ({{date}})",
     "legendThen": "Compared scan ({{date}})",
     "upSince": "Up {{amount}} since the compared scan",
@@ -798,5 +799,37 @@
     "seeBoards": "See the leaderboards",
     "ofTotal": "of {{total}}",
     "medalCount": "{{unlocked}} of {{total}}"
+  },
+  "intro": {
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Get started",
+    "slide": "slide",
+    "position": "Slide {{n}} of {{total}}",
+    "numbers": {
+      "title": "Your body, in clear numbers",
+      "body": "Every scan shows your muscle, fat, water and energy, explained in plain words."
+    },
+    "meaning": {
+      "title": "See what changed, and why it matters",
+      "body": "After each scan you'll see what moved since the last one, and what to do next."
+    },
+    "goals": {
+      "title": "Set goals. Earn medals.",
+      "body": "Pick a goal, watch your progress fill up, and celebrate every milestone."
+    },
+    "chip": {
+      "muscle": "Muscle",
+      "fat": "Body fat",
+      "water": "Water",
+      "energy": "Resting calories"
+    },
+    "demo": {
+      "muscle": "Muscle",
+      "insightTitle": "Stronger and leaner",
+      "insightBody": "More muscle, less fat since your last scan.",
+      "goal": "Your goal",
+      "goalTitle": "Gain 3 kg of muscle"
+    }
   }
 }
