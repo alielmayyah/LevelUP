@@ -32,6 +32,7 @@
 @import './layout.css' layer(components);
 @import './kit.css' layer(components);
 @import './icon.css' layer(components);
+@import './ui.css' layer(components);
 
 /* Dark mode follows Ionic's class on <html>, not the media query, so the in-app setting wins. */
 @custom-variant dark (&:where(.ion-palette-dark, .ion-palette-dark *));
@@ -60,12 +61,29 @@
 @theme inline {
   --color-*: initial;
 
+  /* Redesign tokens (ui-standards → Colors). */
+  --color-bg: var(--lu-bg);
   --color-page: var(--lu-bg);
   --color-surface: var(--lu-surface);
+  --color-surface-1: var(--lu-surface-1);
   --color-surface-2: var(--lu-surface-2);
+  --color-surface-3: var(--lu-surface-3);
   --color-ink: var(--lu-text);
   --color-muted: var(--lu-text-muted);
   --color-line: var(--lu-border);
+  --color-dash: var(--lu-line);
+  --color-brand: var(--lu-brand);
+  --color-brand-strong: var(--lu-brand-strong);
+  --color-brand-soft: var(--lu-brand-soft);
+  --color-brand-tint: var(--lu-brand-tint);
+  --color-on-brand: var(--lu-on-brand);
+  --color-good: var(--lu-good);
+  --color-attention: var(--lu-attention);
+  --color-attention-fill: var(--lu-attention-fill);
+  --color-on-attention: var(--lu-on-attention);
+  --color-stable: var(--lu-stable);
+  --color-water: var(--lu-water);
+  --color-lean: var(--lu-lean);
   --color-success: var(--lu-success);
   --color-danger: var(--lu-danger);
   --color-scrim: var(--lu-scrim);
@@ -105,10 +123,33 @@
   --color-splash-star: var(--lu-splash-star);
   --color-splash-danger: var(--lu-splash-danger);
 
-  /* Titles, big numbers and buttons: Alexandria (Latin and Arabic in one family). Body text stays Plex. */
+  /* Text: Readex Pro. Standalone numbers: Alexandria with tabular figures (font-num). */
   --font-display: var(--lu-font-display);
-  --font-sans: 'IBM Plex Sans', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
-  --font-arabic: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  --font-sans: var(--lu-font-text);
+  --font-arabic: var(--lu-font-text);
+  --font-num: var(--lu-font-num);
+
+  /* The seven type roles (ui-standards → Type). Nothing smaller than caption. */
+  --text-display: clamp(2.5rem, 11vw, 3.25rem);
+  --text-display--line-height: 1;
+  --text-display--font-weight: 700;
+  --text-verdict: 1.375rem;
+  --text-verdict--line-height: 1.35;
+  --text-verdict--font-weight: 700;
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.25;
+  --text-title--font-weight: 600;
+  --text-card-title: 1.0625rem;
+  --text-card-title--line-height: 1.35;
+  --text-card-title--font-weight: 600;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.4;
+  --text-label--font-weight: 500;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--font-weight: 500;
 
   /* Soft, blurred elevation (values per theme in tokens.css). */
   --shadow-card: var(--lu-shadow);

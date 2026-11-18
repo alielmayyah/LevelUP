@@ -1,0 +1,85 @@
+/*
+ * Redesign base components (src/components/ui, ui-standards → Components).
+ * Only what utilities can't say cleanly lives here: tinted fills mixed from
+ * the meaning and data tokens, so a gym brand or theme change never needs a
+ * new class. Loaded into the `components` layer by tailwind.css.
+ */
+
+/* Icon tiles: the glyph in its color on a soft tint of it. */
+.lu-tile {
+  --tone: var(--lu-text-muted);
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: 12px;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 16%, var(--lu-surface-3));
+  font-size: 1.25rem;
+}
+.lu-tile[data-tone='brand'] {
+  color: var(--lu-brand-soft);
+  background: var(--lu-brand-tint);
+}
+.lu-tile[data-tone='neutral'] {
+  background: var(--lu-surface-3);
+}
+
+/* Meaning chips: a tint of the color with the word in the full color. */
+.lu-chip-tone {
+  --tone: var(--lu-stable);
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 28%, transparent);
+}
+.lu-chip-tone[data-tone='brand'] {
+  color: var(--lu-on-brand);
+  background: var(--lu-brand-strong);
+  border-color: transparent;
+}
+
+/* Tones shared by tiles and chips. */
+[data-tone='good'] {
+  --tone: var(--lu-good);
+}
+[data-tone='attention'] {
+  --tone: var(--lu-attention);
+}
+[data-tone='stable'] {
+  --tone: var(--lu-stable);
+}
+[data-tone='muscle'] {
+  --tone: var(--lu-muscle);
+}
+[data-tone='fat'] {
+  --tone: var(--lu-fat);
+}
+[data-tone='water'] {
+  --tone: var(--lu-water);
+}
+[data-tone='lean'] {
+  --tone: var(--lu-lean);
+}
+
+/* One press for every redesign control: a small, quick scale. */
+.lu-press {
+  transition:
+    transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 150ms ease;
+}
+.lu-press:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.lu-focus:focus-visible {
+  outline: 2px solid var(--lu-brand-soft);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lu-press {
+    transition: none;
+  }
+  .lu-press:active:not(:disabled) {
+    transform: none;
+  }
+}

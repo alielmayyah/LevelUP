@@ -17,16 +17,13 @@ import Splash from './pages/Splash';
 /* LevelUP tokens (must load after Ionic's palettes) */
 import './theme/tokens.css';
 
-/* Titles and numbers: Alexandria, one variable file per script (only the scripts on screen download). */
+/*
+ * Text: Readex Pro, one variable family for Arabic and Latin (only the
+ * subsets on screen download). Numbers that line up or count: Alexandria,
+ * which has tabular figures (Readex Pro has none). See ui-standards → Type.
+ */
+import '@fontsource-variable/readex-pro/wght.css';
 import '@fontsource-variable/alexandria/wght.css';
-/* Latin text in three real weights (IBM Plex Sans), matching the Arabic family below. */
-import '@fontsource/ibm-plex-sans/latin-400.css';
-import '@fontsource/ibm-plex-sans/latin-600.css';
-import '@fontsource/ibm-plex-sans/latin-700.css';
-/* Arabic text in three real weights, so regular text is not drawn from the bold file. */
-import '@fontsource/ibm-plex-sans-arabic/arabic-400.css';
-import '@fontsource/ibm-plex-sans-arabic/arabic-600.css';
-import '@fontsource/ibm-plex-sans-arabic/arabic-700.css';
 
 setupIonicReact();
 

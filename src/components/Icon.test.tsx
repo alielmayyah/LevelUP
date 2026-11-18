@@ -19,7 +19,7 @@ describe('Icon', () => {
       const name = ICON_NAMES[index];
       expect(icon, name).toHaveAttribute('data-icon', name);
       expect(icon, name).toHaveAttribute('viewBox', '0 0 24 24');
-      expect(icon, name).toHaveAttribute('stroke-width', '1.75');
+      expect(icon, name).toHaveAttribute('stroke-width', '1.9');
       expect(icon, name).toHaveAttribute('width', '1em');
       expect(icon, name).toHaveClass('lu-icon');
       expect(icon.children.length, name).toBeGreaterThan(0);

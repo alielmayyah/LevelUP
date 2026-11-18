@@ -3,17 +3,12 @@
  * lavender page, the logo gradient on the active choice, bars and the main
  * button, a violet hero, metric color only on icon discs and chart marks,
  * iOS-style switches, hatched progress tracks, and loading/empty states. Titles and numbers are Alexandria; body text is
- * IBM Plex Sans (Latin) and IBM Plex Sans Arabic (Arabic).
+ * Readex Pro (Latin and Arabic). Being replaced by the redesign (ui-standards).
  *
  * Imported by tailwind.css into the `components` layer: Tailwind utilities on
  * the same element override these (e.g. `lu-card p-3`), and page Sass
  * partials, also in `components`, load later and so win ties.
  */
-
-.lu-tab-body:lang(ar),
-.lu-notif:lang(ar) {
-  font-family: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
-}
 
 /* Tab pages draw their own header, so the body clears the notch itself. */
 .lu-tab-body.lu-page-body {

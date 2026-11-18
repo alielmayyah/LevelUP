@@ -11,7 +11,7 @@ const Icon = memo(function Icon({ name, className, label }: { name: IconName; cl
     <Glyph
       className={className ? `lu-icon ${className}` : 'lu-icon'}
       size="1em"
-      strokeWidth={1.75}
+      strokeWidth={1.9}
       absoluteStrokeWidth={false}
       data-icon={name}
       focusable="false"
