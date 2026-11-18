@@ -194,7 +194,7 @@ From `ux-patterns.md`, all sourced:
 1. ~~**Pick the UI concept.**~~ Done: Story + Level Journey (see "Design system").
 2. ~~**Design system.**~~ Done: `ui-standards` now holds the tokens (dark and light, brand derivation per gym), type scale, components, screens, motion and the borrowed rules. The code follows when the foundation is built (step 4).
 3. ~~**Data contract.**~~ Done: `origin`, `ranges`, `extra`, `segmentalLean` and `segmentalFat` are optional fields on `AssessmentDto`, and mock member Karim (104) carries the corrected example. Still to come: a different-machine scan in the mocks, the backend schema for these fields, and the breaking step that retires `segments`.
-4. **Build.** Foundation first (theme, tokens, base components). Then screens in parallel: Login, Home, Scans and Report, Compare, Body balance, Account, New-result reveal, Share card. Then QA: RTL, dark mode, 320 px, accessibility, e2e.
+4. **Build.** Foundation first (theme, tokens, base components). *Foundation done:* redesign tokens with dark default and per-gym brand derivation, Readex Pro + Alexandria numbers, the seven type roles, base components in `src/components/ui`, Arabic by default. Then screens in parallel: Login, Home, Scans and Report, Compare, Body balance, Account, New-result reveal, Share card. Then QA: RTL, dark mode, 320 px, accessibility, e2e.
 5. **Docs.** Update `LevelUP-Features-Core.md`, CLAUDE.md and AGENTS.md (they mention an `api:types` command and a `schema.d.ts` file that don't exist), and the backend README. Fix Plan v2's hook and mock numbers.
 
 ## Reports
