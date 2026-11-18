@@ -111,6 +111,89 @@ export interface AssessmentDto {
   fitScore: number;
   /** Lean and fat mass by body part, as the scanner reports them; null when the scanner doesn't measure segments. */
   segments: SegmentalAnalysis | null;
+
+  /*
+   * Redesign additions (docs/redesign/PLAN.md, "Data contract"). All optional,
+   * so older payloads and fixtures stay valid. A later breaking step retires
+   * `segments` in favor of the two fields below.
+   */
+
+  /** Where the scan came from: source, trust, machine, place, test conditions. */
+  origin?: ScanOrigin;
+  /** Normal bands the machine printed. A missing key falls back to src/body/standards.ts. */
+  ranges?: Partial<Record<RangedKey, NormalRange>>;
+  /** Extra readings for the report's "more numbers" sheet and the API's rules. */
+  extra?: ScanExtras;
+  /** Lean mass by body part on its own; null when the machine doesn't report it. */
+  segmentalLean?: Record<BodySegment, SegmentReading> | null;
+  /** Fat mass by body part on its own; null when the machine doesn't report it. */
+  segmentalFat?: Record<BodySegment, SegmentReading> | null;
+}
+
+/** Metrics a machine prints a normal band for. */
+export type RangedKey =
+  | 'weightKg'
+  | 'skeletalMuscleKg'
+  | 'bodyFatKg'
+  | 'bodyFatPct'
+  | 'fatFreeMassKg'
+  | 'totalBodyWaterKg'
+  | 'proteinKg'
+  | 'mineralsKg'
+  | 'ecwRatio';
+
+export interface NormalRange {
+  low: number;
+  high: number;
+}
+
+/** csv/excel: the machine's export. typed: staff copied the sheet. manual: the member typed it. photo: read from a photo of the sheet. */
+export type ScanSource = 'csv' | 'excel' | 'typed' | 'manual' | 'photo';
+
+/** manual scans are kept out of stats, levels and trainer leads. */
+export type ScanTrust = 'verified' | 'typed' | 'manual';
+
+export interface ScanDevice {
+  id: number;
+  /** e.g. "InBody". Scans on different brands are never compared. */
+  brand: string;
+  /** e.g. "770". A different machine gets direction only: no verdict, level or celebration. */
+  model: string;
+}
+
+export interface ScanPlace {
+  orgId: number;
+  /** The gym's name, e.g. "Iron Box". */
+  name: string;
+  branch: string | null;
+}
+
+export interface ScanOrigin {
+  source: ScanSource;
+  trust: ScanTrust;
+  device: ScanDevice | null;
+  place: ScanPlace | null;
+  /** From the pre-scan checklist; null means it wasn't asked. */
+  conditions: { fasted: boolean | null; trainedBefore: boolean | null };
+  /** Signed, expiring link to a photo of the printed sheet. */
+  sheetImageUrl: string | null;
+}
+
+export interface ScanExtras {
+  /** As typed on the machine for this scan (the profile may differ). */
+  heightCm: number | null;
+  fatFreeMassKg: number | null;
+  softLeanMassKg: number | null;
+  intracellularWaterL: number | null;
+  extracellularWaterL: number | null;
+  /** Extracellular water ÷ total body water. Fitness information, not diagnosis. */
+  ecwRatio: number | null;
+  visceralFatAreaCm2: number | null;
+  /** Whole body, 50 kHz. */
+  phaseAngleDeg: number | null;
+  segmentPhaseAngleDeg: Record<BodySegment, number> | null;
+  /** The InBody Score the machine printed; shown as a detail only when present. */
+  deviceScore: number | null;
 }
 
 /** Body parts an InBody scan reports separately. Left and right are the member's own sides. */

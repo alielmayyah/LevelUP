@@ -4,6 +4,7 @@
  *   101 Mohamed Omran  full history
  *   102 Lina Haddad    new member: no scans, no goals
  *   103 Omar Aziz      one scan
+ *   104 Karim Mansour  the redesign's example: three InBody 770 scans with origin, ranges, extras, lean-only segments
  */
 import type { AssessmentDto, NotificationDto, Sex } from '../types';
 import {
@@ -14,8 +15,10 @@ import {
   monthlyScanDates,
   resetIds,
   scanNotification,
+  takeAssessmentId,
   thisMonthScan,
 } from './fixtures';
+import { KARIM_HEIGHT_CM, karimEarlierScan, karimLatestScan } from './inbodyExample';
 
 export interface MockMember {
   id: number;
@@ -141,7 +144,56 @@ function omar(now: Date): MockMember {
   };
 }
 
+/** 08:00 in Cairo (06:00 UTC) on the day of this month's scan, never after `now`. */
+function karimLatestDate(now: Date): Date {
+  const day = thisMonthScan(now);
+  const at = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), 6));
+  return at.getTime() <= now.getTime() ? at : daysFrom(at, -1);
+}
+
+/**
+ * The redesign's example member: three scans on one InBody 770 over 3.5 months.
+ * Since the first scan muscle is +1.0 kg and fat −2.3 kg (a real trend); the
+ * latest vs the previous scan (+0.5 / −1.0) is inside the machine's noise.
+ */
+function karim(now: Date): MockMember {
+  const latestAt = karimLatestDate(now);
+  const assessments = [
+    karimEarlierScan({
+      id: takeAssessmentId(),
+      takenAt: daysFrom(latestAt, -108),
+      weightKg: 79.0,
+      skeletalMuscleKg: 34.8,
+      bodyFatKg: 17.2,
+      bodyFatPct: 21.8,
+      visceralFatLevel: 8,
+    }),
+    karimEarlierScan({
+      id: takeAssessmentId(),
+      takenAt: daysFrom(latestAt, -35),
+      weightKg: 78.3,
+      skeletalMuscleKg: 35.3,
+      bodyFatKg: 15.95,
+      bodyFatPct: 20.4,
+      visceralFatLevel: 7,
+    }),
+    karimLatestScan(takeAssessmentId(), latestAt),
+  ];
+  return {
+    id: 4,
+    fitId: '104',
+    firstName: 'Karim',
+    lastName: 'Mansour',
+    sex: 'MALE',
+    birthDate: new Date('1988-03-09T00:00:00Z'),
+    heightCm: KARIM_HEIGHT_CM,
+    assessments,
+    goals: [],
+    notifications: [scanNotification(latestAt, false)],
+  };
+}
+
 export function buildMembers(now: Date): MockMember[] {
   resetIds();
-  return [mohamed(now), lina(), omar(now)];
+  return [mohamed(now), lina(), omar(now), karim(now)];
 }

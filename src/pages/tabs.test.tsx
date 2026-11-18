@@ -1,7 +1,7 @@
 /*
  * Progress, Goals, and Profile against the mock API, for the
  * three mock members: 101 Mohamed (full), 102 Lina (new), 103 Omar (one scan,
- * FitScore hidden, membership ending soon).
+ * FitScore hidden, membership ending soon), 104 Karim (lean-only body parts).
  */
 import { Preferences } from '@capacitor/preferences';
 import { render, screen, waitFor, within } from '@testing-library/react';
@@ -256,6 +256,15 @@ describe('Progress', () => {
     expect(parts()).toHaveLength(5);
     await userEvent.click(screen.getByRole('radio', { name: 'Fat' }));
     expect(parts()).toHaveLength(5);
+  });
+
+  it('a lean-only scan lists the body parts with no fat view', async () => {
+    await renderAs('104', Progress);
+    await userEvent.click(await screen.findByTestId('progress-more'));
+    const segs = await screen.findByTestId('segments');
+    expect(segs.querySelectorAll('[data-testid^="seg-"][data-status]')).toHaveLength(5);
+    expect(within(segs).queryByRole('radio', { name: 'Fat' })).toBeNull();
+    expect(within(segs).getByTestId('seg-rightArm')).toHaveTextContent('3.48');
   });
 
   it('shows a plan: what to do next, with the reason and how', async () => {

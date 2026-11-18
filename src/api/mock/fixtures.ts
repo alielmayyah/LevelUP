@@ -47,6 +47,9 @@ export interface ScanInput {
 let nextAssessmentId = 1;
 let nextNotificationId = 1;
 
+/** Reserves the next assessment id, for scans built outside `assessment()`. */
+export const takeAssessmentId = (): number => nextAssessmentId++;
+
 export function resetIds(): void {
   nextAssessmentId = 1;
   nextNotificationId = 1;

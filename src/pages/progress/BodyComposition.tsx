@@ -12,6 +12,7 @@ import {
   type Status,
 } from '../../body/standards';
 import Icon, { type IconName } from '../../components/Icon';
+import { segmentKinds, segmentReadings } from '../../body/segments';
 import { focusSibling, rovingTarget } from '../../components/roving';
 import { formatNumber, formatSigned } from '../../i18n/format';
 import './BodyComposition.scss';
@@ -394,10 +395,12 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     reading: 'more',
   }));
 
-  const segs = scan.segments;
-  const segScale = kind === 'lean' ? SCALES.segmentLean : SCALES.segmentFat;
-  const thenSeg = (s: BodySegment) => compare?.segments?.[kind][s] ?? null;
-  const kinds = ['lean', 'fat'] as const;
+  const kinds = segmentKinds(scan);
+  // A lean-only sheet has no fat view: fall back to the kind the scan has.
+  const shown = kinds.includes(kind) ? kind : (kinds[0] ?? kind);
+  const segs = segmentReadings(scan, shown);
+  const segScale = shown === 'lean' ? SCALES.segmentLean : SCALES.segmentFat;
+  const thenSeg = (s: BodySegment) => segmentReadings(compare, shown)?.[s] ?? null;
 
   return (
     <div className="grid gap-3.5" data-testid="body-comp">
@@ -425,37 +428,39 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
           </h2>
           {segs && (
             <p className="m-0 text-[0.85rem] leading-snug text-muted">
-              {t(kind === 'lean' ? 'bodyComp.leanNote' : 'bodyComp.fatNote')}
+              {t(shown === 'lean' ? 'bodyComp.leanNote' : 'bodyComp.fatNote')}
             </p>
           )}
         </header>
         {segs ? (
           <>
-            <div role="radiogroup" aria-label={t('bodyComp.segmentView')} className="lu-segment mb-0">
-              {kinds.map((k, i) => (
-                <button
-                  key={k}
-                  type="button"
-                  role="radio"
-                  aria-checked={kind === k}
-                  tabIndex={kind === k ? 0 : -1}
-                  data-testid={`segments-${k}`}
-                  className="flex-row gap-1.5"
-                  onClick={() => setKind(k)}
-                  onKeyDown={(e) => {
-                    const to = rovingTarget(e, i, kinds.length, rtl);
-                    if (to === null) return;
-                    setKind(kinds[to]);
-                    focusSibling(e, to);
-                  }}
-                >
-                  <span className="flex items-center gap-1.5">
-                    <Icon className="shrink-0 text-base" name={k === 'lean' ? 'muscle' : 'bodyFat'} />
-                    {t(k === 'lean' ? 'bodyComp.lean' : 'bodyComp.fatView')}
-                  </span>
-                </button>
-              ))}
-            </div>
+            {kinds.length > 1 && (
+              <div role="radiogroup" aria-label={t('bodyComp.segmentView')} className="lu-segment mb-0">
+                {kinds.map((k, i) => (
+                  <button
+                    key={k}
+                    type="button"
+                    role="radio"
+                    aria-checked={shown === k}
+                    tabIndex={shown === k ? 0 : -1}
+                    data-testid={`segments-${k}`}
+                    className="flex-row gap-1.5"
+                    onClick={() => setKind(k)}
+                    onKeyDown={(e) => {
+                      const to = rovingTarget(e, i, kinds.length, rtl);
+                      if (to === null) return;
+                      setKind(kinds[to]);
+                      focusSibling(e, to);
+                    }}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Icon className="shrink-0 text-base" name={k === 'lean' ? 'muscle' : 'bodyFat'} />
+                      {t(k === 'lean' ? 'bodyComp.lean' : 'bodyComp.fatView')}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="grid grid-cols-[4.5rem_minmax(0,1fr)_auto] gap-x-3">
               <span />
               <ZoneCaptions />
@@ -475,10 +480,10 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                     key={segment}
                     segment={segment}
                     label={side ? t(`bodyComp.side.${side}`) : t('bodyComp.segment.trunk')}
-                    reading={segs[kind][segment]}
+                    reading={segs[segment]}
                     then={thenSeg(segment)}
-                    status={statusFor(segs[kind][segment].pct, segScale.normal)}
-                    kind={kind}
+                    status={statusFor(segs[segment].pct, segScale.normal)}
+                    kind={shown}
                   />
                 ))}
               </div>

@@ -34,11 +34,12 @@ describe('auth', () => {
     expect((await login('999')).status).toBe(429);
   });
 
-  it('all three mock members can sign in', async () => {
+  it('every mock member can sign in', async () => {
     for (const [fitId, firstName] of [
       ['101', 'Mohamed'],
       ['102', 'Lina'],
       ['103', 'Omar'],
+      ['104', 'Karim'],
     ]) {
       const r = await login(fitId);
       expect(r.status).toBe(201);
@@ -321,3 +322,51 @@ describe('avatar', () => {
   });
 });
 
+describe('Karim (104): the corrected InBody example', () => {
+  const scans = async () => (await get<AssessmentDto[]>('/me/assessments', '104')).body;
+
+  it('has three scans on one InBody 770, newest first, never after now', async () => {
+    const list = await scans();
+    expect(list).toHaveLength(3);
+    for (const a of list) {
+      expect(a.origin).toMatchObject({ trust: 'verified', device: { brand: 'InBody', model: '770' } });
+      expect(a.origin?.place).toMatchObject({ name: 'Iron Box', branch: 'New Cairo' });
+      expect(new Date(a.takenAt).getTime()).toBeLessThanOrEqual(NOW.getTime());
+    }
+    expect(new Date(list[0].takenAt).getUTCHours()).toBe(6); // 08:00 in Cairo
+  });
+
+  it('the latest scan carries the example with its errors fixed', async () => {
+    const [latest] = await scans();
+    expect(latest).toMatchObject({
+      weightKg: 77.9,
+      skeletalMuscleKg: 35.8,
+      bodyFatKg: 14.92,
+      bmrKcal: 1730,
+      fitScore: 79,
+    });
+    expect(latest.extra).toMatchObject({ fatFreeMassKg: 62.98, ecwRatio: 0.377, phaseAngleDeg: 7.3, deviceScore: 79 });
+    // Fat band is 80–160% of standard fat; the lean bands are scaled to 178.5 cm.
+    expect(latest.ranges?.bodyFatKg).toEqual({ low: 8.4, high: 16.8 });
+    expect(latest.ranges?.totalBodyWaterKg).toEqual({ low: 39.3, high: 48.2 });
+    // Fat-free mass = water + protein + minerals, and weight = fat + fat-free mass.
+    expect(latest.totalBodyWaterKg + latest.proteinKg + latest.mineralsKg).toBeCloseTo(62.98, 2);
+    expect(latest.bodyFatKg + (latest.extra?.fatFreeMassKg ?? 0)).toBeCloseTo(latest.weightKg, 2);
+  });
+
+  it('is lean-only by body part: no legacy segments, no fat by part', async () => {
+    for (const a of await scans()) {
+      expect(a.segments).toBeNull();
+      expect(a.segmentalFat).toBeNull();
+      expect(Object.keys(a.segmentalLean ?? {})).toHaveLength(5);
+    }
+  });
+
+  it('a real trend since the first scan, but the last change is inside the noise', async () => {
+    const [latest, previous, first] = await scans();
+    expect(latest.skeletalMuscleKg - first.skeletalMuscleKg).toBeCloseTo(1.0, 5);
+    expect(latest.bodyFatKg - first.bodyFatKg).toBeCloseTo(-2.28, 2);
+    expect(latest.skeletalMuscleKg - previous.skeletalMuscleKg).toBeLessThan(0.9);
+    expect(Math.abs(latest.bodyFatKg - previous.bodyFatKg)).toBeLessThan(1.5);
+  });
+});
