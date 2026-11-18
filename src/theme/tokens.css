@@ -5,34 +5,58 @@
  */
 
 :root {
-  /* Calm, near-neutral surfaces with the faintest brand tint; color is for meaning and actions. */
-  /* Calm health-tech: soft blue-grey page, white cards, navy text. Color is for meaning and actions. */
-  --lu-bg: #eef2f7;
+  /*
+   * Bold and energetic, still easy to read: a cool chalk page, white cards,
+   * near-black ink for text, the hero and the main button. Color comes in
+   * solid blocks, one per body metric, with ink text on top.
+   */
+  --lu-bg: #eef0f3;
   --lu-surface: #ffffff;
-  --lu-surface-2: #f2f5f9;
-  --lu-text: #0f1b2d;
-  --lu-text-muted: #56657a;
-  --lu-border: #e1e7ef;
-  --lu-success: #157f4a;
-  --lu-danger: #c42b3a;
-  /* Soft, navy-tinted elevation: cards float on the page instead of being boxed in. */
-  --lu-shadow: 0 1px 2px rgba(15, 27, 45, 0.04), 0 10px 30px -14px rgba(15, 27, 45, 0.16);
-  --lu-shadow-pressed: 0 1px 2px rgba(15, 27, 45, 0.06);
-  --lu-shadow-raised: 0 18px 40px -12px rgba(15, 27, 45, 0.24);
+  --lu-surface-2: #f3f4f7;
+  --lu-text: #0e0f13;
+  --lu-text-muted: #5b606c;
+  --lu-border: #e2e4ea;
+  --lu-success: #127a45;
+  --lu-danger: #cc2f3d;
+  /* Soft, wide elevation: cards float on the page instead of being boxed in. */
+  --lu-shadow: 0 1px 2px rgba(14, 15, 19, 0.04), 0 14px 32px -18px rgba(14, 15, 19, 0.22);
+  --lu-shadow-pressed: 0 1px 2px rgba(14, 15, 19, 0.06);
+  --lu-shadow-raised: 0 24px 48px -20px rgba(14, 15, 19, 0.45);
+  /* The tab bar's soft upward shadow. */
+  --lu-dock-shadow: 0 -10px 30px -18px rgba(14, 15, 19, 0.25);
   /* Dim layer behind dialogs and sheets. */
-  --lu-scrim: #0b1220;
+  --lu-scrim: #07080b;
 
-  /* One hue per body metric, used for its icon and tile accent. */
-  --lu-fat: #f97316;
-  --lu-fat-hi: #fbbf24;
-  --lu-fat-core: #fff3c4;
-  --lu-muscle: #0ea5b7;
-  --lu-muscle-hi: #67e8f9;
-  --lu-tier-1: #e5484d;
-  --lu-tier-2: #f97316;
-  --lu-tier-3: #eab308;
-  --lu-tier-4: #22a55a;
-  --lu-tier-5: #8b5cf6;
+  /* Corner radii: the hero is the roundest, small controls the tightest. */
+  --lu-radius-hero: 30px;
+  --lu-radius-card: 24px;
+  --lu-radius-control: 16px;
+
+  /* Main button: ink pill on the light page, white pill at night. */
+  --lu-cta-bg: #0e0f13;
+  --lu-cta-bg-pressed: #2a2c33;
+  --lu-cta-text: #ffffff;
+
+  /* Text on a color block: ink in both themes, so blocks read the same day and night. */
+  --lu-on-block: #0e0f13;
+  /* 85% ink: still reads as secondary, and keeps 4.5:1 on the blue and violet blocks. */
+  --lu-on-block-muted: rgba(14, 15, 19, 0.85);
+  /* A frosted white wash on a block or the hero (icon discs, chips). */
+  --lu-frost: rgba(255, 255, 255, 0.4);
+
+  /* One solid block color per body metric (fill behind ink text, and the metric's icon and line). */
+  --lu-fat: #ff8a3d;
+  --lu-fat-hi: #ffc46b;
+  --lu-fat-core: #fff1d6;
+  --lu-muscle: #4d8dff;
+  --lu-muscle-hi: #9cc0ff;
+  --lu-weight: #a58bff;
+  --lu-lime: #c6f24e;
+  --lu-tier-1: #ff5c5c;
+  --lu-tier-2: #ff8a3d;
+  --lu-tier-3: #ffc83d;
+  --lu-tier-4: #3ddc84;
+  --lu-tier-5: #a58bff;
 
   /* Flexed-arm icon on the muscle tile. */
   --lu-skin: #f0a878;
@@ -64,62 +88,63 @@
   --lu-medal-shine: #ffffff;
   --lu-medal-locked: #6b6385;
 
-  /* Splash and login: a deep navy backdrop in both themes, so the white wordmark reads. */
-  --lu-splash-bg: #0e1a30;
-  --lu-splash-bg-2: #1d2f52;
-  --lu-splash-text: #f2f6fc;
-  --lu-splash-text-muted: #b9c6da;
+  /* Splash, intro and login: ink with a violet glow in both themes, so the white wordmark reads. */
+  --lu-splash-bg: #0b0b10;
+  --lu-splash-bg-2: #2a1f63;
+  --lu-splash-text: #f5f5f8;
+  --lu-splash-text-muted: #b7b9c6;
   --lu-splash-star: #ffffff;
   --lu-splash-danger: #ff9b9b;
 
-  /* Hero cards (FitScore): deep navy with white text in both themes. */
-  --lu-hero-bg: #13244a;
-  --lu-hero-bg-2: #2b2f7a;
+  /* Hero cards (FitScore): ink with white text in both themes. */
+  --lu-hero-bg: #111217;
+  --lu-hero-bg-2: #3b2a9a;
   --lu-hero-text: #ffffff;
-  --lu-hero-muted: #c3cde0;
-  --lu-hero-track: rgba(255, 255, 255, 0.16);
-  --lu-hero-up: #6ee7a8;
+  --lu-hero-muted: #b4b7c4;
+  --lu-hero-track: rgba(255, 255, 255, 0.13);
+  --lu-hero-up: #c6f24e;
   --lu-hero-down: #ffa3ad;
 
-  --lu-tabbar-height: 64px;
+  --lu-tabbar-height: 68px;
   /* Breathing room between the last item on a page and the dock (counted twice in layout.css). */
   --lu-tabbar-gap: 8px;
   --lu-gutter: 16px;
 }
 
 :root.ion-palette-dark {
-  /* The same calm look at night: deep navy page, slate cards. */
-  --lu-bg: #0a1120;
-  --lu-surface: #121b2e;
-  --lu-surface-2: #19243a;
-  --lu-text: #edf2fa;
-  --lu-text-muted: #9badc4;
-  --lu-border: #22304a;
-  --lu-success: #4ade80;
-  --lu-danger: #f87171;
+  /* Night: true near-black page, graphite cards, the same color blocks. */
+  --lu-bg: #09090b;
+  --lu-surface: #151519;
+  --lu-surface-2: #1e1f24;
+  --lu-text: #f4f4f6;
+  --lu-text-muted: #a2a5b0;
+  --lu-border: #272930;
+  --lu-success: #5be38f;
+  --lu-danger: #ff7a85;
   /* In dark mode the border does most of the work; shadows stay faint. */
-  --lu-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --lu-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   --lu-shadow-pressed: none;
-  --lu-shadow-raised: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
-  --lu-scrim: #02060d;
+  --lu-shadow-raised: 0 18px 40px -12px rgba(0, 0, 0, 0.8);
+  --lu-dock-shadow: 0 -12px 30px -16px rgba(0, 0, 0, 0.9);
+  --lu-scrim: #000000;
 
-  --lu-fat: #fb923c;
-  --lu-muscle: #22d3ee;
-  --lu-tier-4: #4ade80;
-  --lu-tier-5: #b77cf7;
+  --lu-cta-bg: #f4f4f6;
+  --lu-cta-bg-pressed: #d9dae0;
+  --lu-cta-text: #0e0f13;
 
-  --lu-hero-bg: #172a52;
-  --lu-hero-bg-2: #2c2a6e;
+  --lu-hero-bg: #17181e;
+  --lu-hero-bg-2: #34268a;
 
-  --lu-splash-bg: #08101f;
-  --lu-splash-bg-2: #15233f;
+  --lu-splash-bg: #07070a;
+  --lu-splash-bg-2: #241a57;
 }
 
 /* Ionic reads its own variables; point them at the tokens in both palettes. */
 :root,
 :root.ion-palette-dark {
-  /* One family for both scripts: Plex Sans for Latin, Plex Sans Arabic for Arabic. */
+  /* Body text: Plex Sans for Latin, Plex Sans Arabic for Arabic. Titles and numbers use Alexandria (--lu-font-display). */
   --ion-font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --lu-font-display: 'Alexandria Variable', 'IBM Plex Sans', 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --ion-background-color: var(--lu-bg);
   --ion-text-color: var(--lu-text);
   --ion-toolbar-background: var(--lu-bg);

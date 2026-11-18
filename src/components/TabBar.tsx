@@ -27,7 +27,7 @@ const BAR = [
  */
 const PILL =
   'absolute inset-y-0 start-0 transition-transform duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
-const INDICATOR = 'lu-navbar-indicator absolute top-1 left-1/2 h-8 w-[min(56px,88%)] -translate-x-1/2';
+const INDICATOR = 'lu-navbar-indicator absolute top-1.5 left-1/2 h-9 w-[min(60px,88%)] -translate-x-1/2';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 

@@ -3,8 +3,8 @@ import type { ButtonHTMLAttributes } from 'react';
 import './CtaButton.scss';
 
 const CTA = [
-  'lu-cta inline-flex min-h-[54px] cursor-pointer items-center justify-center gap-2 border-0 px-6 py-3',
-  'text-center leading-[1.1] text-primary-contrast',
+  'lu-cta inline-flex min-h-[56px] cursor-pointer items-center justify-center gap-2 border-0 px-7 py-3',
+  'text-center leading-[1.1]',
   'transition-[transform,box-shadow] duration-[150ms] ease-out enabled:active:scale-[0.97]',
   'disabled:cursor-not-allowed disabled:opacity-40 aria-busy:opacity-100',
   'focus-visible:outline-none',
@@ -12,7 +12,7 @@ const CTA = [
 ].join(' ');
 
 /**
- * The app's main call-to-action button: a rounded, solid brand-color button with a
+ * The app's main call-to-action button: an ink pill (white at night) with a
  * soft shadow. Use it for the one primary action on a screen.
  */
 const CtaButton: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({ className, type = 'button', ...rest }) => (

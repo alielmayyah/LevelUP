@@ -82,6 +82,12 @@
   --color-fat-core: var(--lu-fat-core);
   --color-muscle: var(--lu-muscle);
   --color-muscle-hi: var(--lu-muscle-hi);
+  --color-weight: var(--lu-weight);
+  --color-lime: var(--lu-lime);
+  --color-on-block: var(--lu-on-block);
+  --color-on-block-muted: var(--lu-on-block-muted);
+  --color-cta: var(--lu-cta-bg);
+  --color-cta-text: var(--lu-cta-text);
   --color-tier: var(--tier);
   --color-metric: var(--metric);
   --color-hero: var(--lu-hero-text);
@@ -99,7 +105,8 @@
   --color-splash-star: var(--lu-splash-star);
   --color-splash-danger: var(--lu-splash-danger);
 
-  --font-display: 'IBM Plex Sans', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  /* Titles, big numbers and buttons: Alexandria (Latin and Arabic in one family). Body text stays Plex. */
+  --font-display: var(--lu-font-display);
   --font-sans: 'IBM Plex Sans', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
   --font-arabic: 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
 
@@ -108,6 +115,10 @@
   --shadow-card-sm: var(--lu-shadow);
   --shadow-card-pressed: var(--lu-shadow-pressed);
   --shadow-raised: var(--lu-shadow-raised);
+
+  --radius-hero: var(--lu-radius-hero);
+  --radius-card: var(--lu-radius-card);
+  --radius-control: var(--lu-radius-control);
 
   --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
 }

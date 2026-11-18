@@ -1,8 +1,9 @@
 /*
- * The app's shared UI kit, clean modern style: soft rounded cards with a
- * hairline border and blurred shadow, pill chips, iOS-style switches, a
- * sliding segmented control, rounded progress bars, and loading/empty states.
- * Type is IBM Plex Sans (Latin) and IBM Plex Sans Arabic (Arabic).
+ * The app's shared UI kit, bold and energetic: big rounded cards that float on
+ * the page, solid color blocks for body metrics (ink text on top), ink pills
+ * for the active choice, iOS-style switches, hatched progress tracks, and
+ * loading/empty states. Titles and numbers are Alexandria; body text is
+ * IBM Plex Sans (Latin) and IBM Plex Sans Arabic (Arabic).
  *
  * Imported by tailwind.css into the `components` layer: Tailwind utilities on
  * the same element override these (e.g. `lu-card p-3`), and page Sass
@@ -19,11 +20,11 @@
   padding-block-start: calc(var(--lu-gutter) + var(--ion-safe-area-top, 0px));
 }
 
-/* Titles and big numbers: the app font, bold, slightly tight. */
+/* Titles and big numbers: Alexandria, bold and tight, so numbers read like a scoreboard. */
 .lu-display {
-  font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', var(--ion-font-family, sans-serif);
+  font-family: var(--lu-font-display);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -36,10 +37,10 @@
 .lu-card {
   box-sizing: border-box;
   inline-size: 100%;
-  padding: 16px;
-  /* Light: cards float on the blue-grey page with no outline. Dark: a hairline does the work. */
+  padding: 18px;
+  /* Light: cards float on the chalk page with no outline. Dark: a hairline does the work. */
   border: 1px solid transparent;
-  border-radius: 20px;
+  border-radius: var(--lu-radius-card);
   background: var(--lu-surface);
   color: var(--lu-text);
   box-shadow: var(--lu-shadow);
@@ -53,7 +54,7 @@
 
 @media (min-width: 768px) {
   .lu-card {
-    padding: 20px;
+    padding: 22px;
   }
 }
 
@@ -85,9 +86,10 @@ button.lu-card:active {
   align-items: center;
   gap: 8px;
   margin: 0;
+  font-family: var(--lu-font-display);
   font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.005em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .lu-card-title .lu-icon,
@@ -101,10 +103,8 @@ button.lu-card:active {
   align-items: center;
   gap: 6px;
   color: var(--lu-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 .lu-card-kicker .lu-icon {
@@ -114,8 +114,6 @@ button.lu-card:active {
 
 .lu-card-kicker:lang(ar) {
   font-size: 0.85rem;
-  letter-spacing: 0;
-  text-transform: none;
 }
 
 :root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) .lu-icon {
@@ -126,9 +124,16 @@ button.lu-card:active {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 20px 0 10px;
-  font-size: 1.05rem;
+  margin: 24px 0 12px;
+  font-family: var(--lu-font-display);
+  font-size: 1.2rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lu-section-title:lang(ar),
+.lu-card-title:lang(ar) {
+  letter-spacing: 0;
 }
 
 .lu-chevron {
@@ -142,19 +147,121 @@ button.lu-card:active {
   transform: scaleX(-1);
 }
 
+/* ---------- Hero ---------- */
+
+/*
+ * The one ink card per screen (FitScore on Home, the member on Profile): ink
+ * with a violet glow from the top corner and a faint lime one from the
+ * bottom, white text in both themes.
+ */
+.lu-hero {
+  border-color: transparent;
+  border-radius: var(--lu-radius-hero);
+  background:
+    radial-gradient(90% 70% at 100% 0%, color-mix(in srgb, var(--lu-hero-bg-2) 85%, transparent), transparent 70%),
+    radial-gradient(70% 60% at 0% 110%, color-mix(in srgb, var(--lu-hero-up) 14%, transparent), transparent 70%),
+    var(--lu-hero-bg);
+  color: var(--lu-hero-text);
+  box-shadow: var(--lu-shadow-raised);
+}
+
+.lu-hero:dir(rtl) {
+  background:
+    radial-gradient(90% 70% at 0% 0%, color-mix(in srgb, var(--lu-hero-bg-2) 85%, transparent), transparent 70%),
+    radial-gradient(70% 60% at 100% 110%, color-mix(in srgb, var(--lu-hero-up) 14%, transparent), transparent 70%),
+    var(--lu-hero-bg);
+}
+
+:root.ion-palette-dark .lu-hero {
+  border-color: var(--lu-border);
+}
+
+/* A frosted pill on the hero (tags, the tier). */
+.lu-hero-chip {
+  background: var(--lu-hero-track);
+  color: var(--lu-hero-text);
+}
+
+/* A white pill button on the hero, ink label. */
+.lu-hero-button {
+  border-radius: 999px;
+  background: var(--lu-hero-text);
+  color: var(--lu-hero-bg);
+  --icon-color: var(--lu-hero-bg);
+  font-family: var(--lu-font-display);
+  font-weight: 600;
+}
+
+.lu-hero-button:focus-visible {
+  outline: 2px solid var(--lu-hero-text);
+  outline-offset: 3px;
+}
+
+/* ---------- Color blocks ---------- */
+
+/*
+ * A solid block of one metric's color with ink text on it, in both themes:
+ * the color says which metric at a glance. Set --block, or use a metric
+ * class. Values inside use .lu-display.
+ */
+.lu-block {
+  --block: var(--ion-color-primary);
+  box-sizing: border-box;
+  border-radius: var(--lu-radius-card);
+  background: var(--block);
+  color: var(--lu-on-block);
+  --icon-color: var(--lu-on-block);
+}
+
+.lu-block-fat {
+  --block: var(--lu-fat);
+}
+
+.lu-block-muscle {
+  --block: var(--lu-muscle);
+}
+
+.lu-block-weight {
+  --block: var(--lu-weight);
+}
+
+.lu-block-lime {
+  --block: var(--lu-lime);
+}
+
+/* The round icon disc on a block: a light frosted wash over the block color. */
+.lu-block-badge {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--lu-frost);
+  color: var(--lu-on-block);
+}
+
+/* Muted text on a block (labels under big numbers). */
+.lu-block-muted {
+  color: var(--lu-on-block-muted);
+}
+
 /* ---------- Chips ---------- */
 
 .lu-chip {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 10px;
+  padding: 4px 11px;
   border: 0;
   border-radius: 999px;
   background: var(--lu-surface-2);
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
+}
+
+/* An ink pill: the active filter, a strong label. Inverts at night. */
+.lu-chip-ink {
+  background: var(--lu-text);
+  color: var(--lu-surface);
 }
 
 .lu-chip-primary {
@@ -210,7 +317,7 @@ button.lu-card:active {
   place-items: center;
   inline-size: 44px;
   block-size: 44px;
-  border-radius: 12px;
+  border-radius: 14px;
   background: color-mix(in srgb, var(--ion-color-primary) 10%, var(--lu-surface));
   color: var(--ion-color-primary);
   font-size: 22px;
@@ -227,19 +334,23 @@ button.lu-card:active {
   flex: none;
   display: inline-grid;
   place-items: center;
-  inline-size: 44px;
-  block-size: 44px;
+  inline-size: 46px;
+  block-size: 46px;
   padding: 0;
-  border: 1px solid var(--lu-border);
+  border: 1px solid transparent;
   border-radius: 999px;
   background: var(--lu-surface);
   color: var(--lu-text);
-  box-shadow: none;
+  box-shadow: var(--lu-shadow);
   font-size: 22px;
   cursor: pointer;
   transition:
     transform 120ms var(--ease-soft, ease-out),
     box-shadow 120ms var(--ease-soft, ease-out);
+}
+
+:root.ion-palette-dark .lu-icon-button {
+  border-color: var(--lu-border);
 }
 
 .lu-icon-button:disabled {
@@ -279,8 +390,13 @@ button.lu-card:active {
   gap: 4px;
   margin-block-end: 16px;
   padding: 4px;
-  border-radius: 14px;
-  background: var(--lu-surface-2);
+  border-radius: 999px;
+  background: var(--lu-surface);
+  box-shadow: var(--lu-shadow);
+}
+
+:root.ion-palette-dark .lu-segment {
+  box-shadow: inset 0 0 0 1px var(--lu-border);
 }
 
 .lu-segment button {
@@ -290,11 +406,11 @@ button.lu-card:active {
   min-block-size: 44px;
   padding: 6px 4px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 999px;
   background: transparent;
   color: var(--lu-text-muted);
   font: inherit;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.15;
   text-align: center;
@@ -310,29 +426,25 @@ button.lu-card:active {
   font-size: 1.1rem;
 }
 
+/* The chosen option: an ink pill with light text (a white pill at night). */
 .lu-segment button[aria-selected='true'],
 .lu-segment button[aria-checked='true'] {
-  background: var(--lu-surface);
-  color: var(--lu-text);
-  box-shadow: var(--lu-shadow);
-}
-
-.lu-segment button[aria-selected='true'] .lu-icon,
-.lu-segment button[aria-checked='true'] .lu-icon {
-  color: var(--ion-color-primary);
-}
-
-:root.ion-palette-dark .lu-segment button[aria-selected='true'],
-:root.ion-palette-dark .lu-segment button[aria-checked='true'] {
-  background: var(--lu-border);
+  background: var(--lu-text);
+  color: var(--lu-surface);
+  --icon-color: var(--lu-surface);
 }
 
 /* ---------- Progress bar ---------- */
 
+/* A chunky bar on a hatched track: the hatching is the part still to go. */
 .lu-bar {
-  block-size: 8px;
+  block-size: 10px;
   border-radius: 999px;
-  background: var(--lu-surface-2);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--lu-surface-2) 0 5px,
+    color-mix(in srgb, var(--lu-border) 80%, var(--lu-surface-2)) 5px 7px
+  );
   overflow: hidden;
 }
 
@@ -341,12 +453,12 @@ button.lu-card:active {
   block-size: 100%;
   inline-size: var(--lu-bar, 0%);
   border-radius: inherit;
-  background: var(--ion-color-primary);
+  background: var(--bar-color, var(--ion-color-primary));
   transition: inline-size 500ms var(--ease-soft, ease-out);
 }
 
 :root.ion-palette-dark .lu-bar > span {
-  background: var(--ion-color-secondary);
+  background: var(--bar-color, var(--ion-color-secondary));
 }
 
 /* ---------- Toggle switch ---------- */
@@ -434,7 +546,7 @@ button.lu-card:active {
 }
 
 .lu-skeleton-card {
-  border-radius: 16px;
+  border-radius: var(--lu-radius-card);
   min-block-size: 104px;
 }
 

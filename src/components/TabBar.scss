@@ -1,7 +1,7 @@
 /*
- * The navigation bar: a translucent panel in the theme's surface color with
- * one hairline on top, line icons, and a rounded pill indicator that slides
- * behind the active icon.
+ * The navigation bar: a frosted panel in the theme's surface color with
+ * rounded top corners, line icons, and an ink pill that slides behind the
+ * active icon (the icon turns light on it; a white pill at night).
  *
  * The tab-button rules stay outside any cascade layer on purpose: ion-label's
  * styles are injected unlayered by Ionic, and layered rules would lose to them.
@@ -16,19 +16,19 @@
 
 @layer components {
   .lu-navbar {
-    background: color-mix(in srgb, var(--lu-surface) 92%, transparent);
-    box-shadow: inset 0 1px 0 var(--lu-border);
+    border-start-start-radius: 26px;
+    border-start-end-radius: 26px;
+    background: color-mix(in srgb, var(--lu-surface) 94%, transparent);
+    box-shadow:
+      var(--lu-dock-shadow),
+      inset 0 1px 0 var(--lu-border);
     backdrop-filter: saturate(1.4) blur(16px);
   }
 
-  /* A soft tint behind the active icon, not a solid block: calmer, and the icon stays the brand color. */
+  /* A solid ink pill behind the active icon: the one strong mark on the bar. */
   .lu-navbar-indicator {
     border-radius: 999px;
-    background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
-  }
-
-  :root.ion-palette-dark .lu-navbar-indicator {
-    background: color-mix(in srgb, var(--ion-color-secondary) 20%, transparent);
+    background: var(--lu-text);
   }
 }
 
@@ -71,11 +71,11 @@
     }
   }
 
-  /* Active: a bright icon on the indicator, and the label in the brand color. */
+  /* Active: a light icon on the ink pill, and the label in ink. */
   ion-tab-button.is-lit {
-    --color: var(--ion-color-primary);
-    --color-selected: var(--ion-color-primary);
-    --icon-color: var(--ion-color-primary);
+    --color: var(--lu-text);
+    --color-selected: var(--lu-text);
+    --icon-color: var(--lu-surface);
   }
 
   /*
@@ -89,14 +89,14 @@
       inset 0 0 0 4px var(--lu-text);
   }
 
-  /* rem, not px, so the bar follows the member's text size (WCAG 1.4.4). The icon sits centered on the 32px indicator. */
+  /* rem, not px, so the bar follows the member's text size (WCAG 1.4.4). The icon sits centered on the 36px indicator. */
   .lu-icon {
     font-size: 1.25rem;
-    margin-top: 10px;
+    margin-top: 14px;
   }
 
   ion-label {
-    margin-top: 9px;
+    margin-top: 11px;
     max-width: 100%;
     overflow: visible;
     font-size: 0.68rem;
@@ -130,9 +130,10 @@
   }
 }
 
-/* In dark mode the active label takes the lighter brand purple, for contrast on the deep panel. */
-:root.ion-palette-dark .lu-tabbar ion-tab-button.is-lit {
-  --color: var(--ion-color-secondary);
-  --color-selected: var(--ion-color-secondary);
-  --icon-color: var(--ion-color-secondary);
+/* Wide screens: the panel's top corners would float in mid-air, so it runs square to the edges. */
+@media (min-width: 900px) {
+  .lu-navbar {
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+  }
 }

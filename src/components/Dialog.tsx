@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef } from 'react';
 
 const BUTTON =
-  'min-h-[46px] cursor-pointer rounded-[12px] border font-inherit font-semibold transition-transform duration-[120ms] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100';
+  'min-h-[48px] cursor-pointer rounded-full border font-display font-semibold transition-transform duration-[120ms] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100';
 
 interface Props {
   open: boolean;
@@ -21,7 +21,16 @@ interface Props {
  * focus, closes with Escape (and the Android back gesture in the web view), and
  * costs a few hundred bytes instead of Ionic's alert overlay.
  */
-const Dialog: React.FC<Props> = ({ open, title, message, confirmLabel, cancelLabel, destructive, onConfirm, onCancel }) => {
+const Dialog: React.FC<Props> = ({
+  open,
+  title,
+  message,
+  confirmLabel,
+  cancelLabel,
+  destructive,
+  onConfirm,
+  onCancel,
+}) => {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const messageId = useId();
@@ -64,7 +73,7 @@ const Dialog: React.FC<Props> = ({ open, title, message, confirmLabel, cancelLab
       }}
     >
       {open && (
-        <div className="lu-pop grid gap-4 rounded-[20px] border border-line bg-surface p-5 shadow-raised ar:font-arabic">
+        <div className="lu-pop grid gap-4 rounded-[28px] border border-line bg-surface p-6 shadow-raised ar:font-arabic">
           <h2 id={titleId} className="m-0 text-[1.15rem] leading-[1.3] font-semibold">
             {title}
           </h2>
@@ -79,7 +88,7 @@ const Dialog: React.FC<Props> = ({ open, title, message, confirmLabel, cancelLab
             </button>
             <button
               type="button"
-              className={`${BUTTON} ${destructive ? 'border-danger bg-danger text-surface' : 'border-primary bg-primary text-primary-contrast'}`}
+              className={`${BUTTON} ${destructive ? 'border-danger bg-danger text-surface' : 'border-cta bg-cta text-cta-text'}`}
               onClick={onConfirm}
             >
               {confirmLabel}

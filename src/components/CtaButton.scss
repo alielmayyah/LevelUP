@@ -1,33 +1,52 @@
-// The CTA's surface: a rounded, solid brand color with a soft neutral shadow.
-// Layout and states are Tailwind classes in CtaButton.tsx.
+// The CTA's surface: an ink pill (a white pill at night), the reference
+// "Finish" button. Layout and states are Tailwind classes in CtaButton.tsx.
 @layer components {
   .lu-cta {
-    border-radius: 14px;
-    /* Solid brand color, no glow: the gradient is saved for celebrations. */
-    background: var(--ion-color-primary);
+    border-radius: 999px;
+    background: var(--lu-cta-bg);
+    color: var(--lu-cta-text);
     box-shadow: var(--lu-shadow);
+    font-family: var(--lu-font-display);
     font-size: 1.05rem;
     font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.01em;
 
     &:lang(ar) {
       letter-spacing: 0;
     }
 
     &:enabled:active {
-      background: var(--ion-color-primary-shade);
+      background: var(--lu-cta-bg-pressed);
       box-shadow: var(--lu-shadow-pressed);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--ion-color-primary);
+      outline: 2px solid var(--lu-text);
       outline-offset: 3px;
     }
 
     ion-spinner {
-      --color: var(--ion-color-primary-contrast);
+      --color: var(--lu-cta-text);
       inline-size: 24px;
       block-size: 24px;
+    }
+  }
+
+  /* On the ink screens (intro, login) the button is a white pill in both themes. */
+  .lu-on-ink .lu-cta {
+    background: var(--lu-splash-text);
+    color: var(--lu-splash-bg);
+
+    &:enabled:active {
+      background: var(--lu-splash-text-muted);
+    }
+
+    &:focus-visible {
+      outline-color: var(--lu-splash-text);
+    }
+
+    ion-spinner {
+      --color: var(--lu-splash-bg);
     }
   }
 }
