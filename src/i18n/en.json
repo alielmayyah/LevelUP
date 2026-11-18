@@ -508,7 +508,15 @@
       "noChange": "No change since last scan",
       "firstScan": "Your first scan",
       "empty": "Your FitScore appears after your first scan.",
-      "emptyNext": "Book your first scan at the front desk."
+      "emptyNext": "Book your first scan at the front desk.",
+      "outOf": "out of 100",
+      "toNext_one": "{{count}} point to {{tier}}",
+      "toNext_other": "{{count}} points to {{tier}}",
+      "topTier": "You're at the top level",
+      "toNext_zero": "{{count}} points to {{tier}}",
+      "toNext_two": "{{count}} points to {{tier}}",
+      "toNext_few": "{{count}} points to {{tier}}",
+      "toNext_many": "{{count}} points to {{tier}}"
     },
     "fitScoreInfo": {
       "title": "What is FitScore?",
@@ -586,7 +594,13 @@
     },
     "error": "Couldn't load your dashboard.",
     "openProfile": "Your profile",
-    "hello": "Hello, {{name}}"
+    "hello": "Hello, {{name}}",
+    "quick": {
+      "title": "Shortcuts",
+      "scan": "Your scan",
+      "goal": "New goal",
+      "medals": "Medals"
+    }
   },
   "login": {
     "fitId": "Fit ID",

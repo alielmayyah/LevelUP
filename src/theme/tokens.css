@@ -6,20 +6,21 @@
 
 :root {
   /* Calm, near-neutral surfaces with the faintest brand tint; color is for meaning and actions. */
-  --lu-bg: #f6f6f9;
+  /* Calm health-tech: soft blue-grey page, white cards, navy text. Color is for meaning and actions. */
+  --lu-bg: #eef2f7;
   --lu-surface: #ffffff;
-  --lu-surface-2: #f0eff5;
-  --lu-text: #15121f;
-  --lu-text-muted: #5f5b70;
-  --lu-border: #e6e4ee;
-  --lu-success: #1a7f37;
-  --lu-danger: #c62828;
-  /* Soft, blurred elevation for cards, and a smaller one for pressed controls. */
-  --lu-shadow: 0 1px 2px rgba(21, 18, 31, 0.04), 0 8px 24px -12px rgba(21, 18, 31, 0.14);
-  --lu-shadow-pressed: 0 1px 2px rgba(21, 18, 31, 0.06);
-  --lu-shadow-raised: 0 12px 32px -8px rgba(21, 18, 31, 0.22);
+  --lu-surface-2: #f2f5f9;
+  --lu-text: #0f1b2d;
+  --lu-text-muted: #56657a;
+  --lu-border: #e1e7ef;
+  --lu-success: #157f4a;
+  --lu-danger: #c42b3a;
+  /* Soft, navy-tinted elevation: cards float on the page instead of being boxed in. */
+  --lu-shadow: 0 1px 2px rgba(15, 27, 45, 0.04), 0 10px 30px -14px rgba(15, 27, 45, 0.16);
+  --lu-shadow-pressed: 0 1px 2px rgba(15, 27, 45, 0.06);
+  --lu-shadow-raised: 0 18px 40px -12px rgba(15, 27, 45, 0.24);
   /* Dim layer behind dialogs and sheets. */
-  --lu-scrim: #0b0814;
+  --lu-scrim: #0b1220;
 
   /* One hue per body metric, used for its icon and tile accent. */
   --lu-fat: #f97316;
@@ -63,13 +64,22 @@
   --lu-medal-shine: #ffffff;
   --lu-medal-locked: #6b6385;
 
-  /* Dusk backdrop behind the logo (splash and login) in both themes. */
-  --lu-splash-bg: #1a0f2b;
-  --lu-splash-bg-2: #321956;
-  --lu-splash-text: #f4f1ff;
-  --lu-splash-text-muted: #e0caee;
+  /* Splash and login: a deep navy backdrop in both themes, so the white wordmark reads. */
+  --lu-splash-bg: #0e1a30;
+  --lu-splash-bg-2: #1d2f52;
+  --lu-splash-text: #f2f6fc;
+  --lu-splash-text-muted: #b9c6da;
   --lu-splash-star: #ffffff;
   --lu-splash-danger: #ff9b9b;
+
+  /* Hero cards (FitScore): deep navy with white text in both themes. */
+  --lu-hero-bg: #13244a;
+  --lu-hero-bg-2: #2b2f7a;
+  --lu-hero-text: #ffffff;
+  --lu-hero-muted: #c3cde0;
+  --lu-hero-track: rgba(255, 255, 255, 0.16);
+  --lu-hero-up: #6ee7a8;
+  --lu-hero-down: #ffa3ad;
 
   --lu-tabbar-height: 64px;
   /* Breathing room between the last item on a page and the dock (counted twice in layout.css). */
@@ -78,27 +88,31 @@
 }
 
 :root.ion-palette-dark {
-  --lu-bg: #0c0b10;
-  --lu-surface: #17161d;
-  --lu-surface-2: #201f28;
-  --lu-text: #f4f3f8;
-  --lu-text-muted: #a9a6b8;
-  --lu-border: #2a2833;
+  /* The same calm look at night: deep navy page, slate cards. */
+  --lu-bg: #0a1120;
+  --lu-surface: #121b2e;
+  --lu-surface-2: #19243a;
+  --lu-text: #edf2fa;
+  --lu-text-muted: #9badc4;
+  --lu-border: #22304a;
   --lu-success: #4ade80;
   --lu-danger: #f87171;
   /* In dark mode the border does most of the work; shadows stay faint. */
   --lu-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   --lu-shadow-pressed: none;
   --lu-shadow-raised: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
-  --lu-scrim: #000000;
+  --lu-scrim: #02060d;
 
   --lu-fat: #fb923c;
   --lu-muscle: #22d3ee;
   --lu-tier-4: #4ade80;
   --lu-tier-5: #b77cf7;
 
-  --lu-splash-bg: #160c25;
-  --lu-splash-bg-2: #291544;
+  --lu-hero-bg: #172a52;
+  --lu-hero-bg-2: #2c2a6e;
+
+  --lu-splash-bg: #08101f;
+  --lu-splash-bg-2: #15233f;
 }
 
 /* Ionic reads its own variables; point them at the tokens in both palettes. */

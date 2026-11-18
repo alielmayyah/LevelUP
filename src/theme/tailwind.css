@@ -84,6 +84,10 @@
   --color-muscle-hi: var(--lu-muscle-hi);
   --color-tier: var(--tier);
   --color-metric: var(--metric);
+  --color-hero: var(--lu-hero-text);
+  --color-hero-muted: var(--lu-hero-muted);
+  --color-hero-up: var(--lu-hero-up);
+  --color-hero-down: var(--lu-hero-down);
   --color-gold: var(--lu-gold);
   --color-silver: var(--lu-silver);
   --color-bronze: var(--lu-bronze);

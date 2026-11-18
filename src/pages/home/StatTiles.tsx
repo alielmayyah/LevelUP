@@ -32,21 +32,26 @@ const Tile: React.FC<TileProps> = ({ metric, icon, label, change, unit, tone: ti
   const { t } = useTranslation();
   return (
     <div
-      className={`lu-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative grid justify-items-center gap-1 overflow-hidden px-2 pt-4 pb-3 text-center`}
+      className={`lu-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative grid content-start gap-2 overflow-hidden p-3`}
       data-testid={testId}
     >
-      <span className="lu-tile-badge mb-1.5 grid size-11 place-items-center rounded-full text-[1.35rem]">
-        <Icon name={icon} />
+      <span className="flex min-w-0 items-center gap-2 text-[0.8125rem] leading-tight font-semibold text-muted">
+        <span className="lu-tile-badge grid size-8 flex-none place-items-center rounded-full text-[1.05rem]">
+          <Icon name={icon} />
+        </span>
+        <span className="min-w-0">{label}</span>
       </span>
       <span
-        className={`lu-display text-[clamp(1.55rem,6.8vw,2.1rem)] leading-[1.1] whitespace-nowrap ${VALUE_COLOR[tileTone]}`}
+        className={`lu-display inline-flex items-center gap-1 text-[clamp(1.3rem,5.6vw,1.6rem)] leading-[1.1] whitespace-nowrap ${VALUE_COLOR[tileTone]}`}
       >
-        {formatSigned(change, unit, { digits: 1 })}
-      </span>
-      <span className="inline-flex items-center gap-1 text-[0.8125rem] font-normal text-muted">
         {/* Which way it moved, not by color alone. Never mirrored: up is up in both languages. */}
-        {change !== 0 && <Icon className={VALUE_COLOR[tileTone]} name={change > 0 ? 'trendUp' : 'trendDown'} />}
-        {label}
+        {change !== 0 && (
+          <Icon
+            className="flex-none text-[0.8em] [--icon-color:currentColor]"
+            name={change > 0 ? 'trendUp' : 'trendDown'}
+          />
+        )}
+        {formatSigned(change, unit, { digits: 1 })}
       </span>
       {tileTone !== 'none' && <span className="sr-only">{t(`home.wins.${tileTone}`)}</span>}
     </div>

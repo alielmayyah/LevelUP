@@ -163,10 +163,14 @@
 
   /* The scan card: a neutral card like every other (hairline, surface, soft shadow). */
   .lu-scan-card {
-    border: 1px solid var(--lu-border);
-    border-radius: 16px;
+    border: 1px solid transparent;
+    border-radius: 20px;
     background: var(--lu-surface);
     box-shadow: var(--lu-shadow);
+
+    :root.ion-palette-dark & {
+      border-color: var(--lu-border);
+    }
   }
 
   /* The scan date doubles as a button: a dashed underline says it opens something. */

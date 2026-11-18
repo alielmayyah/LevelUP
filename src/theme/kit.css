@@ -37,13 +37,18 @@
   box-sizing: border-box;
   inline-size: 100%;
   padding: 16px;
-  border: 1px solid var(--lu-border);
-  border-radius: 16px;
+  /* Light: cards float on the blue-grey page with no outline. Dark: a hairline does the work. */
+  border: 1px solid transparent;
+  border-radius: 20px;
   background: var(--lu-surface);
   color: var(--lu-text);
   box-shadow: var(--lu-shadow);
   font: inherit;
   text-align: start;
+}
+
+:root.ion-palette-dark .lu-card {
+  border-color: var(--lu-border);
 }
 
 @media (min-width: 768px) {
@@ -81,7 +86,8 @@ button.lu-card:active {
   gap: 8px;
   margin: 0;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.005em;
 }
 
 .lu-card-title .lu-icon,
@@ -95,8 +101,10 @@ button.lu-card:active {
   align-items: center;
   gap: 6px;
   color: var(--lu-text-muted);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .lu-card-kicker .lu-icon {
@@ -107,6 +115,7 @@ button.lu-card:active {
 .lu-card-kicker:lang(ar) {
   font-size: 0.85rem;
   letter-spacing: 0;
+  text-transform: none;
 }
 
 :root.ion-palette-dark :is(.lu-card-title, .lu-section-title, .lu-card-kicker) .lu-icon {
@@ -117,9 +126,9 @@ button.lu-card:active {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 12px 0 10px;
+  margin: 20px 0 10px;
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .lu-chevron {
@@ -225,7 +234,7 @@ button.lu-card:active {
   border-radius: 999px;
   background: var(--lu-surface);
   color: var(--lu-text);
-  box-shadow: var(--lu-shadow);
+  box-shadow: none;
   font-size: 22px;
   cursor: pointer;
   transition:
@@ -321,7 +330,7 @@ button.lu-card:active {
 /* ---------- Progress bar ---------- */
 
 .lu-bar {
-  block-size: 10px;
+  block-size: 8px;
   border-radius: 999px;
   background: var(--lu-surface-2);
   overflow: hidden;

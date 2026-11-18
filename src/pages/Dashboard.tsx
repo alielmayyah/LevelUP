@@ -16,6 +16,7 @@ import Icon from '../components/Icon';
 import { formatToday } from './home/homeText';
 import MissionCard from './home/MissionCard';
 import NotificationsSheet from './home/NotificationsSheet';
+import QuickActions from './home/QuickActions';
 import RankCard from './home/RankCard';
 import StatTiles from './home/StatTiles';
 import { HOME_GRID, HOME_SPAN, TILES } from './home/layout';
@@ -131,6 +132,9 @@ const Dashboard: React.FC = () => {
           {d && (
             <div className={HOME_GRID}>
               {d.member.showFitScore && <FitScoreCard fitScore={d.fitScore} />}
+              <div className={HOME_SPAN}>
+                <QuickActions />
+              </div>
               {features.community && <RankCard leaderboard={d.leaderboard} />}
               <MissionCard mission={d.mission} />
               <div className={HOME_SPAN}>

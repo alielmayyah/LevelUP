@@ -44,8 +44,8 @@ export const brand: AppBrand = {
   logo: `${BASE}brand/logo.webp`,
   mark: `${BASE}brand/mark.webp`,
   colors: {
-    primary: '#6c3cf0',
-    secondary: '#b77cf7',
+    primary: '#5b4ad8',
+    secondary: '#9c8cff',
     accent: '#f5a524',
   },
 };

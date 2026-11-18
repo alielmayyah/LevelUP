@@ -21,9 +21,14 @@
     backdrop-filter: saturate(1.4) blur(16px);
   }
 
+  /* A soft tint behind the active icon, not a solid block: calmer, and the icon stays the brand color. */
   .lu-navbar-indicator {
     border-radius: 999px;
-    background: var(--ion-color-primary);
+    background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
+  }
+
+  :root.ion-palette-dark .lu-navbar-indicator {
+    background: color-mix(in srgb, var(--ion-color-secondary) 20%, transparent);
   }
 }
 
@@ -70,7 +75,7 @@
   ion-tab-button.is-lit {
     --color: var(--ion-color-primary);
     --color-selected: var(--ion-color-primary);
-    --icon-color: var(--ion-color-primary-contrast);
+    --icon-color: var(--ion-color-primary);
   }
 
   /*
@@ -129,4 +134,5 @@
 :root.ion-palette-dark .lu-tabbar ion-tab-button.is-lit {
   --color: var(--ion-color-secondary);
   --color-selected: var(--ion-color-secondary);
+  --icon-color: var(--ion-color-secondary);
 }

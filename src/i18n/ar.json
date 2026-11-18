@@ -508,7 +508,15 @@
       "noChange": "مفيش تغيير من آخر قياس",
       "firstScan": "أول قياس ليك",
       "empty": "الـ FitScore بتاعك هيظهر بعد أول قياس.",
-      "emptyNext": "احجز أول قياس من الريسبشن."
+      "emptyNext": "احجز أول قياس من الريسبشن.",
+      "outOf": "من 100",
+      "toNext_zero": "باقي {{count}} نقطة على {{tier}}",
+      "toNext_one": "باقي نقطة واحدة على {{tier}}",
+      "toNext_two": "باقي نقطتين على {{tier}}",
+      "toNext_few": "باقي {{count}} نقط على {{tier}}",
+      "toNext_many": "باقي {{count}} نقطة على {{tier}}",
+      "toNext_other": "باقي {{count}} نقطة على {{tier}}",
+      "topTier": "إنت في أعلى مستوى"
     },
     "fitScoreInfo": {
       "title": "يعني إيه FitScore؟",
@@ -586,7 +594,13 @@
     },
     "error": "مقدرناش نحمّل الصفحة.",
     "openProfile": "حسابك",
-    "hello": "أهلاً يا {{name}}"
+    "hello": "أهلاً يا {{name}}",
+    "quick": {
+      "title": "اختصارات",
+      "scan": "قياسك",
+      "goal": "هدف جديد",
+      "medals": "الميداليات"
+    }
   },
   "login": {
     "fitId": "رقم العضوية",
