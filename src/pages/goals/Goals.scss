@@ -56,16 +56,20 @@
     }
   }
 
-  /* The goal's bar fills in its metric's hue; a finished goal's is green. */
-  .lu-goal-progress > span {
+  /*
+   * The goal's bar fills in its metric's hue; a finished goal's is green.
+   * :root .lu-goal raises specificity above the kit's dark-mode bar color, which
+   * otherwise painted every goal purple at night.
+   */
+  :root .lu-goal .lu-goal-progress > span {
     background: linear-gradient(90deg, color-mix(in srgb, var(--metric) 70%, var(--lu-surface)), var(--metric));
   }
 
-  .lu-goal-progress:dir(rtl) > span {
+  :root .lu-goal .lu-goal-progress:dir(rtl) > span {
     background: linear-gradient(270deg, color-mix(in srgb, var(--metric) 70%, var(--lu-surface)), var(--metric));
   }
 
-  .lu-goal-completed .lu-goal-progress > span {
+  :root .lu-goal.lu-goal-completed .lu-goal-progress > span {
     background: var(--lu-success);
   }
 
@@ -73,7 +77,9 @@
     color: var(--lu-text);
   }
 
+  /* The done badge: a white check on green (the metric hue must not tint it). */
   .lu-goal-done {
+    --icon-color: var(--lu-surface);
     background: var(--lu-success);
     color: var(--lu-surface);
   }
