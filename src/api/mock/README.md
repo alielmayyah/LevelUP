@@ -6,12 +6,12 @@ Only `src/api/client.ts` and test files may import from this folder. ESLint (`no
 
 ## Mock members
 
-| Fit ID | Name | Use it to test |
-| --- | --- | --- |
-| 101 | Mohamed Omran | Six scans, active and completed goals, earned medals, and two unread notifications |
-| 102 | Lina Haddad | No scans or goals, with the female portrait and hijab options |
-| 103 | Omar Aziz | One scan and goal creation from that assessment |
-| 104 | Karim Mansour | The redesign's example member (`inbodyExample.ts`): three scans on one InBody 770 at Iron Box with `origin`, printed `ranges`, `extra` readings and lean-only `segmentalLean` (`segments` is null). The latest scan is the corrected `docs/inbody` example. A real trend since the first scan; the last change is inside the noise |
+| Fit ID | Name          | Use it to test                                                                                                                                                                                                                                                                                                                     |
+| ------ | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 101    | Mohamed Omran | Six scans, active and completed goals, earned medals, and two unread notifications                                                                                                                                                                                                                                                 |
+| 102    | Lina Haddad   | No scans or goals, with the female portrait and hijab options                                                                                                                                                                                                                                                                      |
+| 103    | Omar Aziz     | One scan and goal creation from that assessment                                                                                                                                                                                                                                                                                    |
+| 104    | Karim Mansour | The redesign's example member (`inbodyExample.ts`): three scans on one InBody 770 at Iron Box with `origin`, printed `ranges`, `extra` readings and lean-only `segmentalLean` (`segments` is null). The latest scan is the corrected `docs/inbody` example. A real trend since the first scan; the last change is inside the noise |
 
 ## Behavior
 

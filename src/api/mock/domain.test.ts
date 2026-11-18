@@ -67,5 +67,4 @@ describe('FitScore (InBody Score method)', () => {
     );
     expect(scores).toEqual([72, 74, 75, 76, 77, 79]);
   });
-
 });
