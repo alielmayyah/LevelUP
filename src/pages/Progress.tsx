@@ -52,6 +52,13 @@ interface MoreMetric extends Metric<MoreKey> {
   better: Better;
 }
 
+/** Each key number's color block (kit.css), the same colors as Home and Goals. */
+const BLOCK: Record<MainKey, string> = {
+  weight: 'lu-block-weight',
+  muscle: 'lu-block-muscle',
+  bodyFat: 'lu-block-fat',
+};
+
 /** The three numbers members care about: big, with their change. */
 const MAIN: MainMetric[] = [
   {
@@ -282,6 +289,7 @@ const Progress: React.FC = () => {
         icon: null,
         signed: '±0',
         tone: 'text-muted',
+        good: null,
         label: t('progress.noChange'),
       };
     const up = diff > 0;
@@ -293,6 +301,8 @@ const Progress: React.FC = () => {
       /** For the small cards: a plain sign, "+0.4 kg" or "−0.2 kg". */
       signed: `${up ? '+' : '−'}${amount}`,
       tone: good === null ? 'text-muted' : good ? 'text-success' : 'text-danger',
+      /** Good or bad news, for the badge on a color block (where green and red text wouldn't read). */
+      good,
       label: t(up ? 'progress.changeUp' : 'progress.changeDown', { amount }),
     };
   };
@@ -438,10 +448,10 @@ const Progress: React.FC = () => {
                   return (
                     <div
                       key={m.key}
-                      className={`lu-scan-tile relative grid content-start justify-items-center gap-1 px-1 pt-2.5 pb-1 text-center ${m.tone}`}
+                      className={`lu-scan-tile lu-block ${BLOCK[m.key]} relative grid content-start justify-items-center gap-1.5 rounded-[20px] px-1 pt-3 pb-3 text-center ${m.tone}`}
                       data-testid={`metric-${m.key}`}
                     >
-                      <dt className="grid justify-items-center gap-1.5 text-[0.75rem] font-semibold text-muted">
+                      <dt className="lu-block-muted grid justify-items-center gap-1.5 text-[0.75rem] font-semibold">
                         {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
                         <InfoButton
                           className="absolute -end-1 -top-1"
@@ -452,7 +462,7 @@ const Progress: React.FC = () => {
                         <Icon className="text-[1.15rem]" name={m.icon} />
                         {t(`progress.metric.${m.key}`)}
                       </dt>
-                      <dd className="lu-display m-0 text-[clamp(1.3rem,6vw,1.6rem)] leading-none whitespace-nowrap text-ink">
+                      <dd className="lu-display m-0 text-[clamp(1.15rem,5.4vw,1.5rem)] leading-none whitespace-nowrap">
                         {value(m, scan)}
                       </dd>
                       <dd
@@ -460,14 +470,20 @@ const Progress: React.FC = () => {
                         data-testid={`change-${m.key}`}
                       >
                         {c ? (
-                          <span className={`inline-flex items-center gap-1 ${c.tone}`}>
+                          <span
+                            className="lu-change-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5"
+                            data-tone={c.good === null ? 'none' : c.good ? 'good' : 'bad'}
+                          >
                             {c.icon && <Icon className="flex-none text-[1em]" name={c.icon} />}
                             <bdi aria-hidden="true">{c.text}</bdi>
+                            {c.good !== null && (
+                              <Icon className="flex-none text-[1em]" name={c.good ? 'checkCircle' : 'warning'} />
+                            )}
                             {/* Screen readers hear the full sentence instead of an arrow. */}
                             <span className="sr-only">{c.label}</span>
                           </span>
                         ) : (
-                          <span className="font-normal text-muted">
+                          <span className="lu-block-muted font-normal">
                             {list.length === 1
                               ? t('progress.changeLater')
                               : details && compareChoice === 'none'

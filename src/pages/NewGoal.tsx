@@ -204,26 +204,24 @@ const NewGoal: React.FC = () => {
             labelledBy="new-goal-type"
             className="grid gap-2 sm:grid-cols-3"
             optionClass={(m) =>
-              `lu-goal-choice lu-goal-${LOOK[m].tone} flex min-h-14 cursor-pointer items-center gap-3 rounded-[14px] border border-line bg-surface p-3 text-start font-inherit text-ink sm:grid sm:justify-items-center sm:text-center`
+              `lu-goal-choice lu-goal-${LOOK[m].tone} flex min-h-14 cursor-pointer items-center gap-3 rounded-[20px] border border-line bg-surface p-3 text-start font-inherit text-ink aria-checked:bg-(--metric) aria-checked:text-on-block sm:grid sm:justify-items-center sm:text-center`
             }
             testId={(m) => `goal-type-${m}`}
             render={(m, on) => (
               <>
                 <span
-                  className="lu-goal-icon grid size-11 flex-none place-items-center rounded-xl text-[24px]"
+                  className={`lu-goal-icon grid size-11 flex-none place-items-center rounded-full text-[22px] ${on ? 'bg-(--lu-frost)' : ''}`}
                   aria-hidden="true"
                 >
                   <Icon name={LOOK[m].icon} />
                 </span>
                 <span className="grid min-w-0 flex-1 gap-0.5">
-                  <span className="leading-tight font-semibold">{t(`newGoal.metric.${m}`)}</span>
-                  <span className="text-[0.8rem] font-normal text-muted">
+                  <span className="font-display leading-tight font-semibold">{t(`newGoal.metric.${m}`)}</span>
+                  <span className={`text-[0.8rem] font-normal ${on ? 'text-on-block-muted' : 'text-muted'}`}>
                     {t('newGoal.now', { value: formatNumber(current(scan, m), 1) })}
                   </span>
                 </span>
-                {on && (
-                  <Icon className="flex-none text-[1.2rem] text-primary sm:hidden dark:text-secondary" name="check" />
-                )}
+                {on && <Icon className="flex-none text-[1.2rem] text-on-block sm:hidden" name="check" />}
               </>
             )}
           />
@@ -278,7 +276,7 @@ const NewGoal: React.FC = () => {
           </h2>
           <div className="flex items-center gap-3">
             <span
-              className="lu-goal-icon grid size-12 flex-none place-items-center rounded-xl text-[26px]"
+              className="lu-goal-icon grid size-12 flex-none place-items-center rounded-full text-[24px]"
               aria-hidden="true"
             >
               <Icon name={icon} />

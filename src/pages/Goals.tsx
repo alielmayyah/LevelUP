@@ -48,13 +48,13 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
     <li className={`lu-card lu-goal grid gap-3 lu-goal-${tone} lu-goal-${kind}`} data-testid="goal">
       <div className="flex items-center gap-3">
         <span
-          className="lu-goal-icon grid size-12 flex-none place-items-center rounded-xl text-[26px]"
+          className="lu-goal-icon grid size-12 flex-none place-items-center rounded-full text-[24px]"
           aria-hidden="true"
         >
           <Icon name={icon} />
         </span>
         <div className="grid min-w-0 flex-1 gap-0.5">
-          <h3 className="m-0 text-[1.05rem] leading-[1.25] font-semibold text-ink">{goal.title}</h3>
+          <h3 className="m-0 font-display text-[1.05rem] leading-[1.25] font-semibold text-ink">{goal.title}</h3>
           <span
             className={`text-[0.85rem] ${kind === 'completed' ? 'font-semibold text-success' : 'font-normal text-muted'}`}
             data-testid="goal-meta"
@@ -63,12 +63,16 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
           </span>
         </div>
         {kind === 'active' && (
-          <span className="lu-display flex-none text-[2rem] leading-none text-ink" data-testid="goal-percent">
+          <span className="lu-display flex-none text-[2.25rem] leading-none text-ink" data-testid="goal-percent">
             {formatPercent(percent)}
           </span>
         )}
         {kind === 'completed' && (
-          <span className="lu-goal-done grid size-9 flex-none place-items-center rounded-full" aria-hidden="true">
+          <span
+            className="lu-goal-done grid size-10 flex-none place-items-center rounded-full"
+            aria-hidden="true"
+            data-pop
+          >
             <Icon className="text-[1.2rem]" name="check" />
           </span>
         )}
@@ -89,7 +93,7 @@ const GoalCard: React.FC<{ goal: GoalView; kind: GoalTab }> = ({ goal, kind }) =
           aria-valuenow={percent}
           aria-label={goal.title}
         >
-          <span />
+          <span data-grow />
         </div>
         <span className="lu-goal-target text-[0.85rem] font-semibold whitespace-nowrap">
           <span className="sr-only">{t('goals.target')} </span>
@@ -174,7 +178,7 @@ const Goals: React.FC = () => {
               <section key={kind} aria-labelledby={`goals-${kind}`} data-testid={`section-${kind}`}>
                 <h2 id={`goals-${kind}`} className="lu-section-title mt-0">
                   {t(`goals.section.${kind}`)}{' '}
-                  <span className="box-border inline-grid h-[22px] min-w-[22px] place-items-center rounded-full bg-surface-2 px-[7px] text-[0.78rem] font-normal text-muted">
+                  <span className="lu-chip-ink box-border inline-grid h-[22px] min-w-[22px] place-items-center rounded-full px-[7px] font-sans text-[0.78rem] font-semibold">
                     {formatNumber(data[kind].length)}
                   </span>
                 </h2>

@@ -1,18 +1,34 @@
 /*
- * Progress cards: calm, neutral cards; each measurement's hue (--tone) shows
- * only in its icon, which sits in a soft round badge of the same hue.
+ * Progress cards: the three key numbers are solid color blocks (ink text, as
+ * on Home); the smaller measurements are neutral cards whose hue (--tone)
+ * shows only in a soft round icon badge.
  */
 @layer components {
-  /* The three key numbers sit straight on the scan card: no boxes inside the card. */
-  .lu-scan-tile {
-    --tone: var(--ion-color-primary);
+  /* The three key numbers: color blocks with ink text, icon on a frosted disc. */
+  .lu-scan-tile.lu-block {
+    --tone: var(--lu-on-block);
+    --icon-color: var(--lu-on-block);
+
+    .lu-info-button {
+      color: var(--lu-on-block-muted);
+    }
+  }
+
+  .lu-scan-tile.lu-block > dt > .lu-icon {
+    background: var(--lu-frost);
+  }
+
+  /* The change under a key number: a frosted pill, ink text. */
+  .lu-change-pill {
+    background: var(--lu-frost);
+    color: var(--lu-on-block);
   }
 
   /* The six smaller cards (in the full scan) sit back a little: hairline, no shadow. */
   .lu-more-card {
     --tone: var(--ion-color-primary);
     border: 1px solid var(--lu-border);
-    border-radius: 14px;
+    border-radius: 18px;
     background: color-mix(in srgb, var(--lu-surface-2) 55%, var(--lu-surface));
   }
 
@@ -79,12 +95,12 @@
   }
 
   .lu-tone-weight {
-    --tone: var(--ion-color-primary);
-    --icon-color: var(--ion-color-primary);
+    --tone: var(--lu-weight);
+    --icon-color: var(--lu-weight);
   }
 
   .lu-tone-muscle {
-    --tone: var(--lu-tier-4);
+    --tone: var(--lu-muscle);
     --icon-color: var(--lu-muscle);
   }
 
@@ -133,7 +149,7 @@
   }
 
   .lu-info-panel {
-    border-radius: 18px 18px 0 0;
+    border-radius: 28px 28px 0 0;
     box-shadow:
       inset 0 4px 0 var(--tone),
       var(--lu-shadow-raised);
@@ -195,7 +211,7 @@
   /* The scan card: a neutral card like every other (hairline, surface, soft shadow). */
   .lu-scan-card {
     border: 1px solid transparent;
-    border-radius: 20px;
+    border-radius: var(--lu-radius-card);
     background: var(--lu-surface);
     box-shadow: var(--lu-shadow);
 

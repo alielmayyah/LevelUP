@@ -1,27 +1,28 @@
 /*
- * Goals' custom pieces: each metric's hue, the metric icon tiles, the smooth
- * progress bar in the goal's hue, and the picked state on New goal. Layout and
- * type are Tailwind classes in Goals.tsx and NewGoal.tsx.
+ * Goals' custom pieces: each metric's block color, the solid metric icon
+ * discs, the bar in the goal's color on its hatched track, and the picked
+ * state on New goal. Layout and type are Tailwind classes in Goals.tsx and
+ * NewGoal.tsx.
  */
 @layer components {
   /* Each metric's hue, as on Home and Progress. */
   .lu-goal-fat {
     --metric: var(--lu-fat);
-    --icon-color: var(--lu-fat);
   }
 
   .lu-goal-muscle {
     --metric: var(--lu-muscle);
-    --icon-color: var(--lu-muscle);
   }
 
   .lu-goal-weight {
-    --metric: var(--ion-color-secondary);
-    --icon-color: var(--ion-color-primary);
+    --metric: var(--lu-weight);
   }
 
+  /* The metric's icon on a solid disc of its color, ink icon on top (as on Home's blocks). */
   .lu-goal-icon {
-    background: color-mix(in srgb, var(--metric) 14%, var(--lu-surface));
+    background: var(--metric);
+    color: var(--lu-on-block);
+    --icon-color: var(--lu-on-block);
   }
 
   /* New goal: the picked kind takes its metric's hue. */
@@ -37,9 +38,12 @@
       box-shadow: var(--lu-shadow-pressed);
     }
 
+    /* Picked: the whole option turns into its metric's color block. */
     &[aria-checked='true'] {
       border-color: var(--metric);
-      background: color-mix(in srgb, var(--metric) 10%, var(--lu-surface));
+      background: var(--metric);
+      color: var(--lu-on-block);
+      --icon-color: var(--lu-on-block);
     }
 
     &:focus-visible {
@@ -62,25 +66,21 @@
    * otherwise painted every goal purple at night.
    */
   :root .lu-goal .lu-goal-progress > span {
-    background: linear-gradient(90deg, color-mix(in srgb, var(--metric) 70%, var(--lu-surface)), var(--metric));
-  }
-
-  :root .lu-goal .lu-goal-progress:dir(rtl) > span {
-    background: linear-gradient(270deg, color-mix(in srgb, var(--metric) 70%, var(--lu-surface)), var(--metric));
+    background: var(--metric);
   }
 
   :root .lu-goal.lu-goal-completed .lu-goal-progress > span {
-    background: var(--lu-success);
+    background: var(--lu-lime);
   }
 
   .lu-goal-target {
     color: var(--lu-text);
   }
 
-  /* The done badge: a white check on green (the metric hue must not tint it). */
+  /* The done badge: an ink check on a lime disc, the app's "done" color. */
   .lu-goal-done {
-    --icon-color: var(--lu-surface);
-    background: var(--lu-success);
-    color: var(--lu-surface);
+    --icon-color: var(--lu-on-block);
+    background: var(--lu-lime);
+    color: var(--lu-on-block);
   }
 }

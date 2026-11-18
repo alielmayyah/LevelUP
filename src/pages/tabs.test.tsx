@@ -125,10 +125,21 @@ describe('Progress', () => {
     // The six smaller cards show the change since the scan before, with a sign.
     for (const key of ['water', 'protein', 'minerals', 'bmr', 'bmi', 'visceral'])
       expect(within(more).getByTestId(`change-${key}`)).toHaveTextContent(/^[+−]|±0/);
-    // Muscle up is good news (green), body fat down is good news (green), weight has no right way.
-    expect(within(scan).getByText('Up 0.9 kg since the scan before').parentElement).toHaveClass('text-success');
-    expect(within(scan).getByText('Down 1.1% since the scan before').parentElement).toHaveClass('text-success');
-    expect(within(scan).getByText('Up 0.7 kg since the scan before').parentElement).toHaveClass('text-muted');
+    // Muscle up is good news, body fat down is good news (a check on the block), weight has no right way.
+    expect(within(scan).getByText('Up 0.9 kg since the scan before').parentElement).toHaveAttribute(
+      'data-tone',
+      'good',
+    );
+    expect(within(scan).getByText('Down 1.1% since the scan before').parentElement).toHaveAttribute(
+      'data-tone',
+      'good',
+    );
+    expect(within(scan).getByText('Up 0.7 kg since the scan before').parentElement).toHaveAttribute(
+      'data-tone',
+      'none',
+    );
+    expect(within(scan).getByTestId('change-muscle').querySelector('[data-icon="checkCircle"]')).toBeInTheDocument();
+    expect(within(scan).getByTestId('change-weight').querySelector('[data-icon="checkCircle"]')).toBeNull();
     // The direction is an icon, not a text arrow.
     expect(within(scan).getByTestId('change-muscle').querySelector('[data-icon="trendUp"]')).toBeInTheDocument();
     expect(within(scan).getByTestId('change-bodyFat').querySelector('[data-icon="trendDown"]')).toBeInTheDocument();
