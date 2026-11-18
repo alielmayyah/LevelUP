@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { ProgressPoint } from '../../api/types';
@@ -65,6 +65,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
   const { t, i18n } = useTranslation();
   const rtl = i18n.dir() === 'rtl';
   const [pick, setPick] = useState<TrendKey>('weight');
+  const uid = useId();
   const labels = points.map((p) => month(p.takenAt));
   const dates = points.map((p) => day(p.takenAt));
   const kg = t('units.kg');
@@ -154,6 +155,8 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
               aria-checked={current === k}
               tabIndex={current === k ? 0 : -1}
               data-testid={`trend-${k}`}
+              aria-labelledby={`${uid}-${k}-name`}
+              aria-describedby={`${uid}-${k}-value`}
               className={`lu-trend-card grid cursor-pointer content-start gap-1 rounded-2xl border border-line bg-surface p-2.5 text-start font-inherit text-ink transition-[border-color,box-shadow] duration-[180ms] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary motion-reduce:transition-none ${series.colorClass}`}
               onClick={() => setPick(k)}
               onKeyDown={(e) => {
@@ -165,9 +168,9 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
             >
               <span className="flex items-center gap-1.5 text-[0.78rem] leading-tight font-semibold text-muted">
                 <Icon name={ICON[k].name} className={`flex-none text-[1rem] ${ICON[k].colors}`} />
-                {series.label}
+                <span id={`${uid}-${k}-name`}>{series.label}</span>
               </span>
-              <span className="lu-display text-[1.2rem] leading-none whitespace-nowrap">
+              <span id={`${uid}-${k}-value`} className="lu-display text-[1.2rem] leading-none whitespace-nowrap">
                 {formatNumber(v[v.length - 1], series.digits)}
                 <span className="text-[0.7em] font-semibold text-muted">
                   {series.unit === '%' ? '%' : series.unit ? ` ${series.unit}` : ''}
