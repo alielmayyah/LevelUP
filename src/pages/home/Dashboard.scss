@@ -4,11 +4,6 @@
  * Layout and type are Tailwind classes in the components.
  * Shared building blocks (cards, chips, bars, states) live in src/theme/kit.css.
  */
-@mixin tint($color, $border: 45%, $fill: 14%) {
-  border-color: color-mix(in srgb, #{$color} #{$border}, var(--lu-border));
-  background: color-mix(in srgb, #{$color} #{$fill}, var(--lu-surface));
-}
-
 @layer components {
   /* ---------- FitScore ---------- */
 
@@ -17,7 +12,7 @@
     padding: 20px;
 
     .lu-card-title .lu-icon {
-      color: var(--lu-hero-up);
+      color: var(--lu-brand-lilac);
     }
   }
 
@@ -44,11 +39,12 @@
   }
 
   .lu-tick-lit {
-    stroke: var(--lu-hero-up);
+    stroke: var(--lu-hero-text);
 
-    /* The tick at the score stands a little taller, in white, and breathes. */
+    /* The tick at the score stands a little taller, in the logo's lilac, and breathes. */
     &.is-head {
-      stroke: var(--lu-hero-text);
+      stroke: var(--lu-brand-lilac);
+      filter: drop-shadow(0 0 4px var(--lu-brand-lilac));
       transform-box: fill-box;
       transform-origin: 50% 50%;
 
@@ -143,56 +139,102 @@
 
   /* ---------- Notifications sheet ---------- */
 
-  .lu-notif-count {
-    @include tint(var(--lu-accent), 60%, 16%);
+  /* The sheet: the lit lavender page with a frosted top edge. */
+  .lu-notif-modal {
+    --background: var(--lu-page-bg);
+    --border-radius: 30px;
+    --backdrop-opacity: 0.45;
+  }
 
-    .lu-icon {
-      color: var(--lu-accent);
-    }
+  /* The bell beside the title: a tile in the logo gradient. */
+  .lu-notif-badge {
+    background: var(--lu-brand-grad);
+    color: var(--lu-cta-text);
+    --icon-color: var(--lu-cta-text);
+    box-shadow: 0 10px 24px -12px var(--lu-brand-glow);
+  }
+
+  /* How many are new: a pill in the logo gradient; all caught up: a quiet glass pill. */
+  .lu-notif-count {
+    background: var(--lu-brand-grad);
+    color: var(--lu-cta-text);
+    --icon-color: var(--lu-cta-text);
 
     &.is-clear {
-      @include tint(var(--lu-success), 50%, 12%);
-
-      .lu-icon {
-        color: var(--lu-success);
-      }
+      background: var(--lu-glass);
+      color: var(--lu-text);
+      --icon-color: var(--lu-success);
+      box-shadow: inset 0 0 0 1px var(--lu-glass-border);
     }
   }
 
+  .lu-notif-markall {
+    border: 1px solid var(--lu-glass-border);
+    background: var(--lu-glass);
+    color: var(--ion-color-primary);
+    --icon-color: var(--ion-color-primary);
+
+    :root.ion-palette-dark & {
+      color: var(--ion-color-secondary);
+      --icon-color: var(--ion-color-secondary);
+    }
+
+    &:disabled {
+      color: var(--lu-text-muted);
+      --icon-color: var(--lu-text-muted);
+      cursor: default;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  /* A row: frosted glass; unread ones are brighter with a violet rim. */
   .lu-notif-item {
-    border: 1px solid var(--lu-border);
-    background: var(--lu-surface);
-    box-shadow: var(--lu-shadow);
+    border: 1px solid var(--lu-glass-border);
+    background: var(--lu-glass);
+    box-shadow: var(--lu-glass-shadow);
+    -webkit-backdrop-filter: var(--lu-glass-blur);
+    backdrop-filter: var(--lu-glass-blur);
+    transition:
+      background-color 250ms ease-out,
+      box-shadow 250ms ease-out;
 
     &:focus-visible {
       outline: 2px solid var(--ion-color-primary);
       outline-offset: 3px;
     }
 
-    /* Unread rows carry a light brand tint, so new things stand out at a glance. */
     &.is-unread {
-      @include tint(var(--ion-color-primary), 45%, 8%);
+      background: var(--lu-glass-strong);
+      box-shadow:
+        inset 0 0 0 1.5px color-mix(in srgb, var(--ion-color-primary) 45%, transparent),
+        0 14px 30px -18px var(--lu-brand-glow);
     }
   }
 
-  .lu-notif-icon {
-    @include tint(var(--ion-color-primary), 40%, 12%);
-    color: var(--ion-color-primary);
-
-    :root.ion-palette-dark & {
-      color: var(--ion-color-secondary);
-    }
-
-    &.is-mission {
-      --icon-color: var(--lu-gold);
-      @include tint(var(--lu-gold), 50%, 16%);
-    }
-  }
-
-  /* A small round dot for unread. */
+  /* Unread: a dot in the logo gradient that glows. */
   .lu-notif-dot {
-    border-radius: 999px;
-    background: var(--lu-accent);
+    background: var(--lu-brand-grad);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ion-color-primary) 18%, transparent);
+  }
+
+  /* Read: the double check pops in when the member taps the row. */
+  .lu-notif-read {
+    --icon-color: currentColor;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: lu-notif-read 380ms cubic-bezier(0.34, 1.6, 0.64, 1);
+    }
+  }
+}
+
+@keyframes lu-notif-read {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
   }
 }
 

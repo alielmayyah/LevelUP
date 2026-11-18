@@ -1,5 +1,5 @@
 import { IonModal } from '@ionic/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { api } from '../../api/client';
@@ -7,6 +7,7 @@ import type { NotificationDto } from '../../api/types';
 import { useApi } from '../../api/useApi';
 import Icon from '../../components/Icon';
 import { formatCount } from '../../i18n/format';
+import { useReveal } from '../../motion/gsapMotion';
 import { formatTimeAgo } from './homeText';
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const LIST = 'm-0 grid list-none gap-2.5 p-0';
+const PAD = 'px-[calc(18px+var(--ion-safe-area-left,0px))]';
 
 const unreadOf = (list: NotificationDto[]) => list.filter((n) => n.readAt === null).length;
 
@@ -47,6 +49,9 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
   const { t } = useTranslation();
   const list = useApi<NotificationDto[]>('/me/notifications');
   const items = list.status === 'ready' ? list.data : null;
+  // Each time the sheet opens, the rows slide in one after another.
+  const scroller = useRef<HTMLDivElement>(null);
+  useReveal(scroller, list.status);
 
   useEffect(() => {
     if (items) onUnreadChange(unreadOf(items));
@@ -79,12 +84,18 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
 
   return (
     <section
-      className="lu-notif flex h-full flex-col bg-page text-ink"
+      className="lu-notif flex h-full flex-col text-ink"
       data-testid="notifications"
       aria-labelledby="notif-title"
     >
-      <div className="flex items-center gap-2 px-4 pt-[18px] pb-2">
-        <h2 id="notif-title" className="lu-display m-0 flex-1 text-[2.1rem] leading-none">
+      <div className={`flex items-center gap-3 pt-6 pb-3 ${PAD}`}>
+        <span
+          className="lu-notif-badge grid size-12 flex-none place-items-center rounded-2xl text-[1.4rem]"
+          aria-hidden="true"
+        >
+          <Icon name="bell" />
+        </span>
+        <h2 id="notif-title" className="lu-display m-0 flex-1 text-[1.9rem] leading-none">
           {t('home.notifications.title')}
         </h2>
         <button type="button" className="lu-icon-button" aria-label={t('home.notifications.close')} onClick={onClose}>
@@ -93,9 +104,9 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
       </div>
 
       {items && items.length > 0 && (
-        <div className="flex items-center justify-between gap-2 px-4 pt-0 pb-2.5">
+        <div className={`flex items-center justify-between gap-2 pt-0 pb-3 ${PAD}`}>
           <span
-            className={`lu-notif-count inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[0.85rem] font-bold text-ink ${unread === 0 ? 'is-clear' : ''}`}
+            className={`lu-notif-count inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[0.85rem] font-semibold ${unread === 0 ? 'is-clear' : ''}`}
             data-testid="unread-count"
           >
             <Icon className="text-[1.05rem]" name={unread === 0 ? 'checkDouble' : 'bell'} />
@@ -105,7 +116,7 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
           </span>
           <button
             type="button"
-            className="lu-link-button inline-flex items-center gap-1.5"
+            className="lu-notif-markall inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full px-3.5 font-inherit text-[0.85rem] font-semibold"
             onClick={markAll}
             disabled={unread === 0}
           >
@@ -116,10 +127,10 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
       )}
 
       {list.status === 'loading' && (
-        <ul className={`${LIST} px-4`} aria-busy="true">
+        <ul className={`${LIST} ${PAD}`} aria-busy="true">
           {[0, 1, 2].map((i) => (
-            <li key={i} className="flex items-center gap-3 rounded-[14px] border border-line bg-surface p-3">
-              <span className="lu-skeleton size-11 flex-none" />
+            <li key={i} className="lu-card flex items-center gap-3 rounded-[20px] p-3">
+              <span className="lu-skeleton size-11 flex-none rounded-full" />
               <span className="grid flex-1">
                 <span className="lu-skeleton" style={{ inlineSize: '60%' }} />
                 <span className="lu-skeleton" style={{ inlineSize: '85%' }} />
@@ -140,20 +151,25 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
 
       {items && items.length === 0 && (
         <div className="lu-state">
-          <Icon name="bellOff" />
+          <span className="lu-notif-badge grid size-16 place-items-center rounded-3xl text-[1.8rem]" aria-hidden="true">
+            <Icon name="bellOff" />
+          </span>
           <p>{t('home.notifications.empty')}</p>
         </div>
       )}
 
       {items && items.length > 0 && (
-        <div className="overflow-y-auto px-4 pt-0 pb-[calc(16px+var(--ion-safe-area-bottom,0px))]">
+        <div className={`overflow-y-auto pt-0 pb-[calc(20px+var(--ion-safe-area-bottom,0px))] ${PAD}`} ref={scroller}>
           {groups.map(([group, rows]) =>
             rows.length === 0 ? null : (
               <section key={group} className="not-first:mt-2" aria-labelledby={`notif-${group}`}>
-                <h3 id={`notif-${group}`} className="mx-0 my-2 text-[0.875rem] font-semibold text-muted">
+                <h3
+                  id={`notif-${group}`}
+                  className="mx-0 mt-3 mb-2.5 font-display text-[0.95rem] font-semibold text-muted"
+                >
                   {t(`home.notifications.${group}`)}
                 </h3>
-                <ul className={LIST}>
+                <ul className={LIST} data-stagger>
                   {rows.map((n) => {
                     const isUnread = n.readAt === null;
                     const mission = n.type === 'MISSION_COMPLETE';
@@ -161,21 +177,23 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                       <li key={n.id}>
                         <button
                           type="button"
-                          className={`lu-notif-item flex w-full cursor-pointer items-center gap-3 rounded-[14px] p-3 text-start font-inherit text-ink ${isUnread ? 'is-unread' : ''}`}
+                          className={`lu-notif-item flex w-full cursor-pointer items-center gap-3 rounded-[20px] p-3.5 text-start font-inherit text-ink ${isUnread ? 'is-unread' : ''}`}
                           data-testid="notification"
                           onClick={() => markRead(n)}
                         >
                           <span
-                            className={`lu-notif-icon grid size-11 flex-none place-items-center rounded-xl border ${mission ? 'is-mission text-[30px]' : 'text-[22px]'}`}
+                            className={`lu-disc size-11 text-[1.25rem] ${mission ? 'lu-disc-gold' : 'lu-disc-weight'}`}
                             aria-hidden="true"
                           >
                             {mission ? <Icon name="trophy" /> : <Icon name="scan" />}
                           </span>
                           <span className="grid min-w-0 flex-1 gap-0.5">
-                            <span className={isUnread ? 'font-bold' : 'font-semibold'}>
+                            <span className={`font-display ${isUnread ? 'font-semibold' : 'font-medium'}`}>
                               {t(n.title.key, n.title.params ?? {})}
                             </span>
-                            <span className="text-[0.9rem] text-muted">{t(n.body.key, n.body.params ?? {})}</span>
+                            <span className="text-[0.9rem] leading-snug text-muted">
+                              {t(n.body.key, n.body.params ?? {})}
+                            </span>
                             <span className="inline-flex items-center gap-1 text-[0.8125rem] font-normal text-muted">
                               <Icon className="text-[0.9rem]" name="clock" />
                               {formatTimeAgo(n.createdAt)}
@@ -183,13 +201,13 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                           </span>
                           {isUnread ? (
                             <>
-                              <span className="lu-notif-dot size-2.5 flex-none rounded-full" aria-hidden="true" />
+                              <span className="lu-notif-dot size-3 flex-none rounded-full" aria-hidden="true" />
                               <span className="sr-only">{t('home.notifications.unread')}</span>
                             </>
                           ) : (
                             <Icon
-                              className="flex-none text-[1.1rem] text-success"
-                              name="check"
+                              className="lu-notif-read flex-none text-[1.1rem] text-muted"
+                              name="checkDouble"
                               label={t('home.notifications.read')}
                             />
                           )}
