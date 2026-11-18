@@ -185,7 +185,11 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                           data-testid="notification"
                           onClick={() => {
                             markRead(n);
-                            if (n.type === 'SCAN_RESULT' && onScanResult) onScanResult();
+                            if (n.type === 'SCAN_RESULT' && onScanResult) {
+                              // The sheet closes now, before its own effect can report the new count.
+                              if (items) onUnreadChange(unreadOf(items) - (n.readAt === null ? 1 : 0));
+                              onScanResult();
+                            }
                           }}
                         >
                           <span

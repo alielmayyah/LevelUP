@@ -8,7 +8,8 @@ const VARIANT: Record<ButtonVariant, string> = {
   // One per screen: the brand's strong shade under its own label color.
   primary: 'min-h-[52px] w-full rounded-[16px] bg-brand-strong px-5 text-on-brand',
   secondary: 'min-h-11 rounded-[16px] bg-brand-tint px-4 text-brand-soft',
-  quiet: 'min-h-11 rounded-[12px] px-2 text-brand-soft',
+  // No preflight in this app: a button without a background would show the browser's grey.
+  quiet: 'min-h-11 rounded-[12px] bg-transparent px-2 text-brand-soft',
 };
 
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
@@ -23,7 +24,7 @@ export function Button({ variant = 'primary', icon, children, className, type = 
   return (
     <button
       type={type}
-      className={`lu-press lu-focus inline-flex items-center justify-center gap-2 font-inherit text-label disabled:opacity-40 ${VARIANT[variant]} ${className ?? ''}`}
+      className={`lu-press lu-focus inline-flex items-center justify-center gap-2 border-0 font-inherit text-label disabled:opacity-40 ${VARIANT[variant]} ${className ?? ''}`}
       data-variant={variant}
       {...rest}
     >
