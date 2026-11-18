@@ -12,7 +12,7 @@ description: Coordinate several elements that animate together — decide what m
 - **RTL.** "Forward moves content to the left" is the LTR rule. In Arabic, forward moves content to the right and new content enters from the left, so flip the sign of `x`/`xPercent` (and of `110 * d` in "Direction-aware steps") when `i18n.dir()` is `rtl`.
 - **Reduced motion collapses to opacity**: no delays, no movement, everything appears together. GSAP uses `gsap.matchMedia()` with `MOTION_OK`; Motion already follows the device through `<MotionConfig reducedMotion="user">`. Content stays readable with no animation running.
 - **Ionic owns page transitions.** `AnimatePresence mode="popLayout"` view swaps belong inside a component, never around an `IonPage` or a route.
-- **Daily tabs don't stagger** (Hard Rule 2), but `ui-standards` still replays a lighter `useReveal` stagger on every tab visit: leave it until `ui-standards` changes and point out the conflict. To decide whether something animates at all, use `animate`'s frequency gate (`find-animation-opportunities` and `remove-animations` aren't installed here).
+- **Daily tabs don't stagger** (Hard Rule 2), and `ui-standards` now agrees: `useReveal`'s tab-visit stagger is removed with the foundation. To decide whether something animates at all, use `animate`'s frequency gate (`find-animation-opportunities` and `remove-animations` aren't installed here).
 - **No new dependency, no blur.** `react-use-measure` isn't installed: measure with a `ResizeObserver`. Skip the "light blur" crossfade in "Direction-aware steps"; use opacity and a small shift.
 
 On any conflict, LevelUP's `ui-standards` and `ionic-mobile-experience` skills win.

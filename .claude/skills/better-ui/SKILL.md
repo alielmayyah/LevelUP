@@ -12,7 +12,7 @@ description: Polishes surfaces, icons and motion with exact values for border ra
 - **Suppress transitions around the theme flip.** Every theme change, from the in-app setting or from the system, goes through `apply()` in `src/theme/theme.ts`. Put the override there: add it, toggle `ion-palette-dark`, force a style flush, and remove it after the next frame. The recipe's `"use client"` component is Next.js-only.
 - **Mirror icons by its RTL table.** Use the table in [icons.md](icons.md#icons-in-rtl) with `rtl:-scale-x-100`, one mechanism per icon. Never mirror logos, checkmarks, charts or the ▲/▼ change indicators.
 - **Hover only under `@media (hover: hover)`.** Tailwind v4's `hover:` already compiles that way; a plain `:hover` in a `.scss` file or `src/theme/kit.css` needs the query written out. Set `-webkit-tap-highlight-color: transparent` only where the control draws its own pressed state.
-- **Icons are lucide, at the project's stroke.** Icons come from lucide-react through `src/components/Icon.tsx` and `iconMap.ts`, in `currentColor`. `ui-standards` fixes one 1.75 stroke on lucide's 24px grid, so treat the stroke-to-weight table as a proposal for the redesign, not a fix.
+- **Icons are lucide, at the project's stroke.** Icons come from lucide-react through `src/components/Icon.tsx` and `iconMap.ts`, in `currentColor`. `ui-standards` fixes one 1.9 stroke on lucide's 24px grid, so the stroke-to-weight table doesn't apply.
 
 On any conflict, LevelUP's `ui-standards` and `ionic-mobile-experience` skills win.
 

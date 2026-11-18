@@ -32,7 +32,7 @@ Load the matching skill before starting work of that kind:
 | `e2e-testing` | Writing or running Playwright tests, or declaring a UI task done |
 | `playwright-browser-check` | Visually checking a screen in a live browser (RTL, dark, notch, sizes) |
 
-Third-party skills, vendored and pinned (each has `VENDORED.md` and a "LevelUP notes" section; on any conflict, `ui-standards` and `ionic-mobile-experience` win). Exception: `ui-standards`' violet, frosted-glass, glow and gradient look is rejected and being replaced; don't add more of it, even where `ui-standards` still describes it:
+Third-party skills, vendored and pinned (each has `VENDORED.md` and a "LevelUP notes" section; on any conflict, `ui-standards` and `ionic-mobile-experience` win). `ui-standards` describes the redesign (dark, logo violet, per-gym brand, no glass); the old glass look still in the code is being replaced, so don't extend it:
 
 | Skill | Load before |
 |---|---|

@@ -78,7 +78,7 @@ No frosted glass, no aurora.
 - **Levels (from Journey):** each level is one real change since the first scan: muscle up by about 0.9 kg or fat down by about 1.5 kg. Smaller changes count only when 3+ same-machine scans move one way and the total clears the floor. Nothing is earned across machines, for weight loss alone, or for anything done in the app (opening it, logins, taps). The next level is stated as a body target ("muscle +0.9 kg more"), never as a progress bar. Levels never go down on screen; a later loss shows in the verdict and the trend in neutral or amber words.
 - **Icons:** Lucide at about 1.85–1.9 stroke in tinted rounded tiles; badge glyphs drawn on the same 24 px grid and stroke.
 - **Buttons:** the default filled button is solid `--brand-strong`. Gyms whose brand fails white text (Iron Box, Pulse Gym) get a dark `--on-brand` and may use the full gradient on the button.
-- **Font:** Readex Pro (Arabic and Lexend Latin, both geometric, next to the logo). Check that it has tabular figures (`tnum`) before adopting it.
+- **Fonts:** Readex Pro for text (Arabic and Lexend Latin, both geometric, next to the logo). Readex Pro has no tabular figures (no `tnum`; digits 500–620 units wide), so standalone numbers use Alexandria, already in the app, with `tabular-nums`. IBM Plex goes.
 
 ## What the InBody data requires
 
@@ -192,7 +192,7 @@ From `ux-patterns.md`, all sourced:
 ## Next steps
 
 1. ~~**Pick the UI concept.**~~ Done: Story + Level Journey (see "Design system").
-2. **Design system.** Rewrite `ui-standards` for the dark logo palette and the chosen concept: tokens, type scale, components and motion rules, plus the rules borrowed above.
+2. ~~**Design system.**~~ Done: `ui-standards` now holds the tokens (dark and light, brand derivation per gym), type scale, components, screens, motion and the borrowed rules. The code follows when the foundation is built (step 4).
 3. **Data contract.** Make the additive DTO changes and add mock fixtures from the example, with corrected values.
 4. **Build.** Foundation first (theme, tokens, base components). Then screens in parallel: Login, Home, Scans and Report, Compare, Body balance, Account, New-result reveal, Share card. Then QA: RTL, dark mode, 320 px, accessibility, e2e.
 5. **Docs.** Update `LevelUP-Features-Core.md`, CLAUDE.md and AGENTS.md (they mention an `api:types` command and a `schema.d.ts` file that don't exist), and the backend README. Fix Plan v2's hook and mock numbers.
