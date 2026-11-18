@@ -30,6 +30,18 @@ Load the matching skill before starting work of that kind:
 | `e2e-testing` | Writing or running Playwright tests, or declaring a UI task done |
 | `playwright-browser-check` | Visually checking a screen in a live browser (RTL, dark, notch, sizes) |
 
+Third-party skills, vendored and pinned (each has `VENDORED.md` and a "LevelUP notes" section; on any conflict, `ui-standards` and `ionic-mobile-experience` win). Exception: `ui-standards`' violet, frosted-glass, glow and gradient look is rejected and being replaced; don't add more of it, even where `ui-standards` still describes it:
+
+| Skill | Load before |
+|---|---|
+| `frontend-design`, `interface-design`, `no-ai-design-slop` | Choosing a visual direction or designing a new screen |
+| `learn-taste` (run `/learn-taste`) | Turning the owner's design corrections into lasting rules |
+| `better-colors`, `better-typography` | Changing palette, tokens, fonts, or the type scale |
+| `better-layout`, `better-accessibility`, `better-ui` | Layout, RTL, contrast, focus, and interaction polish |
+| `gsap-react`, `gsap-core`, `gsap-timeline` | Writing GSAP code (count-ups, the new-result reveal) |
+| `animate`, `choreograph`, `animation-performance`; `review-animations` (run `/review-animations`) | Adding, sequencing, tuning, or reviewing any animation |
+| `prototype` (run `/prototype`), `state-machine`, `break-ui` | Comparing design variants, showing every state of a component, or stress-testing with worst-case data |
+
 ## Commands
 
 | Task | Command |
