@@ -1,27 +1,62 @@
 /*
- * Progress cards: the three key numbers are solid color blocks (ink text, as
- * on Home); the smaller measurements are neutral cards whose hue (--tone)
- * shows only in a soft round icon badge.
+ * Progress: neutral cards; color only on icon discs and chart marks. The
+ * scan card shows what the weight is made of as a ring, then muscle and body
+ * fat as rows with a trend line each.
  */
 @layer components {
-  /* The three key numbers: color blocks with ink text, icon on a frosted disc. */
-  .lu-scan-tile.lu-block {
-    --tone: var(--lu-on-block);
-    --icon-color: var(--lu-on-block);
+  /* The composition ring: parts sweep clockwise from the top (counter-clockwise in Arabic). */
+  .lu-ring {
+    svg {
+      transform: rotate(-90deg);
+    }
 
-    .lu-info-button {
-      color: var(--lu-on-block-muted);
+    &:dir(rtl) svg {
+      transform: rotate(-90deg) scaleY(-1);
+    }
+
+    circle {
+      fill: none;
+      stroke-width: 10;
     }
   }
 
-  .lu-scan-tile.lu-block > dt > .lu-icon {
-    background: var(--lu-frost);
+  .lu-ring-track {
+    stroke: var(--lu-surface-2);
   }
 
-  /* The change under a key number: a frosted pill, ink text. */
-  .lu-change-pill {
-    background: var(--lu-frost);
-    color: var(--lu-on-block);
+  /* Trend lines: the metric's color, a dot on the latest scan. */
+  .lu-spark {
+    path {
+      fill: none;
+      stroke: var(--spark);
+      stroke-width: 2.25;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    circle {
+      fill: var(--spark);
+      stroke: var(--lu-surface);
+      stroke-width: 2;
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
+    }
+  }
+
+  /* Full scan toggle: an outlined pill. */
+  .lu-more-toggle {
+    transition: background-color 150ms var(--ease-soft, ease-out);
+
+    &:focus-visible {
+      outline: 2px solid var(--lu-text);
+      outline-offset: 3px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: var(--lu-surface);
+      }
+    }
   }
 
   /* The six smaller cards (in the full scan) sit back a little: hairline, no shadow. */
@@ -84,9 +119,15 @@
     --verdict: var(--lu-tier-1);
   }
 
-  .lu-scan-tile > dt > .lu-icon,
-  .lu-more-card .lu-metric-name > .lu-icon,
-  .lu-insight-badge,
+  /* Small measurements: the icon on a solid disc of its color, ink glyph. */
+  .lu-more-card .lu-metric-name > .lu-icon {
+    box-sizing: content-box;
+    padding: 0.3em;
+    border-radius: 999px;
+    background: var(--tone);
+    --icon-color: var(--lu-on-block);
+  }
+
   .lu-compare-badge {
     box-sizing: content-box;
     padding: 0.3em;
@@ -177,7 +218,7 @@
 
   /* "All scans" in the page header: a rounded chip button with a soft shadow. */
   .lu-all-scans {
-    border: 1px solid var(--lu-border);
+    border: 1px solid transparent;
     box-shadow: var(--lu-shadow);
     transition: transform 150ms var(--ease-soft, ease-out);
     touch-action: manipulation;
@@ -222,7 +263,7 @@
 
   /* The scan date doubles as a button: a dashed underline says it opens something. */
   .lu-date-button {
-    text-decoration: underline 2px dashed color-mix(in srgb, var(--ion-color-primary) 55%, transparent);
+    text-decoration: underline 2px dashed var(--lu-border);
     text-underline-offset: 5px;
 
     &:focus-visible {

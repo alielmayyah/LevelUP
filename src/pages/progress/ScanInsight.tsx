@@ -10,11 +10,11 @@ interface Props {
   before: AssessmentDto;
 }
 
-/** The badge hue says how the news reads; the words carry the meaning. */
+/** The disc's color says how the news reads; the words carry the meaning. */
 const TONE: Record<InsightTone, string> = {
-  good: '[--icon-color:var(--lu-success)]',
-  neutral: '[--icon-color:var(--ion-color-primary)]',
-  watch: '[--icon-color:var(--lu-tier-2)]',
+  good: 'lu-disc-lime',
+  neutral: 'lu-disc-weight',
+  watch: 'lu-disc-fat',
 };
 
 /**
@@ -36,15 +36,17 @@ const ScanInsight: React.FC<Props> = ({ scan, before }) => {
       data-kind={insight.kind}
     >
       <div className="flex items-center gap-3">
-        <Icon
-          className={`lu-insight-badge flex-none text-[1.25rem] ${TONE[insight.tone]}`}
-          name={insight.tone === 'watch' ? 'pulse' : 'sparkles'}
-        />
+        <span className={`lu-disc ${TONE[insight.tone]} size-11 text-[1.25rem]`} aria-hidden="true" data-pop>
+          <Icon name={insight.tone === 'watch' ? 'pulse' : 'sparkles'} />
+        </span>
         <div className="grid min-w-0">
           <h2 id="insight-title" className="lu-card-kicker m-0">
             {t('progress.insight.title')}
           </h2>
-          <p className="m-0 text-[1.05rem] leading-snug font-bold text-ink" data-testid="insight-headline">
+          <p
+            className="m-0 font-display text-[1.1rem] leading-snug font-semibold text-ink"
+            data-testid="insight-headline"
+          >
             {t(`${key}.title`)}
           </p>
         </div>
@@ -52,7 +54,7 @@ const ScanInsight: React.FC<Props> = ({ scan, before }) => {
       <p className="m-0 text-[0.9rem] leading-relaxed text-ink" data-testid="insight-body">
         {t(`${key}.body`, { muscle: kg(insight.muscleKg), fat: kg(insight.fatKg) })}
       </p>
-      <div className="flex items-start gap-2.5 rounded-xl bg-surface-2 p-3" data-testid="insight-next">
+      <div className="flex items-start gap-2.5 rounded-[16px] bg-surface-2 p-3.5" data-testid="insight-next">
         <Icon className="mt-0.5 flex-none text-[1.1rem] [--icon-color:var(--lu-gold)]" name="bulb" />
         <p className="m-0 text-[0.875rem] leading-snug text-ink">
           <strong className="font-semibold">{t('progress.insight.next')}</strong> {t(`${key}.next`)}

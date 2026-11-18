@@ -304,6 +304,7 @@
       }
     },
     "journey": "Your body journey",
+    "composition": "Your weight is made of {{parts}}",
     "infoYours": "in this scan",
     "compareChange": "Pick scan",
     "compareOff": "Not comparing with another scan",

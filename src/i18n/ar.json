@@ -304,6 +304,7 @@
       }
     },
     "journey": "رحلة جسمك",
+    "composition": "وزنك متقسم كده: {{parts}}",
     "infoYours": "في القياس ده",
     "compareChange": "اختار قياس",
     "compareOff": "مش بتقارن بقياس تاني",

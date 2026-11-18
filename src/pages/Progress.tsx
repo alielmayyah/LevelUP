@@ -13,7 +13,9 @@ import './progress/Progress.scss';
 import MetricInfo, { InfoButton, type InfoTopic } from './progress/MetricInfo';
 import ScanCalendar from './progress/ScanCalendar';
 import ScanHistory from './progress/ScanHistory';
+import CompositionRing from './progress/CompositionRing';
 import ScanInsight from './progress/ScanInsight';
+import Sparkline from './progress/Sparkline';
 import { daysBetween, spanOf } from './progress/scanAge';
 
 // The chart is the heaviest part of the page, so it loads after it, behind a skeleton.
@@ -52,12 +54,28 @@ interface MoreMetric extends Metric<MoreKey> {
   better: Better;
 }
 
-/** Each key number's color block (kit.css), the same colors as Home and Goals. */
-const BLOCK: Record<MainKey, string> = {
-  weight: 'lu-block-weight',
-  muscle: 'lu-block-muscle',
-  bodyFat: 'lu-block-fat',
+/** Each key number's icon disc (kit.css) and line color, the same as Home and Goals. */
+const DISC: Record<MainKey, string> = {
+  weight: 'lu-disc-weight',
+  muscle: 'lu-disc-muscle',
+  bodyFat: 'lu-disc-fat',
 };
+const LINE: Record<MainKey, string> = {
+  weight: 'var(--lu-weight)',
+  muscle: 'var(--lu-muscle)',
+  bodyFat: 'var(--lu-fat)',
+};
+
+/** What a scan's weight is made of, as InBody reports it: water, protein, minerals and fat add up to the weight. */
+const PARTS = [
+  { key: 'water', value: (a: AssessmentDto) => a.totalBodyWaterKg, color: 'var(--lu-muscle)' },
+  { key: 'protein', value: (a: AssessmentDto) => a.proteinKg, color: 'var(--lu-weight)' },
+  { key: 'minerals', value: (a: AssessmentDto) => a.mineralsKg, color: 'var(--lu-lime)' },
+  { key: 'fat', value: (a: AssessmentDto) => a.bodyFatKg, color: 'var(--lu-fat)' },
+] as const;
+
+/** How many scans a row's trend line covers, ending at the scan on screen. */
+const SPARK_SCANS = 8;
 
 /** The three numbers members care about: big, with their change. */
 const MAIN: MainMetric[] = [
@@ -324,7 +342,7 @@ const Progress: React.FC = () => {
         list.length > 1 && (
           <button
             type="button"
-            className="lu-all-scans inline-flex min-h-11 min-w-11 flex-none cursor-pointer items-center justify-center gap-2 rounded-full bg-surface px-3.5 font-inherit text-[0.9rem] font-semibold text-primary max-[359px]:px-0 dark:text-secondary"
+            className="lu-all-scans inline-flex min-h-11 min-w-11 flex-none cursor-pointer items-center justify-center gap-2 rounded-full bg-surface px-3.5 font-inherit text-[0.9rem] font-semibold text-ink max-[359px]:px-0"
             onClick={() => setShowAll(true)}
             data-testid="view-all-scans"
           >
@@ -408,13 +426,16 @@ const Progress: React.FC = () => {
                       data-testid="scan-calendar-open"
                     >
                       {scanDate(scan.takenAt)}
-                      <Icon className="lu-tone-calendar flex-none text-[1.05rem]" name="calendar" />
+                      <Icon
+                        className="flex-none text-[1.05rem] text-muted [--icon-color:currentColor]"
+                        name="calendar"
+                      />
                     </button>
                   </h2>
                   {/* Tags: whether this is the newest scan, and how old it is. */}
                   <div className="flex flex-wrap justify-center gap-1.5" data-testid="scan-tags">
                     {index === 0 && (
-                      <span className="lu-chip lu-chip-primary" data-testid="scan-latest">
+                      <span className="lu-chip lu-chip-ink" data-testid="scan-latest">
                         {t('progress.latest')}
                       </span>
                     )}
@@ -442,55 +463,132 @@ const Progress: React.FC = () => {
                 </button>
               </header>
 
-              <dl className="m-0 grid grid-cols-3 gap-2">
+              <dl className="m-0 grid gap-1">
                 {MAIN.map((m) => {
                   const c = change(m);
+                  const changeText = c ? (
+                    <span
+                      className={`inline-flex items-center gap-1 [--icon-color:currentColor] ${c.tone}`}
+                      data-tone={c.good === null ? 'none' : c.good ? 'good' : 'bad'}
+                    >
+                      {c.icon && <Icon className="flex-none text-[1em]" name={c.icon} />}
+                      <bdi aria-hidden="true">{c.text}</bdi>
+                      {c.good !== null && (
+                        <Icon className="flex-none text-[1em]" name={c.good ? 'checkCircle' : 'warning'} />
+                      )}
+                      {/* Screen readers hear the full sentence instead of an arrow. */}
+                      <span className="sr-only">{c.label}</span>
+                    </span>
+                  ) : (
+                    <span className="font-normal text-muted">
+                      {list.length === 1
+                        ? t('progress.changeLater')
+                        : details && compareChoice === 'none'
+                          ? ''
+                          : t('progress.firstScan')}
+                    </span>
+                  );
+                  const info = (
+                    <InfoButton
+                      className="-my-2 -ms-1.5 [--icon-color:currentColor]"
+                      label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
+                      onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
+                      testId={`info-${m.key}`}
+                    />
+                  );
+
+                  // Weight: the ring of what it is made of, with the weight in its middle.
+                  if (m.key === 'weight') {
+                    const parts = PARTS.map((p) => ({ key: p.key, value: p.value(scan), color: p.color }));
+                    const partsLabel = new Intl.ListFormat(numberLocale(), { type: 'unit' }).format(
+                      parts.map(
+                        (p) =>
+                          `${t(`progress.metric.${p.key === 'fat' ? 'bodyFat' : p.key}`)} ${formatNumber(p.value, 1)} ${t('units.kg')}`,
+                      ),
+                    );
+                    return (
+                      <div
+                        key={m.key}
+                        className={`lu-scan-tile grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 pb-3 ${m.tone}`}
+                        data-testid={`metric-${m.key}`}
+                      >
+                        <dt className="col-span-full flex items-center gap-2.5 font-display text-[1rem] font-semibold text-ink">
+                          <span className={`lu-disc ${DISC[m.key]} size-9 text-[1.05rem]`} aria-hidden="true" data-pop>
+                            <Icon name={m.icon} />
+                          </span>
+                          {t(`progress.metric.${m.key}`)}
+                          {info}
+                        </dt>
+                        <dd className="m-0">
+                          <CompositionRing parts={parts} label={t('progress.composition', { parts: partsLabel })}>
+                            <span className="lu-display text-[clamp(1.35rem,6vw,1.75rem)] leading-none whitespace-nowrap text-ink">
+                              {value(m, scan)}
+                            </span>
+                            <span
+                              className="mt-1 max-w-[9ch] text-[0.72rem] leading-tight font-semibold"
+                              data-testid={`change-${m.key}`}
+                            >
+                              {changeText}
+                            </span>
+                          </CompositionRing>
+                        </dd>
+                        <dd className="m-0">
+                          <ul className="m-0 grid list-none gap-2.5 p-0" data-testid="composition-legend">
+                            {parts.map((p) => (
+                              <li key={p.key} className="flex items-center gap-2 text-[0.8125rem]">
+                                <span
+                                  className="size-2.5 flex-none rounded-full"
+                                  style={{ background: p.color }}
+                                  aria-hidden="true"
+                                  data-pop
+                                />
+                                <span className="min-w-0 flex-1 truncate text-muted">
+                                  {t(`progress.metric.${p.key === 'fat' ? 'bodyFat' : p.key}`)}
+                                </span>
+                                <span className="font-semibold whitespace-nowrap text-ink tabular-nums">
+                                  {formatNumber(p.value, 1)}
+                                  <span className="text-muted"> {t('units.kg')}</span>
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </dd>
+                      </div>
+                    );
+                  }
+
+                  // Muscle and body fat: one row each, with the trend across recent scans.
+                  const upTo = [...points]
+                    .sort((a, b) => a.takenAt.localeCompare(b.takenAt))
+                    .filter((p) => p.takenAt <= scan.takenAt);
+                  const trend = upTo
+                    .slice(-SPARK_SCANS)
+                    .map((p) => (m.key === 'muscle' ? p.skeletalMuscleKg : p.bodyFatPct))
+                    .filter((v) => Number.isFinite(v));
                   return (
                     <div
                       key={m.key}
-                      className={`lu-scan-tile lu-block ${BLOCK[m.key]} relative grid content-start justify-items-center gap-1.5 rounded-[20px] px-1 pt-3 pb-3 text-center ${m.tone}`}
+                      className={`lu-scan-tile lu-metric-row grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-t border-line pt-3.5 pb-1 ${m.tone}`}
                       data-testid={`metric-${m.key}`}
                     >
-                      <dt className="lu-block-muted grid justify-items-center gap-1.5 text-[0.75rem] font-semibold">
-                        {/* Inside the <dt>: a <dl> may only hold dt/dd groups. */}
-                        <InfoButton
-                          className="absolute -end-1 -top-1"
-                          label={t('progress.about', { metric: t(`progress.metric.${m.key}`) })}
-                          onClick={() => setInfo({ ...m, value: valueText(m, scan) })}
-                          testId={`info-${m.key}`}
-                        />
-                        <Icon className="text-[1.15rem]" name={m.icon} />
-                        {t(`progress.metric.${m.key}`)}
+                      <dt className="flex min-w-0 items-center gap-2.5 font-display text-[1rem] font-semibold text-ink">
+                        <span className={`lu-disc ${DISC[m.key]} size-9 text-[1.05rem]`} aria-hidden="true" data-pop>
+                          <Icon name={m.icon} />
+                        </span>
+                        <span className="truncate">{t(`progress.metric.${m.key}`)}</span>
+                        {info}
                       </dt>
-                      <dd className="lu-display m-0 text-[clamp(1.15rem,5.4vw,1.5rem)] leading-none whitespace-nowrap">
+                      <dd className="lu-display m-0 text-end text-[clamp(1.35rem,6vw,1.65rem)] leading-none whitespace-nowrap text-ink">
                         {value(m, scan)}
                       </dd>
                       <dd
-                        className="m-0 min-h-[1.2em] text-[0.78rem] leading-tight font-semibold"
+                        className="m-0 ps-[46px] text-[0.8rem] leading-tight font-semibold"
                         data-testid={`change-${m.key}`}
                       >
-                        {c ? (
-                          <span
-                            className="lu-change-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5"
-                            data-tone={c.good === null ? 'none' : c.good ? 'good' : 'bad'}
-                          >
-                            {c.icon && <Icon className="flex-none text-[1em]" name={c.icon} />}
-                            <bdi aria-hidden="true">{c.text}</bdi>
-                            {c.good !== null && (
-                              <Icon className="flex-none text-[1em]" name={c.good ? 'checkCircle' : 'warning'} />
-                            )}
-                            {/* Screen readers hear the full sentence instead of an arrow. */}
-                            <span className="sr-only">{c.label}</span>
-                          </span>
-                        ) : (
-                          <span className="lu-block-muted font-normal">
-                            {list.length === 1
-                              ? t('progress.changeLater')
-                              : details && compareChoice === 'none'
-                                ? ''
-                                : t('progress.firstScan')}
-                          </span>
-                        )}
+                        {changeText}
+                      </dd>
+                      <dd className="m-0 justify-self-end">
+                        <Sparkline className="h-7 w-[88px]" values={trend} color={LINE[m.key]} />
                       </dd>
                     </div>
                   );
@@ -539,7 +637,7 @@ const Progress: React.FC = () => {
 
             <button
               type="button"
-              className="lu-link-button flex w-full items-center justify-center gap-2 font-semibold"
+              className="lu-more-toggle flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-line bg-transparent font-display text-[0.95rem] font-semibold text-ink"
               aria-expanded={details}
               aria-controls={details ? 'progress-compare progress-details' : 'progress-details'}
               onClick={toggleDetails}
