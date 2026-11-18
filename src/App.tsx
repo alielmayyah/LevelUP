@@ -17,6 +17,8 @@ import Splash from './pages/Splash';
 /* LevelUP tokens (must load after Ionic's palettes) */
 import './theme/tokens.css';
 
+/* Titles and numbers: Alexandria, one variable file per script (only the scripts on screen download). */
+import '@fontsource-variable/alexandria/wght.css';
 /* Latin text in three real weights (IBM Plex Sans), matching the Arabic family below. */
 import '@fontsource/ibm-plex-sans/latin-400.css';
 import '@fontsource/ibm-plex-sans/latin-600.css';
