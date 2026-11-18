@@ -13,7 +13,7 @@ A UI task is done only when it passes every row of the checklist at the bottom.
 - **Colors are theme tokens only.** Tailwind's default palette is removed; utilities like `bg-surface`, `text-muted`, `border-line`, `text-primary`, `bg-fat` point at `--lu-*` / `--ion-*` variables in `tokens.css`, so dark mode and brand colors keep working. `npm run check-colors` also scans `.scss` files and arbitrary values (`bg-[#fff]` fails).
 - **Variants:** `dark:` follows Ionic's `.ion-palette-dark` class, `ar:` targets Arabic text, `rtl:` the reading direction, `short-landscape:` a phone held sideways, `split:` / `wide:` the two-column layouts (≥ 900 px).
 - **Sass (`.scss` next to the component) for what utilities can't say cleanly:** gradients and `color-mix` art, pseudo-elements, keyframes, SVG strokes, and Ionic part/CSS-variable overrides. Wrap rules in `@layer components` so a utility on the same element still wins. Rules that style Ionic's scoped elements (`ion-label`) stay unlayered, or Ionic's own styles beat them (see `TabBar.scss`).
-- **Shared UI kit** (`lu-card`, `lu-chip`, `lu-segment`, `lu-switch`, `lu-state`, …) lives in `src/theme/kit.css` as component classes; add utilities beside them to adjust (`lu-card p-3`). (The old kit was `src/theme/pixel.css` with `lu-px-card`; the restyle replaces it. See "Visual style".)
+- **Shared UI kit** (`lu-card`, `lu-chip`, `lu-segment`, `lu-switch`, `lu-state`, …) lives in `src/theme/kit.css` as component classes; add utilities beside them to adjust (`lu-card p-3`). See "Visual style".
 - **Cascade layers:** `theme < base < ionic < components < utilities`. Ionic's global CSS sits in the `ionic` layer, so utilities override it. No Tailwind preflight (Ionic's normalize does that job), so set every border side you mean: `border-2` sets all four; for one side use `[border-block-start:2px_dashed_var(--lu-border)]`.
 - **Class strings:** use sized values that don't carry a line height (`text-[0.875rem]`, not `text-sm`) unless you want Tailwind's. Keep a space between a class and a `${…}` expression, or Tailwind won't see the class and Prettier's Tailwind plugin may glue them: `` `base ${on ? 'is-on' : ''}` ``.
 - `npm run format` sorts classes (prettier-plugin-tailwindcss).
@@ -67,12 +67,13 @@ Pick the lightest tool that does the job:
 |---|---|---|
 | A loop or a simple state change | CSS (`transition`, `@keyframes`) | Tab pill slide, glow pulse, skeleton shimmer, button press |
 | Animation driven by React state: something appears, leaves, reorders, or follows a gesture | Motion (`motion/react`) | Icon swap on a toggle, cards entering a list, leaderboard rows changing rank, swipe to dismiss |
-| A scripted sequence with steps and timing, SVG drawing, or scroll-driven effects | GSAP (`gsap` + `useGSAP` from `@gsap/react`) | Splash exit (loaded on demand from `src/pages/splash/splashMotion.ts`), a mission-complete celebration, the FitScore count-up |
+| A scripted sequence with steps and timing, SVG drawing, or scroll-driven effects | GSAP (`gsap` + `useGSAP` from `@gsap/react`) | Splash exit (loaded on demand from `src/pages/splash/splashMotion.ts`), page entrances, count-ups and the FitScore gauge (`src/motion/gsapMotion.ts`), a mission-complete celebration |
 | Hundreds of moving pieces: particles, star fields, line fields | `<canvas>` + `requestAnimationFrame` | Confetti burst, a particle background |
 | Page-to-page transitions | Ionic's built-in router animation | Never wrap Ionic pages in Motion or GSAP |
 
 Rules:
 - **Motion:** use `m.*` components inside the app-wide `<LazyMotion features={…} strict>` (in `src/motion/MotionProvider.tsx`), never `motion.*`. That keeps Motion's first load at about 5 KB, and the animation features load in their own chunk.
+- **GSAP motion layer:** `src/motion/gsapMotion.ts` holds the shared effects for the tab pages: `useReveal(ref, key)` (children rise in one after another the first time they appear; inside them, `data-grow` bars fill from their start edge and `data-pop` badges scale in) and `useCountUp(ref, value, format)` (a number counts up, painting into React's own text node). `TabPage` and Home already use `useReveal`; mark bars and badges with the data attributes instead of writing new timelines.
 - **GSAP:** animate inside `useGSAP(() => { … }, { scope: ref })` (or `gsap.context`) so everything is cleaned up when the component unmounts. Register plugins only in the component that uses them. **Never import GSAP from a screen in the main bundle** (splash, login): load it with `import()` so it stays out of the initial download. Simple one-off intros are CSS keyframes.
 - **Reduced motion:** Motion follows the device setting through `<MotionConfig reducedMotion="user">`. In GSAP, wrap timelines in `gsap.matchMedia()` with `(prefers-reduced-motion: no-preference)`, and jump to the end state otherwise. CSS uses `@media (prefers-reduced-motion: reduce)`.
 - Animate `transform` and `opacity` only.
@@ -98,28 +99,31 @@ Rules:
 - Fetch each screen's data in as few calls as the API allows. Query-level rules (Prisma `select`, indexes, no N+1) live in the `levelup-backend` repo's CLAUDE.md.
 - Run `npm run build` and check the size report against the budget table above.
 
-## Visual style: clean modern
+## Visual style: bold and energetic
 
-The look is **clean and modern**, like current fitness apps (Apple Fitness, Strava): soft rounded surfaces, real shadows, clear type, simple line icons. **No pixel art anywhere**: no pixel fonts, no hard offset shadows, no `crispEdges` rendering, no 12×12 pixel icons, no "moves down and the shadow shrinks" press effect. Build screens from the shared pieces; don't restyle per screen.
+The look is **bold, energetic and premium**, like current top fitness apps: a calm page, big rounded cards, solid **color blocks** for body metrics with ink text on top, one **ink hero** card per screen, giant numbers, and ink pills for the active choice. **No pixel art anywhere**: no pixel fonts, no hard offset shadows, no `crispEdges` rendering, no 12×12 pixel icons. Build screens from the shared pieces; don't restyle per screen.
 
 | Piece | Where | Rule |
 |---|---|---|
-| Card | `.lu-card` (`src/theme/kit.css`, Tailwind `components` layer) | `bg-surface`, 1px `--lu-border` hairline, 16px corners, soft blurred shadow `var(--lu-shadow)` (defined per theme in `tokens.css`; lighter in dark mode, where the border does most of the work). Inner padding 16px (20px at `md`+). |
-| Page | `TabPage` | Title in the app font at weight 700, `clamp(1.5rem, 5vw, 2rem)`, tight letter-spacing (`-0.01em`, none in Arabic); muted subtitle; body clears the notch and the tab bar |
-| Primary action | `CtaButton` | One per screen. Full-width on phones, 14px corners, brand gradient (`--ion-color-primary` → `--lu-secondary`), weight 600 label. Pressed: `scale(0.97)` and slightly darker; disabled: 40% opacity. Secondary actions: `.lu-link-button` or the dialog's secondary button |
-| Segmented switch | `.lu-segment` | Pill track with a sliding pill for the active option. Tabs pattern with arrow keys (`src/components/roving.ts`) |
-| Choice | `.lu-choice` | Rounded option rows or chips with a check mark when picked. Radio group pattern with arrow keys |
+| Card | `.lu-card` (`src/theme/kit.css`, Tailwind `components` layer) | `bg-surface`, `--lu-radius-card` (24px) corners, soft wide shadow `var(--lu-shadow)`; no outline in light mode, a 1px `--lu-border` hairline in dark mode. Inner padding 18px (22px at `md`+) |
+| Hero | `.lu-hero` (kit.css) | The one ink card per screen (FitScore on Home, the member on Profile, the trophy count on Medals): `--lu-hero-bg` with a violet glow from the top corner, white text in both themes, `--lu-radius-hero` (30px). Chips on it use `.lu-hero-chip`, a button on it `.lu-hero-button` (white pill) |
+| Color block | `.lu-block` + `.lu-block-fat` / `-muscle` / `-weight` / `-lime` (kit.css) | A body metric as a solid block of its color with **ink text** (`--lu-on-block`) in both themes, so it passes contrast day and night. Icons sit on a frosted disc (`.lu-block-badge`); labels use `.lu-block-muted`. Good/bad news on a block is a check or warning icon (plus a screen-reader sentence), never green/red text, which wouldn't read on the color |
+| Page | `TabPage` | Title in Alexandria weight 700, `clamp(1.75rem, 7.5vw, 2.375rem)`, tight letter-spacing (`-0.03em`, none in Arabic); muted subtitle; body clears the notch and the tab bar. Sections rise in once (GSAP, see "Animation") |
+| Primary action | `CtaButton` | One per screen. Full-width on phones, a pill: ink with white label on light pages, white with ink label at night and on the ink screens (intro, login, via `.lu-on-ink`). Alexandria weight 600. Pressed: `scale(0.97)`; disabled: 40% opacity. Secondary actions: `.lu-link-button` or the dialog's secondary button |
+| Segmented switch | `.lu-segment` | White pill track; the chosen option is an ink pill with light text (white pill at night). Same for the Settings choices and the medal filters. Tabs pattern with arrow keys (`src/components/roving.ts`) |
+| Choice | `.lu-choice` | Rounded option rows or chips with a check mark when picked. Radio group pattern with arrow keys. On New goal the picked kind turns into its metric's color block |
 | Switch | `.lu-switch` | iOS-style track and knob. `role="switch"`, `aria-describedby` its one-line hint |
-| Icons | `Icon` (`src/components/Icon.tsx`): app-level names (`bodyFat`, `muscle`, `trophy`…) mapped to `lucide-react` line icons, imported one by one so only used icons ship. 24px grid, 1.75 stroke, `currentColor` (or `--icon-color`). Metric icons sit in a soft round badge of the metric's hue (15% tint), never as big colored art. To add one, map a new name to a lucide icon in `Icon.tsx`; don't hand-draw icons or add another icon set | Every icon is `aria-hidden` unless it is the only label (then pass `label`). Mirror directional icons in RTL with `rtl:-scale-x-100` |
-| Progress | Rings and bars | Rounded caps, 8–10px stroke, track in `--lu-border`, fill in the brand or metric hue; numbers inside rings use tabular figures |
-| Colors | `tokens.css` | One hue per metric (`--lu-fat`, `--lu-muscle`), tiers `--lu-tier-1..5`, medals `--lu-gold/silver/bronze`. Backgrounds are calm (near-white / near-black); color is for meaning and actions, not decoration. Cards stay neutral (hairline border, surface background); a metric's hue goes on its icon badge or value, not on the card's border or fill |
-| Motion | See "Animation" | Short and soft: 150–250 ms, ease-out, small scale/opacity changes. Celebrations (level up, medal) may be bigger |
+| Tab bar | `TabBar` | Frosted surface panel with rounded top corners; the active tab's icon sits on a solid ink pill (white at night), its label in ink |
+| Icons | `Icon` (`src/components/Icon.tsx`): app-level names (`bodyFat`, `muscle`, `trophy`…) mapped to `lucide-react` line icons, imported one by one so only used icons ship. 24px grid, 1.75 stroke, `currentColor` (or `--icon-color`). To add one, map a new name to a lucide icon in `iconMap.ts`; don't hand-draw icons or add another icon set | Every icon is `aria-hidden` unless it is the only label (then pass `label`). Mirror directional icons in RTL with `rtl:-scale-x-100` |
+| Progress | Bars and gauges | Bars are 10px pills on a hatched track (the hatching is what's left), filled with the metric color (`--bar-color`), lime when done. FitScore is a half circle of ticks that light up to the score. Numbers use tabular figures |
+| Colors | `tokens.css` | Page `--lu-bg` (cool chalk / near-black), ink `--lu-text`. One block color per metric: `--lu-fat` orange, `--lu-muscle` blue, `--lu-weight` violet, `--lu-lime` for BMI, energy and "done". Tiers `--lu-tier-1..5`, medals `--lu-gold/silver/bronze`. The brand violet (`--ion-color-primary`) is for links, focus rings and the hero glow; active states are ink |
+| Motion | See "Animation" | Entrances and count-ups once per screen, 0.6–1.1 s, `power3.out`; presses 120–150 ms. Celebrations (level up, medal) may be bigger |
 
-**Type:** one family for both scripts: `IBM Plex Sans` for Latin and `IBM Plex Sans Arabic` for Arabic, weights 400, 600, 700, self-hosted with `@fontsource`. Big numbers (FitScore, XP, rank) use weight 700 with `font-variant-numeric: tabular-nums`. Small-caps labels (`.lu-card-kicker`) are weight 600, 0.75rem, muted, letter-spaced in Latin only.
+**Type:** two families. **Alexandria** (variable, Latin and Arabic in one family, self-hosted with `@fontsource-variable/alexandria`; designed by an Egyptian type designer) for titles, big numbers, card titles and buttons: `.lu-display` or `font-display`, weight 600–700, tight tracking in Latin, `tabular-nums` for numbers. **IBM Plex Sans** (Latin) and **IBM Plex Sans Arabic** (Arabic) for body text, weights 400, 600, 700. Small labels (`.lu-card-kicker`) are weight 600, 0.8125rem, muted, sentence case (no all-caps).
 
-**Spacing:** 4px base grid. Card gaps 12px on phones, 16px at `md`+. Generous whitespace beats more boxes: don't nest cards inside cards.
+**Spacing:** 4px base grid. Card gaps 12–14px on phones, 16px at `md`+. Generous whitespace beats more boxes; the only boxes inside a card are color blocks.
 
-**Avatar:** the character art is the one illustrated element; it keeps its own art style and sits on the clean UI like a sticker, never inside a pixel frame.
+**Avatar:** the character art is the one illustrated element; it keeps its own art style and sits on the UI like a sticker (rounded 18–22px frame), never inside a pixel frame.
 
 ## Empty and partial data
 
