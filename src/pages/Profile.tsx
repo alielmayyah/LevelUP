@@ -62,9 +62,9 @@ const Profile: React.FC = () => {
       )}
       {member && (
         <div className="grid gap-4 wide:grid-cols-[1fr_1fr] wide:items-start">
-          <section className="lu-card grid gap-4" aria-labelledby="profile-name">
+          <section className="lu-card lu-hero grid gap-4 p-5" aria-labelledby="profile-name">
             <div className="flex items-center gap-4">
-              <div className="lu-avatar-frame grid h-32 w-[clamp(4.5rem,22vw,6.5rem)] shrink-0 place-items-center overflow-hidden rounded-[12px]">
+              <div className="lu-avatar-frame grid h-36 w-[clamp(5rem,24vw,7rem)] shrink-0 place-items-center overflow-hidden rounded-[22px]">
                 <Avatar
                   config={memberAvatar(member)}
                   crop="full"
@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
               </div>
               <div className="min-w-0">
                 <h2
-                  className="m-0 text-[1.375rem] leading-[1.2] font-bold wrap-anywhere"
+                  className="lu-display m-0 text-[clamp(1.4rem,6.5vw,1.75rem)] leading-[1.1] wrap-anywhere text-hero"
                   id="profile-name"
                   data-testid="profile-name"
                 >
@@ -82,29 +82,29 @@ const Profile: React.FC = () => {
                     {member.firstName} {member.lastName}
                   </bdi>
                 </h2>
-                <p className="mx-0 mt-1 mb-0 flex items-center gap-1.5 text-[0.85rem] font-normal text-muted">
+                <p className="mx-0 mt-1.5 mb-0 flex items-center gap-1.5 text-[0.85rem] font-normal text-hero-muted">
                   <Icon className="flex-none" name="idCard" />
                   {t('profile.fitId', { id: member.fitId })}
                 </p>
                 {/* Age and height: small tags under the name. */}
                 <dl className="mx-0 mt-2.5 mb-0 flex flex-wrap gap-1.5">
-                  <div className="flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-[0.85rem]">
+                  <div className="lu-hero-chip flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.85rem]">
                     <dt className="flex">
-                      <Icon className="flex-none text-[1.05rem] text-primary" name="calendar" />
+                      <Icon className="flex-none text-[1.05rem] text-hero-up" name="calendar" />
                       <span className="sr-only">{t('profile.age')}</span>
                     </dt>
-                    <dd className="m-0 font-semibold whitespace-nowrap text-ink" data-testid="profile-age">
+                    <dd className="m-0 font-semibold whitespace-nowrap text-hero" data-testid="profile-age">
                       {Number.isFinite(age) && age >= 0
                         ? t('profile.ageValue', { value: formatNumber(age) })
                         : t('profile.unknown')}
                     </dd>
                   </div>
-                  <div className="flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-[0.85rem]">
+                  <div className="lu-hero-chip flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.85rem]">
                     <dt className="flex">
-                      <Icon className="flex-none text-[1.05rem] text-accent" name="ruler" />
+                      <Icon className="flex-none text-[1.05rem] text-hero-up" name="ruler" />
                       <span className="sr-only">{t('profile.height')}</span>
                     </dt>
-                    <dd className="m-0 font-semibold whitespace-nowrap text-ink" data-testid="profile-height">
+                    <dd className="m-0 font-semibold whitespace-nowrap text-hero" data-testid="profile-height">
                       {typeof height === 'number' && Number.isFinite(height) && height > 0
                         ? t('profile.heightValue', { value: formatNumber(height), unit: t('units.cm') })
                         : t('profile.unknown')}
@@ -115,7 +115,7 @@ const Profile: React.FC = () => {
             </div>
             <Link
               to="/tabs/profile/character"
-              className="lu-link-button inline-flex items-center justify-center gap-2 no-underline"
+              className="lu-hero-button inline-flex min-h-12 items-center justify-center gap-2 px-5 text-[0.95rem] no-underline transition-transform duration-150 active:scale-[0.97] motion-reduce:transition-none"
               data-testid="customize-character"
             >
               <Icon name="hanger" />

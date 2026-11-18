@@ -78,14 +78,14 @@
   .lu-trophy-overview {
     display: grid;
     gap: 14px;
-    padding: 16px;
+    padding: 20px;
     border: 0;
-    border-radius: 20px;
+    border-radius: var(--lu-radius-hero);
     background:
       radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--lu-hero-bg-2) 90%, transparent), transparent 60%),
       var(--lu-hero-bg);
     color: var(--lu-hero-text);
-    box-shadow: var(--lu-shadow);
+    box-shadow: var(--lu-shadow-raised);
   }
 
   .lu-trophy-count {
@@ -140,9 +140,9 @@
       border-color 180ms ease-out;
 
     &[aria-checked='true'] {
-      border-color: var(--ion-color-primary);
-      background: var(--ion-color-primary);
-      color: var(--ion-color-primary-contrast);
+      border-color: var(--lu-text);
+      background: var(--lu-text);
+      color: var(--lu-surface);
     }
 
     &:active {

@@ -95,7 +95,7 @@ function Choice<T extends string>({ label, value, options, onChange, testId }: C
           key={o.value}
           type="button"
           role="radio"
-          className="min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-transparent px-3 py-0 font-inherit text-[0.8rem] font-semibold text-muted transition-colors duration-[180ms] ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast motion-reduce:transition-none"
+          className="min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-transparent px-3 py-0 font-inherit text-[0.8rem] font-semibold text-muted transition-colors duration-[180ms] ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink aria-checked:bg-ink aria-checked:text-surface motion-reduce:transition-none"
           lang={o.lang}
           aria-checked={value === o.value}
           tabIndex={value === o.value ? 0 : -1}
