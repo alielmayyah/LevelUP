@@ -88,7 +88,7 @@ const Dialog: React.FC<Props> = ({
             </button>
             <button
               type="button"
-              className={`${BUTTON} ${destructive ? 'border-danger bg-danger text-surface' : 'border-cta bg-cta text-cta-text'}`}
+              className={`${BUTTON} ${destructive ? 'border-danger bg-danger text-surface' : 'lu-dialog-primary'}`}
               onClick={onConfirm}
             >
               {confirmLabel}

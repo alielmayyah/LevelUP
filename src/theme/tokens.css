@@ -6,16 +6,39 @@
 
 :root {
   /*
-   * Bold and energetic, still easy to read: a cool chalk page, white cards,
-   * near-black ink for text, the hero and the main button. Color comes in
-   * solid blocks, one per body metric, with ink text on top.
+   * The logo's violet is the app's color: a lavender page lit by soft violet
+   * and lilac glows, frosted glass cards, ink text, and the logo gradient on
+   * the main button, the active tab and the hero. Body metrics keep their own
+   * colors, but only on icon discs and chart marks.
    */
-  --lu-bg: #eef0f3;
+  --lu-bg: #f2effb;
   --lu-surface: #ffffff;
-  --lu-surface-2: #f3f4f7;
-  --lu-text: #0e0f13;
-  --lu-text-muted: #5b606c;
-  --lu-border: #e2e4ea;
+  --lu-surface-2: #f2effa;
+  --lu-text: #120f1f;
+  --lu-text-muted: #5a5670;
+  --lu-border: #e4dff3;
+  /* Tab labels: at least 6:1 on the dock. */
+  --lu-tab-muted: #48445c;
+
+  /* The logo gradient (lilac to deep violet), its glow, and the part that carries white text. */
+  --lu-brand-lilac: #e7a6ff;
+  --lu-brand-mid: #9d6bff;
+  --lu-brand-deep: #5a2ff0;
+  --lu-brand-grad: linear-gradient(125deg, #7f50ff 0%, #6b3bf5 45%, #4f24dc 100%);
+  --lu-brand-glow: rgba(107, 59, 245, 0.45);
+
+  /* The page: lavender with soft violet and lilac light, fixed behind the content. */
+  --lu-page-bg:
+    radial-gradient(70% 45% at 100% 0%, rgba(183, 124, 255, 0.32), transparent 70%),
+    radial-gradient(60% 40% at 0% 35%, rgba(231, 166, 255, 0.26), transparent 70%),
+    radial-gradient(80% 50% at 50% 115%, rgba(90, 47, 240, 0.16), transparent 70%), #f2effb;
+
+  /* Frosted glass: cards, the dock, sheets. */
+  --lu-glass: rgba(255, 255, 255, 0.66);
+  --lu-glass-strong: rgba(255, 255, 255, 0.9);
+  --lu-glass-border: rgba(255, 255, 255, 0.85);
+  --lu-glass-blur: blur(18px) saturate(1.5);
+  --lu-glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 18px 40px -22px rgba(70, 36, 170, 0.35);
   --lu-success: #127a45;
   --lu-danger: #cc2f3d;
   /* Soft, wide elevation: cards float on the page instead of being boxed in. */
@@ -32,10 +55,11 @@
   --lu-radius-card: 24px;
   --lu-radius-control: 16px;
 
-  /* Main button: ink pill on the light page, white pill at night. */
-  --lu-cta-bg: #0e0f13;
-  --lu-cta-bg-pressed: #2a2c33;
+  /* Main button: the logo gradient with white text, in both themes. */
+  --lu-cta-bg: var(--lu-brand-grad);
+  --lu-cta-bg-pressed: linear-gradient(125deg, #6b3bf5 0%, #4f24dc 100%);
   --lu-cta-text: #ffffff;
+  --lu-cta-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 14px 30px -14px rgba(107, 59, 245, 0.55);
 
   /* The glyph on an icon disc: ink in both themes, so discs read the same day and night. */
   --lu-on-block: #0e0f13;
@@ -88,37 +112,51 @@
   --lu-medal-shine: #ffffff;
   --lu-medal-locked: #6b6385;
 
-  /* Splash, intro and login: ink with a violet glow in both themes, so the white wordmark reads. */
-  --lu-splash-bg: #0b0b10;
-  --lu-splash-bg-2: #2a1f63;
+  /* Splash, intro and login: deep night violet with the logo's glow in both themes, so the white wordmark reads. */
+  --lu-splash-bg: #0c0920;
+  --lu-splash-bg-2: #3a1fa0;
   --lu-splash-text: #f5f5f8;
   --lu-splash-text-muted: #b7b9c6;
   --lu-splash-star: #ffffff;
   --lu-splash-danger: #ff9b9b;
 
-  /* Hero cards (FitScore): ink with white text in both themes. */
-  --lu-hero-bg: #111217;
-  --lu-hero-bg-2: #3b2a9a;
+  /* Hero cards (FitScore, Profile, trophies): the logo violet with a lilac glow, white text in both themes. */
+  --lu-hero-bg: #2a1488;
+  --lu-hero-bg-2: #5a2ff0;
   --lu-hero-text: #ffffff;
-  --lu-hero-muted: #b4b7c4;
-  --lu-hero-track: rgba(255, 255, 255, 0.13);
+  --lu-hero-muted: #d6cdf7;
+  --lu-hero-track: rgba(255, 255, 255, 0.18);
   --lu-hero-up: #c6f24e;
-  --lu-hero-down: #ffa3ad;
+  --lu-hero-down: #ffb3bc;
 
   --lu-tabbar-height: 68px;
+  /* The dock floats this far above the bottom edge (and the home indicator). */
+  --lu-tabbar-lift: 10px;
   /* Breathing room between the last item on a page and the dock (counted twice in layout.css). */
   --lu-tabbar-gap: 8px;
   --lu-gutter: 16px;
 }
 
 :root.ion-palette-dark {
-  /* Night: true near-black page, graphite cards, the same color blocks. */
-  --lu-bg: #09090b;
-  --lu-surface: #151519;
-  --lu-surface-2: #1e1f24;
-  --lu-text: #f4f4f6;
-  --lu-text-muted: #a2a5b0;
-  --lu-border: #272930;
+  /* Night: deep violet-black page with the logo's glow, smoky glass cards. */
+  --lu-bg: #0b0916;
+  --lu-surface: #17132a;
+  --lu-surface-2: #201b38;
+  --lu-text: #f5f3fc;
+  --lu-text-muted: #aaa4c4;
+  --lu-border: #2b2546;
+  --lu-tab-muted: #bdb7d6;
+
+  --lu-page-bg:
+    radial-gradient(70% 45% at 100% 0%, rgba(107, 59, 245, 0.34), transparent 70%),
+    radial-gradient(60% 40% at 0% 40%, rgba(183, 124, 255, 0.16), transparent 70%),
+    radial-gradient(80% 50% at 50% 115%, rgba(90, 47, 240, 0.26), transparent 70%), #0b0916;
+
+  --lu-glass: rgba(30, 24, 54, 0.6);
+  --lu-glass-strong: rgba(26, 21, 46, 0.9);
+  --lu-glass-border: rgba(255, 255, 255, 0.08);
+  --lu-glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 18px 40px -20px rgba(0, 0, 0, 0.8);
+  --lu-brand-glow: rgba(140, 90, 255, 0.5);
   --lu-success: #5be38f;
   --lu-danger: #ff7a85;
   /* In dark mode the border does most of the work; shadows stay faint. */
@@ -128,15 +166,26 @@
   --lu-dock-shadow: 0 -12px 30px -16px rgba(0, 0, 0, 0.9);
   --lu-scrim: #000000;
 
-  --lu-cta-bg: #f4f4f6;
-  --lu-cta-bg-pressed: #d9dae0;
-  --lu-cta-text: #0e0f13;
+  --lu-hero-bg: #24117a;
+  --lu-hero-bg-2: #5a2ff0;
 
-  --lu-hero-bg: #17181e;
-  --lu-hero-bg-2: #34268a;
+  --lu-splash-bg: #08061a;
+  --lu-splash-bg-2: #34199a;
+}
 
-  --lu-splash-bg: #07070a;
-  --lu-splash-bg-2: #241a57;
+/*
+ * The ink screens (intro, login) are dark in both themes, so their cards use
+ * the night glass and light text whatever the app theme is.
+ */
+.lu-on-ink {
+  --lu-text: #f5f3fc;
+  --lu-text-muted: #c4bedf;
+  --lu-surface-2: rgba(255, 255, 255, 0.08);
+  --lu-border: rgba(255, 255, 255, 0.12);
+  --lu-glass: rgba(255, 255, 255, 0.08);
+  --lu-glass-strong: rgba(255, 255, 255, 0.14);
+  --lu-glass-border: rgba(255, 255, 255, 0.14);
+  --lu-glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 20px 40px -24px rgba(0, 0, 0, 0.7);
 }
 
 /* Ionic reads its own variables; point them at the tokens in both palettes. */
@@ -146,6 +195,7 @@
   --ion-font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --lu-font-display: 'Alexandria Variable', 'IBM Plex Sans', 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --ion-background-color: var(--lu-bg);
+  /* Ionic paints each page's background from this: the lit lavender page. */
   --ion-text-color: var(--lu-text);
   --ion-toolbar-background: var(--lu-bg);
   --ion-toolbar-color: var(--lu-text);

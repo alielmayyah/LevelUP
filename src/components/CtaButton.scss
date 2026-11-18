@@ -1,11 +1,11 @@
-// The CTA's surface: an ink pill (a white pill at night), the reference
-// "Finish" button. Layout and states are Tailwind classes in CtaButton.tsx.
+// The CTA's surface: a pill in the logo gradient with white text and a soft
+// violet glow. Layout and states are Tailwind classes in CtaButton.tsx.
 @layer components {
   .lu-cta {
     border-radius: 999px;
     background: var(--lu-cta-bg);
     color: var(--lu-cta-text);
-    box-shadow: var(--lu-shadow);
+    box-shadow: var(--lu-cta-shadow);
     font-family: var(--lu-font-display);
     font-size: 1.05rem;
     font-weight: 600;
@@ -21,7 +21,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--lu-text);
+      outline: 2px solid var(--ion-color-primary);
       outline-offset: 3px;
     }
 

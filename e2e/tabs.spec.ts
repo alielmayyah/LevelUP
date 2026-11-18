@@ -60,30 +60,32 @@ test('the pill lines up with the active tab', async ({ page, loginAs }) => {
     .toBeLessThan(2);
 });
 
-test('the dock sits on the bottom edge and its tabs stay above the home indicator', async ({ page, loginAs }) => {
+test('the dock floats above the bottom edge and the home indicator', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');
   // Simulate an iPhone home indicator; Ionic reads the inset from this variable.
   await page.evaluate(() => document.documentElement.style.setProperty('--ion-safe-area-bottom', '34px'));
   const height = page.viewportSize()!.height;
   const bar = (await page.getByRole('navigation', { name: en.tabs.navLabel }).boundingBox())!;
-  expect(Math.abs(bar.y + bar.height - height)).toBeLessThan(1);
+  // It ends above the home indicator, with a small gap.
+  expect(bar.y + bar.height).toBeLessThanOrEqual(height - 34 - 4);
+  expect(bar.y + bar.height).toBeGreaterThan(height - 34 - 30);
   const tab = (await page.getByTestId('tab-home').boundingBox())!;
   expect(tab.y + tab.height).toBeLessThanOrEqual(height - 34);
 });
 
-test('the dock is full width with its tabs centered in at most 560 px', async ({ page, loginAs }) => {
+test('the dock is inset from the sides, centered, at most 520 px wide', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');
   const width = page.viewportSize()!.width;
   const bar = (await page.locator('.lu-tabbar').boundingBox())!;
-  expect(bar.x).toBeLessThan(1);
-  expect(Math.abs(bar.width - width)).toBeLessThan(1);
+  expect(bar.width).toBeLessThanOrEqual(520 + 1);
+  expect(bar.x).toBeGreaterThanOrEqual(8);
+  expect(Math.abs(bar.x + bar.width / 2 - width / 2)).toBeLessThan(2);
   const first = (await page.getByTestId('tab-home').boundingBox())!;
   const last = (await page.getByTestId('tab-profile').boundingBox())!;
-  const row = Math.max(first.x, last.x) + first.width - Math.min(first.x, last.x);
-  expect(row).toBeLessThanOrEqual(560);
-  expect(Math.abs(Math.min(first.x, last.x) + row / 2 - width / 2)).toBeLessThan(2);
+  expect(Math.min(first.x, last.x)).toBeGreaterThanOrEqual(bar.x);
+  expect(Math.max(first.x, last.x) + last.width).toBeLessThanOrEqual(bar.x + bar.width + 1);
 });
 
 test('the dock pairs each icon with a readable label on compact phones', async ({ page, loginAs }) => {

@@ -37,10 +37,12 @@
       box-shadow: var(--lu-shadow-pressed);
     }
 
-    /* Picked: an ink outline and a check; the card itself stays neutral. */
+    /* Picked: a violet outline and a check; the card itself stays neutral. */
     &[aria-checked='true'] {
-      border-color: var(--lu-text);
-      box-shadow: inset 0 0 0 1px var(--lu-text);
+      border-color: var(--ion-color-primary);
+      box-shadow:
+        inset 0 0 0 1px var(--ion-color-primary),
+        0 10px 24px -14px var(--lu-brand-glow);
     }
 
     &:focus-visible {
@@ -63,7 +65,7 @@
    * otherwise painted every goal purple at night.
    */
   :root .lu-goal .lu-goal-progress > span {
-    background: var(--lu-text);
+    background: var(--lu-brand-grad);
   }
 
   .lu-goal-target {

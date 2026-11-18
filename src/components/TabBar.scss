@@ -1,7 +1,7 @@
 /*
- * The navigation bar: a frosted panel in the theme's surface color with
- * rounded top corners, line icons, and an ink pill that slides behind the
- * active icon (the icon turns light on it; a white pill at night).
+ * The navigation bar: a frosted glass dock floating above the bottom edge,
+ * line icons, and a pill in the logo gradient that springs behind the active
+ * icon (the icon turns white on it and gives a little hop).
  *
  * The tab-button rules stay outside any cascade layer on purpose: ion-label's
  * styles are injected unlayered by Ionic, and layered rules would lose to them.
@@ -16,19 +16,19 @@
 
 @layer components {
   .lu-navbar {
-    border-start-start-radius: 26px;
-    border-start-end-radius: 26px;
-    background: color-mix(in srgb, var(--lu-surface) 94%, transparent);
-    box-shadow:
-      var(--lu-dock-shadow),
-      inset 0 1px 0 var(--lu-border);
-    backdrop-filter: saturate(1.4) blur(16px);
+    border: 1px solid var(--lu-glass-border);
+    border-radius: 28px;
+    background: var(--lu-glass-strong);
+    box-shadow: var(--lu-glass-shadow);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    backdrop-filter: blur(24px) saturate(1.6);
   }
 
-  /* A solid ink pill behind the active icon: the one strong mark on the bar. */
+  /* The active tab's pill: the logo gradient with a soft violet glow. */
   .lu-navbar-indicator {
     border-radius: 999px;
-    background: var(--lu-text);
+    background: var(--lu-brand-grad);
+    box-shadow: 0 8px 20px -8px var(--lu-brand-glow);
   }
 }
 
@@ -48,8 +48,8 @@
    */
   ion-tab-button {
     --background: transparent;
-    --color: var(--lu-text-muted);
-    --color-selected: var(--lu-text-muted);
+    --color: var(--lu-tab-muted);
+    --color-selected: var(--lu-tab-muted);
     --ripple-color: transparent;
     /* Ionic's default side padding is what cut labels to "Progr…". */
     --padding-start: 0;
@@ -60,22 +60,26 @@
     justify-content: flex-start;
 
     /* Resting icons: muted outlines. */
-    --icon-color: var(--lu-text-muted);
+    --icon-color: var(--lu-tab-muted);
 
     .lu-icon {
       transition: transform 120ms ease-out;
     }
 
     &:active .lu-icon {
-      transform: scale(0.92);
+      transform: scale(0.88);
     }
   }
 
-  /* Active: a light icon on the ink pill, and the label in ink. */
+  /* Active: a white icon on the pill that hops as it arrives, and the label in the logo violet. */
   ion-tab-button.is-lit {
-    --color: var(--lu-text);
-    --color-selected: var(--lu-text);
-    --icon-color: var(--lu-surface);
+    --color: var(--ion-color-primary);
+    --color-selected: var(--ion-color-primary);
+    --icon-color: var(--lu-cta-text);
+
+    .lu-icon {
+      animation: lu-tab-hop 460ms cubic-bezier(0.34, 1.6, 0.64, 1);
+    }
   }
 
   /*
@@ -84,22 +88,24 @@
    */
   ion-tab-button.ion-focused {
     --background-focused: transparent;
+    border-radius: 22px;
     box-shadow:
       inset 0 0 0 2px var(--lu-surface),
       inset 0 0 0 4px var(--lu-text);
   }
 
-  /* rem, not px, so the bar follows the member's text size (WCAG 1.4.4). The icon sits centered on the 36px indicator. */
+  /* rem, not px, so the bar follows the member's text size (WCAG 1.4.4). The icon sits centered on the 40px pill. */
   .lu-icon {
-    font-size: 1.25rem;
-    margin-top: 14px;
+    font-size: 1.3rem;
+    margin-top: 13px;
   }
 
   ion-label {
     margin-top: 11px;
     max-width: 100%;
     overflow: visible;
-    font-size: 0.68rem;
+    font-family: var(--lu-font-display);
+    font-size: 0.66rem;
     font-weight: 600;
     letter-spacing: 0;
     white-space: nowrap;
@@ -112,28 +118,46 @@
 
   @media (max-width: 359.98px) {
     ion-label {
-      font-size: 0.625rem;
+      font-size: 0.6rem;
     }
   }
 
-  /* Phones in landscape: a slimmer, icons-only bar keeps more of the page visible. */
+  /* Phones in landscape: a slimmer, icons-only dock keeps more of the page visible. */
   @media (orientation: landscape) and (max-height: 480px) {
     ion-label {
       @include visually-hidden;
     }
+
+    .lu-icon {
+      margin-top: 12px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    ion-tab-button .lu-icon {
+    ion-tab-button .lu-icon,
+    ion-tab-button.is-lit .lu-icon {
       transition: none;
+      animation: none;
     }
   }
 }
 
-/* Wide screens: the panel's top corners would float in mid-air, so it runs square to the edges. */
-@media (min-width: 900px) {
-  .lu-navbar {
-    border-start-start-radius: 0;
-    border-start-end-radius: 0;
+/* At night the active label takes the logo's light lilac, for contrast on the dark glass. */
+:root.ion-palette-dark .lu-tabbar ion-tab-button.is-lit {
+  --color: var(--ion-color-secondary);
+  --color-selected: var(--ion-color-secondary);
+}
+
+@keyframes lu-tab-hop {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  35% {
+    transform: translateY(-4px) scale(1.12);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
   }
 }

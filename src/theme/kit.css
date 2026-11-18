@@ -1,8 +1,8 @@
 /*
- * The app's shared UI kit, bold but calm: big rounded neutral cards that
- * float on the page, color only on icon discs and chart marks, ink pills for
- * the active choice, iOS-style switches, hatched progress tracks, and
- * loading/empty states. Titles and numbers are Alexandria; body text is
+ * The app's shared UI kit in the logo's violet: frosted glass cards on a lit
+ * lavender page, the logo gradient on the active choice, bars and the main
+ * button, a violet hero, metric color only on icon discs and chart marks,
+ * iOS-style switches, hatched progress tracks, and loading/empty states. Titles and numbers are Alexandria; body text is
  * IBM Plex Sans (Latin) and IBM Plex Sans Arabic (Arabic).
  *
  * Imported by tailwind.css into the `components` layer: Tailwind utilities on
@@ -38,18 +38,20 @@
   box-sizing: border-box;
   inline-size: 100%;
   padding: 18px;
-  /* Light: cards float on the chalk page with no outline. Dark: a hairline does the work. */
-  border: 1px solid transparent;
+  /* Frosted glass: the lit page glows through, a bright rim catches the light. */
+  border: 1px solid var(--lu-glass-border);
   border-radius: var(--lu-radius-card);
-  background: var(--lu-surface);
+  background: var(--lu-glass);
   color: var(--lu-text);
-  box-shadow: var(--lu-shadow);
+  box-shadow: var(--lu-glass-shadow);
+  -webkit-backdrop-filter: var(--lu-glass-blur);
+  backdrop-filter: var(--lu-glass-blur);
   font: inherit;
   text-align: start;
 }
 
 :root.ion-palette-dark .lu-card {
-  border-color: var(--lu-border);
+  border-color: var(--lu-glass-border);
 }
 
 @media (min-width: 768px) {
@@ -155,25 +157,25 @@ button.lu-card:active {
  * bottom, white text in both themes.
  */
 .lu-hero {
-  border-color: transparent;
+  border-color: rgb(255 255 255 / 0.16);
   border-radius: var(--lu-radius-hero);
   background:
-    radial-gradient(90% 70% at 100% 0%, color-mix(in srgb, var(--lu-hero-bg-2) 85%, transparent), transparent 70%),
-    radial-gradient(70% 60% at 0% 110%, color-mix(in srgb, var(--lu-hero-up) 14%, transparent), transparent 70%),
-    var(--lu-hero-bg);
+    radial-gradient(75% 60% at 100% 0%, color-mix(in srgb, var(--lu-brand-lilac) 55%, transparent), transparent 70%),
+    radial-gradient(70% 60% at 0% 105%, color-mix(in srgb, var(--lu-hero-bg-2) 80%, transparent), transparent 70%),
+    linear-gradient(160deg, var(--lu-hero-bg-2) 0%, var(--lu-hero-bg) 70%);
   color: var(--lu-hero-text);
-  box-shadow: var(--lu-shadow-raised);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.22) inset,
+    0 24px 48px -22px var(--lu-brand-glow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .lu-hero:dir(rtl) {
   background:
-    radial-gradient(90% 70% at 0% 0%, color-mix(in srgb, var(--lu-hero-bg-2) 85%, transparent), transparent 70%),
-    radial-gradient(70% 60% at 100% 110%, color-mix(in srgb, var(--lu-hero-up) 14%, transparent), transparent 70%),
-    var(--lu-hero-bg);
-}
-
-:root.ion-palette-dark .lu-hero {
-  border-color: var(--lu-border);
+    radial-gradient(75% 60% at 0% 0%, color-mix(in srgb, var(--lu-brand-lilac) 55%, transparent), transparent 70%),
+    radial-gradient(70% 60% at 100% 105%, color-mix(in srgb, var(--lu-hero-bg-2) 80%, transparent), transparent 70%),
+    linear-gradient(200deg, var(--lu-hero-bg-2) 0%, var(--lu-hero-bg) 70%);
 }
 
 /* A frosted pill on the hero (tags, the tier). */
@@ -186,8 +188,8 @@ button.lu-card:active {
 .lu-hero-button {
   border-radius: 999px;
   background: var(--lu-hero-text);
-  color: var(--lu-hero-bg);
-  --icon-color: var(--lu-hero-bg);
+  color: var(--lu-brand-deep);
+  --icon-color: var(--lu-brand-deep);
   font-family: var(--lu-font-display);
   font-weight: 600;
 }
@@ -235,6 +237,41 @@ button.lu-card:active {
   --disc: var(--lu-tier-3);
 }
 
+.lu-disc-act {
+  --disc: var(--lu-tier-1);
+}
+
+/* ---------- Your plan (Progress and Home) ---------- */
+
+/* The plan's badge: a tile in the logo gradient. */
+.lu-plan-badge {
+  background: var(--lu-brand-grad);
+  color: var(--lu-cta-text);
+  --icon-color: var(--lu-cta-text);
+  box-shadow: 0 10px 24px -12px var(--lu-brand-glow);
+}
+
+/* How urgent an item is: a small tinted pill. */
+.lu-plan-level {
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.lu-plan-act {
+  background: color-mix(in srgb, var(--lu-danger) 14%, transparent);
+  color: var(--lu-danger);
+}
+
+.lu-plan-watch {
+  background: color-mix(in srgb, var(--lu-tier-3) 22%, transparent);
+  color: var(--lu-text);
+}
+
+.lu-plan-keep {
+  background: color-mix(in srgb, var(--lu-success) 14%, transparent);
+  color: var(--lu-success);
+}
+
 /* ---------- Chips ---------- */
 
 .lu-chip {
@@ -250,10 +287,10 @@ button.lu-card:active {
   white-space: nowrap;
 }
 
-/* An ink pill: the active filter, a strong label. Inverts at night. */
+/* A pill in the logo gradient: a strong label (Latest, counts). */
 .lu-chip-ink {
-  background: var(--lu-text);
-  color: var(--lu-surface);
+  background: var(--lu-brand-grad);
+  color: var(--lu-cta-text);
 }
 
 .lu-chip-primary {
@@ -329,11 +366,13 @@ button.lu-card:active {
   inline-size: 46px;
   block-size: 46px;
   padding: 0;
-  border: 1px solid transparent;
+  border: 1px solid var(--lu-glass-border);
   border-radius: 999px;
-  background: var(--lu-surface);
+  background: var(--lu-glass-strong);
   color: var(--lu-text);
-  box-shadow: var(--lu-shadow);
+  box-shadow: var(--lu-glass-shadow);
+  -webkit-backdrop-filter: var(--lu-glass-blur);
+  backdrop-filter: var(--lu-glass-blur);
   font-size: 22px;
   cursor: pointer;
   transition:
@@ -342,7 +381,7 @@ button.lu-card:active {
 }
 
 :root.ion-palette-dark .lu-icon-button {
-  border-color: var(--lu-border);
+  border-color: var(--lu-glass-border);
 }
 
 .lu-icon-button:disabled {
@@ -382,13 +421,10 @@ button.lu-card:active {
   gap: 4px;
   margin-block-end: 16px;
   padding: 4px;
+  border: 1px solid var(--lu-glass-border);
   border-radius: 999px;
-  background: var(--lu-surface);
-  box-shadow: var(--lu-shadow);
-}
-
-:root.ion-palette-dark .lu-segment {
-  box-shadow: inset 0 0 0 1px var(--lu-border);
+  background: var(--lu-glass);
+  box-shadow: var(--lu-glass-shadow);
 }
 
 .lu-segment button {
@@ -418,12 +454,13 @@ button.lu-card:active {
   font-size: 1.1rem;
 }
 
-/* The chosen option: an ink pill with light text (a white pill at night). */
+/* The chosen option: a pill in the logo gradient, white text. */
 .lu-segment button[aria-selected='true'],
 .lu-segment button[aria-checked='true'] {
-  background: var(--lu-text);
-  color: var(--lu-surface);
-  --icon-color: var(--lu-surface);
+  background: var(--lu-brand-grad);
+  color: var(--lu-cta-text);
+  --icon-color: var(--lu-cta-text);
+  box-shadow: 0 8px 18px -10px var(--lu-brand-glow);
 }
 
 /* ---------- Progress bar ---------- */
@@ -445,7 +482,7 @@ button.lu-card:active {
   block-size: 100%;
   inline-size: var(--lu-bar, 0%);
   border-radius: inherit;
-  background: var(--bar-color, var(--lu-text));
+  background: var(--bar-color, var(--lu-brand-grad));
   transition: inline-size 500ms var(--ease-soft, ease-out);
 }
 
@@ -710,4 +747,11 @@ dialog::backdrop {
   background: color-mix(in srgb, var(--lu-danger) 10%, var(--lu-surface-2));
   color: var(--lu-danger);
   --icon-color: var(--lu-danger);
+}
+
+/* The dialog's main button: the logo gradient, like CtaButton. */
+.lu-dialog-primary {
+  border-color: transparent;
+  background: var(--lu-cta-bg);
+  color: var(--lu-cta-text);
 }

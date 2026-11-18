@@ -44,8 +44,9 @@ export const brand: AppBrand = {
   logo: `${BASE}brand/logo.webp`,
   mark: `${BASE}brand/mark.webp`,
   colors: {
-    primary: '#5b4ad8',
-    secondary: '#9c8cff',
+    // The logo's violet (deep end of its gradient) and its light lilac.
+    primary: '#6b3bf5',
+    secondary: '#b98cff',
     accent: '#f5a524',
   },
 };

@@ -7,15 +7,24 @@
  * When focus or a scroll brings a control into view, keep it clear of the
  * floating tab bar (WCAG 2.4.11, focus not obscured).
  */
+/* Every tab page sits on the lit lavender (night: violet-black) background; it stays put while the page scrolls. */
+ion-tabs ion-content {
+  --background: var(--lu-page-bg);
+}
+
 ion-tabs ion-content::part(scroll) {
-  scroll-padding-block-end: calc(var(--lu-tabbar-height) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px));
+  scroll-padding-block-end: calc(
+    var(--lu-tabbar-height) + var(--lu-tabbar-lift) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px)
+  );
 }
 
 .lu-page-body {
   box-sizing: border-box;
   min-height: 100%;
   padding-block-start: var(--lu-gutter);
-  padding-block-end: calc(var(--lu-tabbar-height) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px));
+  padding-block-end: calc(
+    var(--lu-tabbar-height) + var(--lu-tabbar-lift) + var(--lu-tabbar-gap) * 2 + var(--ion-safe-area-bottom, 0px)
+  );
   /* Safe-area insets are physical (the notch is on a physical side in landscape). */
   padding-left: calc(var(--lu-gutter) + var(--ion-safe-area-left, 0px));
   padding-right: calc(var(--lu-gutter) + var(--ion-safe-area-right, 0px));

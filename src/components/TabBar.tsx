@@ -8,16 +8,15 @@ import { pillTransform, tabIndex, TABS } from './tabConfig';
 import './TabBar.scss';
 
 /*
- * The navigation bar: full width along the bottom of the screen, above the home
- * indicator. Page bodies reserve room for it (theme/layout.css).
+ * The navigation bar: a frosted glass dock that floats above the bottom edge
+ * and the home indicator, inset from the sides, at most 520 px wide. Page
+ * bodies reserve room for it (theme/layout.css).
  */
 const BAR = [
-  // Full width, flush with the bottom edge; the home indicator sits inside its bottom padding.
-  'lu-tabbar absolute inset-x-0 bottom-0 z-10 box-border w-full',
-  'h-[calc(var(--lu-tabbar-height)+var(--ion-safe-area-bottom,0px))]',
-  'lu-navbar pt-(--lu-tabbar-padding) pb-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-bottom,0px))] [--lu-tabbar-padding:4px]',
-  'ps-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-left,0px))] pe-[calc(var(--lu-tabbar-padding)+var(--ion-safe-area-right,0px))]',
-  'short-landscape:h-[calc(48px+var(--ion-safe-area-bottom,0px))] short-landscape:[--lu-tabbar-padding:4px]',
+  'lu-tabbar lu-navbar absolute z-10 mx-auto box-border max-w-[520px] p-1',
+  'right-[calc(12px+var(--ion-safe-area-right,0px))] left-[calc(12px+var(--ion-safe-area-left,0px))]',
+  'bottom-[calc(var(--lu-tabbar-lift)+var(--ion-safe-area-bottom,0px))] h-(--lu-tabbar-height)',
+  'short-landscape:h-[52px]',
 ].join(' ');
 
 /*
@@ -26,13 +25,13 @@ const BAR = [
  * Reduced motion: it jumps.
  */
 const PILL =
-  'absolute inset-y-0 start-0 transition-transform duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
-const INDICATOR = 'lu-navbar-indicator absolute top-1.5 left-1/2 h-9 w-[min(60px,88%)] -translate-x-1/2';
+  'absolute inset-y-0 start-0 transition-transform duration-[420ms] ease-[cubic-bezier(0.34,1.45,0.64,1)] will-change-transform motion-reduce:transition-none motion-reduce:duration-0';
+const INDICATOR = 'lu-navbar-indicator absolute top-1 left-1/2 h-10 w-[min(64px,90%)] -translate-x-1/2';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 
 /** Longest the label waits for the pill, in case transitionend never fires (tab hidden, transition cut). */
-const LIT_FALLBACK_MS = 400;
+const LIT_FALLBACK_MS = 520;
 
 /**
  * Full-width 5-tab navigation bar inside a <nav> landmark. IonTabBar only renders
@@ -94,8 +93,7 @@ const TabBar: React.FC = () => {
 
   return (
     <nav className={fullScreen ? `${BAR} hidden` : BAR} slot="bottom" aria-label={t('tabs.navLabel')}>
-      {/* The panel spans the screen; the five tabs stay in a centered row so wide screens don't get giant tabs. */}
-      <div className="relative mx-auto h-full max-w-[560px]">
+      <div className="relative h-full">
         <div
           className={PILL}
           style={{ inlineSize: `${100 / TABS.length}%` }}

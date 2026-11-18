@@ -82,10 +82,10 @@
     border: 0;
     border-radius: var(--lu-radius-hero);
     background:
-      radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--lu-hero-bg-2) 90%, transparent), transparent 60%),
-      var(--lu-hero-bg);
+      radial-gradient(75% 60% at 100% 0%, color-mix(in srgb, var(--lu-brand-lilac) 55%, transparent), transparent 70%),
+      linear-gradient(160deg, var(--lu-hero-bg-2) 0%, var(--lu-hero-bg) 70%);
     color: var(--lu-hero-text);
-    box-shadow: var(--lu-shadow-raised);
+    box-shadow: 0 24px 48px -22px var(--lu-brand-glow);
   }
 
   .lu-trophy-count {
@@ -140,9 +140,9 @@
       border-color 180ms ease-out;
 
     &[aria-checked='true'] {
-      border-color: var(--lu-text);
-      background: var(--lu-text);
-      color: var(--lu-surface);
+      border-color: transparent;
+      background: var(--lu-brand-grad);
+      color: var(--lu-cta-text);
     }
 
     &:active {
