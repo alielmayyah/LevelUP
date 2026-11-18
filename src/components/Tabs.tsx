@@ -25,6 +25,7 @@ const LOADERS = {
   goals: () => import('../pages/Goals'),
   newGoal: () => import('../pages/NewGoal'),
   character: () => import('../pages/Character'),
+  account: () => import('../pages/Account'),
   profile: () => import('../pages/Profile'),
   settings: () => import('../pages/Settings'),
 };
@@ -37,6 +38,7 @@ const Compare = withSuspense(lazy(LOADERS.compare));
 const Goals = withSuspense(lazy(LOADERS.goals));
 const NewGoal = withSuspense(lazy(LOADERS.newGoal));
 const Character = withSuspense(lazy(LOADERS.character));
+const Account = withSuspense(lazy(LOADERS.account));
 const Profile = withSuspense(lazy(LOADERS.profile));
 const Settings = withSuspense(lazy(LOADERS.settings));
 const Medals = withSuspense(lazy(() => import('../pages/Medals')));
@@ -78,7 +80,9 @@ const Tabs: React.FC = () => {
         <Route exact path="/tabs/compare" component={Compare} />
         <Route exact path="/tabs/account/goals" component={Goals} />
         <Route exact path="/tabs/account/goals/new" component={NewGoal} />
-        <Route exact path="/tabs/account" component={Profile} />
+        <Route exact path="/tabs/account" component={Account} />
+        {/* The old profile (character and medals) stays reachable from Account. */}
+        <Route exact path="/tabs/account/profile" component={Profile} />
         <Route exact path="/tabs/account/settings" component={Settings} />
         <Route exact path="/tabs/account/character" component={Character} />
         <Route exact path="/tabs/account/medals" component={Medals} />

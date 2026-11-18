@@ -39,8 +39,9 @@ const Profile: React.FC = () => {
 
   return (
     <TabPage
-      testId="page-account"
-      title={t('tabs.account')}
+      testId="page-profile"
+      title={t('account.character')}
+      backTo="/tabs/account"
       titleIcon={<Icon className="lu-title-icon flex-none text-[0.75em]" name="person" />}
       onRefresh={refresh}
       actions={
