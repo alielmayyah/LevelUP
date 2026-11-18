@@ -17,6 +17,8 @@ interface Props {
   onClose: () => void;
   /** Tells Home how many are still unread, so the bell's dot stays in step. */
   onUnreadChange: (unread: number) => void;
+  /** A new-result notification opens the reveal. */
+  onScanResult?: () => void;
 }
 
 const LIST = 'm-0 grid list-none gap-2.5 p-0';
@@ -25,7 +27,7 @@ const PAD = 'px-[calc(18px+var(--ion-safe-area-left,0px))]';
 const unreadOf = (list: NotificationDto[]) => list.filter((n) => n.readAt === null).length;
 
 /** The list behind the bell. Opens as a sheet that swipes down to close. */
-const NotificationsSheet: React.FC<Props> = ({ open, onClose, onUnreadChange }) => {
+const NotificationsSheet: React.FC<Props> = ({ open, onClose, onUnreadChange, onScanResult }) => {
   const { t } = useTranslation();
   return (
     <IonModal
@@ -42,12 +44,12 @@ const NotificationsSheet: React.FC<Props> = ({ open, onClose, onUnreadChange }) 
       breakpoints={[0, 0.75, 1]}
       className="lu-notif-modal"
     >
-      {open && <NotificationList onClose={onClose} onUnreadChange={onUnreadChange} />}
+      {open && <NotificationList onClose={onClose} onUnreadChange={onUnreadChange} onScanResult={onScanResult} />}
     </IonModal>
   );
 };
 
-const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChange }) => {
+const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChange, onScanResult }) => {
   const { t } = useTranslation();
   const list = useApi<NotificationDto[]>('/me/notifications');
   const items = list.status === 'ready' ? list.data : null;
@@ -181,7 +183,10 @@ const NotificationList: React.FC<Omit<Props, 'open'>> = ({ onClose, onUnreadChan
                           type="button"
                           className={`lu-notif-item flex w-full cursor-pointer items-center gap-3 rounded-[20px] p-3.5 text-start font-inherit text-ink ${isUnread ? 'is-unread' : ''}`}
                           data-testid="notification"
-                          onClick={() => markRead(n)}
+                          onClick={() => {
+                            markRead(n);
+                            if (n.type === 'SCAN_RESULT' && onScanResult) onScanResult();
+                          }}
                         >
                           <span
                             className={`lu-disc size-11 text-[1.25rem] ${mission ? 'lu-disc-gold' : 'lu-disc-weight'}`}

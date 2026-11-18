@@ -1,6 +1,7 @@
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { DashboardDto, ScanChange } from '../api/types';
+import type { AssessmentDto, ScanChange } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import Icon from '../components/Icon';
 import TabPage from '../components/TabPage';
@@ -43,40 +44,80 @@ const Comparison: React.FC<{ change: ScanChange; title: string; testId: string }
   );
 };
 
+/** A native picker: the platform's own wheel on phones, 16 px so iOS doesn't zoom. */
+const ScanPicker: React.FC<{
+  label: string;
+  scans: AssessmentDto[];
+  value: number;
+  onChange: (id: number) => void;
+  testId: string;
+}> = ({ label, scans, value, onChange, testId }) => {
+  const id = useId();
+  return (
+    <div className="grid min-w-0 flex-1 gap-1">
+      <label htmlFor={id} className="text-label text-muted">
+        {label}
+      </label>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="lu-focus min-h-11 w-full rounded-[12px] border border-line bg-surface-2 px-3 text-[1rem] text-ink"
+        data-testid={testId}
+      >
+        {scans.map((a, i) => (
+          <option key={a.id} value={a.id}>
+            {formatDay(a.takenAt)} · {scans.length - i}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
 /**
- * Compare tab, first version: the latest scan against the one before and
- * against the first. Picking any two scans comes with the Scans rebuild.
+ * Compare tab: any two scans side by side. Opens on the latest against the
+ * one before; shortcuts jump to the latest against the first. The API says
+ * which changes are real for that machine.
  */
 const Compare: React.FC = () => {
   const { t } = useTranslation();
-  const dashboard = useApi<DashboardDto>('/me/dashboard');
-  useRefreshOnEnter(dashboard.reload);
-  const j = dashboard.status === 'ready' ? (dashboard.data.journey ?? null) : null;
+  const list = useApi<AssessmentDto[]>('/me/assessments');
+  useRefreshOnEnter(list.reload);
+  const newestFirst = list.status === 'ready' ? list.data : null;
+  // The member's own pick; until they pick, the latest against the one before.
+  const [picked, setPicked] = useState<{ from: number; to: number } | null>(null);
+  const latestId = newestFirst?.[0]?.id;
+  const previousId = newestFirst?.[1]?.id;
+  const ids = new Set(newestFirst?.map((a) => a.id));
+  const pair =
+    picked && ids.has(picked.from) && ids.has(picked.to)
+      ? picked
+      : latestId !== undefined && previousId !== undefined
+        ? { from: previousId, to: latestId }
+        : null;
+
+  const valid = pair && pair.from !== pair.to;
+  const change = useApi<ScanChange>(valid ? `/me/compare/${pair.from}/${pair.to}` : null);
+  const firstId = newestFirst?.[newestFirst.length - 1]?.id;
 
   return (
-    <TabPage
-      testId="page-compare"
-      title={t('tabs.compare')}
-      subtitle={t('compare.subtitle')}
-      onRefresh={dashboard.reload}
-    >
-      {dashboard.status === 'loading' && (
-        <div className="lu-skeleton-card min-h-[260px] rounded-[20px]" aria-busy="true" />
-      )}
-      {dashboard.status === 'error' && (
+    <TabPage testId="page-compare" title={t('tabs.compare')} subtitle={t('compare.subtitle')} onRefresh={list.reload}>
+      {list.status === 'loading' && <div className="lu-skeleton-card min-h-[260px] rounded-[20px]" aria-busy="true" />}
+      {list.status === 'error' && (
         <StateCard
           icon="warning"
           tone="attention"
           title={t('journey.errorTitle')}
-          message={t('home.error')}
+          message={t('progress.error')}
           action={
-            <Button variant="secondary" icon="refresh" onClick={() => void dashboard.retry()}>
+            <Button variant="secondary" icon="refresh" onClick={() => void list.retry()}>
               {t('common.retry')}
             </Button>
           }
         />
       )}
-      {dashboard.status === 'ready' && !j?.sinceLast && (
+      {newestFirst && newestFirst.length < 2 && (
         <StateCard
           icon="compare"
           tone="brand"
@@ -85,11 +126,56 @@ const Compare: React.FC = () => {
           testId="compare-need-two"
         />
       )}
-      {j?.sinceLast && (
+      {newestFirst && newestFirst.length >= 2 && pair && (
         <div className="grid gap-3 md:grid-cols-2 md:gap-4">
-          <Comparison change={j.sinceLast} title={t('compare.last')} testId="compare-last" />
-          {j.sinceFirst && j.stops.length > 2 && (
-            <Comparison change={j.sinceFirst} title={t('compare.first')} testId="compare-first" />
+          <FeedCard icon="calendar" iconTone="brand" title={t('compare.pick')} testId="compare-pick">
+            <div className="flex flex-wrap gap-3">
+              <ScanPicker
+                label={t('compare.from')}
+                scans={newestFirst}
+                value={pair.from}
+                onChange={(from) => setPicked({ ...pair, from })}
+                testId="compare-from"
+              />
+              <ScanPicker
+                label={t('compare.to')}
+                scans={newestFirst}
+                value={pair.to}
+                onChange={(to) => setPicked({ ...pair, to })}
+                testId="compare-to"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="secondary"
+                onClick={() => setPicked({ from: previousId!, to: latestId! })}
+                aria-pressed={pair.from === previousId && pair.to === latestId}
+                data-testid="compare-last-shortcut"
+              >
+                {t('compare.last')}
+              </Button>
+              {newestFirst.length > 2 && (
+                <Button
+                  variant="secondary"
+                  onClick={() => setPicked({ from: firstId!, to: latestId! })}
+                  aria-pressed={pair.from === firstId && pair.to === latestId}
+                  data-testid="compare-first-shortcut"
+                >
+                  {t('compare.first')}
+                </Button>
+              )}
+            </div>
+            {!valid && (
+              <p className="m-0 text-label text-attention" role="status">
+                {t('compare.sameScan')}
+              </p>
+            )}
+          </FeedCard>
+          {valid && change.status === 'ready' && (
+            <Comparison change={change.data} title={t('tabs.compare')} testId="compare-result" />
+          )}
+          {valid && change.status === 'loading' && (
+            <div className="lu-skeleton-card min-h-[240px] rounded-[20px]" aria-busy="true" />
           )}
         </div>
       )}

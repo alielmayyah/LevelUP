@@ -1,5 +1,6 @@
+import { Preferences } from '@capacitor/preferences';
 import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -7,15 +8,21 @@ import type { DashboardDto, JourneyDto } from '../api/types';
 import { useApi, useRefreshOnEnter } from '../api/useApi';
 import { adviceText } from '../body/planText';
 import Icon from '../components/Icon';
+import Toast from '../components/Toast';
 import { Button, FeedCard, StateCard } from '../components/ui';
 import { formatNumber } from '../i18n/format';
 import AppHeader from './home/AppHeader';
 import NotificationsSheet from './home/NotificationsSheet';
+import Reveal from './home/Reveal';
+import { earnsReveal } from './home/revealRules';
 import ChangeRow from './journey/ChangeRow';
 import { formatDay, formatFromNow } from './journey/dates';
 import LevelEmblem from './journey/LevelEmblem';
 import Road from './journey/Road';
 import WeightSplit from './journey/WeightSplit';
+
+/** The latest scan the member has seen on Home, so a new one can play the reveal once. */
+const SEEN_KEY = 'lu.seenScan';
 
 /** A chevron row: the quiet action at the bottom of a feed card. */
 const CardLink: React.FC<{ to: string; testId: string; children: React.ReactNode }> = ({ to, testId, children }) => (
@@ -89,6 +96,27 @@ const Dashboard: React.FC = () => {
   const d = dashboard.status === 'ready' ? dashboard.data : null;
   const j = d?.journey ?? null;
   const hasScans = !!j && j.level > 0 && !!j.latest;
+
+  // A scan the member hasn't seen yet plays the reveal once (or a quiet toast for a flat scan).
+  // The first time the app opens, the latest scan simply counts as seen.
+  const [revealOpen, setRevealOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+  const latestId = j?.stops[j.stops.length - 1]?.id ?? null;
+  useEffect(() => {
+    if (!j || latestId === null) return;
+    let live = true;
+    void (async () => {
+      const { value } = await Preferences.get({ key: SEEN_KEY });
+      if (!live || value === String(latestId)) return;
+      await Preferences.set({ key: SEEN_KEY, value: String(latestId) });
+      if (value === null) return;
+      if (earnsReveal(j)) setRevealOpen(true);
+      else setToast(t('reveal.onTheWay'));
+    })();
+    return () => {
+      live = false;
+    };
+  }, [j, latestId, t]);
 
   return (
     <IonPage data-testid="page-home">
@@ -276,7 +304,17 @@ const Dashboard: React.FC = () => {
           )}
         </div>
 
-        <NotificationsSheet open={notifOpen} onClose={() => setNotifOpen(false)} onUnreadChange={syncUnread} />
+        <NotificationsSheet
+          open={notifOpen}
+          onClose={() => setNotifOpen(false)}
+          onUnreadChange={syncUnread}
+          onScanResult={() => {
+            setNotifOpen(false);
+            if (hasScans) setRevealOpen(true);
+          }}
+        />
+        {j && hasScans && <Reveal journey={j} open={revealOpen} onClose={() => setRevealOpen(false)} />}
+        <Toast message={toast} onDone={() => setToast(null)} />
       </IonContent>
     </IonPage>
   );

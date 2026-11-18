@@ -1,15 +1,10 @@
 import { useTranslation } from 'react-i18next';
 
 import type { AssessmentDto, BodySegment, SegmentReading } from '../../api/types';
+import { BALANCED_GAP_PCT, sideGap } from '../../body/balance';
 import { segmentReadings } from '../../body/segments';
 import { Chip, FeedCard, Num } from '../../components/ui';
 import { formatPercent } from '../../i18n/format';
-
-/** Inside ±2% left/right counts as balanced (ui-standards → BodyFigure). */
-export const BALANCED_GAP_PCT = 2;
-
-/** |right − left| as a % of their mean. */
-export const sideGap = (right: number, left: number): number => (Math.abs(right - left) / ((right + left) / 2)) * 100;
 
 /*
  * The figure faces the member, so it is never mirrored: their right side is
