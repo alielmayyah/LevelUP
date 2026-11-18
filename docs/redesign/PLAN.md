@@ -11,7 +11,7 @@ It comes from a discovery phase. Fifteen research agents read Plan v2 (PDF and t
 - **Plan v2's flagship example can't happen.** Fat % can't stay flat while fat falls and lean mass rises. Fix it before pitching.
 - **The backend doesn't exist yet**, so switching to Plan v2's phone login and multi-gym model costs nothing now. Use PostgreSQL + Prisma, not MongoDB.
 - **19 curated UI skills** are in the repo (`.claude/skills/`, mirrored to `.agents/skills/`), pinned to fixed commits and adapted to LevelUP. Dozens more were rejected as unsafe.
-- **The look:** a dark app in the logo's violet, re-colorable per gym, with icons throughout and a signature visual on every screen. The UI concept is being chosen from four round-3 mockups.
+- **The look:** a dark app in the logo's violet, re-colorable per gym, with icons throughout and a signature visual on every screen. The UI concept is a mix of two round-3 mockups: Story's card feed and Level Journey's road and levels.
 
 ## Decisions
 
@@ -65,7 +65,20 @@ History: round 1 (six non-brand palettes) was rejected. Round 2 (four dark logo 
 
 No frosted glass, no aurora.
 
-**Still to decide:** which round-3 concept, or which mix (Story, Body First, Widgets, Level Journey). Fonts: three concepts chose Readex Pro; check that it has tabular figures before adopting it.
+**Chosen concept: a mix of Story and Level Journey** (owner, 18 November 2026). Story gives the structure: Home is a feed of cards, each with an icon header and exactly one action. Level Journey gives the meaning and the delight: progress is a road with a stamped stop per scan, and real body changes earn levels.
+
+- **Signature visual: the road.** One shape across the app, merging Story's arc and Journey's road: a true date axis (oldest on the right in Arabic), a stamped stop per scan, today highlighted, the next scan dashed at the end. It uses the brand gradient and never carries text.
+- **Home:** a hero card with the level emblem, the verdict sentence and the road. Below it, Story's feed: body today (weight as fat + fat-free mass), the latest milestone or badge, the next stop (book the re-scan, with test conditions), and the coach. The one filled button is the next stop.
+- **Scan report:** opens with Journey's passport stamp (stop number, gym, machine, time), then Story's report: headline, weight split, each value as a dot on its normal band with one word, extra numbers behind "more numbers".
+- **Scans tab:** Story's two trend lanes (muscle and fat) on one true date axis with the grey noise band, plus Journey's level flags where a line leaves the band. Below, the timeline of stop cards, the next stop dashed on top.
+- **Body balance:** the shared unmirrored figure (lean mass, sides named in words) with Journey's balance beams shading the ±2% balanced zone. Imbalance only after two scans.
+- **Compare:** before on the right, after on the left, machine match first. Each row gets a noise meter; changes inside it read "about the same" in grey. The last card hands the news to the trend.
+- **New-result reveal:** Story's three beats (verdict, the main change on the road, the milestone) staged as Journey's level-up: the road slides in, the emblem lands, the haptic fires once. Only a same-machine change beyond the noise plays it. A flat scan gets a quiet "on the way" stamp instead.
+- **Account:** Story's grouped card lists with Journey's badges: earned badges in their data color, the next one as a dashed outline stating its real-change rule.
+- **Levels (from Journey):** each level is one real change since the first scan: muscle up by about 0.9 kg or fat down by about 1.5 kg. Smaller changes count only when 3+ same-machine scans move one way and the total clears the floor. Nothing is earned across machines, for weight loss alone, or for anything done in the app (opening it, logins, taps). The next level is stated as a body target ("muscle +0.9 kg more"), never as a progress bar. Levels never go down on screen; a later loss shows in the verdict and the trend in neutral or amber words.
+- **Icons:** Lucide at about 1.85–1.9 stroke in tinted rounded tiles; badge glyphs drawn on the same 24 px grid and stroke.
+- **Buttons:** the default filled button is solid `--brand-strong`. Gyms whose brand fails white text (Iron Box, Pulse Gym) get a dark `--on-brand` and may use the full gradient on the button.
+- **Font:** Readex Pro (Arabic and Lexend Latin, both geometric, next to the logo). Check that it has tabular figures (`tnum`) before adopting it.
 
 ## What the InBody data requires
 
@@ -178,7 +191,7 @@ From `ux-patterns.md`, all sourced:
 
 ## Next steps
 
-1. **Pick the UI concept** from round 3 (`directions/round-3/index.html`), or a mix.
+1. ~~**Pick the UI concept.**~~ Done: Story + Level Journey (see "Design system").
 2. **Design system.** Rewrite `ui-standards` for the dark logo palette and the chosen concept: tokens, type scale, components and motion rules, plus the rules borrowed above.
 3. **Data contract.** Make the additive DTO changes and add mock fixtures from the example, with corrected values.
 4. **Build.** Foundation first (theme, tokens, base components). Then screens in parallel: Login, Home, Scans and Report, Compare, Body balance, Account, New-result reveal, Share card. Then QA: RTL, dark mode, 320 px, accessibility, e2e.
