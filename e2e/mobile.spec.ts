@@ -118,16 +118,15 @@ test.describe('tab gestures', () => {
 });
 
 test.describe('scrolling on a phone-height screen', () => {
-  // Short enough that the Progress page always scrolls, on every device project.
+  // Short enough that the Scans page always scrolls, on every device project.
   test.use({ viewport: { width: 390, height: 640 } });
 
   test('re-tapping the active tab scrolls it back to the top', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/scans');
     const content = page.getByTestId('page-scans').locator('ion-content');
-    // Open the details and wait for the lazy charts so the page is at full height before scrolling.
-    await page.getByTestId('progress-more').click();
-    await expect(page.getByTestId('chart-trend')).toBeVisible();
+    // Wait for the timeline so the page is at full height before scrolling.
+    await expect(page.getByTestId('timeline-scan')).toHaveCount(6);
     await content.evaluate((el) => (el as IonContentEl).scrollToPoint(0, 300, 0));
     const scrollTop = () => content.evaluate(async (el) => (await (el as IonContentEl).getScrollElement()).scrollTop);
     await expect.poll(scrollTop).toBeGreaterThan(100);
@@ -140,9 +139,8 @@ test.describe('scrolling on a phone-height screen', () => {
     await page.goto('/tabs/scans');
     const content = page.getByTestId('page-scans').locator('ion-content');
     const scrollTop = () => content.evaluate(async (el) => (await (el as IonContentEl).getScrollElement()).scrollTop);
-    // Open the details; the charts load after, so wait until the page is at its full height.
-    await page.getByTestId('progress-more').click();
-    await expect(page.getByTestId('chart-trend')).toBeVisible();
+    // Wait for the timeline so the page is at its full height.
+    await expect(page.getByTestId('timeline-scan')).toHaveCount(6);
     await content.evaluate((el) => (el as IonContentEl).scrollToPoint(0, 250, 0));
     await expect.poll(scrollTop).toBeGreaterThan(200);
     await page.getByTestId('tab-compare').click();

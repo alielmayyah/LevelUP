@@ -54,18 +54,22 @@ for (const lang of LOCALES)
       });
     });
 
-test('tapping an unread notification marks it read', async ({ page, loginAs }) => {
+test('tapping a new-result notification marks it read and opens the reveal', async ({ page, loginAs }) => {
   await loginAs();
   await page.goto('/tabs/home');
   await page.getByTestId('bell').click();
   const first = page.getByTestId('notification').first();
   await expect(first).toHaveClass(/is-unread/);
   await first.click();
-  await expect(first).not.toHaveClass(/is-unread/);
+  await expect(page.getByTestId('reveal')).toBeVisible();
+  await page.getByTestId('reveal-skip').click();
+  await expect(page.getByTestId('reveal')).toHaveCount(0);
   await expect(page.getByTestId('bell')).toHaveAttribute(
     'aria-label',
     en.home.notifications.bellUnread.replace('{{n}}', '1'),
   );
+  await page.getByTestId('bell').click();
+  await expect(page.locator('[data-testid="notification"].is-unread')).toHaveCount(1);
 });
 
 test('a new member sees empty states, not zeros', async ({ page, loginAs }) => {

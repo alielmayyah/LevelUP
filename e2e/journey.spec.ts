@@ -37,7 +37,7 @@ for (const lang of LOCALES)
           expect(await noHorizontalOverflow(page)).toBe(true);
         }
 
-        await page.getByRole('link', { name: s.profile.settings, exact: true }).click();
+        await page.getByRole('link', { name: s.account.settings, exact: true }).click();
         await page.getByRole('button', { name: s.profile.signOut }).click();
         await page.getByRole('dialog').getByRole('button', { name: s.profile.signOut }).click();
         await expect(page).toHaveURL(/\/login$/);
@@ -52,9 +52,9 @@ test('a brand-new member (102) sees empty states on every tab, never NaN or unde
   await loginAs('102');
   const checks: Record<string, string> = {
     home: en.journey.empty.title,
-    scans: en.progress.empty,
+    scans: en.journey.empty.title,
     compare: en.compare.needTwo.title,
-    account: en.profile.settings,
+    account: en.account.settings,
   };
   for (const tab of TABS) {
     await page.goto(`/tabs/${tab}`);

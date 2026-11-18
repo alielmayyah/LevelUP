@@ -27,7 +27,7 @@ describe('Num', () => {
   it('signs a change with a real minus', () => {
     render(<Num value={-2.3} unit="kg" signed testId="n" />);
     // Strip the bidi isolates around the signed number; the unit follows a no-break space.
-    expect(screen.getByTestId('n').textContent?.replace(/[⁦-⁩]/g, '')).toBe('−2.3 kg');
+    expect(screen.getByTestId('n').textContent?.replace(/[\u2066-\u2069]/g, '')).toBe('−2.3\u00a0kg');
   });
 
   it('a missing value never shows a unit', () => {

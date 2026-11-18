@@ -8,8 +8,8 @@ const tab = (name: string) => `[data-testid="page-${name}"]`;
 test.describe('Progress', () => {
   test("Mohamed's key numbers, their change, and one trend at a time", async ({ page, loginAs }) => {
     await loginAs();
-    await page.goto('/tabs/scans');
-    const p = page.locator(tab('scans'));
+    await page.goto('/tabs/scans/details');
+    const p = page.locator(tab('progress'));
     await expect(p.getByTestId('metric-weight')).toContainText(/80\.0\s?kg/);
     await expect(p.getByTestId('change-muscle')).toContainText('0.9 kg');
     await expect(p.getByTestId('change-muscle').locator('[data-icon="trendUp"]')).toBeVisible();
@@ -63,7 +63,7 @@ test.describe('Progress', () => {
       test('body composition bars, body parts, and comparing with any scan', async ({ page, loginAs }) => {
         const s = { en, ar }[lang];
         await loginAs();
-        await page.goto('/tabs/scans');
+        await page.goto('/tabs/scans/details');
         await page.getByTestId('progress-more').click();
         const bc = page.getByTestId('body-comp');
         await expect(bc.getByTestId('bar-weight')).toHaveAttribute('data-status', 'normal');
@@ -104,7 +104,7 @@ test.describe('Progress', () => {
 
   test('Omar: one scan, so changes and trends wait for the second', async ({ page, loginAs }) => {
     await loginAs('103');
-    await page.goto('/tabs/scans');
+    await page.goto('/tabs/scans/details');
     await page.getByTestId('progress-more').click();
     await expect(page.getByText(en.progress.secondScan)).toBeVisible();
     await expect(page.getByTestId('change-muscle')).toHaveText(en.progress.changeLater);
@@ -213,7 +213,7 @@ test.describe('Character', () => {
             }
           }, AVATAR_KEY);
           // Home shows initials now; the character lives on Account until the Account rebuild.
-          await page.goto('/tabs/account');
+          await page.goto('/tabs/account/profile');
           await expect(page.getByTestId('profile-avatar')).toHaveAttribute('data-crop', 'portrait');
           await page.getByTestId('customize-character').click();
           const editor = page.locator(tab('character'));
@@ -289,7 +289,7 @@ test.describe('Character', () => {
       test('a female member can save her hairstyle, hijab color, and outfit', async ({ page, loginAs }) => {
         const { avatar: copy } = { en, ar }[lang];
         await loginAs('102');
-        await page.goto('/tabs/account');
+        await page.goto('/tabs/account/profile');
         await expect(page.getByTestId('profile-avatar')).toHaveAttribute('data-portrait-sex', 'FEMALE');
         await page.getByTestId('customize-character').click();
         const editor = page.locator(tab('character'));
@@ -351,7 +351,7 @@ test.describe('Character', () => {
     await editor.getByTestId('character-random').click();
     // Leave before the half-second autosave: the pending save is still sent, no dialog.
     await editor.getByTestId('character-back').click();
-    await expect(page).toHaveURL(/\/tabs\/account$/);
+    await expect(page).toHaveURL(/\/tabs\/account\/profile$/);
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), AVATAR_KEY)).not.toBeNull();
   });

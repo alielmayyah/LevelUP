@@ -1,5 +1,6 @@
 import { Preferences } from '@capacitor/preferences';
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -28,22 +29,31 @@ describe('Compare', () => {
     await setLanguage('en');
   });
 
-  it('latest vs the one before: same machine, every change inside the noise reads "about the same"', async () => {
+  it('opens on the latest against the one before: same machine, all inside the noise', async () => {
     await renderAs('104');
-    const last = await screen.findByTestId('compare-last');
-    expect(within(last).getByTestId('compare-last-machine')).toHaveTextContent('Same machine');
+    const result = await screen.findByTestId('compare-result');
+    expect(within(result).getByTestId('compare-result-machine')).toHaveTextContent('Same machine');
     for (const k of ['muscleKg', 'fatKg', 'fatPct', 'weightKg']) {
-      expect(within(last).getByTestId(`change-${k}`)).toHaveAttribute('data-verdict', 'same');
+      expect(within(result).getByTestId(`change-${k}`)).toHaveAttribute('data-verdict', 'same');
     }
-    expect(within(last).getByTestId('compare-last-all-same')).toBeInTheDocument();
+    expect(within(result).getByTestId('compare-result-all-same')).toBeInTheDocument();
   });
 
-  it('latest vs the first scan carries the real change', async () => {
+  it('the first-scan shortcut shows the real change', async () => {
     await renderAs('104');
-    const first = await screen.findByTestId('compare-first');
-    expect(within(first).getByTestId('change-muscleKg')).toHaveAttribute('data-verdict', 'better');
-    expect(within(first).getByTestId('change-fatKg')).toHaveAttribute('data-verdict', 'better');
-    expect(within(first).queryByTestId('compare-first-all-same')).toBeNull();
+    await userEvent.click(await screen.findByTestId('compare-first-shortcut'));
+    await screen.findByTestId('compare-result');
+    expect(await screen.findByTestId('change-muscleKg')).toHaveAttribute('data-verdict', 'better');
+    expect(screen.getByTestId('change-fatKg')).toHaveAttribute('data-verdict', 'better');
+  });
+
+  it('any two scans can be picked; the same scan twice asks for two', async () => {
+    await renderAs('104');
+    const from = await screen.findByTestId('compare-from');
+    const to = screen.getByTestId('compare-to');
+    await userEvent.selectOptions(from, (to as HTMLSelectElement).value);
+    expect(await screen.findByText('Pick two different scans.')).toBeInTheDocument();
+    expect(screen.queryByTestId('compare-result')).toBeNull();
   });
 
   it('with one scan, says when Compare appears', async () => {

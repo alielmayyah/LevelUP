@@ -1,5 +1,5 @@
 import { Preferences } from '@capacitor/preferences';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -23,7 +23,7 @@ const renderHome = async (fitId = '104') => {
 };
 
 /** Strips the bidi isolates and no-break spaces that keep numbers and units together. */
-const plain = (el: Element) => (el.textContent ?? '').replace(/[⁦-⁩]/g, '').replace(/\u00a0/g, ' ');
+const plain = (el: Element) => (el.textContent ?? '').replace(/[\u2066-\u2069]/g, '').replace(/\u00a0/g, ' ');
 
 describe('Home', () => {
   beforeEach(async () => {
@@ -143,5 +143,35 @@ describe('Home', () => {
     expect(await screen.findByTestId('verdict')).toHaveTextContent('جسمك اتغيّر من أول قياس: عضل أكتر ودهون أقل.');
     expect(document.documentElement.dir).toBe('rtl');
     expect(plain(screen.getByTestId('weight-total'))).toBe('77.9 كجم');
+  });
+});
+
+describe('New-result reveal', () => {
+  beforeEach(async () => {
+    await Preferences.clear();
+    resetMockServer(NOW);
+  });
+  afterEach(async () => {
+    await setLanguage('en');
+  });
+
+  it('the first open counts the latest scan as seen and plays nothing', async () => {
+    await renderHome();
+    await screen.findByTestId('journey-hero');
+    await waitFor(async () => expect((await Preferences.get({ key: 'lu.seenScan' })).value).toBe('10'));
+    expect(screen.queryByTestId('reveal')).toBeNull();
+  });
+
+  it('a scan the member has not seen plays the three beats once', async () => {
+    await Preferences.set({ key: 'lu.seenScan', value: '9' });
+    await renderHome();
+    expect(await screen.findByTestId('reveal-verdict')).toHaveTextContent(
+      'Your body has changed since your first scan: more muscle, less fat.',
+    );
+    await userEvent.click(screen.getByTestId('reveal-next'));
+    expect(await screen.findByTestId('reveal-change')).toHaveTextContent('Fat');
+    await userEvent.click(screen.getByTestId('reveal-next'));
+    expect(await screen.findByTestId('reveal-milestone')).toHaveTextContent('You reached level 3');
+    expect((await Preferences.get({ key: 'lu.seenScan' })).value).toBe('10');
   });
 });

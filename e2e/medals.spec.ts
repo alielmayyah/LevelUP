@@ -31,8 +31,8 @@ for (const lang of LOCALES) {
           MOHAMED_UNLOCKED,
         );
         await loginAs('101');
-        await page.goto('/tabs/account');
-        await page.getByTestId('page-account').getByRole('link', { name: { en, ar }[lang].profile.viewMedals }).click();
+        await page.goto('/tabs/account/profile');
+        await page.getByTestId('page-profile').getByRole('link', { name: { en, ar }[lang].profile.viewMedals }).click();
 
         const panel = page.getByTestId('page-medals');
         await expect(panel.getByRole('heading', { name: copy.title, level: 1 })).toBeVisible();
@@ -84,13 +84,13 @@ for (const lang of LOCALES) {
         await expect(page.locator('html')).toHaveAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
         expect(await noHorizontalOverflow(page)).toBe(true);
         await panel.getByRole('button', { name: copy.back }).click();
-        await expect(page).toHaveURL(/\/tabs\/account$/);
+        await expect(page).toHaveURL(/\/tabs\/account\/profile$/);
       });
 
       test('Profile shows just the best medal per category with progress and details', async ({ page, loginAs }) => {
         const copy = copyFor(lang);
         await loginAs('101');
-        await page.goto('/tabs/account');
+        await page.goto('/tabs/account/profile');
         const grid = page.getByTestId('profile-medal-grid');
         await expect(grid.getByRole('listitem')).toHaveCount(3);
         // Five months in the healthy BMI range: Gold (3 months) earned, Epic (6 months) next.
@@ -107,7 +107,7 @@ for (const lang of LOCALES) {
         await expect(page.getByTestId('medal-detail-status')).toHaveText(copy.unlocked);
         await page.getByRole('button', { name: copy.detail.close }).click();
         await expect(details).toHaveCount(0);
-        await expect(page).toHaveURL(/\/tabs\/account$/);
+        await expect(page).toHaveURL(/\/tabs\/account\/profile$/);
       });
     });
   }
@@ -146,7 +146,7 @@ test.describe('unlock celebration', () => {
 test.describe('no data', () => {
   test('Profile shows one locked milestone per category and no invented progress', async ({ page, loginAs }) => {
     await loginAs('102');
-    await page.goto('/tabs/account');
+    await page.goto('/tabs/account/profile');
     await expect(page.getByTestId('profile-medal-count')).toHaveText('Medals earned in 0 of 3 categories');
     const grid = page.getByTestId('profile-medal-grid');
     await expect(grid.locator('[data-unlocked="false"]')).toHaveCount(3);
@@ -175,7 +175,7 @@ test.describe('no data', () => {
 
 test('locked medals show a lock badge instead of a Locked label', async ({ page, loginAs }) => {
   await loginAs('102');
-  await page.goto('/tabs/account');
+  await page.goto('/tabs/account/profile');
   const muscle = page.getByTestId('profile-medal-grid').getByTestId('profile-medal-muscle');
   await expect(muscle.getByTestId('medal-lock')).toBeVisible();
   // The word stays for screen readers only.
