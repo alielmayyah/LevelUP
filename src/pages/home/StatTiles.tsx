@@ -1,15 +1,20 @@
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { MonthlyWins } from '../../api/types';
 import Icon, { type IconName } from '../../components/Icon';
 import { formatSigned } from '../../i18n/format';
+import { useCountUp } from '../../motion/gsapMotion';
 import { formatMonth } from './homeText';
 import { TILES } from './layout';
 
 type Tone = 'good' | 'bad' | 'none';
 
-/** Green or red says good or bad; no change stays muted. */
-const VALUE_COLOR: Record<Tone, string> = { good: 'text-success', bad: 'text-danger', none: 'text-muted' };
+/** The badge in the block's corner: a check for good news, a warning for the wrong way. */
+const TONE_ICON: Record<Exclude<Tone, 'none'>, IconName> = { good: 'checkCircle', bad: 'warning' };
+
+/** Each metric's block color (kit.css). */
+const BLOCK = { fat: 'lu-block-fat', muscle: 'lu-block-muscle', bmi: 'lu-block-lime' } as const;
 
 /** Fat going down is good; muscle going up is good. */
 const tone = (value: number | null, goodWhen: 'down' | 'up'): Tone => {
@@ -26,33 +31,66 @@ interface TileProps {
   unit: string;
   tone?: Tone;
   testId: string;
+  /** The third block runs full width as one short row. */
+  wide?: boolean;
 }
 
-const Tile: React.FC<TileProps> = ({ metric, icon, label, change, unit, tone: tileTone = 'none', testId }) => {
+/**
+ * One metric as a solid color block: its icon and good/bad badge on top, the
+ * month's change as a big number (counted up the first time it shows), and
+ * the metric's name under it. Ink text in both themes.
+ */
+const Tile: React.FC<TileProps> = ({ metric, icon, label, change, unit, tone: tileTone = 'none', testId, wide }) => {
   const { t } = useTranslation();
+  const value = useRef<HTMLSpanElement>(null);
+  const format = (n: number) => formatSigned(Math.round(n * 10) / 10, unit, { digits: 1 });
+  useCountUp(value, change, format, 1.1);
+
+  const badge = (
+    <span className="lu-block-badge size-10 flex-none text-[1.2rem]" aria-hidden="true">
+      <Icon name={icon} />
+    </span>
+  );
+  const toneBadge = tileTone !== 'none' && (
+    <span className="lu-block-badge size-7 flex-none text-[0.95rem]" aria-hidden="true" data-pop>
+      <Icon name={TONE_ICON[tileTone]} />
+    </span>
+  );
+  const number = (
+    <span className="lu-display inline-flex items-center gap-1 text-[clamp(1.5rem,7vw,2rem)] leading-none whitespace-nowrap">
+      {/* Which way it moved, not by color alone. Never mirrored: up is up in both languages. */}
+      {change !== 0 && <Icon className="flex-none text-[0.7em]" name={change > 0 ? 'trendUp' : 'trendDown'} />}
+      <span ref={value}>{formatSigned(change, unit, { digits: 1 })}</span>
+    </span>
+  );
+  const name = <span className="lu-block-muted text-[0.875rem] leading-tight font-semibold">{label}</span>;
+
   return (
     <div
-      className={`lu-card lu-tile lu-tile-${metric} lu-tile-${tileTone} relative grid content-start gap-2 overflow-hidden p-3`}
+      className={`lu-block ${BLOCK[metric]} lu-tile lu-tile-${metric} lu-tile-${tileTone} relative overflow-hidden p-4 ${wide ? 'flex items-center gap-3' : 'grid min-h-[132px] content-between gap-3'}`}
       data-testid={testId}
     >
-      <span className="flex min-w-0 items-center gap-2 text-[0.8125rem] leading-tight font-semibold text-muted">
-        <span className="lu-tile-badge grid size-8 flex-none place-items-center rounded-full text-[1.05rem]">
-          <Icon name={icon} />
-        </span>
-        <span className="min-w-0">{label}</span>
-      </span>
-      <span
-        className={`lu-display inline-flex items-center gap-1 text-[clamp(1.3rem,5.6vw,1.6rem)] leading-[1.1] whitespace-nowrap ${VALUE_COLOR[tileTone]}`}
-      >
-        {/* Which way it moved, not by color alone. Never mirrored: up is up in both languages. */}
-        {change !== 0 && (
-          <Icon
-            className="flex-none text-[0.8em] [--icon-color:currentColor]"
-            name={change > 0 ? 'trendUp' : 'trendDown'}
-          />
-        )}
-        {formatSigned(change, unit, { digits: 1 })}
-      </span>
+      {wide ? (
+        <>
+          {badge}
+          <span className="me-auto flex min-w-0 items-center gap-2">
+            {name}
+            {toneBadge}
+          </span>
+          {number}
+        </>
+      ) : (
+        <>
+          <span className="flex items-start justify-between gap-2">
+            {badge}
+            {toneBadge}
+          </span>
+          <span className="grid gap-0.5">
+            {number}
+            {name}
+          </span>
+        </>
+      )}
       {tileTone !== 'none' && <span className="sr-only">{t(`home.wins.${tileTone}`)}</span>}
     </div>
   );
@@ -110,13 +148,13 @@ const StatTiles: React.FC<{ wins: MonthlyWins; today: Date }> = ({ wins, today }
 
   return (
     <section aria-labelledby="wins-title">
-      <h2 id="wins-title" className="lu-section-title">
+      <h2 id="wins-title" className="lu-section-title mt-1.5">
         {t('home.wins.title', { month: formatMonth(today) })}
       </h2>
       {tiles.length > 0 ? (
         <div className={TILES}>
-          {tiles.map((tile) => (
-            <Tile key={tile.testId} {...tile} />
+          {tiles.map((tile, i) => (
+            <Tile key={tile.testId} {...tile} wide={i === 2} />
           ))}
         </div>
       ) : (

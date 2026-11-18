@@ -27,13 +27,15 @@ const QuickActions: React.FC = () => {
           <li key={a.key} className="grid">
             <Link
               to={a.to}
-              className={`lu-card lu-quick ${a.tone} grid min-h-[92px] content-center justify-items-center gap-2 px-1.5 py-3 text-center no-underline`}
+              className={`lu-card lu-quick ${a.tone} grid min-h-[100px] content-center justify-items-center gap-2.5 px-1.5 py-3.5 text-center no-underline`}
               data-testid={`quick-${a.key}`}
             >
-              <span className="lu-quick-badge grid size-10 place-items-center rounded-full text-[1.2rem]">
+              <span className="lu-quick-badge grid size-11 place-items-center rounded-full text-[1.2rem]">
                 <Icon name={a.icon} />
               </span>
-              <span className="text-[0.8125rem] leading-tight font-semibold text-ink">{t(`home.quick.${a.key}`)}</span>
+              <span className="font-display text-[0.8125rem] leading-tight font-semibold text-ink">
+                {t(`home.quick.${a.key}`)}
+              </span>
             </Link>
           </li>
         ))}

@@ -51,6 +51,7 @@ import {
   Sparkles,
   Target,
   Timer,
+  TriangleAlert,
   TrendingDown,
   TrendingUp,
   Trophy,
@@ -110,6 +111,7 @@ export const ICONS = {
   clock: Clock,
   stopwatch: Timer,
   bulb: Lightbulb,
+  warning: TriangleAlert,
   calendar: Calendar,
   sparkles: Sparkles,
   // Character

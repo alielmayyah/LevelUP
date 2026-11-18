@@ -1,6 +1,6 @@
 /*
- * Home's custom pieces: the FitScore card's soft brand wash, its info sheet,
- * the mission's progress ring, metric tiles, and the notification rows' tints.
+ * Home's custom pieces: the ink FitScore hero and its tick gauge, its info
+ * sheet, the mission bar, the shortcut discs, and the notification rows' tints.
  * Layout and type are Tailwind classes in the components.
  * Shared building blocks (cards, chips, bars, states) live in src/theme/kit.css.
  */
@@ -12,32 +12,24 @@
 @layer components {
   /* ---------- FitScore ---------- */
 
-  /* The hero: deep navy with a soft brand glow, white text in both themes. */
+  /* The hero (kit.css .lu-hero): the title's pulse icon in lime. */
   .lu-fitscore {
-    border-color: transparent;
-    background:
-      radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--lu-hero-bg-2) 90%, transparent), transparent 60%),
-      var(--lu-hero-bg);
-    color: var(--lu-hero-text);
-    box-shadow: var(--lu-shadow-raised);
+    padding: 20px;
 
     .lu-card-title .lu-icon {
-      color: var(--lu-hero-text);
+      color: var(--lu-hero-up);
     }
   }
 
   .lu-gauge {
-    padding-block-end: 0;
-
     svg {
       display: block;
       inline-size: 100%;
       overflow: visible;
     }
 
-    path {
-      fill: none;
-      stroke-width: 9;
+    line {
+      stroke-width: 7;
       stroke-linecap: round;
     }
 
@@ -47,16 +39,16 @@
     }
   }
 
-  .lu-gauge-track {
+  .lu-tick {
     stroke: var(--lu-hero-track);
   }
 
-  .lu-gauge-fill {
-    stroke: var(--lu-hero-text);
-    animation: lu-gauge-fill 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  .lu-tick-lit {
+    stroke: var(--lu-hero-up);
 
-    @media (prefers-reduced-motion: reduce) {
-      animation: none;
+    /* The tick at the score stands a little taller, in white. */
+    &.is-head {
+      stroke: var(--lu-hero-text);
     }
   }
 
@@ -94,7 +86,7 @@
   }
 
   .lu-fs-panel {
-    border-radius: 18px 18px 0 0;
+    border-radius: 28px 28px 0 0;
     box-shadow:
       inset 0 4px 0 var(--ion-color-primary),
       var(--lu-shadow-raised);
@@ -143,89 +135,23 @@
     }
   }
 
+  /* Each shortcut's icon sits on a small solid disc of its own color, ink icon on top. */
   .lu-quick-badge {
-    background: color-mix(in srgb, var(--icon-color) 14%, transparent);
+    background: var(--block);
+    color: var(--lu-on-block);
+    --icon-color: var(--lu-on-block);
   }
 
   .lu-quick-scan {
-    --icon-color: var(--ion-color-primary);
+    --block: var(--lu-weight);
   }
 
   .lu-quick-goal {
-    --icon-color: var(--lu-muscle);
+    --block: var(--lu-muscle);
   }
 
   .lu-quick-medals {
-    --icon-color: var(--lu-gold);
-  }
-
-  :root.ion-palette-dark .lu-quick-scan {
-    --icon-color: var(--ion-color-secondary);
-  }
-
-  /* ---------- Mission ---------- */
-
-  .lu-ring {
-    svg {
-      inline-size: 100%;
-      block-size: 100%;
-      transform: rotate(-90deg);
-    }
-
-    /* Mirrored in Arabic so the ring fills counter-clockwise. */
-    &:dir(rtl) svg {
-      transform: rotate(-90deg) scaleY(-1);
-    }
-
-    circle {
-      fill: none;
-      stroke-width: 7;
-      stroke-linecap: round;
-    }
-  }
-
-  .lu-ring-track {
-    stroke: var(--lu-border);
-  }
-
-  .lu-ring-fill {
-    stroke: var(--ion-color-primary);
-    stroke-dashoffset: var(--lu-ring-offset);
-    animation: lu-ring-fill 900ms ease-out both;
-
-    :root.ion-palette-dark & {
-      stroke: var(--ion-color-secondary);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      animation: none;
-    }
-  }
-
-  /* ---------- Tiles ---------- */
-
-  /*
-   * Each tile's icon takes its metric's hue (--metric), with a soft wash of it
-   * at the top. The value itself stays green or red, because that says good or bad.
-   */
-  .lu-tile-badge {
-    background: color-mix(in srgb, var(--metric) 14%, transparent);
-    color: var(--metric);
-  }
-
-  .lu-tile-fat {
-    --metric: var(--lu-fat);
-    --icon-color: var(--lu-fat);
-  }
-
-  .lu-tile-muscle {
-    --metric: var(--lu-muscle);
-    --icon-color: var(--lu-muscle);
-  }
-
-  .lu-tile-bmi {
-    --metric: var(--lu-tier-3);
-    --icon-color: var(--lu-tier-3);
+    --block: var(--lu-tier-3);
   }
 
   /* ---------- Notifications sheet ---------- */
@@ -280,18 +206,6 @@
   .lu-notif-dot {
     border-radius: 999px;
     background: var(--lu-accent);
-  }
-}
-
-@keyframes lu-gauge-fill {
-  from {
-    stroke-dasharray: 0 100;
-  }
-}
-
-@keyframes lu-ring-fill {
-  from {
-    stroke-dashoffset: var(--lu-ring-full);
   }
 }
 

@@ -92,10 +92,11 @@ describe('Home', () => {
     expect(card).toHaveTextContent('Gain 3 kg of muscle');
     expect(card).toHaveTextContent('67%');
     expect(card).toHaveTextContent('1.0 kg to go');
-    // Read out in full, drawn only as the ring and what is left.
+    // Read out in full, drawn only as the big percentage, the bar and what is left.
     expect(within(card).getByText('2.0 of 3.0 kg')).toHaveClass('sr-only');
     expect(within(card).queryByTestId('mission-amount')).toBeNull();
-    expect(card.querySelector('.lu-bar')).toBeNull();
+    expect(within(card).getByTestId('mission-percent')).toHaveTextContent('67%');
+    expect(card.querySelector('.lu-bar')).toHaveAttribute('aria-hidden', 'true');
     // The coach's note is not on Home (it is in the goal's details on the Goals tab).
     expect(screen.queryByText('Keep protein high on training days.')).toBeNull();
   });

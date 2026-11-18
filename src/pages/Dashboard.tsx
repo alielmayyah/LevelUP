@@ -1,5 +1,5 @@
 import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ import '../avatar/avatar.scss';
 import { features } from '../features';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
+import { useReveal } from '../motion/gsapMotion';
 import FitScoreCard from './home/FitScoreCard';
 import Icon from '../components/Icon';
 import { formatToday } from './home/homeText';
@@ -41,6 +42,10 @@ const Dashboard: React.FC = () => {
   const d = dashboard.status === 'ready' ? dashboard.data : null;
   const unread = d?.unreadNotifications ?? 0;
 
+  // Home's one big moment: the cards rise in one after another when the data first lands.
+  const grid = useRef<HTMLDivElement>(null);
+  useReveal(grid, dashboard.status);
+
   return (
     <IonPage data-testid="page-home">
       <IonContent>
@@ -60,7 +65,7 @@ const Dashboard: React.FC = () => {
               {/* Same size as the picture, so the greeting doesn't jump when it loads. */}
               {!d && dashboard.status === 'loading' && (
                 <span
-                  className="lu-skeleton-card block size-14 min-h-0 flex-none rounded-[12px]"
+                  className="lu-skeleton-card block size-14 min-h-0 flex-none rounded-[18px]"
                   aria-hidden="true"
                   data-testid="home-avatar-skeleton"
                 />
@@ -68,7 +73,7 @@ const Dashboard: React.FC = () => {
               {d && (
                 <Link
                   to="/tabs/profile"
-                  className="lu-avatar-frame lu-home-pfp block size-14 flex-none overflow-hidden rounded-[12px]"
+                  className="lu-avatar-frame lu-home-pfp block size-14 flex-none overflow-hidden rounded-[18px]"
                   aria-label={t('home.openProfile')}
                   data-testid="home-avatar"
                 >
@@ -80,7 +85,7 @@ const Dashboard: React.FC = () => {
                   {formatToday(today)}
                 </p>
                 <h1
-                  className="m-0 text-[clamp(1.5rem,6vw,1.75rem)] leading-tight font-semibold wrap-anywhere text-ink"
+                  className="lu-display m-0 text-[clamp(1.6rem,7vw,2rem)] leading-[1.1] wrap-anywhere text-ink"
                   data-testid="greeting"
                 >
                   {d ? t('home.hello', { name: d.member.firstName }) : <span className="lu-skeleton h-[1em] w-[70%]" />}
@@ -130,15 +135,13 @@ const Dashboard: React.FC = () => {
           )}
 
           {d && (
-            <div className={HOME_GRID}>
+            <div className={HOME_GRID} ref={grid}>
               {d.member.showFitScore && <FitScoreCard fitScore={d.fitScore} />}
+              <StatTiles wins={d.monthlyWins} today={today} />
+              <MissionCard mission={d.mission} />
+              {features.community && <RankCard leaderboard={d.leaderboard} />}
               <div className={HOME_SPAN}>
                 <QuickActions />
-              </div>
-              {features.community && <RankCard leaderboard={d.leaderboard} />}
-              <MissionCard mission={d.mission} />
-              <div className={HOME_SPAN}>
-                <StatTiles wins={d.monthlyWins} today={today} />
               </div>
             </div>
           )}
