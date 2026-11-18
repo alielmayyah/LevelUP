@@ -89,7 +89,9 @@ ul.ck li svg{color:var(--g);flex:none;margin-top:3px}
 .tabbar .on{color:#fff;background:var(--p);width:7mm;height:7mm;border-radius:50%;display:grid;place-items:center}
 .dev{width:56mm;border-radius:24px;background:#0b0816;padding:5px;box-shadow:0 18px 40px #4C1D9540,0 0 0 1px #2a2147}
 .dev img{display:block;width:100%;border-radius:19px}
-.phones.real .mid{transform:translateY(-5mm)}
+.phones.real .dev{width:33mm;border-radius:13px;padding:3px}
+.phones.real .dev img{border-radius:10px}
+.phones.real .cap{margin-top:2mm}
 .gal{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm 4mm}
 .gal .dev{width:100%;border-radius:16px;padding:3px}
 .gal .dev img{border-radius:13px}
@@ -153,12 +155,12 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
   <img class="logo" src="logo.png" alt="LevelUP">
   <div class="t">
     <div class="k">Business Plan · 2026–2027</div>
-    <h1>Turning gym scans into<br><span style="color:var(--p3)">a game members keep playing</span></h1>
-    <p>A white-label, gamified member engagement app for gyms</p>
+    <h1>A clearer picture<br><span style="color:var(--p3)">of progress at the gym</span></h1>
+    <p>A white-label member app for body composition and personal goals</p>
   </div>
   <div class="chips">
     <div class="chip"><i data-i="palette"></i>White-label</div>
-    <div class="chip"><i data-i="trophy"></i>Gamified</div>
+    <div class="chip"><i data-i="trophy"></i>Personal milestones</div>
     <div class="chip"><i data-i="globe"></i>Arabic + English</div>
     <div class="chip"><i data-i="phone"></i>iOS · Android · Web</div>
   </div>
@@ -169,7 +171,7 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
 <section class="page">
   <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">01 · Executive Summary</div></div>
   <h1>Retention is the gym's<br><span class="grad">biggest revenue lever.</span></h1>
-  <p class="lead">LevelUP turns body composition scans into XP, levels, streaks, goals and leaderboards, so members stay motivated and gyms keep them longer. Every gym gets the app under its own name, logo and colors.</p>
+  <p class="lead">LevelUP helps members understand body composition scans, act on personal goals and see their milestones. The pilot will test whether a branded follow-up after each scan helps gyms keep members engaged.</p>
 
   <div class="grid4">
     <div class="kpi"><div class="ic" style="background:var(--pl);color:var(--p)"><i data-i="building"></i></div><div class="v">15</div><div class="l">Gyms signed by month 12</div></div>
@@ -191,9 +193,9 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
     <div class="card" style="border-left:4px solid var(--g)">
       <h2><span class="ic" style="background:var(--gl);color:var(--g)"><i data-i="zap"></i></span>The solution</h2>
       <ul class="ck">
-        <li><i data-i="check"></i><span><b>FitScore</b>: one private 0–100 score from every scan.</span></li>
-        <li><i data-i="check"></i><span><b>50 medals with XP</b> reward lifts and body-scan milestones.</span></li>
-        <li><i data-i="check"></i><span><b>Missions, leaderboards and a pixel avatar</b> give members a reason to come back.</span></li>
+        <li><i data-i="check"></i><span><b>FitScore</b> gives the member a private 0–100 score on Home.</span></li>
+        <li><i data-i="check"></i><span><b>The Trophy Room</b> recognizes changes in muscle, body fat and BMI milestones.</span></li>
+        <li><i data-i="check"></i><span><b>Personal goals and scan guidance</b> give members a next step.</span></li>
       </ul>
     </div>
   </div>
@@ -201,9 +203,9 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
   <h2 class="mt2"><span class="ic"><i data-i="activity"></i></span>How it works</h2>
   <div class="grid4" style="gap:3mm">
     <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="scan"></i></div><h3 class="mt" style="margin-top:2mm">1 · Scan</h3><p class="small muted">Member does a body composition assessment at the gym.</p></div>
-    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="target"></i></div><h3 style="margin-top:2mm">2 · Score</h3><p class="small muted">App turns it into a FitScore and a mission the member picks.</p></div>
-    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="flame"></i></div><h3 style="margin-top:2mm">3 · Play</h3><p class="small muted">Lifts and scan milestones unlock medals and XP.</p></div>
-    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="users"></i></div><h3 style="margin-top:2mm">4 · Stay</h3><p class="small muted">Leaderboards and challenges keep members coming back.</p></div>
+    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="target"></i></div><h3 style="margin-top:2mm">2 · Score</h3><p class="small muted">Home summarizes the latest scan with a private FitScore and guidance.</p></div>
+    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="flame"></i></div><h3 style="margin-top:2mm">3 · Set a goal</h3><p class="small muted">Member sets a target for weight, muscle or body fat.</p></div>
+    <div class="card soft" style="text-align:center"><div style="font-size:22px;color:var(--p)"><i data-i="users"></i></div><h3 style="margin-top:2mm">4 · Follow progress</h3><p class="small muted">Later scans show changes and can unlock medals.</p></div>
   </div>
   <div class="ft"><span>LevelUP · Business Plan</span><span>2</span></div>
 </section>
@@ -212,96 +214,22 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
 <section class="page">
   <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">02 · The Product</div></div>
   <h1>One app, <span class="grad">every gym's brand.</span></h1>
-  <p class="lead" style="margin-bottom:10mm">Real screens from the LevelUP app today. Members sign in with a numeric Fit ID from the front desk, no password. Pixel-art game style, light and dark themes, Egyptian Arabic and English.</p>
-
-  <div class="phones real">
-    <div><div class="dev"><img src="shots/dashboard-dark.png"></div><div class="cap">Home<span>FitScore, rank, mission, monthly wins</span></div></div>
-    <div class="mid"><div class="dev"><img src="shots/progress-dark.png"></div><div class="cap">Progress<span>Compare any two body scans</span></div></div>
-    <div><div class="dev"><img src="shots/leaderboard-ar-dark.png"></div><div class="cap">Leaderboard<span>Arabic, right-to-left</span></div></div>
+  <p class="lead">Members sign in using a Fit ID from the front desk. Four tabs cover the scan follow-up, personal targets and profile.</p>
+  <div class="grid2 mt2">
+    <div class="card soft"><h2><span class="ic"><i data-i="activity"></i></span>Home</h2><p>The latest private FitScore number, scan-based guidance, a goal card and notifications for scan results and completed goals.</p></div>
+    <div class="card soft"><h2><span class="ic"><i data-i="chart"></i></span>Progress</h2><p>Full scan results, comparisons between assessments, and weight, muscle and body-fat trends over time.</p></div>
+    <div class="card soft"><h2><span class="ic"><i data-i="target"></i></span>Goals</h2><p>Members choose their own weight, muscle or body-fat targets. The app tracks active and completed goals.</p></div>
+    <div class="card soft"><h2><span class="ic"><i data-i="user"></i></span>Profile</h2><p>Member details, a customizable portrait and the Trophy Room. Settings cover language, theme and sound.</p></div>
   </div>
-
-  <div class="phones" style="display:none">
-    <!-- Dashboard EN dark -->
-    <div>
-      <div class="phone"><div class="scr dk">
-        <div class="notch"></div>
-        <div class="sp">
-          <div class="row"><div><div style="color:#B9AED6">Good evening,</div><div style="font-weight:700;font-size:8.5pt">Omar 👋</div></div><div class="av">OM</div></div>
-          <div class="mcard" style="background:linear-gradient(135deg,#7C3AED,#4C1D95);border:none">
-            <div class="row"><span style="opacity:.8">LevelUP Score</span><span class="tag" style="background:#ffffff26;color:#FDE68A;font-size:6pt">★ Gold</span></div>
-            <div class="row" style="margin-top:1mm"><span class="big">Level 7</span><span style="opacity:.8">2,340 / 3,000 XP</span></div>
-            <div class="bar" style="background:#ffffff30"><i style="width:78%;background:#fff"></i></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2mm">
-            <div class="mcard"><div style="color:#F59E0B;font-size:10px"><i data-i="flame"></i></div><div class="big">12</div><div style="opacity:.6">day streak</div></div>
-            <div class="mcard"><div style="color:#7CF5C8;font-size:10px"><i data-i="activity"></i></div><div class="big">78</div><div style="opacity:.6">FitScore · +2</div></div>
-          </div>
-          <div class="mcard"><div class="row"><span style="font-weight:600">Current mission</span><span style="color:var(--p3)">+500 XP</span></div><div style="opacity:.7;margin-top:.6mm">Lose 3 kg body fat</div><div class="bar"><i style="width:65%"></i></div><div class="row" style="opacity:.6;margin-top:.8mm"><span>65% done</span><span>~3 weeks left</span></div></div>
-          <div class="mcard"><div class="row"><span><b>#4</b> this month</span><span style="color:#7CF5C8">Top 8%</span></div></div>
-        </div>
-        <div class="tabbar"><span class="on"><i data-i="home"></i></span><i data-i="chart"></i><i data-i="target"></i><i data-i="users"></i><i data-i="user"></i></div>
-      </div></div>
-      <div class="cap">Dashboard<span>Dark mode · English</span></div>
-    </div>
-
-    <!-- Progress EN light -->
-    <div class="mid">
-      <div class="phone"><div class="scr lt">
-        <div class="notch"></div>
-        <div class="sp">
-          <div class="row"><span style="font-weight:700;font-size:9pt">Progress</span><span class="tag" style="font-size:6pt">Last 6 months</span></div>
-          <div class="mcard">
-            <div class="row"><span style="font-weight:600">FitScore</span><span style="color:var(--g);font-weight:700">▲ 14</span></div>
-            <svg viewBox="0 0 160 70" style="width:100%;height:24mm;margin-top:1mm">
-              <defs><linearGradient id="fa" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7C3AED" stop-opacity=".35"/><stop offset="1" stop-color="#7C3AED" stop-opacity="0"/></linearGradient></defs>
-              <path d="M5 58 L33 52 L61 46 L89 40 L117 30 L150 18 L150 66 L5 66Z" fill="url(#fa)"/>
-              <polyline points="5,58 33,52 61,46 89,40 117,30 150,18" fill="none" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="150" cy="18" r="4" fill="#7C3AED" stroke="#fff" stroke-width="2"/>
-              <g font-size="7" fill="#9a93b0"><text x="2" y="70">Jun</text><text x="140" y="70">Nov</text></g>
-            </svg>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2mm">
-            <div class="mcard"><div style="opacity:.6">Body fat</div><div class="big" style="font-size:10.5pt">18.2%</div><div style="color:var(--g)">▼ 3.1%</div></div>
-            <div class="mcard"><div style="opacity:.6">Muscle</div><div class="big" style="font-size:10.5pt">34.6 kg</div><div style="color:var(--g)">▲ 1.8 kg</div></div>
-          </div>
-          <div class="mcard"><div style="font-weight:600">Workouts per week</div>
-            <svg viewBox="0 0 160 46" style="width:100%;height:15mm;margin-top:1mm">
-              <g fill="#E4D8FF"><rect x="6" y="22" width="14" height="20" rx="3"/><rect x="28" y="16" width="14" height="26" rx="3"/><rect x="50" y="26" width="14" height="16" rx="3"/><rect x="72" y="12" width="14" height="30" rx="3"/><rect x="94" y="16" width="14" height="26" rx="3"/><rect x="116" y="8" width="14" height="34" rx="3"/></g>
-              <rect x="138" y="4" width="14" height="38" rx="3" fill="#7C3AED"/>
-            </svg>
-          </div>
-        </div>
-        <div class="tabbar"><i data-i="home"></i><span class="on"><i data-i="chart"></i></span><i data-i="target"></i><i data-i="users"></i><i data-i="user"></i></div>
-      </div></div>
-      <div class="cap">Progress<span>Light mode · English</span></div>
-    </div>
-
-    <!-- Leaderboard AR dark -->
-    <div>
-      <div class="phone"><div class="scr dk ar" dir="rtl">
-        <div class="notch"></div>
-        <div class="sp">
-          <div class="row"><span style="font-weight:800;font-size:9.5pt">ترتيب الجيم</span><span class="tag" style="background:#ffffff1a;color:var(--p3);font-size:6.5pt">الشهر ده</span></div>
-          <div style="display:flex;justify-content:center;align-items:flex-end;gap:2.5mm;margin-top:3mm">
-            <div style="text-align:center"><div class="av" style="margin:0 auto;background:linear-gradient(135deg,#E5E7EB,#9CA3AF)">س</div><div style="font-weight:700">سارة</div><div style="background:#ffffff14;border-radius:6px 6px 0 0;height:9mm;width:12mm;display:grid;place-items:center;font-weight:800">2</div></div>
-            <div style="text-align:center"><div style="color:#FDE68A;font-size:10px"><i data-i="trophy"></i></div><div class="av" style="margin:0 auto;width:9mm;height:9mm;background:linear-gradient(135deg,#FDE68A,#F59E0B)">م</div><div style="font-weight:700">محمد</div><div style="background:linear-gradient(180deg,#7C3AED,#4C1D95);border-radius:6px 6px 0 0;height:13mm;width:12mm;display:grid;place-items:center;font-weight:800">1</div></div>
-            <div style="text-align:center"><div class="av" style="margin:0 auto;background:linear-gradient(135deg,#FCD9B8,#C2410C)">ن</div><div style="font-weight:700">نور</div><div style="background:#ffffff14;border-radius:6px 6px 0 0;height:6mm;width:12mm;display:grid;place-items:center;font-weight:800">3</div></div>
-          </div>
-          <div class="mcard" style="border-color:#A855F7;background:#7C3AED26"><div class="row"><span><b>4</b> &nbsp; إنت · عمر</span><span>٨٬٤٢٠ XP</span></div></div>
-          <div class="mcard"><div class="row"><span><b>5</b> &nbsp; يوسف</span><span style="opacity:.7">٨٬١٠٠ XP</span></div></div>
-          <div class="mcard"><div class="row"><span><b>6</b> &nbsp; ليلى</span><span style="opacity:.7">٧٬٩٥٠ XP</span></div></div>
-          <div class="mcard" style="text-align:center;color:var(--p3);font-weight:700">فاضلك ٣٠٠ XP وتطلع المركز التالت 🔥</div>
-        </div>
-        <div class="tabbar"><i data-i="home"></i><i data-i="chart"></i><i data-i="target"></i><span class="on"><i data-i="users"></i></span><i data-i="user"></i></div>
-      </div></div>
-      <div class="cap">Leaderboard<span>Dark mode · Arabic (RTL)</span></div>
-    </div>
-  </div>
-
   <div class="grid3 mt2">
-    <div class="card"><h3><span style="color:var(--p)"><i data-i="palette"></i></span> White-label in one file</h3><p class="small muted">Gym name, logo and colors come from a single config. New gym live in a day.</p></div>
-    <div class="card"><h3><span style="color:var(--p)"><i data-i="lock"></i></span> Private by default</h3><p class="small muted">FitScore can stay private. Joining the leaderboard is opt-in.</p></div>
-    <div class="card"><h3><span style="color:var(--p)"><i data-i="phone"></i></span> Built for phones</h3><p class="small muted">Ionic React + Capacitor app, NestJS + PostgreSQL backend, multi-tenant.</p></div>
+    <div class="card"><h3><span style="color:var(--p)"><i data-i="palette"></i></span> Gym branding</h3><p class="small muted">Brand assets and colors are configured for each gym.</p></div>
+    <div class="card"><h3><span style="color:var(--p)"><i data-i="globe"></i></span> Two languages</h3><p class="small muted">Egyptian Arabic with right-to-left layouts and English, both in light and dark themes.</p></div>
+    <div class="card"><h3><span style="color:var(--p)"><i data-i="phone"></i></span> Demo status</h3><p class="small muted">The Ionic React demo runs on mock data. Live scan intake is part of the pilot work.</p></div>
+  </div>
+  <div class="phones real mt">
+    <div><div class="dev"><img src="shots/dashboard-dark.png" alt="Home with FitScore and the goal card"></div><div class="cap">Home</div></div>
+    <div><div class="dev"><img src="shots/progress-dark.png" alt="Progress with body composition scan results"></div><div class="cap">Progress</div></div>
+    <div><div class="dev"><img src="shots/profile-dark.png" alt="Profile with portrait and medals in Egyptian Arabic"></div><div class="cap">Profile<span>Egyptian Arabic</span></div></div>
   </div>
   <div class="ft"><span>LevelUP · Business Plan</span><span>3</span></div>
 </section>
@@ -309,17 +237,15 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
 <!-- ===================== 3b. GALLERY ===================== -->
 <section class="page">
   <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">02 · Inside the App</div></div>
-  <h1>A game members <span class="grad">want to open.</span></h1>
-  <p class="lead" style="margin-bottom:7mm">Medals, a custom pixel character and a virtual gym room turn every scan and lift into progress members can see.</p>
-  <div class="gal">
-    <div><div class="dev"><img src="shots/splash-dark.png"></div><div class="cap">Splash<span>Tap to begin</span></div></div>
-    <div><div class="dev"><img src="shots/login-dark.png"></div><div class="cap">Fit ID login<span>No password</span></div></div>
-    <div><div class="dev"><img src="shots/medals-dark.png"></div><div class="cap">Trophy Room<span>50 medals, 10 categories</span></div></div>
-    <div><div class="dev"><img src="shots/medal-unlock-dark.png"></div><div class="cap">Medal unlocked<span>+XP celebration</span></div></div>
-    <div><div class="dev"><img src="shots/character-dark.png"></div><div class="cap">Your character<span>Custom pixel avatar</span></div></div>
-    <div><div class="dev"><img src="shots/community-dark.png"></div><div class="cap">Community<span>Virtual gym room</span></div></div>
-    <div><div class="dev"><img src="shots/goals-dark.png"></div><div class="cap">Goals<span>Members set their own</span></div></div>
-    <div><div class="dev"><img src="shots/dashboard-light.png"></div><div class="cap">Light mode<span>Every screen, both themes</span></div></div>
+  <h1>Make progress <span class="grad">feel personal.</span></h1>
+  <p class="lead">The Trophy Room recognizes changes in the member’s own scans. A front-facing portrait personalizes Home and Profile.</p>
+  <div class="grid2 mt2">
+    <div class="card soft"><h2><span class="ic"><i data-i="trophy"></i></span>Trophy Room</h2><p>Medals cover muscle gained, body-fat milestones and maintained BMI. An unlock celebration marks a newly earned medal.</p></div>
+    <div class="card soft"><h2><span class="ic"><i data-i="palette"></i></span>Portrait editor</h2><p>Members choose hair, eyes, skin tone and outfit colors. An optional sports hijab has its own color swatches.</p></div>
+  </div>
+  <div class="grid2 mt2" style="gap:6mm;max-width:140mm;margin-inline:auto">
+    <div class="card soft" style="text-align:center"><img src="../../art/avatar/cartoon/curls.webp" alt="Front-facing curls portrait" style="width:100%;height:68mm;object-fit:contain"><h3>Curls</h3></div>
+    <div class="card soft" style="text-align:center"><img src="../../art/avatar/cartoon/girl-hijab.webp" alt="Front-facing sports hijab portrait" style="width:100%;height:68mm;object-fit:contain"><h3>Sports hijab</h3></div>
   </div>
   <div class="ft"><span>LevelUP · Business Plan</span><span>4</span></div>
 </section>
@@ -328,7 +254,7 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
 <section class="page">
   <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">03 · Market &amp; Competition</div></div>
   <h1>Who we sell to, <span class="grad">and why we win.</span></h1>
-  <p class="lead" style="margin-bottom:5mm">Arabic-first fitness software is thin. Cairo gyms are priced out of global platforms that don't gamify body composition.</p>
+  <p class="lead" style="margin-bottom:5mm">The first sales focus is Cairo gyms that already offer body composition scans and want a branded way to follow up with members.</p>
 
   <div class="grid2">
     <div class="card soft">
@@ -345,7 +271,7 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
       <p><b>Gym members, mostly 18–40</b>, smartphone-first, Arabic- and English-speaking.</p>
       <ul class="ck small" style="margin-top:2mm">
         <li><i data-i="check"></i>Wants to see real progress</li>
-        <li><i data-i="check"></i>Motivated by medals and ranking</li>
+        <li><i data-i="check"></i>Wants personal goals and milestones</li>
         <li><i data-i="check"></i>Free to use, no password to remember</li>
       </ul>
     </div>
@@ -374,7 +300,7 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
         <div class="lbl" style="top:2mm;left:50%;transform:translateX(-50%)">Arabic-first · white-label</div>
         <div class="lbl" style="bottom:2mm;left:50%;transform:translateX(-50%)">English-first · one brand</div>
         <div class="lbl" style="left:2mm;top:50%;transform:translateY(-130%)">Generic</div>
-        <div class="lbl" style="right:2mm;top:50%;transform:translateY(-130%);text-align:right">Body-comp<br>gamified</div>
+        <div class="lbl" style="right:2mm;top:50%;transform:translateY(-130%);text-align:right">Body composition<br>focused</div>
         <div class="pt us" style="left:78%;top:24%"><i></i>LevelUP</div>
         <div class="pt" style="left:24%;top:74%"><i></i>Mindbody</div>
         <div class="pt" style="left:33%;top:62%"><i></i>Glofox</div>
@@ -387,10 +313,10 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
       <h2><span class="ic"><i data-i="chart"></i></span>Feature comparison</h2>
       <table class="t">
         <tr><th></th><th style="color:var(--p)">LevelUP</th><th>Gym apps</th><th>Scanner apps</th></tr>
-        <tr><td>Body-comp gamification</td><td class="yes">●</td><td class="no">○</td><td class="part">◐</td></tr>
+        <tr><td>Body composition tracking</td><td class="yes">●</td><td class="no">○</td><td class="part">◐</td></tr>
         <tr><td>White-label branding</td><td class="yes">●</td><td class="part">◐</td><td class="no">○</td></tr>
         <tr><td>Arabic + RTL</td><td class="yes">●</td><td class="no">○</td><td class="part">◐</td></tr>
-        <tr><td>Leaderboards &amp; challenges</td><td class="yes">●</td><td class="part">◐</td><td class="no">○</td></tr>
+
         <tr><td>Small-gym pricing</td><td class="yes">●</td><td class="no">○</td><td class="part">◐</td></tr>
         <tr><td>Booking &amp; payments</td><td class="no">○</td><td class="yes">●</td><td class="no">○</td></tr>
       </table>
@@ -402,7 +328,7 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
 <!-- ===================== 5. BUSINESS MODEL ===================== -->
 <section class="page">
   <div class="hd"><div class="brand"><div class="mk"><i data-i="up"></i></div><span>Level<b>UP</b></span></div><div class="sec">04 · Business Model</div></div>
-  <h1>Gyms pay. <span class="grad">Members play free.</span></h1>
+  <h1>Gyms pay. <span class="grad">Members use it free.</span></h1>
   <p class="lead">B2B SaaS billed per gym per month, plus a one-time setup fee. <span class="tag as">Assumption</span> Prices to validate in pilots.</p>
 
   <div class="grid3" style="align-items:stretch;margin-top:10mm">
@@ -419,7 +345,6 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
       </ul>
     </div>
     <div class="price hot">
-      <div class="badge">Most popular</div>
       <div class="money"><i data-i="wallet"></i></div>
       <h3 style="margin-top:3mm">Growth</h3>
       <div class="amt"><small style="font-size:11pt;font-weight:700;opacity:1">EGP</small> 4,500<small> /month</small></div>
@@ -427,7 +352,7 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
       <ul class="ck" style="margin-top:4mm">
         <li><i data-i="check"></i>Unlimited members</li>
         <li><i data-i="check"></i>Body scan tracking</li>
-        <li><i data-i="check"></i>Challenges &amp; leaderboards</li>
+
         <li><i data-i="check"></i>Full gym branding</li>
       </ul>
     </div>
@@ -499,9 +424,9 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
 
   <h2 class="mt2"><span class="ic"><i data-i="calendar"></i></span>Product roadmap</h2>
   <div class="tl mt">
-    <div class="st"><div class="dot"><i data-i="rocket"></i></div><div class="tag">Now – Q1 2027</div><h3 style="margin-top:2mm">MVP · Pilot-ready</h3><p class="small muted">Built: login, home, FitScore, scans, goals, medals, leaderboards, avatar, community. Next: live backend and pilot gyms.</p></div>
-    <div class="st"><div class="dot"><i data-i="trophy"></i></div><div class="tag">Q2 2027</div><h3 style="margin-top:2mm">V1 · Retention</h3><p class="small muted">Visit streaks, gym-wide challenges, push notifications, scanner data import.</p></div>
-    <div class="st"><div class="dot"><i data-i="building"></i></div><div class="tag">Q3–Q4 2027</div><h3 style="margin-top:2mm">V2 · Self-serve</h3><p class="small muted">Gym admin panel, coach tools for recording lifts, owner analytics.</p></div>
+    <div class="st"><div class="dot"><i data-i="rocket"></i></div><div class="tag">Now – Q1 2027</div><h3 style="margin-top:2mm">Member app demo</h3><p class="small muted">Mock demo with Fit ID, Home, Progress, personal goals, portraits and the Trophy Room. Verify the flow with gym owners.</p></div>
+    <div class="st"><div class="dot"><i data-i="trophy"></i></div><div class="tag">Q2 2027</div><h3 style="margin-top:2mm">Live pilot</h3><p class="small muted">Connect real scan data and establish the front-desk workflow. Measure repeat use and renewals.</p></div>
+    <div class="st"><div class="dot"><i data-i="building"></i></div><div class="tag">Q3–Q4 2027</div><h3 style="margin-top:2mm">After the pilot</h3><p class="small muted">Use pilot feedback to prioritize admin tools, imports and gym reporting.</p></div>
   </div>
   <div class="ft"><span>LevelUP · Business Plan</span><span>6</span></div>
 </section>
@@ -548,13 +473,13 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
     <div class="risk"><div class="ic" style="background:var(--rl);color:var(--r)"><i data-i="building"></i></div><div><div class="row"><h3>Slow gym adoption</h3><span class="lvl" style="background:var(--rl);color:var(--r)">High</span></div><p class="small muted">Free pilots, low entry price, and retention data that proves the return.</p></div></div>
     <div class="risk"><div class="ic" style="background:var(--al);color:var(--a)"><i data-i="scan"></i></div><div><div class="row"><h3>Scan data entry friction</h3><span class="lvl" style="background:var(--al);color:#B45309">Medium</span></div><p class="small muted">Simple front-desk flow, bulk import, manual entry fallback.</p></div></div>
     <div class="risk"><div class="ic" style="background:var(--al);color:var(--a)"><i data-i="user"></i></div><div><div class="row"><h3>One-founder bandwidth</h3><span class="lvl" style="background:var(--al);color:#B45309">Medium</span></div><p class="small muted">Tight MVP scope; white-label config instead of custom builds.</p></div></div>
-    <div class="risk"><div class="ic" style="background:var(--gl);color:var(--g)"><i data-i="shield"></i></div><div><div class="row"><h3>Member data privacy</h3><span class="lvl" style="background:var(--gl);color:var(--g)">Low</span></div><p class="small muted">FitScore private by default, minimal personal data, clear consent.</p></div></div>
+    <div class="risk"><div class="ic" style="background:var(--gl);color:var(--g)"><i data-i="shield"></i></div><div><div class="row"><h3>Member data privacy</h3><span class="lvl" style="background:var(--gl);color:var(--g)">Low</span></div><p class="small muted">Private FitScore, minimal personal data, and clear consent.</p></div></div>
   </div>
 
   <h2 class="mt"><span class="ic"><i data-i="calendar"></i></span>Next 90 days</h2>
   <div class="step"><span class="w">Weeks 1–4</span><i data-i="rocket" style="color:var(--p)"></i><span><b>Connect the app to the live backend</b> and ship the Android build to pilots.</span></div>
   <div class="step"><span class="w">Weeks 3–6</span><i data-i="handshake" style="color:var(--p)"></i><span><b>Sign 2–3 pilot gyms</b> and brand the app for each.</span></div>
-  <div class="step"><span class="w">Weeks 6–12</span><i data-i="chart" style="color:var(--p)"></i><span><b>Track weekly active members</b> and visit frequency from day one.</span></div>
+  <div class="step"><span class="w">Weeks 6–12</span><i data-i="chart" style="color:var(--p)"></i><span><b>Measure repeat scan viewing, goal adoption and renewals</b> from day one.</span></div>
   <div class="step"><span class="w">Week 10</span><i data-i="target" style="color:var(--p)"></i><span><b>Write a one-page case study</b> from pilot results.</span></div>
   <div class="step"><span class="w">Week 12</span><i data-i="dollar" style="color:var(--g)"></i><span><b>Set final pricing</b> from real willingness to pay, then launch paid plans.</span></div>
 
@@ -568,7 +493,7 @@ table.t td{padding:1.2mm 2mm;border-bottom:1px solid var(--line);vertical-align:
 
   <div class="closing mt">
     <img src="logo.png" alt="LevelUP">
-    <div><div style="font-size:15pt;font-weight:800">Track. Improve. Transform.</div><p style="color:#B9AED6;margin-top:2mm">LevelUP gives every gym a branded game that keeps members coming back, and gives every member a reason to.</p></div>
+    <div><div style="font-size:15pt;font-weight:800">Track. Improve. Transform.</div><p style="color:#B9AED6;margin-top:2mm">LevelUP gives gyms a branded way to help members understand their scans and keep working toward personal goals.</p></div>
   </div>
   <div class="ft"><span>LevelUP · Business Plan</span><span>8</span></div>
 </section>

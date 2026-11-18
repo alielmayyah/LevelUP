@@ -1,4 +1,4 @@
-const { chromium } = require('C:/Users/aliel/Downloads/LevelUP/levelup-frontend/node_modules/playwright');
+const { chromium } = require('playwright');
 const path = require('path');
 (async () => {
   const [, , html, out, pngDir] = process.argv;

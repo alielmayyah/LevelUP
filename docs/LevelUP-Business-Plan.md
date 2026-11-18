@@ -2,11 +2,11 @@
 
 *Track. Improve. Transform.*
 
-> Figures marked **(assumption)** are placeholders to validate with real gyms before relying on them.
+> Pricing, customer counts, and financial projections are planning assumptions to validate with pilot gyms. The [PDF plan](LevelUP-Business-Plan.pdf) carries the detailed model in Egyptian pounds.
 
 ## 1. Summary
 
-LevelUP is a white-label, gamified member app for gyms. It turns body composition scans (InBody-style assessments) into XP, levels, streaks, goals, and leaderboards, so members stay motivated and gyms keep them longer. Each gym gets the app under its own name, logo, and colors. It ships in Arabic (RTL) and English.
+LevelUP is a white-label gym member app. Members use body composition scans to understand their progress, set personal goals, and see milestones in the Trophy Room. The app gives gyms a branded way to follow up between scans. LevelUP supports Egyptian Arabic (RTL) and English, with light and dark themes.
 
 ## 2. Problem
 
@@ -16,14 +16,14 @@ LevelUP is a white-label, gamified member app for gyms. It turns body compositio
 
 ## 3. Solution
 
-A branded app where members sign in with a numeric Fit ID from the front desk (no password) and see:
+A branded app where members use a numeric Fit ID from the front desk after the splash screen and onboarding. The app has four tabs.
 
-- **FitScore:** a private 0–100 body composition score.
-- **XP, levels, streaks, trophies, achievements:** rewards for attending and improving.
-- **Missions and goals:** coach-set targets with progress and XP rewards.
-- **Gym leaderboard and challenges:** community and friendly competition.
+- **Home** shows the member's private FitScore number, a personal goal card, scan-based guidance, and notifications.
+- **Progress** shows assessment results, changes between scans, and trends in weight, muscle, and body fat.
+- **Goals** lets members set and track their own weight, muscle, and body-fat targets.
+- **Profile** offers a customizable portrait with outfits and a hijab option, the Trophy Room and medal celebrations, and settings for language, theme, and sound.
 
-Gyms get higher retention and a branded channel to members. Coaches get a structured way to set goals.
+The pilot will test whether this gives members a reason to revisit their scans and helps gyms retain them.
 
 ## 4. Target Customer
 
@@ -37,17 +37,17 @@ B2B SaaS, billed per gym per month. Members use the app free.
 
 | Plan | Price per gym per month | Includes |
 |---|---|---|
-| Starter | $49 **(assumption)** | Up to 300 members, one branch, standard branding |
-| Growth | $129 **(assumption)** | Up to 1,000 members, up to 3 branches, challenges |
-| Chain | Custom | Multiple branches, custom branding, priority support |
+| Starter | EGP 2,500 | Up to 300 members, one branch, standard branding |
+| Growth | EGP 4,500 | Unlimited members at one branch and full gym branding |
+| Chain | EGP 9,000 | Up to three branches, dedicated support, and EGP 2,500 per extra branch |
 
-Add-on: one-time setup fee of $200 **(assumption)** covering branding, member import, and staff onboarding.
+A one-time EGP 5,000 setup fee covers branding, member import, and staff onboarding. Pilot gyms receive a fee waiver.
 
 ## 6. Go-to-Market
 
 1. **Pilot:** sign 2–3 friendly gyms free for 3 months in exchange for feedback and a testimonial.
 2. **Direct sales:** founder-led visits and demos to local gyms. The demo is the app itself, branded live with the prospect's logo.
-3. **Proof:** publish retention and engagement results from the pilots.
+3. **Proof:** measure repeat scan viewing, goal adoption, and renewals during the pilots. Publish the findings with participating gyms.
 4. **Referrals:** one month free for any gym that refers another.
 5. **Channel (later):** partner with body-scanner distributors who already sell to gyms.
 
@@ -55,17 +55,16 @@ Add-on: one-time setup fee of $200 **(assumption)** covering branding, member im
 
 | Phase | Scope | Goal |
 |---|---|---|
-| MVP | Login, dashboard, XP and levels, FitScore, assessments, goals, branding config | Pilot-ready app |
-| V1 | Streaks, leaderboard, challenges, achievements, trophies, notifications | Retention features |
-| V2 | Gym admin panel, coach tools, analytics for owners | Self-serve for gyms |
+| Demo | Fit ID, Home, Progress, member-set goals, profiles, portraits, and Trophy Room using mock data | Review the member flow with gym owners |
+| Pilot | Connect the member app to live gym scan data and establish the staff intake workflow | Measure repeat usage and renewals |
+| After pilot | Prioritize gym administration, imports, and reporting based on pilot feedback | Reduce staff setup and support time |
 
 Tech: Ionic React + Capacitor (iOS, Android, web), NestJS + Prisma + PostgreSQL backend.
 
 ## 8. Competition
 
-- **Generic gym apps (Mindbody, Glofox, Trainerize):** broad but expensive, English-first, weak on body-composition gamification.
-- **Scanner vendor apps:** show data but no engagement loop and no white-labeling.
-- **Differentiator:** gamification built on body composition data, Arabic-first, fully white-labeled, priced for small gyms.
+- Gym management platforms and scanner apps are the alternatives a pilot gym may already use.
+- LevelUP focuses on the member experience after a scan, with Egyptian Arabic support, gym branding, personal goals, and medal milestones.
 
 ## 9. Team and Operations
 
@@ -78,11 +77,11 @@ Tech: Ionic React + Capacitor (iOS, Android, web), NestJS + Prisma + PostgreSQL 
 | Item | Estimate |
 |---|---|
 | Gyms signed by month 12 | 15 **(assumption)** |
-| Average revenue per gym per month | $90 **(assumption)** |
-| Monthly recurring revenue at month 12 | about $1,350 |
-| Setup fees collected | about $3,000 |
-| Monthly costs (hosting, tools, store fees, part-time help) | about $800 **(assumption)** |
-| Break-even | roughly 9–10 paying gyms |
+| Average revenue per gym per month | EGP 3,750 |
+| Monthly recurring revenue at month 12 | EGP 56,250 |
+| Annualized recurring revenue at month 12 | EGP 675,000 |
+| First month with positive cash flow | Month 9 |
+| Cumulative cash above zero | Month 13 |
 
 ## 11. Key Risks and Mitigations
 
@@ -91,12 +90,12 @@ Tech: Ionic React + Capacitor (iOS, Android, web), NestJS + Prisma + PostgreSQL 
 | Gyms slow to adopt or pay | Free pilots, low entry price, visible ROI via retention data |
 | Dependence on scan data entry | Simple import and front-desk workflow; manual entry fallback |
 | Single-founder bandwidth | Tight MVP scope, white-label config instead of custom builds |
-| Member data privacy | FitScore private by default; minimal personal data; clear consent |
+| Member data privacy | Keep FitScore private, collect minimal personal data, and establish consent for the pilot |
 
 ## 12. Next 90 Days
 
-1. Finish MVP (login, dashboard, XP, FitScore, assessments, goals).
+1. Verify the member flow from Fit ID login through Home, Progress, Goals, and Profile with realistic demo scans.
 2. Line up 2–3 pilot gyms and brand the app for each.
-3. Track weekly active members and visit frequency from day one.
+3. Measure repeat scan viewing, goal adoption, and renewals from day one.
 4. Turn pilot results into a one-page case study.
 5. Set pricing from real willingness to pay, then launch paid plans.
