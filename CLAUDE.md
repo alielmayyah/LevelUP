@@ -2,6 +2,7 @@
 
 White-label gym member app. This repo is the Ionic React app (Vite + Capacitor), at the repo root. The backend (NestJS + Prisma + PostgreSQL) lives in a separate repo: [levelup-backend](https://github.com/alielmayyah/levelup-backend). The app's DTO types are generated from the API's `openapi.json` into `src/api/schema.d.ts`, and components import them only from `src/api/types.ts`.
 
+- **Latest plan: [docs/redesign/PLAN.md](docs/redesign/PLAN.md)** (the member-app redesign, 18 Nov 2026). Where it disagrees with the documents below, it wins.
 - Spec: [LevelUP-Features-Core.md](LevelUP-Features-Core.md)
 - Plan: [docs/superpowers/plans/2026-11-13-levelup-core.md](docs/superpowers/plans/2026-11-13-levelup-core.md) (Phase 1 runs in `levelup-backend`, Phase 2 here)
 - Sprint 1: [plan](docs/superpowers/plans/2026-11-13-sprint-1-frontend-mvp.md)

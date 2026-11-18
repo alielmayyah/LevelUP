@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soft Mint Direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--edge:#A9C2B7}
+:root,[data-frame-theme=light]{--bg:#EFF8F4;--sf:#F8FDFB;--rs:#FFFFFF;--tint:#DBF4E9;--line:#CFE1D9;--band:#CFF1E3;--bande:#5C8C79;--tx:#072D25;--mu:#46625A;--ac:#0F745B;--onac:#FFFFFF;--at:#FBB77B;--onat:#44250C;--atl:#B86A20;--musc:#0D4980;--fat:#A57E16;--wat:#07718F;--st:#747D79;--stt:#E4E9E7;--ffm:#2D423B}
+:root[data-theme=dark],[data-frame-theme=dark]{--bg:#0B1613;--sf:#13201B;--rs:#1A2A25;--tint:#0E3127;--line:#30423B;--band:#163E31;--bande:#5C8C79;--tx:#E0F0E8;--mu:#A6BAB1;--ac:#75DBB6;--onac:#032018;--at:#FEBA7E;--onat:#3F2007;--atl:#FEBA7E;--musc:#B0DFFE;--fat:#AF8020;--wat:#54BBD2;--st:#8E9894;--stt:#2F3432;--ffm:#CCDCD5}
+:root[data-theme=dark]{--edge:#3A4E46}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--edge:#3A4E46;--bg:#0B1613;--sf:#13201B;--rs:#1A2A25;--tint:#0E3127;--line:#30423B;--band:#163E31;--bande:#5C8C79;--tx:#E0F0E8;--mu:#A6BAB1;--ac:#75DBB6;--onac:#032018;--at:#FEBA7E;--onat:#3F2007;--atl:#FEBA7E;--musc:#B0DFFE;--fat:#AF8020;--wat:#54BBD2;--st:#8E9894;--stt:#2F3432;--ffm:#CCDCD5}}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--tx);font:400 1rem/1.55 Rubik,system-ui,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.d{font-family:"Baloo Bhaijaan 2",Rubik,sans-serif;font-weight:600}
+bdi,.n{font-variant-numeric:tabular-nums}
+:lang(ar){line-height:1.65}
+.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.s{width:18px;height:18px;stroke-width:2.2}
+
+/* page chrome */
+.wrap{max-width:1180px;margin:0 auto;padding:56px 16px 96px}
+.hd h1{font:700 4rem/1 "Baloo Bhaijaan 2",sans-serif;letter-spacing:-.02em;color:var(--ac)}
+.mood{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:20px 0}
+.mood li{padding:6px 16px;border-radius:99px;background:var(--tint);color:var(--ac);font-weight:500}
+.why{max-width:58ch;font-size:1.125rem;text-wrap:pretty}
+.why+.why{margin-top:10px;color:var(--mu);font-size:1rem}
+section{margin-top:80px}
+.sh{font:600 1.75rem/1.2 "Baloo Bhaijaan 2",sans-serif;letter-spacing:-.01em}
+.sl{color:var(--mu);max-width:64ch;margin:6px 0 24px;text-wrap:pretty}
+.pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px}
+.pset{background:var(--bg);color:var(--tx);border:1px solid var(--edge);border-radius:28px;padding:20px 20px 12px}
+.pset h3{font:600 1.25rem "Baloo Bhaijaan 2",sans-serif;margin-bottom:8px}
+.pset ul{list-style:none}
+.pset li{display:grid;grid-template-columns:40px 1fr auto;column-gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.pset li i{grid-row:span 2;width:40px;height:40px;border-radius:14px;border:1px solid var(--line)}
+.pset b{font-weight:500}
+.pset code{font:400 .875rem Rubik,sans-serif;font-variant-numeric:tabular-nums;color:var(--mu)}
+.pset small{grid-column:2/4;font-size:.8125rem;color:var(--mu)}
+.ty{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px}
+.tc{background:var(--sf);border:1px solid var(--line);border-radius:28px;padding:24px}
+.tc h3{font-size:.875rem;font-weight:500;color:var(--mu);margin-bottom:10px}
+.sa{font:600 2.25rem/1.4 "Baloo Bhaijaan 2",sans-serif}
+.sb2{font:600 2.25rem/1.1 "Baloo Bhaijaan 2",sans-serif;letter-spacing:-.02em;margin-top:6px}
+.tc p+p{margin-top:8px}
+.scale{list-style:none}
+.scale li{display:flex;align-items:baseline;gap:14px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.scale li:first-child{border-top:0}
+.scale em{font-style:normal;font-size:.8125rem;color:var(--mu);min-width:120px}
+
+/* phone frames */
+.shots{display:flex;flex-wrap:wrap;gap:48px 40px;justify-content:center}
+.shot figcaption{margin-top:14px;text-align:center;color:var(--mu);font-size:.9375rem}
+.shot figcaption b{color:var(--tx);font-weight:500}
+.ph{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;background:var(--bg);color:var(--tx);border:1.5px solid var(--edge);zoom:var(--z,1);font-size:16px;text-align:start}
+@media (max-width:422px){.ph{--z:.86}}
+@media (max-width:367px){.ph{--z:.78}}
+@media (max-width:335px){.ph{--z:.7}}
+.sbar{height:47px;display:flex;align-items:center;justify-content:space-between;padding:8px 30px 0 36px;font:600 15px/1 Rubik,sans-serif;direction:ltr}
+.sbar svg{width:66px;height:13px;fill:currentColor}
+.scr{position:absolute;inset:47px 0 0;overflow-y:auto;scrollbar-width:none;padding:0 20px 132px}
+.scr::-webkit-scrollbar{display:none}
+.hi{position:absolute;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--tx)}
+.tb{position:absolute;left:14px;right:14px;bottom:28px;height:66px;background:var(--rs);border:1px solid var(--line);border-radius:33px;display:flex;padding:5px}
+.tb a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:44px;border-radius:28px;color:var(--mu);font:500 13px/1.25 Rubik,sans-serif;text-decoration:none}
+.tb a[aria-current]{background:var(--tint);color:var(--ac)}
+.tb a:focus-visible,.fr{outline:2px solid var(--ac);outline-offset:-4px}
+.ph :lang(en) .tb a,.tb:lang(en) a{font-size:12px}
+.top{display:flex;align-items:center;gap:10px;height:56px}
+.wm{font:700 23px/1 "Baloo Bhaijaan 2",sans-serif;color:var(--ac);direction:ltr}
+.ib{width:32px;height:32px;border-radius:11px;border:1.5px solid var(--line);color:var(--mu);font:600 12px/29px Rubik,sans-serif;text-align:center;direction:ltr}
+.vr{width:1px;height:20px;background:var(--line)}
+.hello{color:var(--mu);font-size:17px;margin-top:8px}
+.verdict{font:600 26px/1.5 "Baloo Bhaijaan 2",sans-serif;margin-top:2px;text-wrap:balance}
+.verdict:lang(en){font-size:26px;line-height:1.22;letter-spacing:-.01em;margin-top:6px}
+.ctx{color:var(--mu);font-size:15px;margin-top:8px}
+.pebs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.peb{border-radius:24px;padding:12px 14px 14px;background:var(--tint)}
+.peb.eq{background:var(--stt)}
+.peb span{display:flex;align-items:center;gap:4px;font-size:14px;line-height:1.3;color:var(--ac)}
+.peb.eq span{color:var(--mu)}
+.peb b{display:block;font:600 26px/1.15 "Baloo Bhaijaan 2",sans-serif;margin-top:6px;white-space:nowrap}
+.peb small,.v small,.sp-h small{font:500 14px Rubik,sans-serif;color:var(--mu)}
+.card{background:var(--rs);border-radius:28px;padding:16px 18px;margin-top:12px}
+.sp-h{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;color:var(--mu)}
+.sp-h b{font:600 20px "Baloo Bhaijaan 2",sans-serif;color:var(--tx)}
+.bar{display:flex;gap:4px;height:14px;margin:10px 0 8px}
+.bar i{border-radius:7px}
+.bar .f{flex:14.92;background:var(--fat)}
+.bar .m{flex:62.98;background:var(--ffm)}
+.leg{display:flex;flex-wrap:wrap;gap:2px 16px;font-size:14px;color:var(--mu)}
+.leg span{white-space:nowrap}
+.dot{display:inline-block;width:10px;height:10px;border-radius:5px;margin-inline-end:6px;vertical-align:1px}
+.next{display:flex;gap:14px;align-items:flex-start}
+.chipi{width:44px;height:44px;border-radius:16px;background:var(--tint);color:var(--ac);display:grid;place-items:center;flex:none}
+.next h3{font:500 17px/1.4 Rubik,sans-serif}
+.next p{font-size:14px;color:var(--mu);line-height:1.55}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;border-radius:28px;border:0;background:var(--ac);color:var(--onac);font:500 17px/1.2 Rubik,sans-serif;margin-top:16px;text-decoration:none}
+.btn2{background:transparent;color:var(--tx);border:1.5px solid var(--bande)}
+/* report */
+.ab{display:flex;align-items:center;gap:4px;height:56px;margin-inline-start:-10px}
+.ab a{width:44px;height:44px;display:grid;place-items:center;border-radius:22px;color:var(--tx)}
+.ab h2{font:500 17px Rubik,sans-serif}
+.meta{color:var(--mu);font-size:14px}
+.hl{font:600 26px/1.5 "Baloo Bhaijaan 2",sans-serif;margin-top:4px;text-wrap:balance}
+.note{display:flex;gap:10px;background:var(--stt);border-radius:20px;padding:12px 14px;margin-top:14px;font-size:15px;line-height:1.55}
+.note .ic{color:var(--mu);margin-top:2px}
+.note small{display:block;font-size:14px;color:var(--mu)}
+.hint{display:flex;gap:6px;align-items:center;color:var(--mu);font-size:14px;margin:18px 4px 8px}
+.rows{background:var(--rs);border-radius:28px;padding:2px 16px}
+.mr{display:block;width:100%;padding:14px 0 10px;border:0;background:none;color:inherit;font:inherit;text-align:start}
+.mr+.mr{border-top:1px solid var(--line)}
+.mh{display:flex;align-items:baseline;gap:8px}
+.mh .nm{font-weight:500}
+.mh .w{font-size:14px;color:var(--mu)}
+.mh .w.at{background:var(--at);color:var(--onat);border-radius:99px;padding:0 10px}
+.v{margin-inline-start:auto;font:600 20px/1 "Baloo Bhaijaan 2",sans-serif;white-space:nowrap}
+.rb,.rl,.rb i{display:block}
+.rb{position:relative;height:18px;margin-top:10px}
+.rb:before{content:"";position:absolute;left:0;right:0;top:6px;height:6px;border-radius:3px;background:var(--line)}
+.rb .bd{position:absolute;top:2px;height:14px;inset-inline-start:var(--a,25%);width:var(--w,50%);border-radius:7px;background:var(--band);border:1.5px solid var(--bande)}
+.rb .dt{position:absolute;top:0;width:18px;height:18px;border-radius:9px;border:3px solid var(--rs);background:var(--c,var(--tx));inset-inline-start:calc(var(--p) - 9px)}
+.rl{position:relative;height:20px;font-size:13px;line-height:20px;color:var(--mu)}
+.rl i{font-style:normal;position:absolute;width:48px;text-align:center;inset-inline-start:calc(var(--x) - 24px)}
+.more{display:flex;align-items:center;gap:8px;min-height:60px;padding:8px 0;border-top:1px solid var(--line)}
+.more p{flex:1;font-weight:500;line-height:1.4}
+.more small{display:block;color:var(--mu);font-size:14px;font-weight:400}
+.ct{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ct h3{font:600 20px/1.4 "Baloo Bhaijaan 2",sans-serif}
+.ok{display:inline-flex;align-items:center;gap:4px;background:var(--tint);color:var(--ac);border-radius:99px;padding:2px 12px 2px 10px;font-size:14px;font-weight:500}
+.bal{display:grid;grid-template-columns:1fr 104px 1fr;align-items:stretch;direction:ltr;margin-top:6px}
+.bal .col{direction:rtl;display:flex;flex-direction:column;justify-content:space-around;text-align:center;padding-top:8px}
+.bal .col>b{font-size:14px;font-weight:600;color:var(--mu)}
+.seg span{display:block;font-size:14px;color:var(--mu);line-height:1.3}
+.seg strong{display:block;font:600 18px/1.3 "Baloo Bhaijaan 2",sans-serif}
+.fig .sg{fill:var(--band);stroke:var(--bande);stroke-width:2}
+.trunk{text-align:center;margin-top:4px}
+.trunk strong{font:600 18px "Baloo Bhaijaan 2",sans-serif}
+.cap{font-size:13px;color:var(--mu);text-align:center;margin-top:6px}
+.disc{font-size:14px;color:var(--mu);text-align:center;margin-top:16px}
+/* chart */
+.ch{width:100%;height:auto;display:block;direction:ltr;font-family:Rubik,sans-serif;font-variant-numeric:tabular-nums}
+.ch .g{stroke:var(--line);stroke-width:1}
+.ch .ax{fill:var(--mu);font-size:12px}
+.ch .t{font-size:15px;font-weight:600}
+.ch .lb{font-size:13px;font-weight:600;fill:var(--tx)}
+.ch .ln{fill:none;stroke-width:3;stroke-linecap:round}
+.ch .ds{stroke-dasharray:2 7}
+.ch .pt{stroke:var(--rs);stroke-width:3}
+.key{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);margin-top:6px}
+.key svg{width:28px;height:6px;flex:none}
+/* components */
+.cps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:16px}
+.cp{background:var(--sf);border:1px solid var(--line);border-radius:28px;padding:20px}
+.cp>h3{font-size:.875rem;font-weight:500;color:var(--mu);margin-bottom:12px}
+.cp .rows{border:1px solid var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:4px 14px 4px 12px;border-radius:18px;font-size:15px;font-weight:500;background:var(--tint);color:var(--ac)}
+.chip.eq{background:var(--stt);color:var(--mu)}
+.chip.at{background:var(--at);color:var(--onat)}
+.cp .tb{position:static;margin-top:4px}
+.cp .tb+.tb{margin-top:12px}
+.cp ul{list-style:none;margin-top:12px;font-size:.875rem;color:var(--mu)}
+.empty{text-align:center;padding:12px 8px 4px}
+.empty .chipi{width:72px;height:72px;border-radius:28px;margin:0 auto 14px}
+.empty .chipi .ic{width:34px;height:34px}
+.empty h4{font:600 20px/1.4 "Baloo Bhaijaan 2",sans-serif}
+.empty p{color:var(--mu);font-size:15px;margin-top:4px;text-wrap:pretty}
+.foot{margin-top:72px;color:var(--mu);font-size:.875rem;max-width:70ch}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11.2 12 4.8l8 6.4V19a1.5 1.5 0 0 1-1.5 1.5H15v-5.2H9v5.2H5.5A1.5 1.5 0 0 1 4 19z"/></symbol>
+<symbol id="i-scan" viewBox="0 0 24 24"><path d="M7.5 3.5H14l4.5 4.5v11a1.5 1.5 0 0 1-1.5 1.5H7.5A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1.5-1.5zM9.5 12.5h5M9.5 16h5"/></symbol>
+<symbol id="i-cmp" viewBox="0 0 24 24"><rect x="3.5" y="4" width="7" height="16" rx="3"/><rect x="13.5" y="4" width="7" height="16" rx="3"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c1.2-3.5 3.9-5.4 7-5.4s5.8 1.9 7 5.4"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M12 4c4.6 0 8 3.1 8 7s-3.4 7-8 7c-1 0-2-.1-2.9-.4L5 19.5l1.2-3.6C4.8 14.6 4 12.9 4 11c0-3.9 3.4-7 8-7z"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="4.5" y="5.5" width="15" height="14.5" rx="3"/><path d="M4.5 10h15M9 3.5v4M15 3.5v4"/></symbol>
+<symbol id="i-ok" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></symbol>
+<symbol id="i-eq" viewBox="0 0 24 24"><path d="M5.5 9.5c2.2-1.8 4.3-1.8 6.5 0s4.3 1.8 6.5 0M5.5 15c2.2-1.8 4.3-1.8 6.5 0s4.3 1.8 6.5 0"/></symbol>
+<symbol id="i-at" viewBox="0 0 24 24"><path d="M12 6.5v7M12 17.5v.01"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M9.5 5.5 16 12l-6.5 6.5"/></symbol>
+<symbol id="i-fwd" viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 11v5M12 8v.01"/></symbol>
+<symbol id="i-sb" viewBox="0 0 66 13"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y=".5" width="3" height="11.5" rx="1"/><path d="M33 3.2a9 9 0 0 1 11 0l-1.3 1.5a7 7 0 0 0-8.4 0zM35.4 6a5.4 5.4 0 0 1 6.2 0l-1.3 1.5a3.4 3.4 0 0 0-3.6 0zM38.5 11.6l-1.6-1.9a2.3 2.3 0 0 1 3.2 0z"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/><rect x="64.5" y="4.5" width="1.5" height="4" rx=".75" opacity=".5"/></symbol>
+</svg>
+
+<div class="wrap">
+<header class="hd">
+<h1>Soft Mint</h1>
+<ul class="mood"><li>Approachable</li><li>Optimistic</li><li>Supportive</li></ul>
+<p class="why">A scan should feel like a kind coach checking in, not a lab result. A pale mint canvas, white pebble cards and pill controls keep every screen calm; deep teal carries each action and each real gain, and apricot only asks for attention. Baloo Bhaijaan&nbsp;2’s round Arabic makes the verdict sound spoken, not printed. Pastels never carry text: every word meets measured contrast.</p>
+<p class="why">Signature: the bead on a soft track. Each value is a ringed dot resting on a rounded rail, the normal band a mint pill inside it. One shape language, from the range bar to the tab bar.</p>
+</header>
+
+<section>
+<h2 class="sh">Palette</h2>
+<p class="sl">WCAG 2 ratios, computed from the hex values. Text pairs need 4.5:1; data marks, range-bar edges and the body figure need 3:1. Muscle, water and fat sit on three lightness steps, so they separate in greyscale and without red vs green: muscle is always the highest-contrast mark, fat the quietest.</p>
+<div class="pal">
+<div class="pset" data-frame-theme="light"><h3>Light</h3><ul>
+<li><i style="background:#EFF8F4"></i><b>Background</b><code>#EFF8F4</code><small>Text on it 13.75:1</small></li>
+<li><i style="background:#F8FDFB"></i><b>Surface</b><code>#F8FDFB</code><small>Text 14.48:1 · muted 6.48:1</small></li>
+<li><i style="background:#FFFFFF"></i><b>Raised surface</b><code>#FFFFFF</code><small>Text 14.88:1 · cards, tab bar</small></li>
+<li><i style="background:#CFE1D9"></i><b>Border</b><code>#CFE1D9</code><small>1.26:1 on background; dividers only, never the only edge of a control</small></li>
+<li><i style="background:#072D25"></i><b>Text</b><code>#072D25</code><small>13.75:1 on background · 12.85:1 on mint tint</small></li>
+<li><i style="background:#46625A"></i><b>Muted text</b><code>#46625A</code><small>6.15:1 on background · 5.42:1 on stable tint</small></li>
+<li><i style="background:#0F745B"></i><b>Accent</b><code>#0F745B</code><small>5.29:1 on background · 4.94:1 as text on mint tint #DBF4E9</small></li>
+<li><i style="background:#FFFFFF"></i><b>On accent</b><code>#FFFFFF</code><small>5.72:1 on accent</small></li>
+<li><i style="background:#FBB77B"></i><b>Attention</b><code>#FBB77B</code><small>Fill only: text #44250C on it 8.02:1 · strokes #B86A20 3.79:1</small></li>
+<li><i style="background:#0D4980"></i><b>Muscle</b><code>#0D4980</code><small>8.50:1 on background · 8.96:1 on surface</small></li>
+<li><i style="background:#A57E16"></i><b>Fat</b><code>#A57E16</code><small>3.47:1 on background · 3.10:1 on band #CFF1E3</small></li>
+<li><i style="background:#07718F"></i><b>Water</b><code>#07718F</code><small>5.15:1 on background</small></li>
+<li><i style="background:#747D79"></i><b>Stable</b><code>#747D79</code><small>3.92:1 on background (marks); stable text uses muted</small></li>
+<li><i style="background:#5C8C79"></i><b>Band edge</b><code>#5C8C79</code><small>3.83:1 on raised · normal band #CFF1E3 · fat-free #2D423B</small></li>
+</ul></div>
+<div class="pset" data-frame-theme="dark"><h3>Dark</h3><ul>
+<li><i style="background:#0B1613"></i><b>Background</b><code>#0B1613</code><small>Text on it 15.63:1</small></li>
+<li><i style="background:#13201B"></i><b>Surface</b><code>#13201B</code><small>Text 14.24:1 · muted 8.22:1</small></li>
+<li><i style="background:#1A2A25"></i><b>Raised surface</b><code>#1A2A25</code><small>Text 12.70:1 · cards, tab bar</small></li>
+<li><i style="background:#30423B"></i><b>Border</b><code>#30423B</code><small>1.73:1 on background; dividers only</small></li>
+<li><i style="background:#E0F0E8"></i><b>Text</b><code>#E0F0E8</code><small>15.63:1 on background · 11.97:1 on mint tint</small></li>
+<li><i style="background:#A6BAB1"></i><b>Muted text</b><code>#A6BAB1</code><small>9.03:1 on background · 6.20:1 on stable tint</small></li>
+<li><i style="background:#75DBB6"></i><b>Accent</b><code>#75DBB6</code><small>11.04:1 on background · 8.45:1 on mint tint #0E3127</small></li>
+<li><i style="background:#032018"></i><b>On accent</b><code>#032018</code><small>10.27:1 on accent</small></li>
+<li><i style="background:#FEBA7E"></i><b>Attention</b><code>#FEBA7E</code><small>Text #3F2007 on it 8.82:1 · as a mark 11.01:1</small></li>
+<li><i style="background:#B0DFFE"></i><b>Muscle</b><code>#B0DFFE</code><small>13.03:1 on background · 10.58:1 on raised</small></li>
+<li><i style="background:#AF8020"></i><b>Fat</b><code>#AF8020</code><small>5.21:1 on background · 3.36:1 on band #163E31</small></li>
+<li><i style="background:#54BBD2"></i><b>Water</b><code>#54BBD2</code><small>8.27:1 on background</small></li>
+<li><i style="background:#8E9894"></i><b>Stable</b><code>#8E9894</code><small>6.21:1 on background</small></li>
+<li><i style="background:#5C8C79"></i><b>Band edge</b><code>#5C8C79</code><small>3.91:1 on raised · fat-free #CCDCD5</small></li>
+</ul></div>
+</div>
+</section>
+
+<section>
+<h2 class="sh">Type</h2>
+<p class="sl">Baloo Bhaijaan&nbsp;2 is round in both scripts and ships tabular figures, so it sets the verdicts and the numbers. Rubik’s softened corners carry body text and UI at small sizes. Both are on Google Fonts with full Arabic subsets. Arabic gets about 10% more leading and is never tracked.</p>
+<div class="ty">
+<div class="tc"><h3>Baloo Bhaijaan 2 · display, verdicts, numbers</h3>
+<p class="sa" lang="ar" dir="rtl">عضل أكتر ودهون أقل</p>
+<p class="sb2">More muscle, less fat</p>
+<p class="d n" style="font-size:2.25rem;line-height:1.2;margin-top:10px">35.8 14.92<br>0123456789</p></div>
+<div class="tc"><h3>Rubik · body, labels, UI</h3>
+<p lang="ar" dir="rtl" style="font-size:1rem">تعالى بعد الأكل بـ<bdi>3</bdi> ساعات ومن غير تمرين، في نفس الميعاد زي آخر مرة. كده الرقم يبقى مقارن بجد.</p>
+<p style="margin-top:12px">Come 3 hours after eating, with no workout, at the same time as last time. That keeps the numbers comparable.</p>
+<p lang="ar" dir="rtl" style="font-size:.875rem;font-weight:500;color:var(--mu);margin-top:12px">اضغط على أي رقم عشان تفهمه</p></div>
+<div class="tc"><h3>Scale (rem, ratio ≈ 1.27)</h3><ul class="scale">
+<li><em>40 · display / reveal</em><span class="d n" style="font-size:2.5rem;line-height:1.1">+1.0</span></li>
+<li><em>26 · headline, key numbers</em><span class="d" style="font-size:1.625rem;line-height:1.5" lang="ar">عضلك بيزيد</span></li>
+<li><em>20 · title, row values</em><span class="d" style="font-size:1.25rem">توازن الجسم</span></li>
+<li><em>16 · body (ar 1.65, en 1.5)</em><span style="font-size:1rem" lang="ar">القياس الجاي بعد 4 أسابيع</span></li>
+<li><em>14 · label, Arabic floor</em><span style="font-size:.875rem;font-weight:500" lang="ar">الدهون الحشوية</span></li>
+<li><em>13 · Latin captions, axes</em><span style="font-size:.8125rem">Aug · Sep · Oct · Nov</span></li>
+</ul></div>
+</div>
+</section>
+
+<section>
+<h2 class="sh">Screens</h2>
+<p class="sl">390 × 844, each frame on its own theme tokens. Frames scroll.</p>
+<div class="shots">
+
+<!-- a: Home, Arabic, dark -->
+<figure class="shot">
+<div class="ph" data-frame-theme="dark" lang="ar" dir="rtl">
+<div class="sbar"><span>9:41</span><svg><use href="#i-sb"/></svg></div>
+<div class="scr">
+<div class="top"><span class="wm">LevelUP</span><span class="vr"></span><span class="ib" title="Iron Box">IB</span></div>
+<p class="hello">صباح الخير يا كريم</p>
+<h1 class="verdict">وزنك نزل كيلو، بس الأهم إن جسمك اتغيّر: عضل أكتر ودهون أقل.</h1>
+<p class="ctx">تقدّمك من أول قياس · <bdi>3</bdi> قياسات في <bdi>3</bdi> شهور ونص</p>
+<div class="pebs">
+<div class="peb"><span><svg class="ic s"><use href="#i-ok"/></svg>عضل</span><b><bdi dir="ltr">+1.0</bdi> <small>كجم</small></b></div>
+<div class="peb"><span><svg class="ic s"><use href="#i-ok"/></svg>دهون</span><b><bdi dir="ltr">−2.3</bdi> <small>كجم</small></b></div>
+<div class="peb eq"><span><svg class="ic s"><use href="#i-eq"/></svg>وزن</span><b><bdi dir="ltr">−1.1</bdi> <small>كجم</small></b></div>
+</div>
+<div class="card">
+<p class="sp-h"><span>وزنك النهارده</span><b><bdi>77.9</bdi> <small>كجم</small></b></p>
+<div class="bar" role="img" aria-label="دهون 14.9 كجم وكتلة خالية من الدهون 63.0 كجم"><i class="f"></i><i class="m"></i></div>
+<p class="leg"><span><i class="dot" style="background:var(--fat)"></i>دهون <bdi>14.9</bdi></span><span><i class="dot" style="background:var(--ffm)"></i>كتلة خالية من الدهون <bdi>63.0</bdi></span></p>
+</div>
+<div class="card next"><span class="chipi"><svg class="ic"><use href="#i-cal"/></svg></span><div><h3>القياس الجاي بعد <bdi>4</bdi> أسابيع</h3><p>الأربع <bdi>16</bdi> ديسمبر، <bdi dir="ltr">8:00</bdi> الصبح زي آخر مرة. تعالى بعد الأكل بـ<bdi>3</bdi> ساعات ومن غير تمرين.</p></div></div>
+<a class="btn" href="#"><svg class="ic"><use href="#i-chat"/></svg>كلّم مدربك على واتساب</a>
+</div>
+<nav class="tb"><a aria-current="page"><svg class="ic"><use href="#i-home"/></svg>الرئيسية</a><a><svg class="ic"><use href="#i-scan"/></svg>القياسات</a><a><svg class="ic"><use href="#i-cmp"/></svg>مقارنة</a><a><svg class="ic"><use href="#i-user"/></svg>حسابي</a></nav>
+<div class="hi"></div>
+</div>
+<figcaption><b>a</b> · Home, Arabic, dark</figcaption>
+</figure>
+
+<!-- b: Home, Arabic, light -->
+<figure class="shot">
+<div class="ph" data-frame-theme="light" lang="ar" dir="rtl">
+<div class="sbar"><span>9:41</span><svg><use href="#i-sb"/></svg></div>
+<div class="scr">
+<div class="top"><span class="wm">LevelUP</span><span class="vr"></span><span class="ib" title="Iron Box">IB</span></div>
+<p class="hello">صباح الخير يا كريم</p>
+<h1 class="verdict">وزنك نزل كيلو، بس الأهم إن جسمك اتغيّر: عضل أكتر ودهون أقل.</h1>
+<p class="ctx">تقدّمك من أول قياس · <bdi>3</bdi> قياسات في <bdi>3</bdi> شهور ونص</p>
+<div class="pebs">
+<div class="peb"><span><svg class="ic s"><use href="#i-ok"/></svg>عضل</span><b><bdi dir="ltr">+1.0</bdi> <small>كجم</small></b></div>
+<div class="peb"><span><svg class="ic s"><use href="#i-ok"/></svg>دهون</span><b><bdi dir="ltr">−2.3</bdi> <small>كجم</small></b></div>
+<div class="peb eq"><span><svg class="ic s"><use href="#i-eq"/></svg>وزن</span><b><bdi dir="ltr">−1.1</bdi> <small>كجم</small></b></div>
+</div>
+<div class="card">
+<p class="sp-h"><span>وزنك النهارده</span><b><bdi>77.9</bdi> <small>كجم</small></b></p>
+<div class="bar" role="img" aria-label="دهون 14.9 كجم وكتلة خالية من الدهون 63.0 كجم"><i class="f"></i><i class="m"></i></div>
+<p class="leg"><span><i class="dot" style="background:var(--fat)"></i>دهون <bdi>14.9</bdi></span><span><i class="dot" style="background:var(--ffm)"></i>كتلة خالية من الدهون <bdi>63.0</bdi></span></p>
+</div>
+<div class="card next"><span class="chipi"><svg class="ic"><use href="#i-cal"/></svg></span><div><h3>القياس الجاي بعد <bdi>4</bdi> أسابيع</h3><p>الأربع <bdi>16</bdi> ديسمبر، <bdi dir="ltr">8:00</bdi> الصبح زي آخر مرة. تعالى بعد الأكل بـ<bdi>3</bdi> ساعات ومن غير تمرين.</p></div></div>
+<a class="btn" href="#"><svg class="ic"><use href="#i-chat"/></svg>كلّم مدربك على واتساب</a>
+</div>
+<nav class="tb"><a aria-current="page"><svg class="ic"><use href="#i-home"/></svg>الرئيسية</a><a><svg class="ic"><use href="#i-scan"/></svg>القياسات</a><a><svg class="ic"><use href="#i-cmp"/></svg>مقارنة</a><a><svg class="ic"><use href="#i-user"/></svg>حسابي</a></nav>
+<div class="hi"></div>
+</div>
+<figcaption><b>b</b> · Home, Arabic, light</figcaption>
+</figure>
+
+<!-- c: Scan report, Arabic, light (default) -->
+<figure class="shot">
+<div class="ph" data-frame-theme="light" lang="ar" dir="rtl">
+<div class="sbar"><span>9:41</span><svg><use href="#i-sb"/></svg></div>
+<div class="scr">
+<div class="ab"><a href="#" aria-label="رجوع"><svg class="ic"><use href="#i-back"/></svg></a><h2>تقرير القياس</h2></div>
+<p class="meta"><bdi>18</bdi> نوفمبر · <bdi>Iron Box</bdi> التجمع · <bdi>InBody 770</bdi></p>
+<h1 class="hl">عضلك بيزيد ودهونك بتقل من <bdi>3</bdi> شهور</h1>
+<div class="note"><svg class="ic"><use href="#i-eq"/></svg><p>مقارنة بالقياس اللي فات: تقريباً زي ما هو<small>التغيير أصغر من فرق الجهاز</small></p></div>
+<p class="hint"><svg class="ic s"><use href="#i-info"/></svg>اضغط على أي رقم عشان تفهمه</p>
+<div class="rows">
+<button class="mr"><span class="mh"><span class="nm">الوزن</span><span class="w">طبيعي</span><span class="v"><bdi>77.9</bdi> <small>كجم</small></span></span>
+<span class="rb" style="--p:70.7%"><i class="bd"></i><i class="dt"></i></span><span class="rl"><i style="--x:25%"><bdi>58.9</bdi></i><i style="--x:75%"><bdi>79.7</bdi></i></span></button>
+<button class="mr"><span class="mh"><span class="nm">العضل</span><span class="w">طبيعي</span><span class="v"><bdi>35.8</bdi> <small>كجم</small></span></span>
+<span class="rb" style="--p:70.5%;--c:var(--musc)"><i class="bd"></i><i class="dt"></i></span><span class="rl"><i style="--x:25%"><bdi>29.8</bdi></i><i style="--x:75%"><bdi>36.4</bdi></i></span></button>
+<button class="mr"><span class="mh"><span class="nm">الدهون</span><span class="w">طبيعي</span><span class="v"><bdi>14.92</bdi> <small>كجم</small></span></span>
+<span class="rb" style="--p:57.2%;--c:var(--fat)"><i class="bd"></i><i class="dt"></i></span><span class="rl"><i style="--x:25%"><bdi>10.8</bdi></i><i style="--x:75%"><bdi>17.2</bdi></i></span></button>
+<button class="mr"><span class="mh"><span class="nm">نسبة الدهون</span><span class="w">طبيعي</span><span class="v"><bdi>19.15</bdi><small>%</small></span></span>
+<span class="rb" style="--p:70.75%;--c:var(--fat)"><i class="bd"></i><i class="dt"></i></span><span class="rl"><i style="--x:25%"><bdi>10</bdi></i><i style="--x:75%"><bdi>20</bdi></i></span></button>
+<button class="mr"><span class="mh"><span class="nm">الدهون الحشوية</span><span class="w">طبيعي</span><span class="v">مستوى <bdi>6</bdi></span></span>
+<span class="rb" style="--p:30%;--a:0%;--c:var(--fat)"><i class="bd"></i><i class="dt"></i></span><span class="rl"><i style="--x:50%"><bdi>10</bdi></i><span style="position:absolute;inset-inline-end:0;white-space:nowrap">الهدف أقل من <bdi>10</bdi></span></span></button>
+<button class="mr"><span class="mh"><span class="nm">مية الجسم</span><span class="w">طبيعي</span><span class="v"><bdi>46.4</bdi> <small>لتر</small></span></span>
+<span class="rb" style="--p:60.6%;--c:var(--wat)"><i class="bd"></i><i class="dt"></i></span><span class="rl"><i style="--x:25%"><bdi>40.0</bdi></i><i style="--x:75%"><bdi>49.0</bdi></i></span></button>
+<div class="more"><p>تفاصيل أكتر<small>البروتين، المعادن، الحرق، درجة <bdi>InBody</bdi></small></p><svg class="ic"><use href="#i-fwd"/></svg></div>
+</div>
+<div class="card">
+<p class="sp-h"><span>وزنك = دهون + كتلة خالية من الدهون</span><b><bdi>77.9</bdi> <small>كجم</small></b></p>
+<div class="bar" role="img" aria-label="77.9 كجم: دهون 14.92 وكتلة خالية من الدهون 62.98"><i class="f"></i><i class="m"></i></div>
+<p class="leg"><span><i class="dot" style="background:var(--fat)"></i>دهون <bdi>14.92</bdi></span><span><i class="dot" style="background:var(--ffm)"></i>خالية من الدهون <bdi>62.98</bdi></span></p>
+</div>
+<div class="card">
+<div class="ct"><h3>توازن الجسم</h3><span class="ok"><svg class="ic s"><use href="#i-ok"/></svg>متوازن</span></div>
+<p class="meta">الفرق بين اليمين والشمال أقل من <bdi>2%</bdi></p>
+<div class="bal">
+<div class="col"><b>اليمين</b><p class="seg"><span>الدراع</span><strong><bdi>3.48</bdi></strong><span><bdi>105%</bdi></span></p><p class="seg"><span>الرجل</span><strong><bdi>9.62</bdi></strong><span><bdi>104%</bdi></span></p></div>
+<svg class="fig" viewBox="0 0 104 212" role="img" aria-label="رسمة الجسم باصّة ناحيتك"><circle cx="52" cy="17" r="13" fill="var(--line)"/><rect class="sg" x="30" y="37" width="44" height="80" rx="18"/><rect class="sg" x="9" y="41" width="17" height="72" rx="8.5"/><rect class="sg" x="78" y="41" width="17" height="72" rx="8.5"/><rect class="sg" x="31" y="122" width="19" height="86" rx="9.5"/><rect class="sg" x="54" y="122" width="19" height="86" rx="9.5"/></svg>
+<div class="col"><b>الشمال</b><p class="seg"><span>الدراع</span><strong><bdi>3.44</bdi></strong><span><bdi>104%</bdi></span></p><p class="seg"><span>الرجل</span><strong><bdi>9.58</bdi></strong><span><bdi>103%</bdi></span></p></div>
+</div>
+<p class="trunk"><span class="meta">الجذع </span><strong><bdi>28.4</bdi></strong> <span class="meta">كجم · <bdi>102%</bdi></span></p>
+<p class="cap">كتلة خالية من الدهون بالكيلو و% من المثالي. الرسمة باصّة ناحيتك.</p>
+</div>
+<a class="btn" href="#"><svg class="ic"><use href="#i-chat"/></svg>كلّم مدربك على واتساب</a>
+<p class="disc">معلومات للياقة، مش تشخيص طبي.</p>
+</div>
+<nav class="tb"><a><svg class="ic"><use href="#i-home"/></svg>الرئيسية</a><a aria-current="page"><svg class="ic"><use href="#i-scan"/></svg>القياسات</a><a><svg class="ic"><use href="#i-cmp"/></svg>مقارنة</a><a><svg class="ic"><use href="#i-user"/></svg>حسابي</a></nav>
+<div class="hi"></div>
+</div>
+<figcaption><b>c</b> · Scan report, Arabic, light (default)</figcaption>
+</figure>
+
+<!-- d: Trend chart, Arabic, dark -->
+<figure class="shot">
+<div class="ph" data-frame-theme="dark" lang="ar" dir="rtl">
+<div class="sbar"><span>9:41</span><svg><use href="#i-sb"/></svg></div>
+<div class="scr">
+<div class="ab"><a href="#" aria-label="رجوع"><svg class="ic"><use href="#i-back"/></svg></a><h2>العضل والدهون</h2></div>
+<h1 class="hl">عضلك زاد <bdi>1.0</bdi> كجم ودهونك قلّت <bdi>2.3</bdi> كجم في <bdi>3</bdi> شهور ونص</h1>
+<div class="card" style="padding:16px 12px 14px;margin-top:16px">
+<svg class="ch" viewBox="0 0 300 270" role="img" aria-label="العضل: 34.8 في 2 أغسطس، 35.3 في 14 أكتوبر، 35.8 في 18 نوفمبر. الدهون: 17.2، 15.95، 14.92 كجم">
+<text class="t" x="250" y="14" text-anchor="end" fill="var(--musc)">العضل (كجم)</text>
+<g class="g"><line x1="16" x2="250" y1="32" y2="32"/><line x1="16" x2="250" y1="58.67" y2="58.67"/><line x1="16" x2="250" y1="85.33" y2="85.33"/><line x1="16" x2="250" y1="112" y2="112"/></g>
+<g class="ax"><text x="262" y="36">39</text><text x="262" y="62.7">37</text><text x="262" y="89.3">35</text><text x="262" y="116">33</text></g>
+<path class="ln ds" d="M248.08 88 L108.07 81.33" stroke="var(--musc)"/>
+<path class="ln" d="M108.07 81.33 L40.93 74.67" stroke="var(--musc)"/>
+<g fill="var(--musc)"><circle class="pt" cx="248.08" cy="88" r="6.5"/><circle class="pt" cx="108.07" cy="81.33" r="6.5"/><circle class="pt" cx="40.93" cy="74.67" r="8"/></g>
+<g class="lb" text-anchor="middle"><text x="244" y="74">34.8</text><text x="108.07" y="67">35.3</text><text x="40.93" y="58">35.8</text></g>
+<text class="t" x="250" y="140" text-anchor="end" fill="var(--fat)">الدهون (كجم)</text>
+<g class="g"><line x1="16" x2="250" y1="156" y2="156"/><line x1="16" x2="250" y1="182.67" y2="182.67"/><line x1="16" x2="250" y1="209.33" y2="209.33"/><line x1="16" x2="250" y1="236" y2="236"/></g>
+<g class="ax"><text x="262" y="160">18</text><text x="262" y="186.7">16</text><text x="262" y="213.3">14</text><text x="262" y="240">12</text></g>
+<path class="ln ds" d="M248.08 166.67 L108.07 183.33" stroke="var(--fat)"/>
+<path class="ln" d="M108.07 183.33 L40.93 197.07" stroke="var(--fat)"/>
+<g fill="var(--fat)"><circle class="pt" cx="248.08" cy="166.67" r="6.5"/><circle class="pt" cx="108.07" cy="183.33" r="6.5"/><circle class="pt" cx="40.93" cy="197.07" r="8"/></g>
+<g class="lb" text-anchor="middle"><text x="238" y="187">17.2</text><text x="108.07" y="203">15.95</text><text x="40.93" y="220">14.92</text></g>
+<g stroke="var(--mu)" stroke-width="1.5"><line x1="250" x2="250" y1="236" y2="243"/><line x1="190.54" x2="190.54" y1="236" y2="243"/><line x1="133" x2="133" y1="236" y2="243"/><line x1="73.54" x2="73.54" y1="236" y2="243"/><line x1="16" x2="16" y1="236" y2="243"/></g>
+<g class="ax" text-anchor="middle" style="font-size:13px"><text x="220.27" y="262">أغسطس</text><text x="161.77" y="262">سبتمبر</text><text x="103.27" y="262">أكتوبر</text><text x="44.77" y="262">نوفمبر</text></g>
+</svg>
+<p class="key"><svg viewBox="0 0 28 6"><path d="M3 3H25" stroke="var(--mu)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/></svg>متقطع: أكتر من <bdi>8</bdi> أسابيع بين القياسين</p>
+</div>
+<div class="note"><svg class="ic"><use href="#i-eq"/></svg><p>آخر قياس لوحده: تقريباً زي ما هو<small>عضل <bdi dir="ltr">+0.5</bdi>، دهون <bdi dir="ltr">−1.0</bdi>: أصغر من فرق الجهاز</small></p></div>
+<a class="btn" href="#"><svg class="ic"><use href="#i-cmp"/></svg>قارن آخر قياسين</a>
+</div>
+<nav class="tb"><a><svg class="ic"><use href="#i-home"/></svg>الرئيسية</a><a aria-current="page"><svg class="ic"><use href="#i-scan"/></svg>القياسات</a><a><svg class="ic"><use href="#i-cmp"/></svg>مقارنة</a><a><svg class="ic"><use href="#i-user"/></svg>حسابي</a></nav>
+<div class="hi"></div>
+</div>
+<figcaption><b>d</b> · Trend, Arabic, dark · oldest on the right</figcaption>
+</figure>
+
+<!-- e: Home, English, dark -->
+<figure class="shot">
+<div class="ph" data-frame-theme="dark" lang="en" dir="ltr">
+<div class="sbar"><span>9:41</span><svg><use href="#i-sb"/></svg></div>
+<div class="scr">
+<div class="top"><span class="wm">LevelUP</span><span class="vr"></span><span class="ib" title="Iron Box">IB</span></div>
+<p class="hello">Good morning, Karim</p>
+<h1 class="verdict">Your weight dropped a kilo, but what matters is your body changed: more muscle, less fat.</h1>
+<p class="ctx">Since your first scan · 3 scans in 3.5 months</p>
+<div class="pebs">
+<div class="peb"><span><svg class="ic s"><use href="#i-ok"/></svg>Muscle</span><b>+1.0&nbsp;<small>kg</small></b></div>
+<div class="peb"><span><svg class="ic s"><use href="#i-ok"/></svg>Fat</span><b>−2.3&nbsp;<small>kg</small></b></div>
+<div class="peb eq"><span><svg class="ic s"><use href="#i-eq"/></svg>Weight</span><b>−1.1&nbsp;<small>kg</small></b></div>
+</div>
+<div class="card">
+<p class="sp-h"><span>Your weight today</span><b>77.9&nbsp;<small>kg</small></b></p>
+<div class="bar" role="img" aria-label="Fat 14.9 kg and fat-free mass 63.0 kg"><i class="f"></i><i class="m"></i></div>
+<p class="leg"><span><i class="dot" style="background:var(--fat)"></i>Fat 14.9</span><span><i class="dot" style="background:var(--ffm)"></i>Fat-free mass 63.0</span></p>
+</div>
+<div class="card next"><span class="chipi"><svg class="ic"><use href="#i-cal"/></svg></span><div><h3>Next scan in 4 weeks</h3><p>Wed 16 Dec, 8:00 AM like last time. Come 3 hours after eating, no workout.</p></div></div>
+<a class="btn" href="#"><svg class="ic"><use href="#i-chat"/></svg>Message your coach on WhatsApp</a>
+</div>
+<nav class="tb"><a aria-current="page"><svg class="ic"><use href="#i-home"/></svg>Home</a><a><svg class="ic"><use href="#i-scan"/></svg>Scans</a><a><svg class="ic"><use href="#i-cmp"/></svg>Compare</a><a><svg class="ic"><use href="#i-user"/></svg>Account</a></nav>
+<div class="hi"></div>
+</div>
+<figcaption><b>e</b> · Home, English, dark</figcaption>
+</figure>
+</div>
+</section>
+
+<section>
+<h2 class="sh">Components</h2>
+<p class="sl">Shown in the page’s theme; switch your system appearance to see the other set.</p>
+<div class="cps" lang="ar" dir="rtl">
+<div class="cp"><h3 lang="en" dir="ltr">Metric row with range bar · tap target, low on the right in Arabic</h3>
+<div class="rows"><button class="mr"><span class="mh"><span class="nm">نسبة الدهون</span><span class="w">طبيعي</span><span class="v"><bdi>19.15</bdi><small>%</small></span></span>
+<span class="rb" style="--p:70.75%;--c:var(--fat)"><i class="bd"></i><i class="dt"></i></span><span class="rl"><i style="--x:25%"><bdi>10</bdi></i><i style="--x:75%"><bdi>20</bdi></i></span></button></div>
+<ul lang="en" dir="ltr"><li>Track: border tone, decorative. Band: mint pill with a 3:1 edge. Bead: data color with a raised-surface ring.</li><li>Outside the band, the word becomes an apricot pill: <span class="w" style="background:var(--at);color:var(--onat);border-radius:99px;padding:0 10px" lang="ar">أعلى شوية</span></li></ul></div>
+<div class="cp"><h3 lang="en" dir="ltr">Change chips · improved, about the same, attention</h3>
+<div class="chips"><span class="chip"><svg class="ic s"><use href="#i-ok"/></svg>اتحسّن · عضل <bdi dir="ltr">+1.0</bdi> كجم</span><span class="chip eq"><svg class="ic s"><use href="#i-eq"/></svg>تقريباً زي ما هو</span><span class="chip at"><svg class="ic s"><use href="#i-at"/></svg>خلي بالك</span></div>
+<ul lang="en" dir="ltr"><li>Color means better or worse, never up or down: fat −2.3 kg is a mint chip. Every chip pairs color with an icon and a word.</li></ul></div>
+<div class="cp"><h3 lang="en" dir="ltr">Primary + secondary button · 56 px pills</h3>
+<a class="btn" href="#" style="margin-top:0"><svg class="ic"><use href="#i-chat"/></svg>كلّم مدربك على واتساب</a>
+<a class="btn btn2" href="#" style="margin-top:10px">شوف التقرير كله</a></div>
+<div class="cp"><h3 lang="en" dir="ltr">Tab bar · active, inactive, keyboard focus</h3>
+<nav class="tb"><a aria-current="page"><svg class="ic"><use href="#i-home"/></svg>الرئيسية</a><a><svg class="ic"><use href="#i-scan"/></svg>القياسات</a><a><svg class="ic"><use href="#i-cmp"/></svg>مقارنة</a><a><svg class="ic"><use href="#i-user"/></svg>حسابي</a></nav>
+<nav class="tb"><a><svg class="ic"><use href="#i-home"/></svg>الرئيسية</a><a aria-current="page"><svg class="ic"><use href="#i-scan"/></svg>القياسات</a><a class="fr"><svg class="ic"><use href="#i-cmp"/></svg>مقارنة</a><a><svg class="ic"><use href="#i-user"/></svg>حسابي</a></nav>
+<ul lang="en" dir="ltr"><li>Active: mint pill + accent label. Inactive: muted. Focus: 2 px accent ring (third tab, second bar). Each tab ≥ 44 px.</li></ul></div>
+<div class="cp"><h3 lang="en" dir="ltr">Empty state · no scans yet</h3>
+<div class="empty"><span class="chipi"><svg class="ic"><use href="#i-scan"/></svg></span><h4>لسه مفيش قياسات</h4><p>أول ما الجيم يسجّل قياس <bdi>InBody</bdi> برقم تليفونك، هيظهر هنا ونشرحهولك.</p>
+<a class="btn" href="#">إزاي أستعد لأول قياس</a></div></div>
+</div>
+</section>
+
+<p class="foot">Not used anywhere: violet, purple, magenta, indigo, glass, blur, glow, decorative gradients, uppercase tracked labels, red on a body metric. Fonts: Baloo Bhaijaan 2 (500–700) and Rubik (400–600), both with Arabic subsets and tabular figures, from Google Fonts.</p>
+</div>
+</body>
+</html>

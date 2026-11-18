@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Body First</title>
+<meta name="description" content="LevelUP round 3: the member's body is the interface. Dark, logo violet, re-colorable per gym.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pg:#F1EFF7;--pc:#FFFFFF;--pi:#15121F;--pm:#565070;--pl:#DCD8E7;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--pg:#100E19;--pc:#15121F;--pi:#F4F2FA;--pm:#A9A3BF;--pl:#2E2843;color-scheme:dark}}
+:root[data-theme="dark"]{--pg:#100E19;--pc:#15121F;--pi:#F4F2FA;--pm:#A9A3BF;--pl:#2E2843;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--pg);color:var(--pi);font:400 16px/1.6 "IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.fd,.btn,.v,.big{font-family:"Readex Pro","IBM Plex Sans Arabic",sans-serif}
+bdi{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+.defs{position:absolute;width:0;height:0;overflow:hidden}
+.wrap{max-width:1360px;margin:0 auto;padding:56px 16px 96px}
+.intro{max-width:780px}
+.intro h1{font-size:clamp(2.4rem,7vw,3.75rem);line-height:1.04;font-weight:600;letter-spacing:-.02em}
+.intro p{color:var(--pm);margin-top:16px;font-size:1.0625rem}
+.mood{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.mood span{border:1px solid var(--pl);border-radius:99px;padding:4px 14px;font-size:.875rem;background:var(--pc)}
+section{margin-top:80px}
+section>h2{font-size:1.5rem;font-weight:600}
+section>p{color:var(--pm);max-width:700px;margin:6px 0 32px}
+.frames{display:flex;flex-wrap:wrap;gap:64px 44px;justify-content:center}
+.fr{width:min(410px,100%)}
+.fr figcaption{margin-top:20px;font-size:.9375rem;color:var(--pm);padding:0 6px}
+.fr figcaption b{color:var(--pi);font-weight:600;display:block}
+/* app tokens: palette exactly as BRIEF-3 */
+.app{--bg:#0C0A14;--surface-1:#15121F;--surface-2:#1D1929;--surface-3:#26213A;--border:#2E2843;--text:#F4F2FA;--text-muted:#A9A3BF;--text-faint:#6F6987;--brand:#8B5CF6;--brand-strong:#6B3BF5;--brand-soft:#B98CFF;--brand-tint:#2A1F4D;--on-brand:#FFFFFF;--on-grad:#0C0A14;--brand-gradient:linear-gradient(135deg,#E19CFB 0%,#B98CFF 45%,#6B3BF5 100%);--good:#4ADE9A;--attention:#FFC857;--on-attention:#2A1D00;--stable:#8B8AA3;--muscle:#5B9CFF;--fat:#F2A65A;--water:#3FD0E0;--lean:#C9C3E3;background:var(--bg);color:var(--text);font-family:"IBM Plex Sans Arabic","Readex Pro",sans-serif}
+/* gym re-coloring: only the brand layer changes */
+[data-gym="ironbox"]{--brand:#FF6A1A;--brand-strong:#C9500F;--brand-soft:#FFA066;--brand-tint:#411F15;--on-brand:#0C0A14;--brand-gradient:linear-gradient(135deg,#FFA066 0%,#C9500F 100%)}
+[data-gym="pulse"]{--brand:#12B5A6;--brand-strong:#0B8278;--brand-soft:#5EDDD0;--brand-tint:#0D3034;--on-brand:#0C0A14;--brand-gradient:linear-gradient(135deg,#5EDDD0 0%,#0B8278 100%)}
+.phone{position:relative;width:390px;height:844px;margin:10px auto;border-radius:54px;overflow:hidden;box-shadow:0 0 0 1px #2E2843,0 0 0 9px #15121F,0 0 0 10px #2E2843,0 40px 80px -30px rgba(12,10,20,.6)}
+@media (max-width:440px){.phone{zoom:.83}}
+@media (max-width:374px){.phone{zoom:.69}}
+.phone::after{content:"";position:absolute;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--text);z-index:40}
+.sb{position:absolute;top:0;left:0;right:0;height:47px;display:flex;justify-content:space-between;align-items:center;padding:8px 30px 0 40px;direction:ltr;font:600 15px "Readex Pro",sans-serif;z-index:30}
+.sb::after{content:"";position:absolute;top:11px;left:50%;width:124px;height:36px;margin-left:-62px;border-radius:20px;background:#000}
+.sb svg{width:70px;height:12px}
+.scr{position:absolute;inset:47px 0 0;display:flex;flex-direction:column}
+.bd{flex:1;min-height:0;overflow:hidden;padding:4px 16px 14px;display:flex;flex-direction:column;gap:14px}
+.tabs{flex:none;height:96px;padding:7px 6px 34px;display:flex;background:var(--surface-1);border-top:1px solid var(--border)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--text-muted);position:relative}
+.tab .pl{width:58px;height:32px;border-radius:16px;display:grid;place-items:center}
+.tab.on{color:var(--text);font-weight:500}
+.tab.on .pl{background:var(--brand-tint);color:var(--brand-soft)}
+.tab.on::before{content:"";position:absolute;top:-8px;width:26px;height:3px;border-radius:0 0 3px 3px;background:var(--brand)}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i.s{width:16px;height:16px}.i.l{width:24px;height:24px}
+.ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--c,var(--brand)) 16%,transparent);color:var(--c,var(--brand-soft))}
+.ic.sm{width:26px;height:26px;border-radius:9px}
+.c-m{--c:var(--muscle)}.c-f{--c:var(--fat)}.c-w{--c:var(--water)}.c-l{--c:var(--lean)}.c-g{--c:var(--good)}.c-s{--c:var(--stable)}.c-a{--c:var(--attention)}
+.hd{display:flex;align-items:center;gap:12px;min-height:56px;flex:none}
+.av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--brand-tint);color:var(--brand-soft);font:600 18px "Readex Pro",sans-serif;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--brand) 45%,transparent)}
+.who{flex:1;min-width:0;line-height:1.35}
+.who b{display:block;font:600 17px/1.4 "Readex Pro",sans-serif}
+.who span{font-size:13px;color:var(--text-muted)}
+.gb{display:flex;align-items:center;gap:7px;height:40px;padding-inline:5px 11px;border-radius:13px;background:var(--surface-2);border:1px solid var(--border);font-size:12px;color:var(--text-muted);white-space:nowrap}
+.mono{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--surface-3);color:var(--text);font:700 11px "Readex Pro",sans-serif;flex:none}
+.mono.br{background:var(--brand);color:var(--on-brand)}
+.ib{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted)}
+.chip{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;border-radius:99px;font-size:13px;font-weight:500;white-space:nowrap;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c)}
+.chip.c-s{color:var(--text-muted)}.chip.c-s .i{color:var(--stable)}
+.chip.a{background:var(--attention);color:var(--on-attention)}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:22px;padding:14px;box-shadow:0 12px 30px -20px rgba(0,0,0,.9)}
+.card.s2{background:var(--surface-2)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;width:100%;border-radius:16px;font-size:16px;font-weight:600;text-decoration:none;color:var(--text)}
+.btn.p{background:var(--brand-gradient);color:var(--on-grad);box-shadow:0 10px 24px -14px rgba(0,0,0,.9)}
+.btn.s{background:var(--surface-2);border:1px solid var(--border)}
+.btn.t{color:var(--brand-soft);min-height:44px}
+.mut{color:var(--text-muted)}.sm{font-size:13px}.xs{font-size:12px}
+.row{display:flex;align-items:center;gap:10px}
+.sp{flex:1;min-width:0}
+.lbl{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted)}
+.verdict{font:500 20px/1.6 "Readex Pro",sans-serif;text-wrap:balance}
+[lang="en"] .verdict{line-height:1.4;font-size:21px}
+.v{font-weight:600;font-variant-numeric:tabular-nums}
+.big{font-size:32px;font-weight:600;line-height:1.1}
+.big small{font-size:15px;font-weight:400;color:var(--text-muted)}
+/* range bar: dot on a line, normal band shaded, low end at line start (right in Arabic) */
+.rb{position:relative;height:8px;border-radius:4px;background:var(--surface-3);margin:8px 0 4px}
+.rb i{position:absolute;top:0;bottom:0;inset-inline-start:var(--lo);width:calc(var(--hi) - var(--lo));background:color-mix(in srgb,var(--lean) 26%,transparent);border-radius:4px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lean) 30%,transparent)}
+.rb b{position:absolute;top:50%;inset-inline-start:var(--v);width:16px;height:16px;margin:-8px 0 0;margin-inline-start:-8px;border-radius:50%;background:var(--c,var(--text));box-shadow:0 0 0 3px var(--surface-1)}
+.rl{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)}
+/* body stage + callouts */
+.stage{position:relative;flex:none}
+.stage>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.co{position:absolute;width:100px;padding:8px 10px 9px;border-radius:16px;background:var(--surface-2);border:1px solid var(--border);box-shadow:0 10px 24px -16px rgba(0,0,0,.9);cursor:pointer;line-height:1.35}
+.co .lbl{font-size:12px;gap:5px}
+.co .v{display:block;font-size:20px;margin-top:3px}
+.co .v small{font-size:12px;font-weight:400;color:var(--text-muted)}
+.co .xs{display:block;color:var(--text-muted);margin-top:1px}
+.hit{position:absolute;border-radius:22px;cursor:pointer}
+.lead{fill:none;stroke:var(--text-muted);stroke-width:1.5}
+.lead-u{fill:none;stroke:var(--bg);stroke-width:4.5;opacity:.85}
+.dot{fill:var(--text);stroke:var(--bg);stroke-width:2.5}
+.hl{fill:none;stroke:var(--brand-soft);stroke-width:3.5;opacity:0;transition:opacity .2s}
+/* tap-to-explain sheets: radio + label, no JavaScript */
+.rad{position:absolute;opacity:0;pointer-events:none}
+.scrim{position:absolute;inset:0;background:rgba(12,10,20,.74);opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--surface-2);border-radius:28px 28px 0 0;border-top:1px solid var(--border);padding:10px 20px 48px;transform:translateY(105%);transition:transform .34s cubic-bezier(.2,0,0,1);display:flex;flex-direction:column;gap:12px;box-shadow:0 -20px 40px -20px rgba(0,0,0,.8)}
+.sheet.st{position:relative;transform:none;border-radius:28px;border:1px solid var(--border);padding-bottom:20px;box-shadow:none}
+.grab{width:38px;height:5px;border-radius:3px;background:var(--border);align-self:center;margin-bottom:2px}
+.sheet h3{font-size:18px;font-weight:600;line-height:1.3}
+.sheet p{font-size:15px;line-height:1.7}
+.x{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--surface-3);color:var(--text-muted);cursor:pointer;flex:none}
+#ha:checked~.sha,#ht:checked~.sht,#hl:checked~.shl,#hw:checked~.shw{transform:none}
+.rad:not(#h0):checked~.scrim{opacity:1;pointer-events:auto}
+#ha:checked~.bd .hl-a,#ht:checked~.bd .hl-t,#hl:checked~.bd .hl-l,#hw:checked~.bd .hl-w{opacity:1}
+.rad:focus-visible~.bd .tapnote{outline:2px solid var(--brand-soft);outline-offset:2px}
+.tapnote{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:99px;background:var(--surface-1);border:1px solid var(--border);font-size:12px;color:var(--text-muted)}
+.sec-h{display:flex;align-items:center;gap:8px;font:600 15px "Readex Pro",sans-serif;margin-bottom:10px}
+.list>*+*{border-top:1px solid var(--border)}
+.li{display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 0}
+.sw{width:46px;height:28px;border-radius:14px;background:var(--surface-3);border:1px solid var(--border);position:relative;flex:none}
+.sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;border-radius:50%;background:var(--text-muted)}
+.sw.on{background:var(--brand-strong);border-color:var(--brand-strong)}
+.sw.on::after{inset-inline-start:21px;background:var(--text)}
+.seg{display:flex;padding:3px;border-radius:14px;background:var(--surface-2);border:1px solid var(--border);gap:3px}
+.seg span{flex:1;min-height:38px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:11px;font-size:14px;color:var(--text-muted)}
+.seg .on{background:var(--brand-tint);color:var(--text);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand) 50%,transparent)}
+.scan{animation:sweep 2.6s cubic-bezier(.2,0,0,1) .4s both}
+@keyframes sweep{from{transform:translateY(0);opacity:1}to{transform:translateY(286px);opacity:0}}
+.rise{animation:rise 1.4s cubic-bezier(.2,0,0,1) .3s both}
+@keyframes rise{from{transform:translateY(16px);opacity:0}}
+.pulse{animation:pl 1.6s ease-in-out infinite alternate}
+@keyframes pl{to{opacity:.45}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+[dir="rtl"] .flip{transform:scaleX(-1)}
+.mr{display:flex;gap:10px;align-items:flex-start;padding:8px 0 6px}.mr .rb{margin:6px 0 1px;height:6px}.mr .rb b{width:12px;height:12px;margin-top:-6px;margin-inline-start:-6px}.mr .rl{font-size:11px;line-height:1.3}
+.cr{display:grid;grid-template-columns:1fr 48px 48px 62px;align-items:center;gap:4px 6px;padding:9px 0 7px;font-size:15px}.cr .chip{justify-content:center}
+.nm{grid-column:1/-1;position:relative;height:6px;border-radius:3px;background:var(--surface-3);margin-top:4px}.nm i{position:absolute;top:0;bottom:0;left:25%;right:25%;border-radius:3px;background:color-mix(in srgb,var(--stable) 38%,transparent)}.nm::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1.5px;background:var(--text-faint)}.nm b{position:absolute;top:50%;inset-inline-start:var(--v);width:12px;height:12px;margin-top:-6px;margin-inline-start:-6px;border-radius:50%;background:var(--stable);box-shadow:0 0 0 3px var(--surface-1);z-index:1}
+.seg.sm{padding:2px;border-radius:12px}.seg.sm span{min-height:34px;padding:0 10px;font-size:13px;border-radius:10px}
+.split{display:flex;gap:3px;height:12px}.split span{border-radius:6px}
+/* gym strip + component sheet */
+.gyms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px}
+.gym{border-radius:28px;padding:18px;border:1px solid #2E2843;display:flex;flex-direction:column;gap:14px}
+.gym h3{font-size:14px;font-weight:500;color:var(--text-muted);display:flex;justify-content:space-between;gap:8px}
+.kit{border-radius:28px;padding:24px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:28px 24px}
+.kit h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text-muted)}
+.icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:10px 6px}
+.icons div{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;color:var(--text-muted);text-align:center}
+.ct{width:100%;border-collapse:collapse;font-size:13px}
+.ct td{padding:6px 4px;border-top:1px solid var(--border)}
+.ct td:last-child{text-align:end;font-variant-numeric:tabular-nums}
+.sw8{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-inline-end:6px}
+</style>
+</head>
+<body>
+<svg class="defs" aria-hidden="true" focusable="false"><defs>
+<symbol id="sbi" viewBox="0 0 70 12"><g fill="currentColor"><rect y="8" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="6" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" width="3" height="12" rx="1"/><rect x="46" y="2.5" width="17" height="7" rx="1.5"/><rect x="67.5" y="4" width="1.5" height="4" rx=".7"/></g><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M26 4a11 11 0 0 1 14 0M28.6 6.8a7 7 0 0 1 8.8 0M31.2 9.5a3 3 0 0 1 3.6 0"/><rect x="44" y=".8" width="22" height="10.4" rx="3" opacity=".45"/></g></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8M16 13H8M16 17H8"/></symbol>
+<symbol id="i-cmp" viewBox="0 0 24 24"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="i-dumb" viewBox="0 0 24 24"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+<symbol id="i-weight" viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"/></symbol>
+<symbol id="i-pct" viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M22 17 13.5 8.5 8.5 13.5 2 7"/><path d="M16 17h6v-6"/></symbol>
+<symbol id="i-eq" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+<symbol id="i-chl" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+<symbol id="i-chr" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="i-bal" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1ZM2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+<symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65M22 12.65l-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></symbol>
+<symbol id="i-body" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M9 21l1.2-8.5M15 21l-1.2-8.5M6 8.5l6 1.5 6-1.5M12 10v3"/></symbol>
+<symbol id="i-tap" viewBox="0 0 24 24"><path d="M22 14a8 8 0 0 1-8 8"/><path d="M18 11v-1a2 2 0 0 0-4 0M14 10V9a2 2 0 0 0-4 0v1M10 9.5V4a2 2 0 0 0-4 0v10"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></symbol>
+<symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+<!-- body figure: front view, never mirrored. Viewer's left = member's right. viewBox 0 0 220 444 -->
+<path id="bH" d="M110 15C121 15 129.5 25 129.5 38C129.5 49 123.5 57.5 117 61L118.5 67C114 70 106 70 101.5 67L103 61C96.5 57.5 90.5 49 90.5 38C90.5 25 99 15 110 15Z"/>
+<path id="bT" d="M101 70C95 74 86 77 79 80C74 83 71 90 72 98C73 112 75 124 78 136C80 148 82 158 82 168C82 182 79 194 79 204C79 214 84 222 92 227L104 233C108 235 112 235 116 233L128 227C136 222 141 214 141 204C141 194 138 182 138 168C138 158 140 148 142 136C145 124 147 112 148 98C149 90 146 83 141 80C134 77 125 74 119 70C114 72.5 106 72.5 101 70Z"/>
+<path id="bAR" d="M70 84C60 80 48 86 46 100C44 112 44 122 44 132C43 146 41 158 40 170C39 182 37 196 35 210C34 222 33 230 33 238C31 248 30 258 33 266C35 273 44 274 46 266C48 258 48 248 46 240C49 226 53 210 55 196C56 186 57 178 58 172C60 160 63 146 65 134C67 122 68 110 68 100C68 94 69 88 70 84Z"/>
+<path id="bLR" d="M80 226C92 230 100 234 107 238C107 262 105 284 102 306C101 318 100 328 101 338C102 352 103 368 101 384C100 396 99 404 99 412C100 418 103 424 102 428C101 432 97 433 92 433L84 433C78 433 76 430 78 426C81 420 84 416 85 410C83 396 77 380 77 364C77 350 80 342 80 334C80 324 78 316 77 306C74 288 72 266 74 246C75 238 77 231 80 226Z"/>
+<use id="bAL" href="#bAR" transform="matrix(-1 0 0 1 220 0)"/>
+<use id="bLL" href="#bLR" transform="matrix(-1 0 0 1 220 0)"/>
+<g id="bAll"><use href="#bT"/><use href="#bAR"/><use href="#bAL"/><use href="#bLR"/><use href="#bLL"/></g>
+<clipPath id="cT"><use href="#bT"/></clipPath><clipPath id="cA"><use href="#bAR"/></clipPath><clipPath id="cL"><use href="#bLR"/></clipPath>
+<!-- Karim's lean fill levels, scale 0-110% of ideal: arms 105/104, trunk 102, legs 104/103 -->
+<clipPath id="lv"><rect y="92.6" width="70.5" height="200"/><rect x="149.5" y="94.4" width="70.5" height="200"/><path d="M70.5 82H149.5V222L136 224.5 128 229 116 235 110 236.5 104 235 92 229 84 224.5 70.5 222Z"/><rect x="60" y="237.3" width="50" height="200"/><rect x="110" y="239.2" width="50" height="200"/></clipPath>
+<g id="ideal" fill="none" stroke="#0C0A14" stroke-width="1.6" stroke-dasharray="3.5 2.5" opacity=".75"><path d="M0 101.3H72" clip-path="url(#cA)"/><path d="M0 101.3H72" clip-path="url(#cA)" transform="matrix(-1 0 0 1 220 0)"/><path d="M60 85H160" clip-path="url(#cT)"/><path d="M60 244.8H110" clip-path="url(#cL)"/><path d="M60 244.8H110" clip-path="url(#cL)" transform="matrix(-1 0 0 1 220 0)"/></g>
+<path id="bDef" fill="none" stroke="#0C0A14" stroke-opacity=".3" stroke-width="1.3" stroke-linecap="round" d="M92 78C98 81 104 80 110 82C116 80 122 81 128 78M78 108C88 120 103 120 110 112C117 120 132 120 142 108M110 92V200M99 136Q110 139 121 136M100 154Q110 157 120 154M101 172Q110 175 119 172M86 190C94 204 102 218 107 228M134 190C126 204 118 218 113 228M67 102C61 112 54 122 45 128M153 102C159 112 166 122 175 128M42 170Q49 175 57 171M178 170Q171 175 163 171M82 322Q91 334 100 322M138 322Q129 334 120 322M92 346C90 366 90 388 92 404M128 346C130 366 130 388 128 404M80 258C86 280 92 296 96 304M140 258C134 280 128 296 124 304"/>
+<linearGradient id="gR" x2="1"><stop offset="0" stop-color="#0C0A14" stop-opacity=".45"/><stop offset=".28" stop-color="#0C0A14" stop-opacity="0"/><stop offset=".5" stop-color="#F4F2FA" stop-opacity=".16"/><stop offset=".72" stop-color="#0C0A14" stop-opacity="0"/><stop offset="1" stop-color="#0C0A14" stop-opacity=".5"/></linearGradient>
+<linearGradient id="gT" x2="0" y2="1"><stop offset="0" stop-color="#F4F2FA" stop-opacity=".14"/><stop offset=".5" stop-color="#F4F2FA" stop-opacity="0"/><stop offset="1" stop-color="#0C0A14" stop-opacity=".3"/></linearGradient>
+<linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E19CFB"/><stop offset=".45" stop-color="#B98CFF"/><stop offset="1" stop-color="#6B3BF5"/></linearGradient>
+<linearGradient id="gM" x2="0" y2="1"><stop offset="0" stop-color="#5B9CFF" stop-opacity=".28"/><stop offset="1" stop-color="#5B9CFF" stop-opacity="0"/></linearGradient>
+<linearGradient id="gF" x2="0" y2="1"><stop offset="0" stop-color="#F2A65A" stop-opacity=".26"/><stop offset="1" stop-color="#F2A65A" stop-opacity="0"/></linearGradient>
+<!-- Karim's figure: empty segment, lean fill to % of ideal, depth, 100% line, anatomy lines, rim -->
+<g id="figK"><ellipse cx="110" cy="437" rx="66" ry="6.5" fill="#000" opacity=".45"/><use href="#bH" fill="#2E2843"/><use href="#bAll" fill="#C9C3E3" fill-opacity=".15"/><use href="#bAll" fill="#C9C3E3" clip-path="url(#lv)"/><use href="#bH" fill="url(#gR)"/><use href="#bAll" fill="url(#gR)"/><use href="#bAll" fill="url(#gT)"/><use href="#ideal"/><use href="#bDef"/><g fill="none" stroke="#F4F2FA" stroke-opacity=".16"><use href="#bAll"/><use href="#bH"/></g></g>
+<!-- neutral figure (no segment data, e.g. compare ghost) -->
+<g id="figS"><ellipse cx="110" cy="437" rx="66" ry="6.5" fill="#000" opacity=".45"/><use href="#bH" fill="#26213A"/><use href="#bAll" fill="#8B8AA3"/><use href="#bAll" fill="url(#gR)"/><use href="#bAll" fill="url(#gT)"/><use href="#bDef"/><g fill="none" stroke="#F4F2FA" stroke-opacity=".16"><use href="#bAll"/><use href="#bH"/></g></g>
+</defs></svg>
+
+<main class="wrap">
+<header class="intro">
+<h1>Body First</h1>
+<p>Karim's own body is the interface. Home is a well-drawn, front-view figure whose arms, legs and trunk fill to his percentage of ideal lean mass; the verdict sits above it and the changes that matter are callouts pinned to the body. Tap any part of him, or any callout, and a sheet explains that number. The same figure returns in the report, body balance, compare and the new-result reveal, so the app has one recognisable picture instead of a dashboard.</p>
+<div class="mood"><span>Anatomical</span><span>Calm</span><span>Tactile</span><span>Dark violet, gym-swappable</span></div>
+</header>
+<section>
+<h2>Screens</h2>
+<p>Arabic RTL unless noted, 390 × 844. The figure is drawn once (front view, never mirrored: Karim's right arm is on the viewer's left, and every side is named in words) and reused on five screens. Segments fill from the feet up to his % of ideal lean mass on a 0–110% scale; the dashed line inside each segment is 100%.</p>
+<div class="frames">
+
+<figure class="fr">
+<div class="phone app" lang="ar" dir="rtl">
+<div class="sb"><span>9:41</span><svg><use href="#sbi"/></svg></div>
+<div class="scr">
+<input type="radio" name="h" id="h0" class="rad" checked aria-label="قفل الشرح">
+<input type="radio" name="h" id="ha" class="rad" aria-label="الدراعين: العضل">
+<input type="radio" name="h" id="ht" class="rad" aria-label="الجذع: الدهون">
+<input type="radio" name="h" id="hl" class="rad" aria-label="الرجلين: التوازن">
+<input type="radio" name="h" id="hw" class="rad" aria-label="الوزن">
+<div class="bd">
+<div class="hd"><span class="av">ك</span><div class="who"><b>صباح الخير يا كريم</b><span>آخر قياس <bdi>18</bdi> نوفمبر</span></div><span class="gb"><span class="mono">IB</span>Iron Box</span></div>
+<div><div class="lbl"><svg class="i s"><use href="#i-spark"/></svg>تقدّمك من أول قياس · <bdi>3</bdi> قياسات في <bdi>3</bdi> شهور ونص</div>
+<p class="verdict">وزنك نزل كيلو، بس الأهم إن جسمك اتغيّر: عضل أكتر ودهون أقل.</p></div>
+<div class="stage" style="height:410px">
+<svg viewBox="0 0 358 410" role="img" aria-label="جسمك من قدّام. الدراعين والجذع والرجلين فوق 100% من المثالي. العضل زاد 1.0 كجم، الدهون نزلت 2.3 كجم، الوزن تقريباً زي ما هو.">
+<rect x="30" y="340" width="298" height="26" rx="13" fill="#1D1929" stroke="#2E2843"/>
+<rect x="94.5" y="348" width="221.5" height="10" rx="5" fill="#C9C3E3"/><rect x="42" y="348" width="50.5" height="10" rx="5" fill="#F2A65A"/>
+<rect class="hl hl-w" x="27" y="337" width="304" height="32" rx="16"/>
+<svg x="95" y="0" width="168" height="339" viewBox="0 0 220 444"><use href="#figK"/><use href="#bAR" class="hl hl-a"/><use href="#bAL" class="hl hl-a"/><use href="#bT" class="hl hl-t"/><use href="#bLR" class="hl hl-l"/><use href="#bLL" class="hl hl-l"/></svg>
+<path class="lead-u" d="M260 103H226M98 131 179 128M260 253 195 246"/>
+<path class="lead" d="M260 103H226M98 131 179 128M260 253 195 246M50 320V346"/>
+<circle class="dot" cx="224" cy="103" r="4"/><circle class="dot" cx="179" cy="128" r="4"/><circle class="dot" cx="195" cy="246" r="4"/><circle class="dot" cx="50" cy="353" r="4"/>
+</svg>
+<span class="tapnote" style="position:absolute;left:0;top:6px"><svg class="i s"><use href="#i-tap"/></svg>اضغط على أي جزء</span>
+<label for="ha" class="hit" style="left:106px;top:62px;width:44px;height:148px"></label><label for="ha" class="hit" style="left:208px;top:62px;width:44px;height:148px"></label><label for="ht" class="hit" style="left:150px;top:52px;width:58px;height:126px"></label><label for="hl" class="hit" style="left:150px;top:178px;width:58px;height:154px"></label><label for="hw" class="hit" style="left:100px;top:338px;width:228px;height:32px"></label>
+<label for="ha" class="co" style="left:260px;top:58px"><span class="lbl"><span class="ic sm c-m"><svg class="i s"><use href="#i-dumb"/></svg></span>العضل</span><span class="v" style="color:var(--good)"><bdi>+1.0</bdi> <small>كجم</small></span><span class="xs">من أول قياس</span></label>
+<label for="ht" class="co" style="left:0;top:86px"><span class="lbl"><span class="ic sm c-f"><svg class="i s"><use href="#i-flame"/></svg></span>الدهون</span><span class="v" style="color:var(--good)"><bdi>−2.3</bdi> <small>كجم</small></span><span class="xs">من أول قياس</span></label>
+<label for="hl" class="co" style="left:260px;top:208px"><span class="lbl"><span class="ic sm c-g"><svg class="i s"><use href="#i-bal"/></svg></span>التوازن</span><span class="v" style="color:var(--good);font-size:17px">متوازن</span><span class="xs">الفرق أقل من <bdi>2%</bdi></span></label>
+<label for="hw" class="co" style="left:0;top:230px"><span class="lbl"><span class="ic sm c-l"><svg class="i s"><use href="#i-weight"/></svg></span>الوزن</span><span class="v" style="color:var(--stable)"><bdi>−1.1</bdi> <small>كجم</small></span><span class="xs">تقريباً زي ما هو</span></label>
+<div class="xs mut" style="position:absolute;top:378px;left:0;right:0;text-align:center"><bdi>77.9</bdi> كجم = <i class="sw8" style="background:var(--fat)"></i>دهون <bdi>14.92</bdi> + <i class="sw8" style="background:var(--lean)"></i>من غير دهون <bdi>62.98</bdi></div>
+</div>
+<div class="card row" style="padding:11px 14px"><span class="ic"><svg class="i"><use href="#i-cal"/></svg></span><div class="sp"><b class="fd" style="font-weight:600;font-size:15px">القياس الجاي بعد <bdi>4</bdi> أسابيع</b><div class="xs mut">تعالى بعد الأكل بـ<bdi>3</bdi> ساعات ومن غير تمرين، <bdi>8:00</bdi> الصبح زي آخر مرة</div></div><svg class="i s mut"><use href="#i-chl"/></svg></div>
+</div>
+<nav class="tabs"><a class="tab on"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>حسابي</a></nav>
+<label for="h0" class="scrim"></label>
+<div class="sheet sha" role="dialog" aria-label="العضل"><i class="grab"></i>
+<div class="row"><span class="ic c-m"><svg class="i"><use href="#i-dumb"/></svg></span><div class="sp"><h3>العضل</h3><div class="xs mut">العضل اللي بتتحرك وتشيل بيه</div></div><label for="h0" class="x" aria-label="قفل"><svg class="i"><use href="#i-x"/></svg></label></div>
+<div class="row" style="align-items:center"><span class="big"><bdi>35.8</bdi> <small>كجم</small></span><span class="sp"></span><span class="chip c-g"><svg class="i s flip"><use href="#i-up"/></svg><bdi>+1.0</bdi> من أول قياس</span></div>
+<div><div class="rb c-m" style="--lo:27.1%;--hi:74.3%;--v:70%"><i></i><b></b></div><div class="rl" style="display:block;text-align:center">طبيعي بين <bdi>29.8</bdi> و<bdi>36.4</bdi> كجم</div></div>
+<p>زاد كيلو في <bdi>3</bdi> شهور ونص. ده أكبر من فرق الجهاز (حوالي <bdi>0.9</bdi> كجم)، يعني تغيير حقيقي مش صدفة.</p>
+<a class="btn s"><svg class="i"><use href="#i-msg"/></svg>كلّم مدربك على واتساب</a></div>
+<div class="sheet sht" role="dialog" aria-label="الدهون"><i class="grab"></i>
+<div class="row"><span class="ic c-f"><svg class="i"><use href="#i-flame"/></svg></span><div class="sp"><h3>الدهون</h3><div class="xs mut">الدهون في جسمك كله، مش البطن بس</div></div><label for="h0" class="x" aria-label="قفل"><svg class="i"><use href="#i-x"/></svg></label></div>
+<div class="row"><span class="big"><bdi>14.92</bdi> <small>كجم</small></span><span class="sp"></span><span class="chip c-g"><svg class="i s flip"><use href="#i-down"/></svg><bdi>−2.3</bdi> من أول قياس</span></div>
+<div><div class="rb c-f" style="--lo:30%;--hi:70%;--v:55.75%"><i></i><b></b></div><div class="rl" style="display:block;text-align:center">طبيعي بين <bdi>10.8</bdi> و<bdi>17.2</bdi> كجم</div></div>
+<p>نزلت <bdi>2.3</bdi> كجم دهون، أكتر من فرق الجهاز (<bdi>1.5</bdi> كجم). نسبة الدهون بقت <bdi>19.15%</bdi>، وده طبيعي.</p>
+<a class="btn s"><svg class="i"><use href="#i-msg"/></svg>كلّم مدربك على واتساب</a></div>
+<div class="sheet shl" role="dialog" aria-label="توازن الرجلين"><i class="grab"></i>
+<div class="row"><span class="ic c-g"><svg class="i"><use href="#i-bal"/></svg></span><div class="sp"><h3>توازن الرجلين</h3><div class="xs mut">كتلة من غير دهون، مقارنة بالمثالي لطولك</div></div><label for="h0" class="x" aria-label="قفل"><svg class="i"><use href="#i-x"/></svg></label></div>
+<div class="card s2 list" style="padding:2px 14px;background:var(--surface-1)"><div class="li"><span class="sp">رجلك اليمين</span><b class="v"><bdi>9.62</bdi></b><span class="xs mut">كجم · <bdi>104%</bdi></span></div><div class="li"><span class="sp">رجلك الشمال</span><b class="v"><bdi>9.58</bdi></b><span class="xs mut">كجم · <bdi>103%</bdi></span></div></div>
+<p><span class="chip c-g"><svg class="i s"><use href="#i-check"/></svg>متوازن · الفرق <bdi>0.4%</bdi></span> الفرق بين اليمين والشمال أقل من <bdi>2%</bdi>، يعني الرجلين شغالين زي بعض.</p>
+<a class="btn s"><svg class="i"><use href="#i-body"/></svg>شوف توازن الجسم كله</a></div>
+<div class="sheet shw" role="dialog" aria-label="الوزن"><i class="grab"></i>
+<div class="row"><span class="ic c-l"><svg class="i"><use href="#i-weight"/></svg></span><div class="sp"><h3>الوزن</h3><div class="xs mut">الوزن = دهون + كتلة من غير دهون</div></div><label for="h0" class="x" aria-label="قفل"><svg class="i"><use href="#i-x"/></svg></label></div>
+<div class="row"><span class="big"><bdi>77.9</bdi> <small>كجم</small></span><span class="sp"></span><span class="chip c-s"><svg class="i s"><use href="#i-eq"/></svg><bdi>−1.1</bdi> تقريباً زي ما هو</span></div>
+<div><div class="split"><span style="flex:62.98;background:var(--lean)"></span><span style="flex:14.92;background:var(--fat)"></span></div><div class="rl" style="margin-top:6px"><span>من غير دهون <bdi>62.98</bdi></span><span>دهون <bdi>14.92</bdi></span></div></div>
+<p>الميزان نزل كيلو بس، وده أقل من فرق الجهاز (<bdi>1.9</bdi> كجم). اللي اتغيّر فعلاً هو التركيب: دهون أقل وعضل أكتر.</p></div>
+</div>
+</div>
+<figcaption><b>1 · Home</b>Verdict first, then the body as the chart. Each real change is a callout pinned to a place on Karim; weight is the plate he stands on, split fat + fat-free, and grey because −1.1 kg is inside the noise. Live in this page: tap a body part or a callout to open its sheet (CSS only).</figcaption>
+</figure>
+
+<figure class="fr">
+<div class="phone app" lang="ar" dir="rtl">
+<div class="sb"><span>9:41</span><svg><use href="#sbi"/></svg></div>
+<div class="scr"><div class="bd" style="gap:12px">
+<div class="hd" style="min-height:48px"><span class="ib"><svg class="i"><use href="#i-chr"/></svg></span><div class="who"><b>تقرير القياس</b><span class="row" style="gap:4px"><svg class="i s"><use href="#i-pin"/></svg><bdi>18</bdi> نوفمبر · Iron Box التجمع · InBody 770</span></div><span class="ib"><svg class="i"><use href="#i-share"/></svg></span></div>
+<div class="card row" style="align-items:stretch;gap:12px;padding:14px 14px 12px">
+<div class="sp" style="display:flex;flex-direction:column;gap:9px">
+<h3 style="font-size:19px;line-height:1.5;font-weight:600">عضلك بيزيد ودهونك بتقل من <bdi>3</bdi> شهور</h3>
+<div class="row" style="gap:6px;flex-wrap:wrap"><span class="chip c-g"><svg class="i s flip"><use href="#i-up"/></svg>عضل <bdi>+1.0</bdi></span><span class="chip c-g"><svg class="i s flip"><use href="#i-down"/></svg>دهون <bdi>−2.3</bdi></span></div>
+<div class="xs mut row" style="gap:6px;align-items:flex-start;line-height:1.55"><span class="ic sm c-s"><svg class="i s"><use href="#i-eq"/></svg></span><span>مقارنة بالقياس اللي فات: تقريباً زي ما هو (التغيير أصغر من فرق الجهاز)</span></div>
+</div>
+<div class="row" style="gap:6px;align-items:flex-end">
+<svg width="78" height="158" viewBox="0 0 220 444" role="img" aria-label="الجسم: كل الأجزاء فوق 100% من المثالي"><use href="#figK"/></svg>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px" aria-label="الوزن 77.9 كجم: دهون 14.92 ومن غير دهون 62.98"><div style="width:14px;height:140px;display:flex;flex-direction:column;gap:2px"><span style="flex:14.92;background:var(--fat);border-radius:5px"></span><span style="flex:62.98;background:var(--lean);border-radius:5px"></span></div><b class="v xs"><bdi>77.9</bdi></b></div>
+</div>
+</div>
+<div class="card" style="padding:4px 14px">
+<div class="list">
+<div class="mr"><span class="ic sm c-l"><svg class="i s"><use href="#i-weight"/></svg></span><div class="sp"><div class="row" style="gap:6px"><span>الوزن</span><span class="xs mut">طبيعي · <bdi>18.5–25</bdi> مؤشر <bdi>24.45</bdi></span><span class="sp"></span><b class="v"><bdi>77.9</bdi></b><small class="xs mut">كجم</small></div><div class="rb c-l" style="--lo:28.1%;--hi:68.8%;--v:65.3%"><i></i><b></b></div></div></div>
+<div class="mr"><span class="ic sm c-m"><svg class="i s"><use href="#i-dumb"/></svg></span><div class="sp"><div class="row" style="gap:6px"><span>العضل</span><span class="xs mut">طبيعي · <bdi>29.8–36.4</bdi></span><span class="sp"></span><b class="v"><bdi>35.8</bdi></b><small class="xs mut">كجم</small></div><div class="rb c-m" style="--lo:27.1%;--hi:74.3%;--v:70%"><i></i><b></b></div></div></div>
+<div class="mr"><span class="ic sm c-f"><svg class="i s"><use href="#i-flame"/></svg></span><div class="sp"><div class="row" style="gap:6px"><span>الدهون</span><span class="xs mut">طبيعي · <bdi>10.8–17.2</bdi></span><span class="sp"></span><b class="v"><bdi>14.92</bdi></b><small class="xs mut">كجم</small></div><div class="rb c-f" style="--lo:30%;--hi:70%;--v:55.8%"><i></i><b></b></div></div></div>
+<div class="mr"><span class="ic sm c-f"><svg class="i s"><use href="#i-pct"/></svg></span><div class="sp"><div class="row" style="gap:6px"><span>نسبة الدهون</span><span class="xs mut">طبيعي · <bdi>10–20</bdi></span><span class="sp"></span><b class="v"><bdi>19.15%</bdi></b></div><div class="rb c-f" style="--lo:25%;--hi:66.7%;--v:63.1%"><i></i><b></b></div></div></div>
+<div class="mr"><span class="ic sm c-f"><svg class="i s"><use href="#i-layers"/></svg></span><div class="sp"><div class="row" style="gap:6px"><span>الدهون الحشوية</span><span class="xs mut">طبيعي · أقل من <bdi>10</bdi></span><span class="sp"></span><b class="v"><bdi>6</bdi></b><small class="xs mut">مستوى</small></div><div class="rb c-f" style="--lo:0%;--hi:50%;--v:30%"><i></i><b></b></div></div></div>
+<div class="mr"><span class="ic sm c-w"><svg class="i s"><use href="#i-drop"/></svg></span><div class="sp"><div class="row" style="gap:6px"><span>مية الجسم</span><span class="xs mut">طبيعي · <bdi>40–49</bdi></span><span class="sp"></span><b class="v"><bdi>46.4</bdi></b><small class="xs mut">لتر</small></div><div class="rb c-w" style="--lo:26.3%;--hi:73.7%;--v:59.5%"><i></i><b></b></div></div></div>
+<div class="li" style="min-height:48px"><span class="ic sm"><svg class="i s"><use href="#i-file"/></svg></span><span class="sp sm">بروتين، معادن، الحرق، InBody Score وأكتر</span><svg class="i s mut"><use href="#i-chl"/></svg></div>
+</div></div>
+<p class="xs mut row" style="gap:6px;justify-content:center"><svg class="i s"><use href="#i-info"/></svg>معلومات للياقة، مش تشخيص طبي.</p>
+</div>
+<nav class="tabs"><a class="tab"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab on"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>حسابي</a></nav>
+</div></div>
+<figcaption><b>2 · Scan report</b>The headline, then the figure with its weight column: fat stacked on fat-free mass, adding to 77.9 kg. Six rows put a dot on the normal band (low end on the right in Arabic); protein, BMR and the InBody Score sit behind one tap.</figcaption>
+</figure>
+
+<figure class="fr">
+<div class="phone app" lang="ar" dir="rtl">
+<div class="sb"><span>9:41</span><svg><use href="#sbi"/></svg></div>
+<div class="scr"><div class="bd" style="gap:12px">
+<div class="hd" style="min-height:48px"><div class="who"><b style="font-size:22px">القياسات</b></div><span class="ib"><svg class="i"><use href="#i-plus"/></svg></span></div>
+<div class="seg"><span><svg class="i s"><use href="#i-file"/></svg>التقارير</span><span class="on"><svg class="i s"><use href="#i-chart"/></svg>الاتجاه</span></div>
+<div><p class="verdict" style="font-size:19px">عضلك بيزيد ودهونك بتقل من <bdi>3</bdi> شهور</p><div class="lbl"><svg class="i s"><use href="#i-check"/></svg><bdi>3</bdi> قياسات · نفس الجهاز InBody 770</div></div>
+<div class="card" style="padding:12px 12px 6px">
+<div class="row" style="margin-bottom:4px"><span class="ic sm c-m"><svg class="i s"><use href="#i-dumb"/></svg></span><b class="sp fd" style="font-weight:600">العضل</b><span class="chip c-g"><svg class="i s flip"><use href="#i-up"/></svg><bdi>+1.0</bdi> كجم · تغيير حقيقي</span></div>
+<svg viewBox="0 0 326 152" style="direction:ltr;display:block;width:100%" role="img" aria-label="العضل: 34.8 في 2 أغسطس، 35.3 في 14 أكتوبر، 35.8 في 18 نوفمبر. أعلى من منطقة فرق الجهاز.">
+<rect x="24" y="56" width="268" height="36" fill="#8B8AA3" fill-opacity=".14"/><path d="M24 56H292M24 92H292" stroke="#8B8AA3" stroke-opacity=".5" stroke-dasharray="2 3"/>
+<path d="M24 10H300M24 50H300M24 90H300M24 130H300" stroke="#2E2843"/>
+<g font-family="Readex Pro" font-size="12" fill="#A9A3BF" text-anchor="end"><text x="324" y="14">38</text><text x="324" y="54">36</text><text x="324" y="94">34</text><text x="324" y="134">32</text></g>
+<text x="200" y="86" font-size="11" fill="#A9A3BF" text-anchor="end" direction="rtl" font-family="IBM Plex Sans Arabic">فرق الجهاز</text>
+<path d="M292 74 110.9 64 24 54V130H292Z" fill="url(#gM)"/>
+<path d="M292 74 110.9 64" stroke="#5B9CFF" stroke-width="2.5" stroke-dasharray="5 4" fill="none"/><path d="M110.9 64 24 54" stroke="#5B9CFF" stroke-width="2.5" fill="none"/>
+<circle cx="292" cy="74" r="4.5" fill="#5B9CFF" stroke="#15121F" stroke-width="2"/><circle cx="110.9" cy="64" r="4.5" fill="#5B9CFF" stroke="#15121F" stroke-width="2"/><circle cx="24" cy="54" r="6.5" fill="#5B9CFF" stroke="#15121F" stroke-width="3"/>
+<g font-family="Readex Pro" font-size="12" font-weight="600" fill="#F4F2FA" text-anchor="middle"><text x="282" y="64">34.8</text><text x="111" y="52">35.3</text><text x="26" y="40" font-size="14">35.8</text></g>
+<g font-family="IBM Plex Sans Arabic" font-size="12" fill="#A9A3BF" text-anchor="middle" direction="rtl"><text x="276" y="148">2 أغسطس</text><text x="111" y="148">14 أكتوبر</text><text x="40" y="148">18 نوفمبر</text></g>
+</svg></div>
+<div class="card" style="padding:12px 12px 6px">
+<div class="row" style="margin-bottom:4px"><span class="ic sm c-f"><svg class="i s"><use href="#i-flame"/></svg></span><b class="sp fd" style="font-weight:600">الدهون</b><span class="chip c-g"><svg class="i s flip"><use href="#i-down"/></svg><bdi>−2.3</bdi> كجم · تغيير حقيقي</span></div>
+<svg viewBox="0 0 326 152" style="direction:ltr;display:block;width:100%" role="img" aria-label="الدهون: 17.2 في 2 أغسطس، 15.95 في 14 أكتوبر، 14.92 في 18 نوفمبر. تحت منطقة فرق الجهاز.">
+<rect x="24" y="0" width="268" height="56" fill="#8B8AA3" fill-opacity=".14"/><path d="M24 56H292" stroke="#8B8AA3" stroke-opacity=".5" stroke-dasharray="2 3"/>
+<path d="M24 10H300M24 50H300M24 90H300M24 130H300" stroke="#2E2843"/>
+<g font-family="Readex Pro" font-size="12" fill="#A9A3BF" text-anchor="end"><text x="324" y="14">18</text><text x="324" y="54">16</text><text x="324" y="94">14</text><text x="324" y="134">12</text></g>
+<text x="200" y="20" font-size="11" fill="#A9A3BF" text-anchor="end" direction="rtl" font-family="IBM Plex Sans Arabic">فرق الجهاز</text>
+<path d="M292 26 110.9 51 24 71.6V130H292Z" fill="url(#gF)"/>
+<path d="M292 26 110.9 51" stroke="#F2A65A" stroke-width="2.5" stroke-dasharray="5 4" fill="none"/><path d="M110.9 51 24 71.6" stroke="#F2A65A" stroke-width="2.5" fill="none"/>
+<circle cx="292" cy="26" r="4.5" fill="#F2A65A" stroke="#15121F" stroke-width="2"/><circle cx="110.9" cy="51" r="4.5" fill="#F2A65A" stroke="#15121F" stroke-width="2"/><circle cx="24" cy="71.6" r="6.5" fill="#F2A65A" stroke="#15121F" stroke-width="3"/>
+<g font-family="Readex Pro" font-size="12" font-weight="600" fill="#F4F2FA" text-anchor="middle"><text x="282" y="44">17.2</text><text x="111" y="70">15.95</text><text x="28" y="96" font-size="14">14.92</text></g>
+<g font-family="IBM Plex Sans Arabic" font-size="12" fill="#A9A3BF" text-anchor="middle" direction="rtl"><text x="276" y="148">2 أغسطس</text><text x="111" y="148">14 أكتوبر</text><text x="40" y="148">18 نوفمبر</text></g>
+</svg></div>
+<p class="xs mut row" style="gap:8px;align-items:flex-start;line-height:1.6"><span class="ic sm c-s"><svg class="i s"><use href="#i-info"/></svg></span><span>المنطقة المظللة هي فرق الجهاز حوالين أول قياس؛ النقطة برّه = تغيير حقيقي. الخط المتقطع = أكتر من <bdi>8</bdi> أسابيع بين قياسين.</span></p>
+</div>
+<nav class="tabs"><a class="tab"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab on"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>حسابي</a></nav>
+</div></div>
+<figcaption><b>3 · Trends</b>Oldest scan on the right, true date spacing, the same 20 px per kg on both charts so neither change looks like a cliff. The shaded band is the machine's noise around the first scan: the latest dot sits outside it, which is why the app may say "real change".</figcaption>
+</figure>
+<figure class="fr">
+<div class="phone app" lang="ar" dir="rtl">
+<div class="sb"><span>9:41</span><svg><use href="#sbi"/></svg></div>
+<div class="scr"><div class="bd" style="gap:12px">
+<div class="hd" style="min-height:48px"><span class="ib"><svg class="i"><use href="#i-chr"/></svg></span><div class="who"><b>توازن الجسم</b><span>مرسوم من قدّام: يمينك على شمال الصورة</span></div><span class="ib"><svg class="i"><use href="#i-info"/></svg></span></div>
+<div class="card row" style="padding:12px 14px"><span class="ic c-g"><svg class="i"><use href="#i-bal"/></svg></span><div class="sp"><b class="fd" style="font-weight:600;font-size:17px;color:var(--good)">متوازن</b><div class="sm mut">الفرق بين اليمين والشمال أقل من <bdi>2%</bdi></div></div></div>
+<div class="stage" style="height:384px">
+<svg viewBox="0 0 358 392" role="img" aria-label="دراعك اليمين 3.48 كجم 105%، دراعك الشمال 3.44 كجم 104%، الجذع 28.4 كجم 102%، رجلك اليمين 9.62 كجم 104%، رجلك الشمال 9.58 كجم 103%.">
+<svg x="85" y="2" width="188" height="380" viewBox="0 0 220 444"><use href="#figK"/></svg>
+<path class="lead-u" d="M92 134H129M266 134H229M92 214 170 167M92 306 162 252M266 306 196 252"/>
+<path class="lead" d="M92 134H129M266 134H229M92 214 170 167M92 306 162 252M266 306 196 252"/>
+<circle class="dot" cx="129" cy="134" r="4"/><circle class="dot" cx="229" cy="134" r="4"/><circle class="dot" cx="170" cy="167" r="4"/><circle class="dot" cx="162" cy="252" r="4"/><circle class="dot" cx="196" cy="252" r="4"/>
+</svg>
+<div class="co" style="left:0;top:96px;width:92px;cursor:auto"><span class="xs">دراعك اليمين</span><span class="v" style="font-size:18px"><bdi>3.48</bdi> <small>كجم</small></span><span class="xs"><bdi>105%</bdi></span></div>
+<div class="co" style="left:0;top:176px;width:92px;cursor:auto"><span class="xs">الجذع</span><span class="v" style="font-size:18px"><bdi>28.4</bdi> <small>كجم</small></span><span class="xs"><bdi>102%</bdi></span></div>
+<div class="co" style="left:0;top:268px;width:92px;cursor:auto"><span class="xs">رجلك اليمين</span><span class="v" style="font-size:18px"><bdi>9.62</bdi> <small>كجم</small></span><span class="xs"><bdi>104%</bdi></span></div>
+<div class="co" style="left:266px;top:96px;width:92px;cursor:auto"><span class="xs">دراعك الشمال</span><span class="v" style="font-size:18px"><bdi>3.44</bdi> <small>كجم</small></span><span class="xs"><bdi>104%</bdi></span></div>
+<div class="co" style="left:266px;top:268px;width:92px;cursor:auto"><span class="xs">رجلك الشمال</span><span class="v" style="font-size:18px"><bdi>9.58</bdi> <small>كجم</small></span><span class="xs"><bdi>103%</bdi></span></div>
+</div>
+<p class="xs mut row" style="gap:12px;justify-content:center;margin-top:-6px"><span><i class="sw8" style="background:var(--lean)"></i>كتلة من غير دهون، % من المثالي</span><span><i class="sw8" style="border:1.5px dashed var(--lean)"></i>الخط = <bdi>100%</bdi></span></p>
+<div class="card list" style="padding:0 14px">
+<div class="li"><span class="ic sm c-g"><svg class="i s"><use href="#i-check"/></svg></span><span class="sp">الدراعين<span class="xs mut" style="display:block">اليمين <bdi>3.48</bdi> · الشمال <bdi>3.44</bdi> كجم</span></span><b class="v">الفرق <bdi>1.2%</bdi></b></div>
+<div class="li"><span class="ic sm c-g"><svg class="i s"><use href="#i-check"/></svg></span><span class="sp">الرجلين<span class="xs mut" style="display:block">اليمين <bdi>9.62</bdi> · الشمال <bdi>9.58</bdi> كجم</span></span><b class="v">الفرق <bdi>0.4%</bdi></b></div>
+</div>
+
+</div>
+<nav class="tabs"><a class="tab"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab on"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>حسابي</a></nav>
+</div></div>
+<figcaption><b>4 · Body balance</b>The same figure, larger, with every segment labelled in words and kg. Called "lean mass", not muscle (the segments add up to 54 kg). The figure is a front view and is never mirrored in Arabic; a one-line note says so instead of trusting people to guess.</figcaption>
+</figure>
+
+<figure class="fr">
+<div class="phone app" lang="ar" dir="rtl">
+<div class="sb"><span>9:41</span><svg><use href="#sbi"/></svg></div>
+<div class="scr"><div class="bd" style="gap:12px">
+<div class="hd" style="min-height:48px"><div class="who"><b style="font-size:22px">مقارنة</b></div><span class="ib"><svg class="i"><use href="#i-cal"/></svg></span></div>
+<div class="seg"><span class="on" style="flex-direction:column;gap:0;min-height:48px;line-height:1.3"><span class="xs mut" style="min-height:0">قبل</span><span style="min-height:0"><bdi>14</bdi> أكتوبر</span></span><span style="flex:none;min-height:48px;padding:0 4px"><svg class="i s"><use href="#i-cmp"/></svg></span><span class="on" style="flex-direction:column;gap:0;min-height:48px;line-height:1.3"><span class="xs mut" style="min-height:0">بعد</span><span style="min-height:0"><bdi>18</bdi> نوفمبر</span></span></div>
+<div class="lbl"><svg class="i s" style="color:var(--good)"><use href="#i-check"/></svg>نفس الجهاز: InBody 770 · Iron Box التجمع</div>
+<div class="card row" style="align-items:center;gap:12px">
+<div class="sp"><div class="row" style="gap:8px"><span class="ic c-s"><svg class="i"><use href="#i-eq"/></svg></span><h3 style="font-size:19px;font-weight:600">تقريباً زي ما هو</h3></div><p class="sm mut" style="margin-top:8px;line-height:1.6">التغيير أصغر من فرق الجهاز، فمش هنحسبه تقدّم ولا تراجع.</p></div>
+<div class="row" style="gap:2px;align-items:flex-end;direction:ltr"><svg width="46" height="94" viewBox="0 0 220 444" aria-hidden="true"><use href="#figS"/></svg><span class="mut fd" style="font-size:20px;padding-bottom:30px">≈</span><svg width="46" height="94" viewBox="0 0 220 444" aria-hidden="true"><use href="#figS"/></svg></div>
+</div>
+<div class="card" style="padding:4px 14px 8px">
+<div class="cr xs mut" style="padding-bottom:0"><span></span><span>قبل</span><span>بعد</span><span>الفرق</span></div>
+<div class="cr"><span class="row" style="gap:8px"><span class="ic sm c-m"><svg class="i s"><use href="#i-dumb"/></svg></span>العضل</span><bdi class="mut">35.3</bdi><bdi class="v">35.8</bdi><span class="chip c-s"><bdi>+0.5</bdi></span><div class="nm" style="--v:63.9%"><i></i><b></b></div></div>
+<div class="cr"><span class="row" style="gap:8px"><span class="ic sm c-f"><svg class="i s"><use href="#i-flame"/></svg></span>الدهون</span><bdi class="mut">15.95</bdi><bdi class="v">14.92</bdi><span class="chip c-s"><bdi>−1.0</bdi></span><div class="nm" style="--v:32.8%"><i></i><b></b></div></div>
+<div class="cr"><span class="row" style="gap:8px"><span class="ic sm c-l"><svg class="i s"><use href="#i-weight"/></svg></span>الوزن</span><bdi class="mut">78.3</bdi><bdi class="v">77.9</bdi><span class="chip c-s"><bdi>−0.4</bdi></span><div class="nm" style="--v:44.7%"><i></i><b></b></div></div>
+<div class="cr"><span class="row" style="gap:8px"><span class="ic sm c-f"><svg class="i s"><use href="#i-pct"/></svg></span>نسبة الدهون</span><bdi class="mut">20.4</bdi><bdi class="v">19.15</bdi><span class="chip c-s"><bdi>−1.25</bdi></span><div class="nm" style="--v:33.6%"><i></i><b></b></div></div>
+<p class="xs mut" style="padding-top:6px">المنطقة الرمادية = فرق الجهاز. النقطة جواها = تقريباً زي ما هو.</p>
+</div>
+<div class="card s2 row" style="padding:12px 14px"><span class="ic c-g"><svg class="i flip"><use href="#i-up"/></svg></span><div class="sp"><b class="fd" style="font-weight:600">من أول قياس: تغيير حقيقي</b><div class="sm" style="color:var(--good)">عضل <bdi>+1.0</bdi> · دهون <bdi>−2.3</bdi> كجم</div></div><svg class="i s mut"><use href="#i-chl"/></svg></div>
+</div>
+<nav class="tabs"><a class="tab"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab on"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>حسابي</a></nav>
+</div></div>
+<figcaption><b>5 · Compare</b>Before on the right, after on the left, machine match stated first. Every change gets a noise meter: the grey zone is the machine's error, and all four dots land inside it, so the two bodies read "≈" and the trend card below carries the good news.</figcaption>
+</figure>
+<figure class="fr">
+<div class="phone app" lang="ar" dir="rtl">
+<div class="sb"><span>9:41</span><svg><use href="#sbi"/></svg></div>
+<div class="scr"><div class="bd" style="gap:14px;padding-bottom:40px" role="status">
+<div class="row" style="min-height:48px"><span class="chip" style="--c:var(--brand-soft);height:32px"><svg class="i s"><use href="#i-spark"/></svg>نتيجة جديدة · <bdi>18</bdi> نوفمبر</span><span class="sp"></span><span class="ib" aria-label="قفل"><svg class="i"><use href="#i-x"/></svg></span></div>
+<div class="stage" style="height:318px">
+<svg viewBox="0 0 358 318" aria-hidden="true">
+<circle cx="179" cy="158" r="146" fill="#2A1F4D" fill-opacity=".45"/>
+<circle cx="179" cy="158" r="146" fill="none" stroke="#2E2843" stroke-width="2"/>
+<circle cx="179" cy="158" r="146" fill="none" stroke="url(#gB)" stroke-width="5" stroke-linecap="round" stroke-dasharray="688 300" transform="rotate(135 179 158)"/>
+<svg x="108" y="14" width="142" height="288" viewBox="0 0 220 444"><use href="#figK"/></svg>
+<g class="scan"><rect x="96" y="14" width="166" height="2" rx="1" fill="#B98CFF"/></g>
+</svg>
+<span class="co" style="left:252px;top:72px;cursor:auto;width:104px"><span class="lbl"><span class="ic sm c-m"><svg class="i s"><use href="#i-dumb"/></svg></span>العضل</span><span class="v" style="color:var(--good)"><bdi>+1.0</bdi> <small>كجم</small></span></span>
+<span class="co" style="left:2px;top:142px;cursor:auto;width:104px"><span class="lbl"><span class="ic sm c-f"><svg class="i s"><use href="#i-flame"/></svg></span>الدهون</span><span class="v" style="color:var(--good)"><bdi>−2.3</bdi> <small>كجم</small></span></span>
+</div>
+<div class="rise"><div class="lbl"><svg class="i s"><use href="#i-check"/></svg>من أول قياس · <bdi>3</bdi> قياسات على نفس الجهاز</div><p class="verdict" style="font-size:21px">وزنك نزل كيلو، بس الأهم إن جسمك اتغيّر: عضل أكتر ودهون أقل.</p></div>
+<div class="row rise" style="gap:10px;align-items:stretch">
+<div class="card sp" style="padding:12px"><span class="ic c-a"><svg class="i"><use href="#i-trophy"/></svg></span><b class="fd" style="display:block;margin-top:8px;font-weight:600;font-size:15px">أعلى عضل لحد دلوقتي</b><span class="sm mut"><bdi>35.8</bdi> كجم</span></div>
+<div class="card sp" style="padding:12px"><span class="ic c-g"><svg class="i"><use href="#i-repeat"/></svg></span><b class="fd" style="display:block;margin-top:8px;font-weight:600;font-size:15px"><bdi>3</bdi> قياسات ورا بعض</b><span class="sm mut">عضلك بيزيد</span><span class="row" style="gap:4px;margin-top:6px"><i class="sw8" style="background:var(--good);border-radius:50%"></i><i class="sw8" style="background:var(--good);border-radius:50%"></i><i class="sw8" style="background:var(--good);border-radius:50%"></i><i class="sw8" style="border:1.5px dashed var(--text-faint);border-radius:50%"></i></span></div>
+</div>
+<span class="sp"></span>
+<a class="btn p"><svg class="i"><use href="#i-file"/></svg>شوف التقرير كامل</a>
+<a class="btn t" style="margin-top:-6px"><svg class="i"><use href="#i-share"/></svg>شارك التغيير (من غير وزنك)</a>
+</div></div></div>
+<figcaption><b>6 · New-result reveal</b>The one place the logo gradient goes big: a ring around the figure while a scan line sweeps down it (CSS, off under reduced motion). Only same-machine changes past the noise trigger this screen; it celebrates a record and a streak, never weight loss, and shares the change without the weight.</figcaption>
+</figure>
+
+<figure class="fr">
+<div class="phone app" lang="ar" dir="rtl">
+<div class="sb"><span>9:41</span><svg><use href="#sbi"/></svg></div>
+<div class="scr"><div class="bd" style="gap:12px">
+<div class="hd" style="min-height:48px"><div class="who"><b style="font-size:22px">حسابي</b></div></div>
+<div class="card row" style="gap:14px"><span class="av" style="width:56px;height:56px;font-size:22px">ك</span><div class="sp"><b class="fd" style="font-size:18px;font-weight:600">كريم</b><div class="sm mut"><bdi>+20 10•• ••• 4821</bdi></div><div class="xs mut">ذكر · <bdi>38</bdi> سنة · <bdi>178.5</bdi> سم</div></div><svg width="34" height="70" viewBox="0 0 220 444" aria-hidden="true"><use href="#figK"/></svg></div>
+<div><div class="sec-h"><span class="ic sm"><svg class="i s"><use href="#i-pin"/></svg></span><span class="sp">أماكن قياسك</span><span class="row xs" style="color:var(--brand-soft);gap:4px;min-height:32px"><svg class="i s"><use href="#i-plus"/></svg>أضف مكان</span></div>
+<div class="card list" style="padding:0 14px"><div class="li"><span class="mono">IB</span><span class="sp">Iron Box التجمع<span class="xs mut" style="display:block">InBody 770 · <bdi>3</bdi> قياسات</span></span><span class="chip" style="--c:var(--brand-soft)">الحالي</span></div></div></div>
+<div><div class="sec-h"><span class="ic sm"><svg class="i s"><use href="#i-shield"/></svg></span>موافقاتك</div>
+<div class="card list" style="padding:0 14px"><div class="li" style="min-height:46px"><span class="sp">الجيم يشوف قياساتي</span><span class="sw on"></span></div><div class="li" style="min-height:46px"><span class="sp">مدربي يكلمني على واتساب</span><span class="sw on"></span></div><div class="li" style="min-height:46px"><span class="sp">عروض ورسايل من الجيم</span><span class="sw"></span></div></div></div>
+<div class="card list" style="padding:0 14px">
+<div class="li" style="min-height:52px"><span class="ic sm c-l"><svg class="i s"><use href="#i-globe"/></svg></span><span class="sp">اللغة</span><div class="seg sm"><span class="on">العربية</span><span>English</span></div></div>
+<div class="li" style="min-height:52px"><span class="ic sm c-l"><svg class="i s"><use href="#i-moon"/></svg></span><span class="sp">المظهر</span><div class="seg sm"><span class="on">داكن</span><span>فاتح</span><span>تلقائي</span></div></div>
+<div class="li" style="min-height:48px"><span class="ic sm c-a"><svg class="i s"><use href="#i-trophy"/></svg></span><span class="sp">إنجازاتك</span><span class="chip c-a"><bdi>3</bdi></span><svg class="i s mut"><use href="#i-chl"/></svg></div>
+<div class="li" style="min-height:48px"><span class="ic sm c-s"><svg class="i s"><use href="#i-out"/></svg></span><span class="sp">تسجيل خروج</span></div>
+</div>
+</div>
+<nav class="tabs"><a class="tab"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a><a class="tab on"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>حسابي</a></nav>
+</div></div>
+<figcaption><b>7 · Account</b>Initials, never a cartoon avatar; the small figure is Karim's own, as a signature. Places list the gym and machine behind every scan; consents are plain switches; language and theme are segmented so the current choice is always visible. Sign out is neutral, not red.</figcaption>
+</figure>
+<figure class="fr">
+<div class="phone app" lang="en" dir="ltr">
+<div class="sb"><span>9:41</span><svg><use href="#sbi"/></svg></div>
+<div class="scr"><div class="bd">
+<div class="hd"><span class="av">K</span><div class="who"><b>Good morning, Karim</b><span>Last scan 18 Nov</span></div><span class="gb"><span class="mono">IB</span>Iron Box</span></div>
+<div><div class="lbl"><svg class="i s"><use href="#i-spark"/></svg>Since your first scan · 3 scans in 3.5 months</div>
+<p class="verdict" style="font-size:19px">Your weight dropped a kilo, but what matters is your body changed: more muscle, less fat.</p></div>
+<div class="stage" style="height:410px">
+<svg viewBox="0 0 358 410" role="img" aria-label="Your body, front view. Arms, trunk and legs are above 100% of ideal. Muscle up 1.0 kg, fat down 2.3 kg, weight about the same.">
+<rect x="30" y="340" width="298" height="26" rx="13" fill="#1D1929" stroke="#2E2843"/>
+<rect x="42" y="348" width="221.5" height="10" rx="5" fill="#C9C3E3"/><rect x="265.5" y="348" width="50.5" height="10" rx="5" fill="#F2A65A"/>
+<svg x="95" y="0" width="168" height="339" viewBox="0 0 220 444"><use href="#figK"/></svg>
+<path class="lead-u" d="M100 103H134M260 131 179 128M100 253 163 246"/>
+<path class="lead" d="M100 103H134M260 131 179 128M100 253 163 246M308 320V346"/>
+<circle class="dot" cx="136" cy="103" r="4"/><circle class="dot" cx="179" cy="128" r="4"/><circle class="dot" cx="163" cy="246" r="4"/><circle class="dot" cx="308" cy="353" r="4"/>
+</svg>
+<span class="tapnote" style="position:absolute;right:0;top:6px"><svg class="i s"><use href="#i-tap"/></svg>Tap any part</span>
+<span class="co" style="left:0;top:58px"><span class="lbl"><span class="ic sm c-m"><svg class="i s"><use href="#i-dumb"/></svg></span>Muscle</span><span class="v" style="color:var(--good)"><bdi>+1.0</bdi> <small>kg</small></span><span class="xs">vs first scan</span></span>
+<span class="co" style="left:258px;top:86px"><span class="lbl"><span class="ic sm c-f"><svg class="i s"><use href="#i-flame"/></svg></span>Fat</span><span class="v" style="color:var(--good)"><bdi>−2.3</bdi> <small>kg</small></span><span class="xs">vs first scan</span></span>
+<span class="co" style="left:0;top:208px"><span class="lbl"><span class="ic sm c-g"><svg class="i s"><use href="#i-bal"/></svg></span>Balance</span><span class="v" style="color:var(--good);font-size:17px">Balanced</span><span class="xs">gap under 2%</span></span>
+<span class="co" style="left:258px;top:230px"><span class="lbl"><span class="ic sm c-l"><svg class="i s"><use href="#i-weight"/></svg></span>Weight</span><span class="v" style="color:var(--stable)"><bdi>−1.1</bdi> <small>kg</small></span><span class="xs">about the same</span></span>
+<div class="xs mut" style="position:absolute;top:378px;left:0;right:0;text-align:center">77.9 kg = <i class="sw8" style="background:var(--lean)"></i>fat-free 62.98 + <i class="sw8" style="background:var(--fat)"></i>fat 14.92</div>
+</div>
+<div class="card row" style="padding:11px 14px"><span class="ic"><svg class="i"><use href="#i-cal"/></svg></span><div class="sp"><b class="fd" style="font-weight:600;font-size:15px">Next scan in 4 weeks</b><div class="xs mut">Come 3 hours after eating, no workout, 8:00 like last time</div></div><svg class="i s mut"><use href="#i-chr"/></svg></div>
+</div>
+<nav class="tabs"><a class="tab on"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>Home</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>Scans</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>Compare</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>Account</a></nav>
+</div></div>
+<figcaption><b>8 · Home in English (LTR)</b>The layout mirrors, the body does not: Karim's right arm stays on the viewer's left, so the muscle callout simply moves to the start side. The weight plate flips its stack order (fat-free starts at the reading start) and the trend arrows stop flipping.</figcaption>
+</figure>
+</div>
+</section>
+<section>
+<h2>Gym re-coloring</h2>
+<p>One wrapper attribute, <code>&lt;div class="app" data-gym="ironbox"&gt;</code>, swaps only <code>--brand</code>, <code>--brand-strong</code>, <code>--brand-soft</code>, <code>--brand-tint</code>, <code>--on-brand</code> and <code>--brand-gradient</code>. The gym badge, button, avatar ring, chip and active tab follow; the body, the good-news green and the stable grey are identical in all three. White fails on both gym brands (2.87:1 orange, 2.57:1 teal), so those gyms get dark <code>--on-brand</code> <code>#0C0A14</code> (6.85:1 and 7.66:1).</p>
+<div class="gyms">
+<div class="gym app" lang="ar" dir="rtl"><h3><span>LevelUP default</span><bdi>#8B5CF6</bdi></h3>
+<div class="hd"><span class="av">ك</span><div class="who"><b>صباح الخير يا كريم</b><span>Iron Box، من غير لون الجيم</span></div><span class="gb"><span class="mono">IB</span>Iron Box</span></div>
+<div class="row" style="gap:12px"><svg width="54" height="110" viewBox="0 0 220 444" aria-hidden="true"><use href="#figK"/></svg><div class="sp"><p class="fd" style="font-weight:500;line-height:1.6">عضل أكتر ودهون أقل من أول قياس</p><div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><span class="chip c-g">عضل <bdi>+1.0</bdi></span><span class="chip c-s">وزن <bdi>−1.1</bdi></span><span class="chip" style="--c:var(--brand-soft)">جديد</span></div></div></div>
+<a class="btn p">شوف التقرير</a>
+<nav class="tabs" style="height:62px;padding:6px;border:1px solid var(--border);border-radius:18px"><a class="tab on"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a></nav></div>
+<div class="gym app" data-gym="ironbox" lang="ar" dir="rtl"><h3><span>Iron Box</span><bdi>#FF6A1A</bdi></h3>
+<div class="hd"><span class="av">ك</span><div class="who"><b>صباح الخير يا كريم</b><span>Iron Box التجمع</span></div><span class="gb"><span class="mono br">IB</span>Iron Box</span></div>
+<div class="row" style="gap:12px"><svg width="54" height="110" viewBox="0 0 220 444" aria-hidden="true"><use href="#figK"/></svg><div class="sp"><p class="fd" style="font-weight:500;line-height:1.6">عضل أكتر ودهون أقل من أول قياس</p><div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><span class="chip c-g">عضل <bdi>+1.0</bdi></span><span class="chip c-s">وزن <bdi>−1.1</bdi></span><span class="chip" style="--c:var(--brand-soft)">جديد</span></div></div></div>
+<a class="btn p">شوف التقرير</a>
+<nav class="tabs" style="height:62px;padding:6px;border:1px solid var(--border);border-radius:18px"><a class="tab on"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a></nav></div>
+<div class="gym app" data-gym="pulse" lang="ar" dir="rtl"><h3><span>Pulse Gym</span><bdi>#12B5A6</bdi></h3>
+<div class="hd"><span class="av">ك</span><div class="who"><b>صباح الخير يا كريم</b><span>Pulse Gym الشيخ زايد</span></div><span class="gb"><span class="mono br"><svg class="i s" style="stroke-width:2.4"><use href="#i-zap"/></svg></span>Pulse</span></div>
+<div class="row" style="gap:12px"><svg width="54" height="110" viewBox="0 0 220 444" aria-hidden="true"><use href="#figK"/></svg><div class="sp"><p class="fd" style="font-weight:500;line-height:1.6">عضل أكتر ودهون أقل من أول قياس</p><div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><span class="chip c-g">عضل <bdi>+1.0</bdi></span><span class="chip c-s">وزن <bdi>−1.1</bdi></span><span class="chip" style="--c:var(--brand-soft)">جديد</span></div></div></div>
+<a class="btn p">شوف التقرير</a>
+<nav class="tabs" style="height:62px;padding:6px;border:1px solid var(--border);border-radius:18px"><a class="tab on"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a></nav></div>
+</div>
+</section>
+
+<section>
+<h2>Components</h2>
+<p>Lucide shapes at stroke 1.85 in 16% tinted containers; the container color says what the thing is (muscle, fat, water, lean, good, stable, attention, brand). Fonts: Readex Pro for headings and numbers, IBM Plex Sans Arabic for reading text; both set Arabic and Latin.</p>
+<div class="kit app" lang="en">
+<div><h3>Icons</h3><div class="icons">
+<div><span class="ic"><svg class="i"><use href="#i-home"/></svg></span>Home</div><div><span class="ic"><svg class="i"><use href="#i-file"/></svg></span>Scans</div><div><span class="ic"><svg class="i"><use href="#i-cmp"/></svg></span>Compare</div><div><span class="ic"><svg class="i"><use href="#i-user"/></svg></span>Account</div>
+<div><span class="ic c-m"><svg class="i"><use href="#i-dumb"/></svg></span>Muscle</div><div><span class="ic c-f"><svg class="i"><use href="#i-flame"/></svg></span>Fat</div><div><span class="ic c-f"><svg class="i"><use href="#i-pct"/></svg></span>Fat %</div><div><span class="ic c-f"><svg class="i"><use href="#i-layers"/></svg></span>Visceral</div>
+<div><span class="ic c-w"><svg class="i"><use href="#i-drop"/></svg></span>Water</div><div><span class="ic c-l"><svg class="i"><use href="#i-weight"/></svg></span>Weight</div><div><span class="ic c-g"><svg class="i"><use href="#i-bal"/></svg></span>Balance</div><div><span class="ic c-l"><svg class="i"><use href="#i-body"/></svg></span>Body</div>
+<div><span class="ic c-g"><svg class="i"><use href="#i-up"/></svg></span>Trend</div><div><span class="ic c-s"><svg class="i"><use href="#i-eq"/></svg></span>Same</div><div><span class="ic c-a"><svg class="i"><use href="#i-alert"/></svg></span>Attention</div><div><span class="ic c-a"><svg class="i"><use href="#i-trophy"/></svg></span>Record</div>
+<div><span class="ic"><svg class="i"><use href="#i-cal"/></svg></span>Next scan</div><div><span class="ic"><svg class="i"><use href="#i-msg"/></svg></span>Coach</div><div><span class="ic"><svg class="i"><use href="#i-shield"/></svg></span>Consent</div><div><span class="ic"><svg class="i"><use href="#i-pin"/></svg></span>Place</div>
+<div><span class="ic"><svg class="i"><use href="#i-share"/></svg></span>Share</div><div><span class="ic"><svg class="i"><use href="#i-tap"/></svg></span>Tap</div><div><span class="ic"><svg class="i"><use href="#i-scan"/></svg></span>No scans</div><div><span class="ic c-s"><svg class="i"><use href="#i-out"/></svg></span>Sign out</div>
+</div></div>
+<div dir="rtl" lang="ar"><h3>بطاقة رقم وشرايح</h3>
+<div class="card"><div class="row"><span class="ic c-m"><svg class="i"><use href="#i-dumb"/></svg></span><span class="sp">العضل<span class="xs mut" style="display:block">طبيعي · <bdi>29.8–36.4</bdi></span></span><span class="big"><bdi>35.8</bdi> <small>كجم</small></span></div><div class="rb c-m" style="--lo:27.1%;--hi:74.3%;--v:70%;margin-top:14px"><i></i><b></b></div><div class="row" style="gap:6px;margin-top:12px;flex-wrap:wrap"><span class="chip c-g"><svg class="i s flip"><use href="#i-up"/></svg>اتحسّن <bdi>+1.0</bdi></span><span class="chip c-s"><svg class="i s"><use href="#i-eq"/></svg>تقريباً زي ما هو</span><span class="chip a"><svg class="i s"><use href="#i-alert"/></svg>خلي بالك</span></div></div>
+<h3 style="margin-top:20px">أزرار</h3>
+<div style="display:grid;gap:10px"><a class="btn p">شوف التقرير كامل</a><a class="btn" style="background:var(--brand-strong);color:var(--on-brand)">مضغوط</a><a class="btn s"><svg class="i"><use href="#i-msg"/></svg>كلّم مدربك على واتساب</a><a class="btn t">إزاي أستعد للقياس؟</a></div></div>
+<div dir="rtl" lang="ar"><h3>شريط التبويب</h3>
+<nav class="tabs" style="height:62px;padding:6px;border:1px solid var(--border);border-radius:18px"><a class="tab on"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>حسابي</a></nav>
+<nav class="tabs" style="height:62px;padding:6px;border:1px solid var(--border);border-radius:18px;margin-top:10px"><a class="tab"><span class="pl"><svg class="i"><use href="#i-home"/></svg></span>الرئيسية</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-file"/></svg></span>القياسات</a><a class="tab on"><span class="pl"><svg class="i"><use href="#i-cmp"/></svg></span>مقارنة</a><a class="tab"><span class="pl"><svg class="i"><use href="#i-user"/></svg></span>حسابي</a></nav>
+<h3 style="margin-top:20px">ورقة الشرح (بعد الضغط)</h3>
+<div class="sheet st"><i class="grab"></i><div class="row"><span class="ic c-w"><svg class="i"><use href="#i-drop"/></svg></span><div class="sp"><h3 style="color:var(--text);margin:0;font-size:18px">مية الجسم</h3><div class="xs mut">المية اللي جوه جسمك وبرّه الخلايا</div></div><span class="x"><svg class="i"><use href="#i-x"/></svg></span></div><div class="row"><span class="big"><bdi>46.4</bdi> <small>لتر</small></span></div><div class="rb c-w" style="--lo:26.3%;--hi:73.7%;--v:59.5%"><i></i><b></b></div><div class="rl" style="display:block;text-align:center">طبيعي بين <bdi>40.0</bdi> و<bdi>49.0</bdi></div></div></div>
+<div dir="rtl" lang="ar"><h3>لسه مفيش قياسات / بيحمّل</h3>
+<div class="row" style="gap:12px;align-items:stretch">
+<div class="card sp" style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px"><svg width="62" height="126" viewBox="0 0 220 444" aria-hidden="true"><g fill="none" stroke="#6F6987" stroke-width="3" stroke-dasharray="7 7"><use href="#bAll"/><use href="#bH"/></g></svg><b class="fd" style="font-weight:600">لسه مفيش قياسات</b><span class="xs mut">اعمل أول قياس في الجيم، وجسمك هيتملى هنا لوحده.</span><a class="btn s" style="min-height:44px;font-size:14px">إزاي أستعد؟</a></div>
+<div class="card sp" style="display:flex;flex-direction:column;align-items:center;gap:10px" aria-busy="true"><svg class="pulse" width="62" height="126" viewBox="0 0 220 444" aria-hidden="true"><use href="#bH" fill="#26213A"/><use href="#bAll" fill="#26213A"/></svg><span class="pulse" style="width:80%;height:12px;border-radius:6px;background:var(--surface-3)"></span><span class="pulse" style="width:55%;height:12px;border-radius:6px;background:var(--surface-3)"></span><span class="xs mut">بيحمّل آخر قياس…</span></div>
+</div></div>
+<div><h3>Contrast (computed, WCAG)</h3><table class="ct">
+<tr><td><i class="sw8" style="background:#F4F2FA"></i>text on bg / surface-3</td><td>17.70 / 13.91</td></tr>
+<tr><td><i class="sw8" style="background:#A9A3BF"></i>text-muted on surface-2</td><td>7.09</td></tr>
+<tr><td><i class="sw8" style="background:#6F6987"></i>text-faint on bg / surface-2</td><td>3.78 / 3.31 ✗ text</td></tr>
+<tr><td><i class="sw8" style="background:#B98CFF"></i>brand-soft on brand-tint</td><td>5.89</td></tr>
+<tr><td><i class="sw8" style="background:#8B5CF6"></i>white on brand</td><td>4.23 ✗</td></tr>
+<tr><td><i class="sw8" style="background:#6B3BF5"></i>white on brand-strong</td><td>5.88</td></tr>
+<tr><td><i class="sw8" style="background:linear-gradient(135deg,#E19CFB,#B98CFF,#6B3BF5)"></i>#0C0A14 on gradient (label zone)</td><td>5.25–8.31</td></tr>
+<tr><td><i class="sw8" style="background:#FFC857"></i>#2A1D00 on attention</td><td>10.71</td></tr>
+<tr><td><i class="sw8" style="background:#8B8AA3"></i>stable on its 16% chip</td><td>4.46 ✗ → muted label</td></tr>
+<tr><td><i class="sw8" style="background:#5B9CFF"></i>muscle / fat / water on surface-1</td><td>6.72 / 9.12 / 9.94</td></tr>
+<tr><td><i class="sw8" style="background:#C9C3E3"></i>lean figure on bg</td><td>11.60</td></tr>
+<tr><td><i class="sw8" style="background:#FF6A1A"></i>Iron Box: #0C0A14 on brand</td><td>6.85</td></tr>
+<tr><td><i class="sw8" style="background:#12B5A6"></i>Pulse: #0C0A14 on brand</td><td>7.66</td></tr>
+</table></div>
+</div>
+</section>
+</main>
+</body>
+</html>

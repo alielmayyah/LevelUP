@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warm Sand direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400..700&family=Rubik:wght@400..700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p-bg:#EEE4D1;--p-sf:#F7F0E2;--p-tx:#2A1D14;--p-mu:#6A5745;--p-bd:#D8C9AF;--p-cl:#9A4A2B;--p-dev:#14100D;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--p-bg:#1A1410;--p-sf:#241C16;--p-tx:#F1E7D8;--p-mu:#B8A792;--p-bd:#43372D;--p-cl:#CF8661;--p-dev:#000;color-scheme:dark}}
+:root[data-theme="dark"]{--p-bg:#1A1410;--p-sf:#241C16;--p-tx:#F1E7D8;--p-mu:#B8A792;--p-bd:#43372D;--p-cl:#CF8661;--p-dev:#000;color-scheme:dark}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{background:var(--p-bg);color:var(--p-tx);font:400 1rem/1.6 Rubik,system-ui,sans-serif;padding:56px 16px 96px}
+.wrap{max-width:1260px;margin:0 auto}
+.d{font-family:"Markazi Text",Georgia,serif}
+.n,bdi{font-variant-numeric:tabular-nums}
+[lang=ar]{line-height:1.65}
+svg{display:block}
+a{color:inherit;text-decoration:none}
+
+/* page chrome */
+.top{max-width:720px}
+.mark{display:flex;align-items:center;gap:8px;color:var(--p-cl);font-weight:600;font-size:1.05rem}
+.mark svg{width:24px;height:24px}
+h1{font:600 clamp(3.4rem,11vw,6rem)/.95 "Markazi Text",serif;margin-top:28px;letter-spacing:-.02em}
+.mood{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin-top:20px}
+.mood li{padding:6px 16px;border-radius:999px;background:var(--p-sf);font-size:.95rem}
+.why{margin-top:22px;font-size:1.125rem;line-height:1.6;max-width:62ch;text-wrap:pretty}
+h2.sec{font:600 2.4rem/1.1 "Markazi Text",serif;margin:88px 0 8px;letter-spacing:-.01em}
+.lede{color:var(--p-mu);max-width:64ch;margin-bottom:28px;text-wrap:pretty}
+
+/* frame tokens */
+[data-frame-theme=light]{--bg:#EEE4D1;--sf:#F7F0E2;--rs:#FCF8F0;--bd:#D8C9AF;--tx:#2A1D14;--mu:#6A5745;--ac:#2D5B3D;--oac:#FBF6EC;--at:#E0A12A;--oat:#2A1D14;--ms:#2C4A6B;--ft:#A36A33;--wt:#256A76;--st:#7E7163;--cl:#9A4A2B;--bn:#928165;--acs:#DCE5D3;--sts:#E4DACA;--cb:#E2D5BD;color-scheme:light}
+[data-frame-theme=dark]{--bg:#1A1410;--sf:#241C16;--rs:#2F251E;--bd:#43372D;--tx:#F1E7D8;--mu:#B8A792;--ac:#8CBF98;--oac:#14231A;--at:#E9B24C;--oat:#2A1D14;--ms:#6E95C4;--ft:#DDA46D;--wt:#A3DDD9;--st:#9C8F80;--cl:#CF8661;--bn:#7A6A58;--acs:#25342A;--sts:#2F2721;--cb:#2C241D;color-scheme:dark}
+[data-frame-theme]{background:var(--bg);color:var(--tx)}
+
+/* palette */
+.pals{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px}
+.pal,.cp{box-shadow:inset 0 0 0 1px var(--p-bd)}
+.pal{border-radius:28px;padding:24px 20px}
+.pal h3{font:600 1.6rem/1.2 "Markazi Text",serif;margin-bottom:12px}
+.tk{display:grid;grid-template-columns:44px 1fr auto;gap:2px 14px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}
+.tk i{grid-row:span 2;width:44px;height:44px;border-radius:14px;box-shadow:inset 0 0 0 1px var(--bd)}
+.tk b{font-weight:500;font-size:.95rem}
+.tk code{font:400 .9rem Rubik;color:var(--mu);font-variant-numeric:tabular-nums;justify-self:end}
+.tk span{grid-column:2/4;font-size:.85rem;color:var(--mu)}
+
+/* type */
+.type{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:24px}
+.spec{background:var(--p-sf);border-radius:28px;padding:28px 24px}
+.spec .who{color:var(--p-mu);font-size:.9rem;margin-bottom:14px}
+.spec .big{font:600 2.6rem/1.3 "Markazi Text",serif}
+.spec .big[lang=en]{font-size:2.3rem;line-height:1.15}
+.spec p+p{margin-top:12px}
+.scale{list-style:none;margin-top:4px}
+.scale li{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:baseline;padding:10px 0;border-top:1px solid var(--p-bd)}
+.scale small{color:var(--p-mu);font-size:.85rem;font-variant-numeric:tabular-nums}
+
+/* frames */
+.frames{display:flex;flex-wrap:wrap;gap:64px 44px;justify-content:center}
+figure{margin:0;display:flex;flex-direction:column;align-items:center}
+.fr{padding:9px;width:408px}
+figcaption{margin-top:18px;font-size:.95rem;color:var(--p-mu);text-align:center;max-width:34ch}
+figcaption b{color:var(--p-tx);font-weight:500}
+@media (max-width:438px){.fr{zoom:.84}}
+@media (max-width:374px){.fr{zoom:.76}}
+@media (max-width:340px){.fr{zoom:.7}}
+.ph{width:390px;height:844px;border-radius:52px;position:relative;overflow:hidden;box-shadow:0 0 0 9px var(--p-dev),0 0 0 10px #5A4E44;font-family:Rubik,sans-serif;font-size:16px;line-height:1.5}
+.ph[lang=ar]{line-height:1.65}
+.sb{height:54px;display:flex;align-items:center;justify-content:space-between;padding:4px 34px 0;font:600 16px/1 Rubik;position:relative}
+.isl{position:absolute;left:50%;top:11px;width:124px;height:36px;margin-left:-62px;background:#000;border-radius:20px}
+.sb svg{width:72px;height:13px}
+.hi{position:absolute;bottom:8px;left:50%;width:136px;height:5px;margin-left:-68px;border-radius:3px;background:var(--tx)}
+.scr{padding:0 24px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+[dir=rtl] .flip{transform:scaleX(-1)}
+
+/* tab bar */
+.tb{position:absolute;inset-inline:0;bottom:0;height:90px;padding:6px 8px 32px;background:var(--sf);border-top:1px solid var(--bd);display:flex}
+.tb a{flex:1;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px;line-height:1.2;color:var(--mu)}
+.tb a span:first-child{display:grid;place-items:center;width:56px;height:30px;border-radius:15px}
+.tb a.on{color:var(--ac);font-weight:500}
+.tb a.on span:first-child{background:var(--acs)}
+.tb.st{position:static;height:auto;padding-bottom:6px;border:1px solid var(--bd);border-radius:22px}
+
+/* brand row */
+.brand{height:52px;display:flex;align-items:center;gap:12px}
+.wm{display:flex;align-items:center;gap:6px;font:600 19px/1 Rubik;color:var(--cl);letter-spacing:-.01em}
+.wm svg{width:22px;height:22px}
+.vr{width:1px;height:22px;background:var(--bd)}
+.gym{width:34px;height:34px;border-radius:11px;border:1px solid var(--bd);display:grid;place-items:center;font:600 12px/1 Rubik;color:var(--mu);background:var(--sf)}
+
+/* home */
+.greet{font-size:16px;color:var(--mu);margin-top:10px}
+.kick{margin-top:20px;font-size:15px;font-weight:500;line-height:1.4}
+.kick span{display:block;font-weight:400;color:var(--mu);font-size:14px}
+.verdict{font:600 36px/1.3 "Markazi Text",serif;margin-top:10px;text-wrap:pretty}
+.verdict[lang=en],[lang=en] .verdict{font-size:31px;line-height:1.18;letter-spacing:-.01em}
+.q{color:var(--cl)}
+.chg{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:22px;border-block:1px solid var(--bd)}
+.chg>div{padding:12px 0 12px;display:flex;flex-direction:column;gap:1px;min-width:0}
+[lang=en] .chg{grid-template-columns:1fr 1fr 1.45fr}
+.chg>div+div{padding-inline-start:12px;border-inline-start:1px solid var(--bd)}
+.lb{font-size:14px;color:var(--mu);display:flex;align-items:center;gap:7px}
+.sw{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.num{font:500 28px/1.15 Rubik;font-variant-numeric:tabular-nums;color:var(--ac);white-space:nowrap}
+.num small{font-size:13px;margin-inline-start:3px;color:var(--mu);font-weight:400}
+.num.s{color:var(--mu)}
+.tg{display:inline-flex;align-items:center;gap:3px;height:26px;padding:0 9px 0 7px;border-radius:13px;font-size:13px;line-height:1;white-space:nowrap;align-self:flex-start;margin-top:4px}
+.tg svg{width:14px;height:14px;stroke-width:2.2}
+[lang=en] .chg .tg{font-size:12px;padding:0 7px 0 6px}
+.tg.up{background:var(--acs);color:var(--ac)}
+.tg.eq{background:var(--sts);color:var(--mu)}
+.tg.at{background:var(--at);color:var(--oat)}
+.spl{margin-top:16px}
+.sph{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--mu)}
+.sph b{font:500 17px Rubik;color:var(--tx)}
+.bar{display:flex;gap:3px;height:12px;margin-top:8px}
+.bar i{border-radius:6px;background:var(--tx);flex:1}
+.bar i.f{background:var(--ft);flex:0 0 calc(19.15% - 2px)}
+.lg{display:flex;justify-content:space-between;font-size:13px;color:var(--mu);margin-top:6px}
+.lg span{display:flex;align-items:center;gap:6px}
+.nx{background:var(--sf);border-radius:24px;padding:14px 18px;display:flex;gap:14px;margin-top:20px;align-items:flex-start}
+.nx .ci{width:40px;height:40px;border-radius:50%;background:var(--bg);display:grid;place-items:center;flex:none;color:var(--tx)}
+.nx b{display:block;font-weight:500;font-size:16px}
+.nx span{display:block;font-size:14px;color:var(--mu);line-height:1.5}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 22px;border-radius:27px;font:500 16px/1.2 Rubik}
+.pri{background:var(--ac);color:var(--oac)}
+.sec2{border:1.5px solid var(--mu);color:var(--tx)}
+.scr>.btn{margin-top:16px}
+
+/* report */
+.nav{height:48px;display:flex;align-items:center;gap:6px;margin-inline-start:-12px}
+.bk{width:44px;height:44px;display:grid;place-items:center;border-radius:22px}
+.nav b{display:block;font-weight:500;font-size:16px;line-height:1.3}
+.nav small{display:block;font-size:13px;color:var(--mu);line-height:1.3}
+.hl{font:600 30px/1.22 "Markazi Text",serif;margin-top:8px;text-wrap:balance}
+.cmp{font-size:14px;color:var(--mu);margin-top:8px;line-height:1.55}
+.cmp .tg{vertical-align:middle;margin:0 2px}
+.hint{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mu);margin-top:6px}
+.rows{margin-top:2px}
+.hint svg{width:18px;height:18px}
+.mr{display:block;padding:6px 0 2px;border-top:1px solid var(--bd);min-height:44px}
+.mr:first-of-type{border-top:0}
+.mt{display:flex;align-items:baseline;gap:8px;line-height:1.3}
+.mt .nm{font-size:16px;font-weight:500}
+.mt .wd{font-size:13px;color:var(--mu);display:flex;align-items:center;gap:5px}
+.mt .wd::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bn)}
+.mt .v{margin-inline-start:auto;font:500 24px/1.1 Rubik;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mt .v small{font-size:13px;font-weight:400;color:var(--mu);margin-inline-start:3px}
+.rb{position:relative;height:28px;margin-top:2px}
+.rb::before{content:"";position:absolute;inset-inline:0;top:7px;height:2px;border-radius:1px;background:var(--bd)}
+.rb .bd{position:absolute;inset-inline-start:var(--a);width:var(--w);top:3px;height:10px;border-radius:5px;background:var(--bn)}
+.rb .dt{position:absolute;inset-inline-start:var(--d);top:1px;width:14px;height:14px;margin-inline-start:-7px;border-radius:50%;background:var(--tx);box-shadow:0 0 0 3px var(--bg)}
+.rb em{position:absolute;inset-inline-start:var(--x);top:14px;width:40px;margin-inline-start:-20px;text-align:center;font:400 12px/1.2 Rubik;font-style:normal;color:var(--mu);font-variant-numeric:tabular-nums}
+.sub{font:600 21px/1.3 "Markazi Text",serif}
+.bal{background:var(--sf);border-radius:24px;padding:10px 16px 10px;margin-top:8px}
+.bh{display:flex;align-items:center;justify-content:space-between}
+.bh .tg{margin:0}
+.bal p{font-size:13px;color:var(--mu);line-height:1.5}
+.bf{display:grid;grid-template-columns:1fr 92px 1fr;align-items:stretch;margin-top:4px}
+.bf svg{width:92px;height:112px}
+.sg{display:flex;flex-direction:column;justify-content:space-between;padding:8px 0 0;font-size:13px;line-height:1.3}
+.sg>div{display:flex;flex-direction:column}
+.sg b{font-weight:500;font-size:15px}
+.sg span{color:var(--mu)}
+.sg:last-child{text-align:end}
+.tr{text-align:center;font-size:13px;color:var(--mu)}
+.tr b{color:var(--tx);font-weight:500}
+.disc{font-size:13px;color:var(--mu);margin-top:8px}
+.bar.sm{height:8px;margin-top:6px}.bar.sm i{border-radius:4px}
+
+/* trend */
+.ttl{font:600 30px/1.22 "Markazi Text",serif;margin-top:14px}
+.seg{display:flex;gap:6px;margin-top:14px}
+.seg a{min-height:44px;padding:0 16px;border-radius:22px;display:flex;align-items:center;font-size:14px;color:var(--mu);border:1px solid var(--bd)}
+.seg a.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.ch{display:flex;align-items:center;gap:10px;margin-top:18px}
+.ch .num{font-size:24px}
+.ch .tg{margin:0}
+.chart{width:342px;height:176px;margin-top:2px;overflow:visible}
+.chart .gl{stroke:var(--bd);stroke-width:1}
+.chart .bnd{fill:var(--cb)}
+.chart text{font:400 12px Rubik;fill:var(--mu);font-variant-numeric:tabular-nums}
+.chart .vl{font-size:13px;font-weight:500;fill:var(--tx)}
+.chart .vl.l{font-weight:600}
+.chart .ln{fill:none;stroke:var(--c);stroke-width:2.5;stroke-linecap:round}
+.chart .ds{stroke-dasharray:3 6}
+.chart circle{fill:var(--c);stroke:var(--bg);stroke-width:3}
+.note{font-size:13px;color:var(--mu);margin-top:10px;line-height:1.55}
+
+/* components */
+.comps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:24px}
+.cp{border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:22px;font-size:16px}
+.cp>h3{font:600 1.5rem/1.2 "Markazi Text",serif}
+.cp .lab{font-size:13px;color:var(--mu);margin-bottom:8px}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row .tg{margin:0}
+.lgd{gap:8px 18px;font-size:14px}.lgd span{display:flex;align-items:center;gap:7px}.lgd .sw{width:18px;height:18px;border-radius:6px}
+.cp .btn{flex:1 1 auto}
+.emp{background:var(--sf);border-radius:24px;padding:24px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.emp svg{width:132px;height:58px;margin-bottom:6px}
+.emp b{font:600 24px/1.25 "Markazi Text",serif}
+.emp p{font-size:14px;color:var(--mu);max-width:30ch}
+.emp .btn{margin-top:10px;flex:none}
+.foot{margin-top:72px;color:var(--p-mu);font-size:.9rem;max-width:70ch}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="mk" viewBox="0 0 24 24"><path d="M3.5 19.5h5.5v-6h5.5v-6h6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-scan" viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="3.5"/><path d="M9 9h6M9 13h6M9 17h3"/></symbol>
+<symbol id="i-cmp" viewBox="0 0 24 24"><rect x="3.5" y="5" width="7" height="14" rx="2.5"/><rect x="13.5" y="5" width="7" height="14" rx="2.5"/></symbol>
+<symbol id="i-acc" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.7 7.1L4 19.8l1.2-4A8 8 0 1 1 20 11.5z"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="3.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5"/></symbol>
+<symbol id="i-ok" viewBox="0 0 24 24"><path d="M5.5 12.5 10 17l8.5-9.5"/></symbol>
+<symbol id="i-eq" viewBox="0 0 24 24"><path d="M5 9.5c2.3-2 4.7-2 7 0s4.7 2 7 0M5 15c2.3-2 4.7-2 7 0s4.7 2 7 0"/></symbol>
+<symbol id="i-att" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V13M12 16.3v.2"/></symbol>
+<symbol id="i-inf" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.7v.2"/></symbol>
+<symbol id="sb" viewBox="0 0 72 13"><g fill="currentColor"><rect x="0" y="9" width="3" height="4" rx="1"/><rect x="5" y="6.5" width="3" height="6.5" rx="1"/><rect x="10" y="4" width="3" height="9" rx="1"/><rect x="15" y="1" width="3" height="12" rx="1"/><path d="M31 12.6 28.4 10a3.7 3.7 0 0 1 5.2 0zM25.8 7.4a7.4 7.4 0 0 1 10.4 0l-1.5 1.5a5.3 5.3 0 0 0-7.4 0zM23.2 4.8a11 11 0 0 1 15.6 0l-1.5 1.5a8.9 8.9 0 0 0-12.6 0z"/><rect x="47" y="1" width="22" height="11.5" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49" y="3" width="15" height="7.5" rx="2"/><rect x="70" y="4.5" width="1.6" height="4.5" rx=".8" opacity=".45"/></g></symbol>
+</svg>
+
+<div class="wrap">
+
+<header class="top">
+<div class="mark"><svg><use href="#mk"/></svg>LevelUP</div>
+<h1>Warm Sand</h1>
+<ul class="mood"><li>Warm</li><li>Unhurried</li><li>Grounded</li></ul>
+<p class="why">A scan result is personal, so LevelUP should read like a well-made page, not a dashboard. Sand paper and espresso ink keep it calm. One deep green carries every action and every real improvement; saffron only asks for attention. Markazi&rsquo;s naskh sets the verdict like an editorial line, Rubik&rsquo;s rounded forms carry the numbers, and each normal range is a sand band you sit inside.</p>
+</header>
+
+<h2 class="sec">Palette</h2>
+<p class="lede">Each ratio is WCAG 2 contrast, computed from the hex pair: text against the background it sits on, graphics against background (3:1 floor). Fat, stable and the normal band are graphic colors, never body text. Clay appears only in the wordmark and brand illustrations.</p>
+<div class="pals">
+<section class="pal" data-frame-theme="light">
+<h3>Light, sand paper</h3>
+<div class="tk"><i style="background:#EEE4D1"></i><b>Background</b><code>#EEE4D1</code><span>text 12.97:1 · muted 5.44:1</span></div>
+<div class="tk"><i style="background:#F7F0E2"></i><b>Surface</b><code>#F7F0E2</code><span>text 14.42:1 · muted 6.05:1</span></div>
+<div class="tk"><i style="background:#FCF8F0"></i><b>Raised surface</b><code>#FCF8F0</code><span>text 15.44:1 · muted 6.47:1 (sheets)</span></div>
+<div class="tk"><i style="background:#D8C9AF"></i><b>Border</b><code>#D8C9AF</code><span>1.29:1, hairline dividers only, never the only edge of a control</span></div>
+<div class="tk"><i style="background:#2A1D14"></i><b>Text, espresso</b><code>#2A1D14</code><span>12.97:1 on background</span></div>
+<div class="tk"><i style="background:#6A5745"></i><b>Muted text</b><code>#6A5745</code><span>5.44:1 on background · 4.96:1 on stable chip</span></div>
+<div class="tk"><i style="background:#2D5B3D"></i><b>Accent, deep green</b><code>#2D5B3D</code><span>6.22:1 on background · 6.05:1 on its soft chip #DCE5D3</span></div>
+<div class="tk"><i style="background:#FBF6EC"></i><b>On accent</b><code>#FBF6EC</code><span>7.29:1 on accent</span></div>
+<div class="tk"><i style="background:#E0A12A"></i><b>Attention, saffron</b><code>#E0A12A</code><span>fill only · espresso text on it 7.24:1</span></div>
+<div class="tk"><i style="background:#2C4A6B"></i><b>Muscle</b><code>#2C4A6B</code><span>7.24:1 on background · L 0.40</span></div>
+<div class="tk"><i style="background:#A36A33"></i><b>Fat</b><code>#A36A33</code><span>3.57:1 on background · 3.10:1 on chart band · L 0.58</span></div>
+<div class="tk"><i style="background:#256A76"></i><b>Water</b><code>#256A76</code><span>4.90:1 on background · L 0.49</span></div>
+<div class="tk"><i style="background:#7E7163"></i><b>Stable</b><code>#7E7163</code><span>3.76:1 on background · chip #E4DACA</span></div>
+<div class="tk"><i style="background:#9A4A2B"></i><b>Clay, brand only</b><code>#9A4A2B</code><span>4.91:1 on background</span></div>
+<div class="tk"><i style="background:#928165"></i><b>Normal band</b><code>#928165</code><span>3.00:1 on background · 3.34:1 on surface · dot on it 4.32:1</span></div>
+</section>
+<section class="pal" data-frame-theme="dark">
+<h3>Dark, roasted earth</h3>
+<div class="tk"><i style="background:#1A1410"></i><b>Background</b><code>#1A1410</code><span>text 14.90:1 · muted 7.80:1</span></div>
+<div class="tk"><i style="background:#241C16"></i><b>Surface</b><code>#241C16</code><span>text 13.70:1 · muted 7.17:1</span></div>
+<div class="tk"><i style="background:#2F251E"></i><b>Raised surface</b><code>#2F251E</code><span>text 12.22:1 · muted 6.40:1 (sheets)</span></div>
+<div class="tk"><i style="background:#43372D"></i><b>Border</b><code>#43372D</code><span>1.58:1, hairline dividers only</span></div>
+<div class="tk"><i style="background:#F1E7D8"></i><b>Text, warm paper</b><code>#F1E7D8</code><span>14.90:1 on background</span></div>
+<div class="tk"><i style="background:#B8A792"></i><b>Muted text</b><code>#B8A792</code><span>7.80:1 on background · 6.27:1 on stable chip</span></div>
+<div class="tk"><i style="background:#8CBF98"></i><b>Accent, sage green</b><code>#8CBF98</code><span>8.70:1 on background · 6.25:1 on its soft chip #25342A</span></div>
+<div class="tk"><i style="background:#14231A"></i><b>On accent</b><code>#14231A</code><span>7.80:1 on accent</span></div>
+<div class="tk"><i style="background:#E9B24C"></i><b>Attention, saffron</b><code>#E9B24C</code><span>fill only · espresso text on it 8.52:1</span></div>
+<div class="tk"><i style="background:#6E95C4"></i><b>Muscle</b><code>#6E95C4</code><span>5.87:1 on background · L 0.66</span></div>
+<div class="tk"><i style="background:#DDA46D"></i><b>Fat</b><code>#DDA46D</code><span>8.34:1 on background · L 0.76</span></div>
+<div class="tk"><i style="background:#A3DDD9"></i><b>Water</b><code>#A3DDD9</code><span>12.07:1 on background · L 0.86</span></div>
+<div class="tk"><i style="background:#9C8F80"></i><b>Stable</b><code>#9C8F80</code><span>5.78:1 on background · chip #2F2721</span></div>
+<div class="tk"><i style="background:#CF8661"></i><b>Clay, brand only</b><code>#CF8661</code><span>6.28:1 on background</span></div>
+<div class="tk"><i style="background:#7A6A58"></i><b>Normal band</b><code>#7A6A58</code><span>3.50:1 on background · 3.22:1 on surface · dot on it 4.26:1</span></div>
+</section>
+</div>
+
+<h2 class="sec">Type</h2>
+<p class="lede">Markazi Text, a naskh drawn for Arabic news headlines, gives the verdict the voice of an editorial line; its Latin is a matching book serif. Rubik sets everything else in both scripts, with soft rounded corners and tabular figures for every number. Both load from Google Fonts with real Arabic glyphs. Markazi runs small, so it starts at 21&nbsp;px and is never used for numbers.</p>
+<div class="type">
+<div class="spec">
+<p class="who">Markazi Text 600, display</p>
+<p class="big" lang="ar" dir="rtl">عضلك بيزيد ودهونك بتقل من 3 شهور</p>
+<p class="big" lang="en">Your body changed: more muscle, less fat.</p>
+<p class="who" style="margin-top:22px">Rubik 400 and 500, interface and numbers</p>
+<p lang="ar" dir="rtl" style="font-size:17px">القياس الجاي بعد 4 أسابيع. تعالى بعد الأكل بـ3 ساعات ومن غير تمرين.</p>
+<p lang="en" style="font-size:17px">Next scan in 4 weeks. Come 3 hours after eating, no workout.</p>
+<p lang="ar" dir="rtl" style="font:500 30px/1.2 Rubik"><span class="n"><bdi>77.9</bdi></span> <span style="font-size:15px;font-weight:400">كجم</span> &nbsp; <bdi dir="ltr">+1.0</bdi> &nbsp; <bdi dir="ltr">−2.3</bdi></p>
+</div>
+<div class="spec">
+<p class="who">Scale, ratio about 1.25 from a 16 px body. Arabic line height 1.65, Latin 1.5. No tracking on Arabic.</p>
+<ul class="scale">
+<li><span class="d" style="font-size:36px;font-weight:600;line-height:1.2">Verdict</span><small>Markazi 36 / 1.3 · 600</small></li>
+<li><span class="d" style="font-size:30px;font-weight:600;line-height:1.2">Screen title</span><small>Markazi 30 / 1.22 · 600</small></li>
+<li><span class="n" style="font-size:30px;font-weight:500;line-height:1.2">+1.0</span><small>Rubik 30 / 1.15 · 500 · tabular</small></li>
+<li><span class="n" style="font-size:24px;font-weight:500;line-height:1.2">35.8</span><small>Rubik 24 / 1.1 · 500 · tabular</small></li>
+<li><span class="d" style="font-size:21px;font-weight:600">Section</span><small>Markazi 21 / 1.3 · 600</small></li>
+<li><span style="font-size:16px">Body and buttons</span><small>Rubik 16 / 1.65 ar · 400–500</small></li>
+<li><span style="font-size:14px">Labels</span><small>Rubik 14 / 1.5 · 400</small></li>
+<li><span style="font-size:13px">Captions, tab labels</span><small>Rubik 13 · Arabic floor</small></li>
+</ul>
+</div>
+</div>
+
+<h2 class="sec">Screens</h2>
+<p class="lede">390 × 844 frames with the real Karim data. Each frame carries its own theme. Arabic is the default; the body figure faces you and is never mirrored, and Arabic charts run oldest on the right.</p>
+<div class="frames">
+
+<!-- a. Home, Arabic, dark -->
+<figure>
+<div class="fr"><div class="ph" data-frame-theme="dark" dir="rtl" lang="ar">
+<div class="sb"><span class="n">8:15</span><i class="isl"></i><svg><use href="#sb"/></svg></div>
+<div class="scr">
+<div class="brand"><span class="wm" dir="ltr"><svg><use href="#mk"/></svg>LevelUP</span><i class="vr"></i><span class="gym" dir="ltr" title="Iron Box">IB</span></div>
+<p class="greet">صباح الخير يا كريم</p>
+<p class="kick">تقدّمك من أول قياس<span>3 قياسات في 3 شهور ونص</span></p>
+<p class="verdict"><span class="q">«</span>وزنك نزل كيلو، بس الأهم إن جسمك اتغيّر: عضل أكتر ودهون أقل.<span class="q">»</span></p>
+<div class="chg">
+<div><span class="lb"><i class="sw" style="--c:var(--ms)"></i>عضل</span><span class="num"><bdi dir="ltr">+1.0</bdi><small>كجم</small></span><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>اتحسّن</span></div>
+<div><span class="lb"><i class="sw" style="--c:var(--ft)"></i>دهون</span><span class="num"><bdi dir="ltr">−2.3</bdi><small>كجم</small></span><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>اتحسّن</span></div>
+<div><span class="lb">وزن</span><span class="num s"><bdi dir="ltr">−1.1</bdi><small>كجم</small></span><span class="tg eq"><svg class="ico"><use href="#i-eq"/></svg>زي ما هو</span></div>
+</div>
+<div class="spl"><div class="sph"><span>وزنك النهارده</span><b><bdi>77.9</bdi> <small style="font-size:13px;font-weight:400">كجم</small></b></div>
+<div class="bar"><i class="f"></i><i></i></div>
+<div class="lg"><span><i class="sw" style="--c:var(--ft)"></i>دهون <bdi>14.92</bdi></span><span><i class="sw" style="--c:var(--tx)"></i>من غير دهون <bdi>62.98</bdi></span></div></div>
+<div class="nx"><span class="ci"><svg class="ico"><use href="#i-cal"/></svg></span><div><b>القياس الجاي بعد 4 أسابيع</b><span>الأربع 16 ديسمبر، الساعة <bdi>8:00</bdi> زي آخر مرة</span><span>تعالى بعد الأكل بـ3 ساعات ومن غير تمرين</span></div></div>
+<a class="btn pri" href="#"><svg class="ico"><use href="#i-chat"/></svg>كلّم مدربك على واتساب</a>
+</div>
+<nav class="tb"><a class="on"><span><svg class="ico"><use href="#i-home"/></svg></span><span>الرئيسية</span></a><a><span><svg class="ico"><use href="#i-scan"/></svg></span><span>القياسات</span></a><a><span><svg class="ico"><use href="#i-cmp"/></svg></span><span>مقارنة</span></a><a><span><svg class="ico"><use href="#i-acc"/></svg></span><span>حسابي</span></a></nav>
+<i class="hi"></i>
+</div></div>
+<figcaption><b>a. Home, Arabic, dark.</b> The verdict leads; muscle and fat cleared the noise floor, weight did not, so it stays grey.</figcaption>
+</figure>
+
+<!-- b. Home, Arabic, light -->
+<figure>
+<div class="fr"><div class="ph" data-frame-theme="light" dir="rtl" lang="ar">
+<div class="sb"><span class="n">8:15</span><i class="isl"></i><svg><use href="#sb"/></svg></div>
+<div class="scr">
+<div class="brand"><span class="wm" dir="ltr"><svg><use href="#mk"/></svg>LevelUP</span><i class="vr"></i><span class="gym" dir="ltr" title="Iron Box">IB</span></div>
+<p class="greet">صباح الخير يا كريم</p>
+<p class="kick">تقدّمك من أول قياس<span>3 قياسات في 3 شهور ونص</span></p>
+<p class="verdict"><span class="q">«</span>وزنك نزل كيلو، بس الأهم إن جسمك اتغيّر: عضل أكتر ودهون أقل.<span class="q">»</span></p>
+<div class="chg">
+<div><span class="lb"><i class="sw" style="--c:var(--ms)"></i>عضل</span><span class="num"><bdi dir="ltr">+1.0</bdi><small>كجم</small></span><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>اتحسّن</span></div>
+<div><span class="lb"><i class="sw" style="--c:var(--ft)"></i>دهون</span><span class="num"><bdi dir="ltr">−2.3</bdi><small>كجم</small></span><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>اتحسّن</span></div>
+<div><span class="lb">وزن</span><span class="num s"><bdi dir="ltr">−1.1</bdi><small>كجم</small></span><span class="tg eq"><svg class="ico"><use href="#i-eq"/></svg>زي ما هو</span></div>
+</div>
+<div class="spl"><div class="sph"><span>وزنك النهارده</span><b><bdi>77.9</bdi> <small style="font-size:13px;font-weight:400">كجم</small></b></div>
+<div class="bar"><i class="f"></i><i></i></div>
+<div class="lg"><span><i class="sw" style="--c:var(--ft)"></i>دهون <bdi>14.92</bdi></span><span><i class="sw" style="--c:var(--tx)"></i>من غير دهون <bdi>62.98</bdi></span></div></div>
+<div class="nx"><span class="ci"><svg class="ico"><use href="#i-cal"/></svg></span><div><b>القياس الجاي بعد 4 أسابيع</b><span>الأربع 16 ديسمبر، الساعة <bdi>8:00</bdi> زي آخر مرة</span><span>تعالى بعد الأكل بـ3 ساعات ومن غير تمرين</span></div></div>
+<a class="btn pri" href="#"><svg class="ico"><use href="#i-chat"/></svg>كلّم مدربك على واتساب</a>
+</div>
+<nav class="tb"><a class="on"><span><svg class="ico"><use href="#i-home"/></svg></span><span>الرئيسية</span></a><a><span><svg class="ico"><use href="#i-scan"/></svg></span><span>القياسات</span></a><a><span><svg class="ico"><use href="#i-cmp"/></svg></span><span>مقارنة</span></a><a><span><svg class="ico"><use href="#i-acc"/></svg></span><span>حسابي</span></a></nav>
+<i class="hi"></i>
+</div></div>
+<figcaption><b>b. Home, Arabic, light.</b> The default. Clay appears once, in the wordmark and the verdict&rsquo;s quote marks.</figcaption>
+</figure>
+
+<!-- c. Scan report, Arabic, light -->
+<figure>
+<div class="fr"><div class="ph" data-frame-theme="light" dir="rtl" lang="ar">
+<div class="sb"><span class="n">8:16</span><i class="isl"></i><svg><use href="#sb"/></svg></div>
+<div class="scr">
+<div class="nav"><a class="bk" href="#" aria-label="رجوع"><svg class="ico flip"><use href="#i-back"/></svg></a><div><b>18 نوفمبر</b><small><bdi>Iron Box</bdi> التجمع، <bdi>InBody 770</bdi></small></div></div>
+<h3 class="hl">عضلك بيزيد ودهونك بتقل من 3 شهور</h3>
+<p class="cmp">مقارنة بالقياس اللي فات: <span class="tg eq"><svg class="ico"><use href="#i-eq"/></svg>تقريباً زي ما هو</span> التغيير أصغر من فرق الجهاز.</p>
+<p class="hint"><svg class="ico"><use href="#i-inf"/></svg>اضغط على أي رقم عشان تفهمه</p>
+<div class="rows">
+<a class="mr" href="#"><div class="mt"><span class="nm">الوزن</span><span class="wd">طبيعي</span><span class="v"><bdi>77.9</bdi><small>كجم</small></span></div><div class="rb" style="--a:25.1%;--w:50%;--d:70.6%"><i class="bd"></i><i class="dt"></i><em style="--x:25.1%">58.9</em><em style="--x:75.1%">79.7</em></div>
+<div class="bar sm"><i class="f"></i><i></i></div><div class="lg"><span><i class="sw" style="--c:var(--ft)"></i>دهون <bdi>14.92</bdi> كجم</span><span><i class="sw" style="--c:var(--tx)"></i>من غير دهون <bdi>62.98</bdi> كجم</span></div></a>
+<a class="mr" href="#"><div class="mt"><span class="nm">العضل</span><span class="wd">طبيعي</span><span class="v"><bdi>35.8</bdi><small>كجم</small></span></div><div class="rb" style="--a:27.1%;--w:47.1%;--d:70%"><i class="bd"></i><i class="dt"></i><em style="--x:27.1%">29.8</em><em style="--x:74.3%">36.4</em></div></a>
+<a class="mr" href="#"><div class="mt"><span class="nm">الدهون</span><span class="wd">طبيعي</span><span class="v"><bdi>14.92</bdi><small>كجم</small></span></div><div class="rb" style="--a:30%;--w:40%;--d:55.8%"><i class="bd"></i><i class="dt"></i><em style="--x:30%">10.8</em><em style="--x:70%">17.2</em></div></a>
+<a class="mr" href="#"><div class="mt"><span class="nm">نسبة الدهون</span><span class="wd">طبيعي</span><span class="v"><bdi dir="ltr">19.15%</bdi></span></div><div class="rb" style="--a:25%;--w:50%;--d:70.8%"><i class="bd"></i><i class="dt"></i><em style="--x:25%">10%</em><em style="--x:75%">20%</em></div></a>
+</div>
+<section class="bal">
+<div class="bh"><span class="sub">توازن الجسم</span><span class="tg eq"><svg class="ico"><use href="#i-ok"/></svg>متوازن</span></div>
+<p>الفرق بين اليمين والشمال أقل من <bdi dir="ltr">2%</bdi>. الأرقام كتلة صافية مش عضل بس.</p>
+<div class="bf">
+<div class="sg"><div><b>الدراع الشمال</b><span><bdi>3.44</bdi> كجم · <bdi dir="ltr">104%</bdi></span></div><div><b>الرجل الشمال</b><span><bdi>9.58</bdi> كجم · <bdi dir="ltr">103%</bdi></span></div></div>
+<svg viewBox="0 0 92 124" role="img" aria-label="الجسم من قدام: يمين كريم على شمالك"><g fill="var(--bn)"><circle cx="46" cy="10" r="9" fill="var(--bd)"/><rect x="30" y="22" width="32" height="48" rx="13"/><rect x="15" y="24" width="11" height="44" rx="5.5"/><rect x="66" y="24" width="11" height="44" rx="5.5"/><rect x="31" y="73" width="13.5" height="50" rx="6.75"/><rect x="47.5" y="73" width="13.5" height="50" rx="6.75"/></g></svg>
+<div class="sg"><div><b>الدراع اليمين</b><span><bdi>3.48</bdi> كجم · <bdi dir="ltr">105%</bdi></span></div><div><b>الرجل اليمين</b><span><bdi>9.62</bdi> كجم · <bdi dir="ltr">104%</bdi></span></div></div>
+</div>
+<p class="tr">الجذع <b><bdi>28.4</bdi> كجم</b> · <bdi dir="ltr">102%</bdi> من المثالي</p>
+</section>
+<p class="disc">معلومات للياقة، مش تشخيص طبي.</p>
+</div>
+<i class="hi"></i>
+</div></div>
+<figcaption><b>c. Scan report, Arabic, light.</b> Each value is a dot inside its sand band, low on the right. The figure faces you, so Karim&rsquo;s right side is on your left and named in words.</figcaption>
+</figure>
+
+<!-- d. Trend, Arabic, light -->
+<figure>
+<div class="fr"><div class="ph" data-frame-theme="light" dir="rtl" lang="ar">
+<div class="sb"><span class="n">8:17</span><i class="isl"></i><svg><use href="#sb"/></svg></div>
+<div class="scr">
+<h3 class="ttl">العضل والدهون</h3>
+<p class="cmp" style="margin-top:2px">من أول قياس: 3 قياسات في 3 شهور ونص، كلهم على نفس الجهاز</p>
+<div class="seg"><a class="on" href="#">العضل والدهون</a><a href="#">الوزن</a><a href="#">مية الجسم</a></div>
+<div class="ch" style="--c:var(--ms)"><span class="lb" style="font-size:16px;color:var(--tx);font-weight:500"><i class="sw"></i>العضل</span><span class="num"><bdi dir="ltr">+1.0</bdi><small>كجم</small></span><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>اتحسّن</span></div>
+<svg class="chart" viewBox="0 0 342 176" style="--c:var(--ms)" role="img" aria-label="العضل: 34.8 في 2 أغسطس، 35.3 في 14 أكتوبر، 35.8 في 18 نوفمبر">
+<rect class="bnd" x="30" y="32" width="272" height="108" rx="6"/>
+<text x="250" y="132" text-anchor="middle">المعدل الطبيعي</text>
+<path class="gl" d="M30 40H302M30 80H302M30 120H302M30 140H302"/>
+<text x="326" y="44" text-anchor="middle">36</text><text x="326" y="84" text-anchor="middle">34</text><text x="326" y="124" text-anchor="middle">32</text>
+<path class="ln ds" d="M290 64 123.7 54"/><path class="ln" d="M123.7 54 44 44"/>
+<circle cx="290" cy="64" r="5.5"/><circle cx="123.7" cy="54" r="5.5"/><circle cx="44" cy="44" r="6.5"/>
+<text class="vl" x="290" y="50" text-anchor="middle">34.8</text><text class="vl" x="124" y="40" text-anchor="middle">35.3</text><text class="vl l" x="44" y="29" text-anchor="middle">35.8</text>
+<text x="290" y="162" text-anchor="middle">2 أغسطس</text><text x="124" y="162" text-anchor="middle">14 أكتوبر</text><text x="44" y="162" text-anchor="middle">18 نوفمبر</text>
+</svg>
+<div class="ch" style="--c:var(--ft)"><span class="lb" style="font-size:16px;color:var(--tx);font-weight:500"><i class="sw"></i>الدهون</span><span class="num"><bdi dir="ltr">−2.3</bdi><small>كجم</small></span><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>اتحسّن</span></div>
+<svg class="chart" viewBox="0 0 342 176" style="--c:var(--ft)" role="img" aria-label="الدهون: 17.2 في 2 أغسطس، 15.95 في 14 أكتوبر، 14.92 في 18 نوفمبر">
+<rect class="bnd" x="30" y="36" width="272" height="104" rx="6"/>
+<path class="gl" d="M30 20H302M30 60H302M30 100H302M30 140H302"/>
+<text x="326" y="24" text-anchor="middle">18</text><text x="326" y="64" text-anchor="middle">16</text><text x="326" y="104" text-anchor="middle">14</text>
+<path class="ln ds" d="M290 36 123.7 61"/><path class="ln" d="M123.7 61 44 81.6"/>
+<circle cx="290" cy="36" r="5.5"/><circle cx="123.7" cy="61" r="5.5"/><circle cx="44" cy="81.6" r="6.5"/>
+<text class="vl" x="290" y="58" text-anchor="middle">17.2</text><text class="vl" x="124" y="83" text-anchor="middle">15.95</text><text class="vl l" x="44" y="105" text-anchor="middle">14.92</text>
+<text x="290" y="162" text-anchor="middle">2 أغسطس</text><text x="124" y="162" text-anchor="middle">14 أكتوبر</text><text x="44" y="162" text-anchor="middle">18 نوفمبر</text>
+</svg>
+<p class="note">آخر قياس مقارنة باللي قبله: تقريباً زي ما هو، والتغيير أصغر من فرق الجهاز. الخط المتقطع معناه إن بين القياسين أكتر من 8 أسابيع.</p>
+</div>
+<nav class="tb"><a><span><svg class="ico"><use href="#i-home"/></svg></span><span>الرئيسية</span></a><a class="on"><span><svg class="ico"><use href="#i-scan"/></svg></span><span>القياسات</span></a><a><span><svg class="ico"><use href="#i-cmp"/></svg></span><span>مقارنة</span></a><a><span><svg class="ico"><use href="#i-acc"/></svg></span><span>حسابي</span></a></nav>
+<i class="hi"></i>
+</div></div>
+<figcaption><b>d. Trend, Arabic, light.</b> One dot per scan on a true date axis, newest on the left. Both charts use the same 6 kg window, so 1.0 kg never looks like a cliff.</figcaption>
+</figure>
+
+<!-- e. Home, English, dark -->
+<figure>
+<div class="fr"><div class="ph" data-frame-theme="dark" dir="ltr" lang="en">
+<div class="sb"><span class="n">8:15</span><i class="isl"></i><svg><use href="#sb"/></svg></div>
+<div class="scr">
+<div class="brand"><span class="wm"><svg><use href="#mk"/></svg>LevelUP</span><i class="vr"></i><span class="gym" title="Iron Box">IB</span></div>
+<p class="greet">Good morning, Karim</p>
+<p class="kick">Your progress since your first scan<span>3 scans in 3.5 months</span></p>
+<p class="verdict"><span class="q">&ldquo;</span>Your weight dropped a kilo, but what matters is your body changed: more muscle, less fat.<span class="q">&rdquo;</span></p>
+<div class="chg">
+<div><span class="lb"><i class="sw" style="--c:var(--ms)"></i>Muscle</span><span class="num">+1.0<small>kg</small></span><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>Improved</span></div>
+<div><span class="lb"><i class="sw" style="--c:var(--ft)"></i>Fat</span><span class="num">−2.3<small>kg</small></span><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>Improved</span></div>
+<div><span class="lb">Weight</span><span class="num s">−1.1<small>kg</small></span><span class="tg eq"><svg class="ico"><use href="#i-eq"/></svg>About the same</span></div>
+</div>
+<div class="spl"><div class="sph"><span>Your weight today</span><b>77.9 <small style="font-size:13px;font-weight:400">kg</small></b></div>
+<div class="bar"><i class="f"></i><i></i></div>
+<div class="lg"><span><i class="sw" style="--c:var(--ft)"></i>Fat 14.92</span><span><i class="sw" style="--c:var(--tx)"></i>Fat-free 62.98</span></div></div>
+<div class="nx"><span class="ci"><svg class="ico"><use href="#i-cal"/></svg></span><div><b>Next scan in 4 weeks</b><span>Wednesday 16 December, 8:00, same as last time</span><span>Come 3 hours after eating, no workout</span></div></div>
+<a class="btn pri" href="#"><svg class="ico"><use href="#i-chat"/></svg>Message your coach on WhatsApp</a>
+</div>
+<nav class="tb"><a class="on"><span><svg class="ico"><use href="#i-home"/></svg></span><span>Home</span></a><a><span><svg class="ico"><use href="#i-scan"/></svg></span><span>Scans</span></a><a><span><svg class="ico"><use href="#i-cmp"/></svg></span><span>Compare</span></a><a><span><svg class="ico"><use href="#i-acc"/></svg></span><span>Account</span></a></nav>
+<i class="hi"></i>
+</div></div>
+<figcaption><b>e. Home, English, dark.</b> Same structure, left to right. Markazi&rsquo;s Latin serif keeps the verdict&rsquo;s editorial voice.</figcaption>
+</figure>
+</div>
+
+<h2 class="sec">Components</h2>
+<p class="lede">The same parts in both themes. Chips always pair color with an icon and a word. The empty state is one of the few places clay may draw.</p>
+<div class="comps">
+<section class="cp" data-frame-theme="light" dir="rtl" lang="ar">
+<h3>فاتح</h3>
+<div><p class="lab">صف قياس مع المعدل الطبيعي</p>
+<a class="mr" href="#"><div class="mt"><span class="nm">العضل</span><span class="wd">طبيعي</span><span class="v"><bdi>35.8</bdi><small>كجم</small></span></div><div class="rb" style="--a:27.1%;--w:47.1%;--d:70%"><i class="bd"></i><i class="dt"></i><em style="--x:27.1%">29.8</em><em style="--x:74.3%">36.4</em></div></a></div>
+<div><p class="lab">ألوان البيانات، كل لون بدرجة فتح مختلفة</p><div class="row lgd"><span><i class="sw" style="--c:var(--ms)"></i>العضل</span><span><i class="sw" style="--c:var(--ft)"></i>الدهون</span><span><i class="sw" style="--c:var(--wt)"></i>مية الجسم</span><span><i class="sw" style="--c:var(--bn)"></i>المعدل الطبيعي</span></div></div>
+<div><p class="lab">شارة التغيير</p><div class="row"><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>اتحسّن</span><span class="tg eq"><svg class="ico"><use href="#i-eq"/></svg>تقريباً زي ما هو</span><span class="tg at"><svg class="ico"><use href="#i-att"/></svg>خلي بالك</span></div></div>
+<div><p class="lab">زرار أساسي وزرار تاني</p><div class="row"><a class="btn pri" href="#"><svg class="ico"><use href="#i-chat"/></svg>كلّم مدربك على واتساب</a><a class="btn sec2" href="#">قارن آخر قياسين</a></div></div>
+<div><p class="lab">شريط التبويب: المختار والعادي</p><nav class="tb st"><a class="on"><span><svg class="ico"><use href="#i-home"/></svg></span><span>الرئيسية</span></a><a><span><svg class="ico"><use href="#i-scan"/></svg></span><span>القياسات</span></a><a><span><svg class="ico"><use href="#i-cmp"/></svg></span><span>مقارنة</span></a><a><span><svg class="ico"><use href="#i-acc"/></svg></span><span>حسابي</span></a></nav></div>
+<div class="emp"><svg viewBox="0 0 132 58" aria-hidden="true"><circle cx="92" cy="18" r="9" fill="none" stroke="var(--cl)" stroke-width="2.4"/><path d="M4 50c18-14 34-18 52-10s30 10 46 2 20-6 26-4" fill="none" stroke="var(--cl)" stroke-width="2.4" stroke-linecap="round"/><path d="M30 56c12-6 24-6 36-2" fill="none" stroke="var(--bn)" stroke-width="2.4" stroke-linecap="round"/></svg><b>لسه مفيش قياسات</b><p>أول ما تعمل قياس InBody في الجيم، نتيجتك هتظهر هنا لوحدها.</p><a class="btn sec2" href="#">إزاي تجهز لأول قياس</a></div>
+</section>
+<section class="cp" data-frame-theme="dark" dir="rtl" lang="ar">
+<h3>غامق</h3>
+<div><p class="lab">صف قياس مع المعدل الطبيعي</p>
+<a class="mr" href="#"><div class="mt"><span class="nm">العضل</span><span class="wd">طبيعي</span><span class="v"><bdi>35.8</bdi><small>كجم</small></span></div><div class="rb" style="--a:27.1%;--w:47.1%;--d:70%"><i class="bd"></i><i class="dt"></i><em style="--x:27.1%">29.8</em><em style="--x:74.3%">36.4</em></div></a></div>
+<div><p class="lab">ألوان البيانات، كل لون بدرجة فتح مختلفة</p><div class="row lgd"><span><i class="sw" style="--c:var(--ms)"></i>العضل</span><span><i class="sw" style="--c:var(--ft)"></i>الدهون</span><span><i class="sw" style="--c:var(--wt)"></i>مية الجسم</span><span><i class="sw" style="--c:var(--bn)"></i>المعدل الطبيعي</span></div></div>
+<div><p class="lab">شارة التغيير</p><div class="row"><span class="tg up"><svg class="ico"><use href="#i-ok"/></svg>اتحسّن</span><span class="tg eq"><svg class="ico"><use href="#i-eq"/></svg>تقريباً زي ما هو</span><span class="tg at"><svg class="ico"><use href="#i-att"/></svg>خلي بالك</span></div></div>
+<div><p class="lab">زرار أساسي وزرار تاني</p><div class="row"><a class="btn pri" href="#"><svg class="ico"><use href="#i-chat"/></svg>كلّم مدربك على واتساب</a><a class="btn sec2" href="#">قارن آخر قياسين</a></div></div>
+<div><p class="lab">شريط التبويب: المختار والعادي</p><nav class="tb st"><a class="on"><span><svg class="ico"><use href="#i-home"/></svg></span><span>الرئيسية</span></a><a><span><svg class="ico"><use href="#i-scan"/></svg></span><span>القياسات</span></a><a><span><svg class="ico"><use href="#i-cmp"/></svg></span><span>مقارنة</span></a><a><span><svg class="ico"><use href="#i-acc"/></svg></span><span>حسابي</span></a></nav></div>
+<div class="emp"><svg viewBox="0 0 132 58" aria-hidden="true"><circle cx="92" cy="18" r="9" fill="none" stroke="var(--cl)" stroke-width="2.4"/><path d="M4 50c18-14 34-18 52-10s30 10 46 2 20-6 26-4" fill="none" stroke="var(--cl)" stroke-width="2.4" stroke-linecap="round"/><path d="M30 56c12-6 24-6 36-2" fill="none" stroke="var(--bn)" stroke-width="2.4" stroke-linecap="round"/></svg><b>لسه مفيش قياسات</b><p>أول ما تعمل قياس InBody في الجيم، نتيجتك هتظهر هنا لوحدها.</p><a class="btn sec2" href="#">إزاي تجهز لأول قياس</a></div>
+</section>
+</div>
+
+<p class="foot">Mockup only. The weight band (58.9–79.7 kg) is derived from Karim&rsquo;s printed BMI range (18.5–25) at 178.5 cm, since the sheet gives no weight range. Below the fold, the report continues with the visceral fat (6, goal under 10) and body water (46.4 L, 40.0–49.0) rows in the same form; protein, minerals, BMI, BMR, ECW ratio and the InBody Score (79) sit behind a tap.</p>
+</div>
+</body>
+</html>
