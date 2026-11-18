@@ -629,7 +629,6 @@
   },
   "login": {
     "fitId": "Fit ID",
-    "help": "Your Fit ID is {{min}}–{{max}} numbers. Ask the front desk if you don't have one.",
     "submit": "Sign in",
     "signingIn": "Signing in…",
     "notFound": "We couldn't find that Fit ID. Check with the front desk.",

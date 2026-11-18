@@ -12,7 +12,6 @@ import CtaButton from '../components/CtaButton';
 import LanguageToggle from '../components/LanguageToggle';
 import SoundToggle from '../components/SoundToggle';
 import { CORNER_BUTTON, CORNER_CONTROLS, CORNER_START } from '../components/cornerControl';
-import { formatNumber } from '../i18n/format';
 import { useSound } from '../sound/useSound';
 import Icon from '../components/Icon';
 import './Login.scss';
@@ -138,10 +137,10 @@ const Login: React.FC = () => {
               }}
             />
 
-            {/* The helper and the error share one slot so the button never jumps. */}
-            <div className="min-h-[3.2em] short-landscape:min-h-[2.6em]" id={hintId} aria-live="polite">
-              <AnimatePresence mode="wait" initial={false}>
-                {failure ? (
+            {/* Sign-in errors, read out as they appear. */}
+            <div id={hintId} aria-live="polite">
+              <AnimatePresence initial={false}>
+                {failure && (
                   <m.p
                     key={failure}
                     className="mx-0 mt-2 mb-0 flex items-start gap-1.5 text-[0.875rem] leading-[1.4] font-semibold text-splash-danger"
@@ -153,18 +152,6 @@ const Login: React.FC = () => {
                   >
                     <Icon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
                     {t(`login.${failure}`)}
-                  </m.p>
-                ) : (
-                  <m.p
-                    key="help"
-                    className="mx-0 mt-2 mb-0 flex items-start gap-1.5 text-[0.875rem] leading-[1.4] text-splash-muted"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.16 }}
-                  >
-                    <Icon className="mt-[0.1em] flex-none text-[1.05rem]" name="info" />
-                    {t('login.help', { min: formatNumber(MIN_DIGITS), max: formatNumber(MAX_DIGITS) })}
                   </m.p>
                 )}
               </AnimatePresence>

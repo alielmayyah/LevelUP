@@ -16,8 +16,8 @@ for (const lang of LOCALES)
         // The logo is the heading; there is no scene picture and no welcome line.
         await expect(login.getByRole('heading', { level: 1, name: 'LevelUP' })).toBeVisible();
         await expect(login.locator('img')).toHaveCount(1);
-        // The help says how long a Fit ID is.
-        await expect(login.getByText(s.help.replace('{{min}}', '3').replace('{{max}}', '8'))).toBeVisible();
+        // No helper line under the field: just the field and the button.
+        await expect(login.getByRole('alert')).toHaveCount(0);
         const field = login.getByLabel(s.fitId);
         await expect(field).toHaveAttribute('dir', 'ltr');
         const submit = login.getByRole('button', { name: s.submit });
