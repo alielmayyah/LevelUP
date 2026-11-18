@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { FitScoreSummary, FitScoreTier } from '../../api/types';
 import { formatNumber, formatSigned } from '../../i18n/format';
-import { gsap, MOTION_OK, useCountUp, useGSAP } from '../../motion/gsapMotion';
+import { gsap, MOTION_OK, useCountUp, useEnterCount, useGSAP } from '../../motion/gsapMotion';
 import { TIERS, tierKey } from './homeText';
 import Icon from '../../components/Icon';
 import { InfoButton } from '../progress/MetricInfo';
@@ -57,24 +57,38 @@ const FitScoreCard: React.FC<{ fitScore: FitScoreSummary | null }> = ({ fitScore
   const score = fitScore?.score;
   const lit = score === undefined ? 0 : litTicks(score);
 
-  // The score counts up while the gauge's ticks light one after another from the start side.
+  // The score counts up while the gauge's ticks light one after another from
+  // the start side, every time Home is opened.
+  const visits = useEnterCount();
   useCountUp(scoreEl, score);
   useGSAP(
     () => {
       if (!lit) return;
       gsap.matchMedia().add(MOTION_OK, () => {
-        gsap.from('.lu-tick-lit', {
-          autoAlpha: 0,
-          scale: 0.4,
-          transformOrigin: '50% 50%',
-          duration: 0.35,
-          ease: 'back.out(2.5)',
-          stagger: { amount: 0.8 },
-          clearProps: 'all',
+        const tl = gsap.timeline({ delay: 0.15 });
+        tl.from('.lu-tick', {
+          opacity: 0,
+          duration: 0.4,
+          stagger: { amount: 0.3 },
+          ease: 'power1.out',
+          clearProps: 'opacity',
         });
+        tl.from(
+          '.lu-tick-lit',
+          {
+            opacity: 0,
+            scale: 0.2,
+            transformOrigin: '50% 50%',
+            duration: 0.45,
+            ease: 'back.out(3)',
+            stagger: { amount: 0.9 },
+            clearProps: 'opacity,transform',
+          },
+          0.1,
+        );
       });
     },
-    { scope: card, dependencies: [lit] },
+    { scope: card, dependencies: [lit, visits] },
   );
 
   const change = fitScore?.changeSinceLastScan;
