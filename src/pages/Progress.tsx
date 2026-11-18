@@ -14,7 +14,10 @@ import MetricInfo, { InfoButton, type InfoTopic } from './progress/MetricInfo';
 import ScanCalendar from './progress/ScanCalendar';
 import ScanHistory from './progress/ScanHistory';
 import CompositionRing from './progress/CompositionRing';
-import ScanInsight from './progress/ScanInsight';
+import { adviceFor } from '../body/advice';
+import { savePlan } from '../body/planText';
+import ActionPlan from './progress/ActionPlan';
+import { scanInsight } from './progress/insight';
 import Sparkline from './progress/Sparkline';
 import { daysBetween, spanOf } from './progress/scanAge';
 
@@ -257,6 +260,19 @@ const Progress: React.FC = () => {
 
   const empty = scans.status === 'ready' && list.length === 0;
   const hasContent = scan !== null && me.status === 'ready';
+
+  // The plan for the scan on screen: what to do next, read from it and the scan before it.
+  const profile = me.status === 'ready' ? me.data : null;
+  const plan = scan && profile ? adviceFor(scan, previous, profile.sex, profile.heightCm) : [];
+  const topAdvice = plan[0] ?? null;
+  // The latest scan's top item is kept on the device, so Home can show it without another request.
+  const latestId = list[0]?.id;
+  const memberId = profile?.memberId;
+  const topJson = topAdvice && index === 0 ? JSON.stringify(topAdvice) : null;
+  useEffect(() => {
+    if (memberId === undefined || topJson === null || latestId === undefined) return;
+    void savePlan(memberId, { scanId: latestId, top: JSON.parse(topJson) });
+  }, [memberId, topJson, latestId]);
 
   /** A length of time as words: "3 days", "يومين". */
   const spanText = (days: number) => {
@@ -633,7 +649,12 @@ const Progress: React.FC = () => {
             </section>
 
             {/* What the change adds up to, against the same scan the numbers above compare with. */}
-            {before && <ScanInsight scan={scan} before={before} />}
+            {/* Your plan: what to do next, and what the last change adds up to. */}
+            <ActionPlan
+              advice={plan}
+              insight={before ? scanInsight(scan, before) : null}
+              scanDate={scanDate(scan.takenAt)}
+            />
 
             <button
               type="button"

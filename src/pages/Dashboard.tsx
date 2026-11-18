@@ -17,7 +17,7 @@ import Icon from '../components/Icon';
 import { formatToday } from './home/homeText';
 import MissionCard from './home/MissionCard';
 import NotificationsSheet from './home/NotificationsSheet';
-import QuickActions from './home/QuickActions';
+import PlanTeaser from './home/PlanTeaser';
 import RankCard from './home/RankCard';
 import StatTiles from './home/StatTiles';
 import { HOME_GRID, HOME_SPAN, TILES } from './home/layout';
@@ -88,7 +88,14 @@ const Dashboard: React.FC = () => {
                   className="lu-display m-0 text-[clamp(1.6rem,7vw,2rem)] leading-[1.1] wrap-anywhere text-ink"
                   data-testid="greeting"
                 >
-                  {d ? t('home.hello', { name: d.member.firstName }) : <span className="lu-skeleton h-[1em] w-[70%]" />}
+                  {d ? (
+                    t('home.hello', { name: d.member.firstName })
+                  ) : (
+                    <>
+                      <span className="lu-skeleton h-[1em] w-[70%]" aria-hidden="true" />
+                      <span className="sr-only">{t('common.loading')}</span>
+                    </>
+                  )}
                 </h1>
               </div>
               <button
@@ -137,12 +144,11 @@ const Dashboard: React.FC = () => {
           {d && (
             <div className={HOME_GRID} ref={grid}>
               {d.member.showFitScore && <FitScoreCard fitScore={d.fitScore} />}
+              {/* What to do next: the plan from the last scan (once there is one). */}
+              {d.fitScore && <PlanTeaser memberId={d.member.memberId} />}
               <StatTiles wins={d.monthlyWins} today={today} />
               <MissionCard mission={d.mission} />
               {features.community && <RankCard leaderboard={d.leaderboard} />}
-              <div className={HOME_SPAN}>
-                <QuickActions />
-              </div>
             </div>
           )}
         </div>

@@ -620,13 +620,7 @@
     },
     "error": "Couldn't load your dashboard.",
     "openProfile": "Your profile",
-    "hello": "Hello, {{name}}",
-    "quick": {
-      "title": "Shortcuts",
-      "scan": "Your scan",
-      "goal": "New goal",
-      "medals": "Medals"
-    }
+    "hello": "Hello, {{name}}"
   },
   "login": {
     "fitId": "Fit ID",
@@ -724,11 +718,11 @@
     "segmental": "Where your muscle and fat are",
     "composition": "What your body is made of",
     "zone": {
-      "under": "Under",
-      "normal": "Normal",
-      "over": "Over"
+      "under": "Low",
+      "normal": "Healthy",
+      "over": "High"
     },
-    "normalRange": "Normal {{range}}",
+    "normalRange": "Healthy {{range}}",
     "bar": {
       "weight": "Weight",
       "smm": "Muscle",
@@ -751,14 +745,21 @@
       "leftLeg": "Left leg",
       "rightLeg": "Right leg"
     },
-    "leanNote": "Muscle in each part, as % of the normal for your height. Seen from behind: your left is on the left.",
-    "fatNote": "Fat in each part (estimated), as % of the normal for your height. Seen from behind: your left is on the left.",
+    "leanNote": "Muscle in each part of your body, compared with the normal for your height.",
+    "fatNote": "Fat in each part of your body (estimated), compared with the normal for your height.",
     "noSegments": "This scan has no body-part readings.",
-    "figureNote": "Illustration based on your scan. Body proportions are approximate.",
-    "legendNow": "This scan ({{date}})",
-    "legendThen": "Compared scan ({{date}})",
     "upSince": "Up {{amount}} since the compared scan",
-    "downSince": "Down {{amount}} since the compared scan"
+    "downSince": "Down {{amount}} since the compared scan",
+    "explain": "Each bar shows where you are against the healthy range for your height.",
+    "ofNormal": "{{pct}} of normal",
+    "group": {
+      "arms": "Arms",
+      "legs": "Legs"
+    },
+    "side": {
+      "left": "Left",
+      "right": "Right"
+    }
   },
   "newGoal": {
     "title": "New goal",
@@ -830,6 +831,68 @@
       "insightBody": "More muscle, less fat since your last scan.",
       "goal": "Your goal",
       "goalTitle": "Gain 3 kg of muscle"
+    }
+  },
+  "plan": {
+    "title": "Your plan",
+    "basedOn": "From your scan on {{date}}",
+    "level": {
+      "act": "Do this",
+      "watch": "Keep an eye",
+      "keep": "Keep it up"
+    },
+    "how": "How:",
+    "more": "Show {{n}} more",
+    "less": "Show less",
+    "homeTitle": "What to do next",
+    "homeReady": "Your plan is ready. See what to work on from your last scan.",
+    "homeOpen": "See your plan",
+    "item": {
+      "visceralHigh": {
+        "title": "Lower your belly fat",
+        "why": "Your belly fat level is {{level}}. Under {{limit}} is healthy; above that raises the risk of heart problems.",
+        "do": "Walk fast or cycle for 30 minutes, 5 days a week, and cut sugary drinks and late-night snacks."
+      },
+      "fatHigh": {
+        "title": "Bring your body fat down",
+        "why": "Your body fat is {{pct}}. Healthy for you is up to {{max}}.",
+        "do": "Add 3 cardio sessions a week, keep lifting, and eat a little less than you burn, starting with sugar and fried food."
+      },
+      "muscleLow": {
+        "title": "Build more muscle",
+        "why": "You have {{kg}} of muscle. Healthy for your height starts at {{min}}.",
+        "do": "Lift weights 3 times a week with full-body workouts, and have protein with every meal (eggs, chicken, fish, beans)."
+      },
+      "fatRising": {
+        "title": "Your fat went up",
+        "why": "You gained {{kg}} of fat since your last scan.",
+        "do": "Watch your portions and snacks this month, and add 2 fast walks a week."
+      },
+      "muscleDropping": {
+        "title": "Protect your muscle",
+        "why": "You lost {{kg}} of muscle since your last scan.",
+        "do": "Don’t skip your strength days, eat enough protein, and sleep 7 to 8 hours."
+      },
+      "fatLow": {
+        "title": "Eat enough to fuel your training",
+        "why": "Your body fat is {{pct}}, under the healthy {{min}}.",
+        "do": "Add a healthy snack or slightly bigger meals on training days to keep your energy up."
+      },
+      "waterLow": {
+        "title": "Drink more water",
+        "why": "Your body water is {{kg}}, under the normal for your height.",
+        "do": "Aim for 8 to 10 glasses a day, and more on training days."
+      },
+      "muscleStrong": {
+        "title": "Keep up your strength training",
+        "why": "Your muscle ({{kg}}) is in the healthy range or above it.",
+        "do": "Stick with your training and your protein. It’s working."
+      },
+      "fatHealthy": {
+        "title": "Your body fat is healthy",
+        "why": "{{pct}} is right where it should be.",
+        "do": "Keep your eating and cardio steady."
+      }
     }
   }
 }

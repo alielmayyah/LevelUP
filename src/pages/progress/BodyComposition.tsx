@@ -13,16 +13,49 @@ import {
 } from '../../body/standards';
 import Icon, { type IconName } from '../../components/Icon';
 import { focusSibling, rovingTarget } from '../../components/roving';
-import { formatNumber, formatSigned, numberLocale } from '../../i18n/format';
-import BodyScanFigure from './BodyScanFigure';
+import { formatNumber, formatSigned } from '../../i18n/format';
 import './BodyComposition.scss';
 
 type Better = 'up' | 'down' | null;
+
+/**
+ * Which side of the healthy band is good news: more muscle, water or protein
+ * is fine ("more"), more fat is not ("less"), and weight just wants to be in
+ * the band ("band").
+ */
+type Reading = 'more' | 'less' | 'band';
+
+type Tone = 'good' | 'bad' | 'neutral';
+
+const toneOf = (reading: Reading, status: Status): Tone => {
+  if (status === 'normal') return 'good';
+  if (reading === 'more') return status === 'over' ? 'good' : 'bad';
+  if (reading === 'less') return status === 'over' ? 'bad' : 'neutral';
+  return 'neutral';
+};
+
+const TONE_ICON: Record<Tone, IconName> = { good: 'checkCircle', bad: 'warning', neutral: 'info' };
 
 /** Thin space between a number and its unit, so values fit narrow columns. */
 const THIN = String.fromCharCode(0x2009);
 /** Left-to-right isolate, so Arabic never flips a range such as 62.6–84.7. */
 const ltr = (text: string) => `${String.fromCharCode(0x2066)}${text}${String.fromCharCode(0x2069)}`;
+
+/**
+ * Where a value sits on three equal zones, Low | Healthy | High, from 0 to 1.
+ * The scan sheet's scales are uneven (the healthy band takes a fifth); equal
+ * zones read at a glance.
+ */
+function zonePosition(scale: Scale, value: number): number {
+  const p = scalePosition(scale, value);
+  const a = scalePosition(scale, scale.normal[0]);
+  const b = scalePosition(scale, scale.normal[1]);
+  let x: number;
+  if (p < a) x = (a > 0 ? p / a : 0) / 3;
+  else if (p <= b) x = 1 / 3 + (b > a ? (p - a) / (b - a) : 0.5) / 3;
+  else x = 2 / 3 + (b < 1 ? (p - b) / (1 - b) : 1) / 3;
+  return Math.min(0.97, Math.max(0.03, x));
+}
 
 interface Props {
   scan: AssessmentDto;
@@ -31,11 +64,6 @@ interface Props {
   heightCm: number;
   sex: Sex;
 }
-
-const shortDate = (iso: string) =>
-  new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
-
-const pct = (n: number) => `${formatNumber(n, 0)}%`;
 
 /** "+0.7 kg", green when that direction is good news, red when not, plain when neither. */
 const Delta: React.FC<{ now: number; then: number; digits: number; unit: string; better: Better; testId?: string }> = ({
@@ -61,22 +89,47 @@ const Delta: React.FC<{ now: number; then: number; digits: number; unit: string;
   );
 };
 
-const StatusChip: React.FC<{ status: Status; badOver?: boolean }> = ({ status, badOver }) => {
+/** Low / Healthy / High, with a check when it is good news and a warning when it is not. */
+const StatusChip: React.FC<{ status: Status; tone: Tone }> = ({ status, tone }) => {
   const { t } = useTranslation();
   return (
-    <span className={`lu-status lu-status-${status} ${badOver && status === 'over' ? 'is-bad' : ''}`}>
+    <span className={`lu-status lu-status-${tone} inline-flex items-center gap-1 rounded-full px-2 py-0.5`}>
+      <Icon className="flex-none text-[0.95em]" name={TONE_ICON[tone]} />
       {t(`bodyComp.zone.${status}`)}
     </span>
   );
 };
 
-/** The Under / Normal / Over captions over a group of bars; every scale puts its normal band at 20–40%. */
-const ZoneHeader: React.FC = () => {
+/**
+ * The three zones side by side, the healthy one tinted, and a dot where the
+ * member is. Charts read low to high, left to right, in both languages.
+ * `labels` writes the zone names inside the track.
+ */
+const ZoneTrack: React.FC<{ at: number; labels?: boolean }> = ({ at, labels }) => {
   const { t } = useTranslation();
   return (
-    <div dir="ltr" className="lu-zone-head grid grid-cols-[2fr_2fr_6fr] text-center" aria-hidden="true">
+    <div
+      dir="ltr"
+      className={`lu-zones relative grid grid-cols-3 gap-[3px] ${labels ? 'h-[26px]' : 'h-3'}`}
+      aria-hidden="true"
+    >
       {(['under', 'normal', 'over'] as const).map((z) => (
-        <span key={z} className={`lu-zone-cap lu-zone-cap-${z}`}>
+        <span key={z} className={`lu-zone lu-zone-${z} grid place-items-center`}>
+          {labels && t(`bodyComp.zone.${z}`)}
+        </span>
+      ))}
+      <span className="lu-zone-marker" style={{ insetInlineStart: `${at * 100}%` }} data-pop />
+    </div>
+  );
+};
+
+/** The zone names over a list of compact tracks (body parts). */
+const ZoneCaptions: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <div dir="ltr" className="grid grid-cols-3 text-center text-[0.68rem] font-semibold text-muted" aria-hidden="true">
+      {(['under', 'normal', 'over'] as const).map((z) => (
+        <span key={z} className={z === 'normal' ? 'text-success' : ''}>
           {t(`bodyComp.zone.${z}`)}
         </span>
       ))}
@@ -84,15 +137,14 @@ const ZoneHeader: React.FC = () => {
   );
 };
 
-interface BarProps {
+interface RowProps {
   testId: string;
   label: string;
   icon: IconName;
-  tone: string;
+  disc: string;
   scale: Scale;
   /** The value placed on the scale (kg as % of standard for weight, muscle, and fat). */
   position: number;
-  comparePosition: number | null;
   value: number;
   compareValue: number | null;
   digits: number;
@@ -100,28 +152,24 @@ interface BarProps {
   range: readonly [number, number];
   status: Status;
   better: Better;
-  /** Over the band is bad news (fat), not just "over". */
-  badOver?: boolean;
+  reading: Reading;
 }
 
-const Bar: React.FC<BarProps> = (p) => {
+/** One measurement: its name and value, the zone track, the healthy range, and a plain verdict. */
+const Row: React.FC<RowProps> = (p) => {
   const { t } = useTranslation();
-  const at = scalePosition(p.scale, p.position) * 100;
-  const then = p.comparePosition === null ? null : scalePosition(p.scale, p.comparePosition) * 100;
-  const [low, high] = p.scale.normal;
-  const bandStart = scalePosition(p.scale, low) * 100;
-  const bandEnd = scalePosition(p.scale, high) * 100;
   const suffix = p.unit === '%' ? '%' : p.unit ? `${THIN}${p.unit}` : '';
-  const rangeText = `${formatNumber(p.range[0], p.digits)}–${formatNumber(p.range[1], p.digits)}${p.unit === '%' ? '%' : p.unit ? ` ${p.unit}` : ''}`;
+  // Only the numbers are kept left to right; the unit follows in the reading direction.
+  const rangeText = `${ltr(`${formatNumber(p.range[0], p.digits)}–${formatNumber(p.range[1], p.digits)}${p.unit === '%' ? '%' : ''}`)}${p.unit && p.unit !== '%' ? ` ${p.unit}` : ''}`;
   return (
-    <div className={`grid gap-1.5 ${p.tone}`} data-testid={p.testId}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-        <span className="flex min-w-0 items-center gap-1.5 text-[0.85rem] font-semibold text-ink">
-          <Icon className="flex-none text-[1.1rem]" name={p.icon} />
-          {p.label}
+    <div className="grid gap-2" data-testid={p.testId} data-status={p.status}>
+      <div className="flex items-center gap-2.5">
+        <span className={`lu-disc ${p.disc} size-8 text-[0.95rem]`} aria-hidden="true">
+          <Icon name={p.icon} />
         </span>
+        <span className="min-w-0 flex-1 font-display text-[0.95rem] font-semibold text-ink">{p.label}</span>
         <span className="flex items-baseline gap-2">
-          <strong className="lu-display text-[1.35rem] leading-none font-semibold whitespace-nowrap text-ink">
+          <strong className="lu-display text-[1.3rem] leading-none whitespace-nowrap text-ink">
             {formatNumber(p.value, p.digits)}
             <span className="text-[0.7em]">{suffix}</span>
           </strong>
@@ -137,71 +185,85 @@ const Bar: React.FC<BarProps> = (p) => {
           )}
         </span>
       </div>
-      <div dir="ltr" className="lu-scale relative h-3.5" aria-hidden="true">
-        <span
-          className="lu-scale-band absolute inset-y-0"
-          style={{ insetInlineStart: `${bandStart}%`, width: `${bandEnd - bandStart}%` }}
-        />
-        <span className="lu-scale-fill absolute inset-y-0 start-0" style={{ width: `${Math.max(at, 2)}%` }} />
-        {then !== null && (
-          <span className="lu-scale-then absolute -inset-y-1" style={{ insetInlineStart: `calc(${then}% - 1.5px)` }} />
-        )}
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 text-[0.72rem] font-normal text-muted">
-        <span>{t('bodyComp.normalRange', { range: ltr(rangeText) })}</span>
-        <StatusChip status={p.status} badOver={p.badOver} />
+      <ZoneTrack at={zonePosition(p.scale, p.position)} labels />
+      <div className="flex flex-wrap items-center justify-between gap-2 text-[0.75rem] text-muted">
+        <span>{t('bodyComp.normalRange', { range: rangeText })}</span>
+        <StatusChip status={p.status} tone={toneOf(p.reading, p.status)} />
       </div>
     </div>
   );
 };
 
-const Callout: React.FC<{
+/** One body part: which side, its compact track, its kg and % of normal, and the verdict. */
+const PartRow: React.FC<{
   segment: BodySegment;
+  label: string;
   reading: SegmentReading;
   then: SegmentReading | null;
   status: Status;
   kind: 'lean' | 'fat';
-  align: 'left' | 'right' | 'center';
-}> = ({ segment, reading, then, status, kind, align }) => {
-  const { t, i18n } = useTranslation();
+}> = ({ segment, label, reading, then, status, kind }) => {
+  const { t } = useTranslation();
   const digits = kind === 'lean' ? 2 : 1;
-  // Physical sides on purpose: the figure is laid out the same way in both languages.
-  const alignClass =
-    align === 'left'
-      ? 'text-left [justify-items:left]'
-      : align === 'right'
-        ? 'text-right [justify-items:right]'
-        : 'text-center justify-items-center';
+  const scale = kind === 'lean' ? SCALES.segmentLean : SCALES.segmentFat;
   return (
-    <div dir={i18n.dir()} className={`grid gap-0.5 ${alignClass}`} data-testid={`seg-${segment}`}>
-      <span className="text-[0.72rem] font-normal text-muted">{t(`bodyComp.segment.${segment}`)}</span>
-      <strong className="lu-display text-[1.2rem] leading-none font-semibold whitespace-nowrap text-ink">
-        {formatNumber(reading.kg, digits)}
-        <span className="text-[0.7em]">{`${THIN}${t('units.kg')}`}</span>
-      </strong>
-      <span className="text-[0.7rem] font-normal whitespace-nowrap text-muted">
-        <bdi>{pct(reading.pct)}</bdi>
+    <div
+      className="grid grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1"
+      data-testid={`seg-${segment}`}
+      data-status={status}
+    >
+      <span className="text-[0.85rem] leading-tight font-semibold text-ink">{label}</span>
+      <ZoneTrack at={zonePosition(scale, reading.pct)} />
+      <span className="grid justify-items-end gap-0.5 text-end">
+        <span className="flex items-baseline gap-1.5">
+          <strong className="lu-display text-[1.05rem] leading-none whitespace-nowrap text-ink">
+            {formatNumber(reading.kg, digits)}
+            <span className="text-[0.7em]">{`${THIN}${t('units.kg')}`}</span>
+          </strong>
+          {then && (
+            <Delta
+              now={reading.kg}
+              then={then.kg}
+              digits={digits}
+              unit={t('units.kg')}
+              better={kind === 'lean' ? 'up' : 'down'}
+              testId={`seg-${segment}-delta`}
+            />
+          )}
+        </span>
+        <span className="flex items-center gap-1.5 text-[0.72rem]">
+          <bdi className="text-muted">{t('bodyComp.ofNormal', { pct: `${formatNumber(reading.pct, 0)}%` })}</bdi>
+          <StatusChip status={status} tone={toneOf(kind === 'lean' ? 'more' : 'less', status)} />
+        </span>
       </span>
-      <StatusChip status={status} badOver={kind === 'fat'} />
-      {then && (
-        <Delta
-          now={reading.kg}
-          then={then.kg}
-          digits={digits}
-          unit={t('units.kg')}
-          better={kind === 'lean' ? 'up' : 'down'}
-          testId={`seg-${segment}-delta`}
-        />
-      )}
     </div>
   );
 };
 
+/** Arms and legs as a left/right pair, then the trunk. */
+const GROUPS: { key: 'arms' | 'legs' | 'trunk'; parts: { segment: BodySegment; side: 'left' | 'right' | null }[] }[] = [
+  {
+    key: 'arms',
+    parts: [
+      { segment: 'leftArm', side: 'left' },
+      { segment: 'rightArm', side: 'right' },
+    ],
+  },
+  {
+    key: 'legs',
+    parts: [
+      { segment: 'leftLeg', side: 'left' },
+      { segment: 'rightLeg', side: 'right' },
+    ],
+  },
+  { key: 'trunk', parts: [{ segment: 'trunk', side: null }] },
+];
+
 /**
- * The InBody result sheet as three cards: muscle and fat bars against the
- * normal band, where muscle and fat sit on the body, and what the body is made
- * of. With a scan to compare, each bar marks where that scan was and shows the
- * change. Loaded in its own chunk after the page.
+ * The InBody result sheet in plain terms, as three cards: each measurement on
+ * a Low / Healthy / High track for the member's height and sex, the muscle or
+ * fat in each body part, and what the body is made of. With a scan to compare,
+ * each value shows its change. Loaded in its own chunk after the page.
  */
 const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
   const { t, i18n } = useTranslation();
@@ -212,15 +274,14 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
   const ofStd = (v: number, s: number) => (v / s) * 100;
   const pbf = sex === 'MALE' ? SCALES.pbfMale : SCALES.pbfFemale;
 
-  const muscleFat: BarProps[] = [
+  const muscleFat: RowProps[] = [
     {
       testId: 'bar-weight',
       label: t('bodyComp.bar.weight'),
       icon: 'scale',
-      tone: 'lu-tone-weight',
+      disc: 'lu-disc-weight',
       scale: SCALES.weight,
       position: ofStd(scan.weightKg, std.weightKg),
-      comparePosition: compare && ofStd(compare.weightKg, std.weightKg),
       value: scan.weightKg,
       compareValue: compare?.weightKg ?? null,
       digits: 1,
@@ -228,15 +289,15 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
       range: kgRange(std.weightKg, SCALES.weight.normal),
       status: statusFor(ofStd(scan.weightKg, std.weightKg), SCALES.weight.normal),
       better: null,
+      reading: 'band',
     },
     {
       testId: 'bar-smm',
       label: t('bodyComp.bar.smm'),
       icon: 'muscle',
-      tone: 'lu-tone-muscle',
+      disc: 'lu-disc-muscle',
       scale: SCALES.smm,
       position: ofStd(scan.skeletalMuscleKg, std.smmKg),
-      comparePosition: compare && ofStd(compare.skeletalMuscleKg, std.smmKg),
       value: scan.skeletalMuscleKg,
       compareValue: compare?.skeletalMuscleKg ?? null,
       digits: 1,
@@ -244,15 +305,15 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
       range: kgRange(std.smmKg, SCALES.smm.normal),
       status: statusFor(ofStd(scan.skeletalMuscleKg, std.smmKg), SCALES.smm.normal),
       better: 'up',
+      reading: 'more',
     },
     {
       testId: 'bar-fat',
       label: t('bodyComp.bar.fat'),
       icon: 'bodyFat',
-      tone: 'lu-tone-fat',
+      disc: 'lu-disc-fat',
       scale: SCALES.fat,
       position: ofStd(scan.bodyFatKg, std.fatKg),
-      comparePosition: compare && ofStd(compare.bodyFatKg, std.fatKg),
       value: scan.bodyFatKg,
       compareValue: compare?.bodyFatKg ?? null,
       digits: 1,
@@ -260,19 +321,18 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
       range: kgRange(std.fatKg, SCALES.fat.normal),
       status: statusFor(ofStd(scan.bodyFatKg, std.fatKg), SCALES.fat.normal),
       better: 'down',
-      badOver: true,
+      reading: 'less',
     },
   ];
 
-  const obesity: BarProps[] = [
+  const obesity: RowProps[] = [
     {
       testId: 'bar-bmi',
       label: t('bodyComp.bar.bmi'),
       icon: 'gauge',
-      tone: 'lu-tone-bmi',
+      disc: 'lu-disc-lime',
       scale: SCALES.bmi,
       position: scan.bmi,
-      comparePosition: compare?.bmi ?? null,
       value: scan.bmi,
       compareValue: compare?.bmi ?? null,
       digits: 1,
@@ -280,16 +340,15 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
       range: SCALES.bmi.normal,
       status: statusFor(scan.bmi, SCALES.bmi.normal),
       better: null,
-      badOver: true,
+      reading: 'less',
     },
     {
       testId: 'bar-pbf',
       label: t('bodyComp.bar.pbf'),
       icon: 'bodyFat',
-      tone: 'lu-tone-fat',
+      disc: 'lu-disc-fat',
       scale: pbf,
       position: scan.bodyFatPct,
-      comparePosition: compare?.bodyFatPct ?? null,
       value: scan.bodyFatPct,
       compareValue: compare?.bodyFatPct ?? null,
       digits: 1,
@@ -297,7 +356,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
       range: pbf.normal,
       status: statusFor(scan.bodyFatPct, pbf.normal),
       better: 'down',
-      badOver: true,
+      reading: 'less',
     },
   ];
 
@@ -305,33 +364,26 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     {
       key: 'water',
       icon: 'drop',
-      tone: 'lu-tone-water',
+      disc: 'lu-disc-muscle',
       of: (a: AssessmentDto) => a.totalBodyWaterKg,
       std: std.waterKg,
     },
     {
       key: 'protein',
       icon: 'protein',
-      tone: 'lu-tone-protein',
+      disc: 'lu-disc-weight',
       of: (a: AssessmentDto) => a.proteinKg,
       std: std.proteinKg,
     },
-    {
-      key: 'minerals',
-      icon: 'gem',
-      tone: 'lu-tone-minerals',
-      of: (a: AssessmentDto) => a.mineralsKg,
-      std: std.mineralsKg,
-    },
+    { key: 'minerals', icon: 'gem', disc: 'lu-disc-lime', of: (a: AssessmentDto) => a.mineralsKg, std: std.mineralsKg },
   ] as const;
-  const composition: BarProps[] = parts.map((c) => ({
+  const composition: RowProps[] = parts.map((c) => ({
     testId: `bar-${c.key}`,
     label: t(`bodyComp.comp.${c.key}`),
     icon: c.icon,
-    tone: c.tone,
+    disc: c.disc,
     scale: SCALES.smm,
     position: ofStd(c.of(scan), c.std),
-    comparePosition: compare && ofStd(c.of(compare), c.std),
     value: c.of(scan),
     compareValue: compare ? c.of(compare) : null,
     digits: c.key === 'minerals' ? 2 : 1,
@@ -339,66 +391,47 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
     range: kgRange(c.std),
     status: statusFor(ofStd(c.of(scan), c.std), SCALES.smm.normal),
     better: c.key === 'water' ? null : 'up',
+    reading: 'more',
   }));
 
   const segs = scan.segments;
   const segScale = kind === 'lean' ? SCALES.segmentLean : SCALES.segmentFat;
-  const statuses = segs
-    ? (Object.fromEntries(
-        (Object.keys(segs[kind]) as BodySegment[]).map((s) => [s, statusFor(segs[kind][s].pct, segScale.normal)]),
-      ) as Record<BodySegment, Status>)
-    : null;
   const thenSeg = (s: BodySegment) => compare?.segments?.[kind][s] ?? null;
   const kinds = ['lean', 'fat'] as const;
 
-  const legend = compare && (
-    <p
-      className="m-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.72rem] font-normal text-muted"
-      data-testid="compare-legend"
-    >
-      <span className="flex items-center gap-1.5">
-        <span className="lu-legend-now" aria-hidden="true" />
-        {t('bodyComp.legendNow', { date: shortDate(scan.takenAt) })}
-      </span>
-      <span className="flex items-center gap-1.5">
-        <span className="lu-legend-then" aria-hidden="true" />
-        {t('bodyComp.legendThen', { date: shortDate(compare.takenAt) })}
-      </span>
-    </p>
-  );
-
   return (
     <div className="grid gap-3.5" data-testid="body-comp">
-      <section className="lu-card grid gap-3.5" aria-labelledby="bc-muscle-fat">
-        <header className="grid gap-0.5">
+      <section className="lu-card grid gap-5" aria-labelledby="bc-muscle-fat">
+        <header className="grid gap-1">
           <span className="lu-card-kicker">{t('bodyComp.kicker')}</span>
-          <h2 id="bc-muscle-fat" className="lu-card-title">
+          <h2 id="bc-muscle-fat" className="lu-card-title text-[1.1rem]">
             {t('bodyComp.muscleFat')}
           </h2>
+          <p className="m-0 text-[0.85rem] leading-snug text-muted">{t('bodyComp.explain')}</p>
         </header>
-        {legend}
-        <ZoneHeader />
         {muscleFat.map((b) => (
-          <Bar key={b.testId} {...b} />
+          <Row key={b.testId} {...b} />
         ))}
-        <h3 className="lu-card-title m-0 mt-1 text-[0.95rem]">{t('bodyComp.obesity')}</h3>
-        <ZoneHeader />
+        <h3 className="lu-card-title m-0 border-t border-line pt-4 text-[1rem]">{t('bodyComp.obesity')}</h3>
         {obesity.map((b) => (
-          <Bar key={b.testId} {...b} />
+          <Row key={b.testId} {...b} />
         ))}
       </section>
 
-      <section className="lu-card grid gap-3" aria-labelledby="bc-segments" data-testid="segments">
-        <h2 id="bc-segments" className="lu-card-title">
-          {t('bodyComp.segmental')}
-        </h2>
-        {segs && statuses ? (
+      <section className="lu-card grid gap-4" aria-labelledby="bc-segments" data-testid="segments">
+        <header className="grid gap-1">
+          <h2 id="bc-segments" className="lu-card-title text-[1.1rem]">
+            {t('bodyComp.segmental')}
+          </h2>
+          {segs && (
+            <p className="m-0 text-[0.85rem] leading-snug text-muted">
+              {t(kind === 'lean' ? 'bodyComp.leanNote' : 'bodyComp.fatNote')}
+            </p>
+          )}
+        </header>
+        {segs ? (
           <>
-            <div
-              role="radiogroup"
-              aria-label={t('bodyComp.segmentView')}
-              className="grid grid-cols-2 gap-1 rounded-[10px] bg-surface-2 p-1"
-            >
+            <div role="radiogroup" aria-label={t('bodyComp.segmentView')} className="lu-segment mb-0">
               {kinds.map((k, i) => (
                 <button
                   key={k}
@@ -407,7 +440,7 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                   aria-checked={kind === k}
                   tabIndex={kind === k ? 0 : -1}
                   data-testid={`segments-${k}`}
-                  className="flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-transparent px-1 font-inherit text-[0.85rem] font-normal text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-checked:bg-primary aria-checked:text-primary-contrast"
+                  className="flex-row gap-1.5"
                   onClick={() => setKind(k)}
                   onKeyDown={(e) => {
                     const to = rovingTarget(e, i, kinds.length, rtl);
@@ -416,88 +449,54 @@ const BodyComposition: React.FC<Props> = ({ scan, compare, heightCm, sex }) => {
                     focusSibling(e, to);
                   }}
                 >
-                  <Icon className="shrink-0 text-base" name={k === 'lean' ? 'muscle' : 'bodyFat'} />
-                  {t(k === 'lean' ? 'bodyComp.lean' : 'bodyComp.fatView')}
+                  <span className="flex items-center gap-1.5">
+                    <Icon className="shrink-0 text-base" name={k === 'lean' ? 'muscle' : 'bodyFat'} />
+                    {t(k === 'lean' ? 'bodyComp.lean' : 'bodyComp.fatView')}
+                  </span>
                 </button>
               ))}
             </div>
-            {/* Laid out left to right in both languages, like the scan sheet: the figure is a picture of the body. */}
-            <div
-              dir="ltr"
-              className="mx-auto grid w-full max-w-[32rem] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-4"
-            >
-              <div className="col-start-1 row-start-1">
-                <Callout
-                  segment="leftArm"
-                  reading={segs[kind].leftArm}
-                  then={thenSeg('leftArm')}
-                  status={statuses.leftArm}
-                  kind={kind}
-                  align="right"
-                />
-              </div>
-              <div className="col-start-1 row-start-2">
-                <Callout
-                  segment="leftLeg"
-                  reading={segs[kind].leftLeg}
-                  then={thenSeg('leftLeg')}
-                  status={statuses.leftLeg}
-                  kind={kind}
-                  align="right"
-                />
-              </div>
-              <div className="col-start-2 row-span-2 row-start-1 grid justify-items-center">
-                <BodyScanFigure statuses={statuses} kind={kind} sex={sex} />
-              </div>
-              <div className="col-start-3 row-start-1">
-                <Callout
-                  segment="rightArm"
-                  reading={segs[kind].rightArm}
-                  then={thenSeg('rightArm')}
-                  status={statuses.rightArm}
-                  kind={kind}
-                  align="left"
-                />
-              </div>
-              <div className="col-start-3 row-start-2">
-                <Callout
-                  segment="rightLeg"
-                  reading={segs[kind].rightLeg}
-                  then={thenSeg('rightLeg')}
-                  status={statuses.rightLeg}
-                  kind={kind}
-                  align="left"
-                />
-              </div>
-              <div className="col-span-3 row-start-3">
-                <Callout
-                  segment="trunk"
-                  reading={segs[kind].trunk}
-                  then={thenSeg('trunk')}
-                  status={statuses.trunk}
-                  kind={kind}
-                  align="center"
-                />
-              </div>
+            <div className="grid grid-cols-[4.5rem_minmax(0,1fr)_auto] gap-x-3">
+              <span />
+              <ZoneCaptions />
+              <span className="invisible text-[0.72rem]" aria-hidden="true">
+                {t('bodyComp.ofNormal', { pct: '100%' })}
+              </span>
             </div>
-            <p className="m-0 text-center text-[0.72rem] font-semibold text-muted">
-              {t(kind === 'lean' ? 'bodyComp.leanNote' : 'bodyComp.fatNote')}
-            </p>
+            {GROUPS.map((g) => (
+              <div key={g.key} className="grid gap-3 border-t border-line pt-3.5" data-testid={`seg-group-${g.key}`}>
+                {g.key !== 'trunk' && (
+                  <h3 className="m-0 font-display text-[0.9rem] font-semibold text-muted">
+                    {t(`bodyComp.group.${g.key}`)}
+                  </h3>
+                )}
+                {g.parts.map(({ segment, side }) => (
+                  <PartRow
+                    key={segment}
+                    segment={segment}
+                    label={side ? t(`bodyComp.side.${side}`) : t('bodyComp.segment.trunk')}
+                    reading={segs[kind][segment]}
+                    then={thenSeg(segment)}
+                    status={statusFor(segs[kind][segment].pct, segScale.normal)}
+                    kind={kind}
+                  />
+                ))}
+              </div>
+            ))}
           </>
         ) : (
-          <p className="m-0 text-[0.85rem] font-semibold text-muted" data-testid="segments-none">
+          <p className="m-0 text-center text-[0.9rem] font-semibold text-muted" data-testid="segments-none">
             {t('bodyComp.noSegments')}
           </p>
         )}
       </section>
 
-      <section className="lu-card grid gap-3.5" aria-labelledby="bc-composition">
-        <h2 id="bc-composition" className="lu-card-title">
+      <section className="lu-card grid gap-5" aria-labelledby="bc-composition">
+        <h2 id="bc-composition" className="lu-card-title text-[1.1rem]">
           {t('bodyComp.composition')}
         </h2>
-        <ZoneHeader />
         {composition.map((b) => (
-          <Bar key={b.testId} {...b} />
+          <Row key={b.testId} {...b} />
         ))}
       </section>
     </div>

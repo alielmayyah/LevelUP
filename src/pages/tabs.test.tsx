@@ -221,43 +221,56 @@ describe('Progress', () => {
     expect(screen.getByTestId('metric-info')).not.toHaveTextContent('Fat stored deep');
   });
 
-  it('the body composition cards read the scan like an InBody sheet', async () => {
+  it('the body composition cards place each number as Low, Healthy or High', async () => {
     await renderAs('101', Progress);
     await userEvent.click(await screen.findByTestId('progress-more'));
     const bc = await screen.findByTestId('body-comp');
     const weight = within(bc).getByTestId('bar-weight');
     expect(weight).toHaveTextContent(/80\.0\s?kg/);
-    expect(weight).toHaveTextContent('Normal');
-    // 41.3 kg of muscle is over the 31.6–38.6 kg band for 183 cm: good news, shown as Over.
-    expect(within(bc).getByTestId('bar-smm')).toHaveTextContent('Over');
+    expect(weight).toHaveAttribute('data-status', 'normal');
+    expect(weight).toHaveTextContent(/Healthy\W*62\.6–84\.7\W*kg/);
+    // 41.3 kg of muscle is over the 31.6–38.6 kg band for 183 cm: good news, shown as High with a check.
+    const muscle = within(bc).getByTestId('bar-smm');
+    expect(muscle).toHaveAttribute('data-status', 'over');
+    expect(muscle.querySelector('.lu-status-good')).toHaveTextContent('High');
     // 8% body fat is under the men's 10–20% band.
-    expect(within(bc).getByTestId('bar-pbf')).toHaveTextContent(/8\.0%.*Under/);
+    expect(within(bc).getByTestId('bar-pbf')).toHaveTextContent(/8\.0%/);
+    expect(within(bc).getByTestId('bar-pbf')).toHaveAttribute('data-status', 'under');
     // Compared with the scan before by default: muscle up is green.
     expect(within(bc).getByTestId('bar-smm-delta')).toHaveTextContent('+0.9 kg');
     expect(within(bc).getByTestId('bar-smm-delta')).toHaveClass('text-success');
-    expect(within(bc).getByTestId('compare-legend')).toBeInTheDocument();
-    // Body parts: muscle by default, fat a tap away.
+    // Body parts: a left/right list, muscle by default, fat a tap away.
     const segs = within(bc).getByTestId('segments');
     expect(within(segs).getByTestId('seg-rightArm')).toHaveTextContent(/kg/);
-    // The hologram tints each part by its zone; it is decorative, the callouts carry the values.
-    const figure = within(segs).getByTestId('segments-figure');
-    expect(figure).toHaveAttribute('aria-hidden', 'true');
-    expect(figure).toHaveAttribute('data-silhouette', 'MALE');
-    expect(figure.querySelector('[data-part="rightArm"]')).toHaveAttribute('data-status', 'over');
+    expect(within(segs).getByTestId('seg-rightArm')).toHaveAttribute('data-status', 'over');
+    expect(within(segs).getByTestId('seg-rightArm')).toHaveTextContent('135% of normal');
     await userEvent.click(within(segs).getByRole('radio', { name: 'Fat' }));
     expect(within(segs).getByRole('radio', { name: 'Fat' })).toHaveAttribute('aria-checked', 'true');
-    expect(within(segs).getByTestId('seg-trunk')).toHaveTextContent('Under');
-    expect(figure.querySelector('[data-part="trunk"]')).toHaveAttribute('data-status', 'under');
+    expect(within(segs).getByTestId('seg-trunk')).toHaveAttribute('data-status', 'under');
+    expect(within(segs).getByTestId('seg-trunk')).toHaveTextContent('Low');
   });
 
-  it('draws the female silhouette for Nour’s scan', async () => {
+  it('lists all five body parts for Nour’s scan in both views', async () => {
     await renderAs('104', Progress);
     await userEvent.click(await screen.findByTestId('progress-more'));
-    const figure = await screen.findByTestId('segments-figure');
-    expect(figure).toHaveAttribute('data-silhouette', 'FEMALE');
+    const segs = await screen.findByTestId('segments');
+    const parts = () => segs.querySelectorAll('[data-testid^="seg-"][data-status]');
+    expect(parts()).toHaveLength(5);
     await userEvent.click(screen.getByRole('radio', { name: 'Fat' }));
-    expect(figure).toHaveAttribute('data-silhouette', 'FEMALE');
-    expect(figure).toHaveAttribute('data-view', 'fat');
+    expect(parts()).toHaveLength(5);
+  });
+
+  it('shows a plan: what to do next, with the reason and how', async () => {
+    await renderAs('101', Progress);
+    const plan = await screen.findByTestId('action-plan');
+    // Mohamed is very lean (8% body fat, under 10%) with plenty of muscle.
+    const first = within(plan).getByTestId('advice-fatLow');
+    expect(first).toHaveAttribute('data-level', 'watch');
+    expect(first).toHaveTextContent('Your body fat is 8.0%, under the healthy 10%.');
+    expect(first).toHaveTextContent('How:');
+    expect(within(plan).getByTestId('advice-muscleStrong')).toHaveAttribute('data-level', 'keep');
+    // What the change since the scan before adds up to sits at the top of the plan.
+    expect(within(plan).getByTestId('scan-insight')).toHaveAttribute('data-kind', 'recomp');
   });
 
   it('compares the scan with any other scan, or with none', async () => {
@@ -283,7 +296,6 @@ describe('Progress', () => {
     await userEvent.click(await screen.findByTestId('compare-none'));
     expect(screen.getByTestId('change-caption')).toHaveTextContent('No scan');
     expect(screen.queryByTestId('bar-smm-delta')).toBeNull();
-    expect(screen.queryByTestId('compare-legend')).toBeNull();
     expect(screen.getByTestId('change-muscle')).toHaveTextContent('');
   });
 

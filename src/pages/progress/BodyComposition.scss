@@ -1,168 +1,77 @@
 /*
- * Body composition cards (BodyComposition.tsx): InBody-style bars with a
- * normal band, a smooth body figure colored by segment, and status chips.
- * Status hues: under = tier 3 (amber), normal = tier 4 (green), over = tier 5
- * (purple) for muscle, tier 1 (red) when over is bad news (fat).
+ * Body composition (BodyComposition.tsx): every measurement on a track of
+ * three equal zones, Low | Healthy | High, with the healthy zone tinted green
+ * and a dot in the logo gradient where the member is. Verdict chips say good
+ * news (green check), bad news (red warning) or just where it sits (muted).
  */
 @layer components {
-  .lu-zone-head {
-    font-size: 0.7rem;
-    font-weight: 600;
+  .lu-zones {
+    align-items: stretch;
   }
 
-  .lu-zone-cap {
-    padding-block: 2px;
-    color: var(--lu-text-muted);
-    border-block-end: 1px solid var(--lu-border);
-  }
-
-  .lu-zone-cap-normal {
-    border-block-end-color: color-mix(in srgb, var(--lu-tier-4) 70%, var(--lu-border));
-    background: color-mix(in srgb, var(--lu-tier-4) 12%, transparent);
-    color: var(--lu-text);
-  }
-
-  .lu-scale {
-    border-radius: 999px;
+  .lu-zone {
     background: var(--lu-surface-2);
-    box-shadow: inset 0 0 0 1px var(--lu-border);
+    color: var(--lu-text-muted);
+    font-size: 0.66rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+
+    &:first-of-type {
+      border-start-start-radius: 999px;
+      border-end-start-radius: 999px;
+    }
+
+    &:nth-of-type(3) {
+      border-start-end-radius: 999px;
+      border-end-end-radius: 999px;
+    }
   }
 
-  .lu-scale-band {
-    background: color-mix(in srgb, var(--lu-tier-4) 22%, transparent);
-    border-inline: 1px dashed color-mix(in srgb, var(--lu-tier-4) 80%, var(--lu-border));
+  .lu-zone-normal {
+    background: color-mix(in srgb, var(--lu-success) 16%, var(--lu-surface));
+    color: var(--lu-success);
   }
 
-  /* A smooth fill in the measurement's hue (--tone, Progress.scss), deeper toward the end. */
-  .lu-scale-fill {
+  :root.ion-palette-dark .lu-zone-normal {
+    background: color-mix(in srgb, var(--lu-success) 18%, var(--lu-surface));
+  }
+
+  /* Where the member is: a slim needle in the logo gradient that stands past the track, so it never hides a zone's name. */
+  .lu-zone-marker {
+    position: absolute;
+    inset-block: -5px;
+    inline-size: 7px;
+    border: 2px solid var(--lu-surface);
     border-radius: 999px;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--tone) 82%, var(--lu-surface)), var(--tone));
-    box-shadow: none;
-    transition: width 0.3s ease-out;
+    background: var(--lu-brand-grad);
+    box-shadow: 0 3px 10px -2px var(--lu-brand-glow);
+    translate: -50% 0;
   }
 
-  /* Where the compared scan was: a dark notch that stands above and below the bar. */
-  .lu-scale-then {
-    inline-size: 3px;
-    background: var(--lu-text);
-    border-radius: 999px;
-    box-shadow: 0 0 0 1px var(--lu-surface);
-  }
-
-  .lu-legend-now,
-  .lu-legend-then {
-    display: inline-block;
-    block-size: 10px;
-  }
-
-  .lu-legend-now {
-    inline-size: 18px;
-    border-radius: 999px;
-    background: var(--lu-text-muted);
-  }
-
-  .lu-legend-then {
-    inline-size: 3px;
-    block-size: 14px;
-    border-radius: 999px;
-    background: var(--lu-text);
+  .lu-zones.h-3 .lu-zone-marker {
+    inset-block: -4px;
   }
 
   .lu-status {
-    --status: var(--lu-tier-4);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border: 1px solid color-mix(in srgb, var(--status) 60%, var(--lu-border));
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--status) 14%, var(--lu-surface));
-    color: var(--lu-text);
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 600;
     white-space: nowrap;
+    --icon-color: currentColor;
   }
 
-  .lu-status::before {
-    content: '';
-    inline-size: 6px;
-    block-size: 6px;
-    border-radius: 50%;
-    background: var(--status);
+  .lu-status-good {
+    background: color-mix(in srgb, var(--lu-success) 14%, transparent);
+    color: var(--lu-success);
   }
 
-  .lu-status-under {
-    --status: var(--lu-tier-3);
+  .lu-status-bad {
+    background: color-mix(in srgb, var(--lu-danger) 14%, transparent);
+    color: var(--lu-danger);
   }
 
-  .lu-status-over {
-    --status: var(--lu-tier-5);
-  }
-
-  .lu-status-over.is-bad {
-    --status: var(--lu-tier-1);
-  }
-
-  .lu-scan-figure-stage {
-    --scan-accent: color-mix(in srgb, var(--ion-color-primary) 68%, var(--lu-muscle));
-    inline-size: clamp(5.75rem, 33vw, 9rem);
-    aspect-ratio: 148 / 244;
-    border: 1px solid color-mix(in srgb, var(--scan-accent) 35%, var(--lu-border));
-    background:
-      radial-gradient(ellipse at 50% 26%, color-mix(in srgb, var(--scan-accent) 18%, transparent), transparent 75%),
-      linear-gradient(var(--lu-surface), color-mix(in srgb, var(--scan-accent) 9%, var(--lu-surface-2)));
-    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--lu-splash-star) 16%, transparent);
-  }
-
-  .lu-scan-figure {
-    --segment-tone: var(--scan-accent);
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .lu-scan-guides {
-    fill: none;
-    stroke: color-mix(in srgb, var(--scan-accent) 48%, var(--lu-border));
-    stroke-width: 1.15;
-
-    .lu-scan-gridlines {
-      stroke-dasharray: 1 4;
-      opacity: 0.55;
-    }
-  }
-
-  .lu-scan-anatomy {
-    fill: color-mix(in srgb, var(--segment-tone) 27%, var(--lu-surface));
-    stroke: color-mix(in srgb, var(--segment-tone) 70%, var(--lu-text));
-    stroke-width: 1.55;
-  }
-
-  .lu-scan-contours {
-    fill: none;
-    stroke: color-mix(in srgb, var(--segment-tone) 55%, var(--lu-text));
-    stroke-width: 0.95;
-    opacity: 0.58;
-  }
-
-  .lu-scan-segment[data-status='normal'] {
-    --segment-tone: var(--lu-tier-4);
-  }
-
-  .lu-scan-segment[data-status='under'] {
-    --segment-tone: var(--lu-tier-3);
-  }
-
-  .lu-scan-segment[data-status='over'] {
-    --segment-tone: var(--lu-tier-5);
-  }
-
-  .lu-scan-figure[data-view='fat'] .lu-scan-segment[data-status='over'] {
-    --segment-tone: var(--lu-tier-1);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .lu-scale-fill {
-      transition: none;
-    }
+  .lu-status-neutral {
+    background: var(--lu-surface-2);
+    color: var(--lu-text-muted);
   }
 }

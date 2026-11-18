@@ -66,24 +66,23 @@ test.describe('Progress', () => {
         await page.goto('/tabs/progress');
         await page.getByTestId('progress-more').click();
         const bc = page.getByTestId('body-comp');
-        await expect(bc.getByTestId('bar-weight')).toContainText(s.bodyComp.zone.normal);
-        await expect(bc.getByTestId('bar-pbf')).toContainText(s.bodyComp.zone.under);
+        await expect(bc.getByTestId('bar-weight')).toHaveAttribute('data-status', 'normal');
+        await expect(bc.getByTestId('bar-pbf')).toHaveAttribute('data-status', 'under');
+        await expect(bc.getByTestId('bar-pbf').locator('.lu-status')).toHaveText(s.bodyComp.zone.under);
         await expect(bc.getByTestId('bar-smm-delta')).toContainText('0.9');
-        // The figure: muscle by default, fat on tap.
+        // Body parts: a left/right list, muscle by default, fat on tap.
         const segs = bc.getByTestId('segments');
-        const figure = segs.getByTestId('segments-figure');
-        await expect(figure).toHaveAttribute('data-view', 'lean');
-        await expect(figure.locator('[data-part]')).toHaveCount(5);
+        await expect(segs.getByTestId('segments-lean')).toHaveAttribute('aria-checked', 'true');
         await expect(segs.getByTestId('seg-trunk')).toBeVisible();
         await segs.getByRole('radio', { name: s.bodyComp.fatView }).click();
-        await expect(figure).toHaveAttribute('data-view', 'fat');
-        await expect(figure.locator('[data-part="trunk"]')).toHaveAttribute('data-status', 'under');
-        await expect(segs.getByTestId('seg-trunk')).toContainText(s.bodyComp.zone.under);
-        const scanBox = (await figure.boundingBox())!;
-        const leftBox = (await segs.getByTestId('seg-leftArm').boundingBox())!;
-        const rightBox = (await segs.getByTestId('seg-rightArm').boundingBox())!;
-        expect(leftBox.x + leftBox.width).toBeLessThan(scanBox.x);
-        expect(rightBox.x).toBeGreaterThan(scanBox.x + scanBox.width);
+        await expect(segs.getByTestId('seg-trunk')).toHaveAttribute('data-status', 'under');
+        await expect(segs.getByTestId('seg-trunk').locator('.lu-status')).toHaveText(s.bodyComp.zone.under);
+        // Arms come before legs, left before right.
+        const leftArm = (await segs.getByTestId('seg-leftArm').boundingBox())!;
+        const rightArm = (await segs.getByTestId('seg-rightArm').boundingBox())!;
+        const leftLeg = (await segs.getByTestId('seg-leftLeg').boundingBox())!;
+        expect(rightArm.y).toBeGreaterThan(leftArm.y);
+        expect(leftLeg.y).toBeGreaterThan(rightArm.y);
         // Compare with the first scan: 36.4 → 41.3 kg of muscle.
         await page.getByTestId('compare-open').click();
         const picker = page.getByTestId('compare-picker');
