@@ -183,7 +183,7 @@ const Goals: React.FC = () => {
                     {formatNumber(data[kind].length)}
                   </span>
                 </h2>
-                <ul className={LIST}>
+                <ul className={LIST} data-stagger>
                   {data[kind].map((g) => (
                     <GoalCard key={g.id} goal={g} kind={kind} />
                   ))}

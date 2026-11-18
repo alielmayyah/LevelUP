@@ -26,6 +26,9 @@ const motionOk = () => typeof window !== 'undefined' && window.matchMedia?.(MOTI
 
 /* ---------- Press: every card and button springs back when let go ---------- */
 
+/** Big things a member presses: they dip only slightly, or the whole screen seems to wobble. */
+const CARDS = 'button.lu-card, a.lu-card, .lu-goal, .lu-goal-choice, .lu-metric-row';
+
 /** Things a member presses. Login and intro (main bundle) keep their CSS press. */
 const PRESSABLE = [
   'button.lu-card',
@@ -53,8 +56,8 @@ function installPress(): void {
     if (!el || !motionOk()) return;
     gsap.to(el, {
       scale: 1,
-      duration: 0.75,
-      ease: 'elastic.out(1.15, 0.38)',
+      duration: 0.6,
+      ease: 'elastic.out(1, 0.45)',
       overwrite: 'auto',
       clearProps: 'scale,transform',
     });
@@ -66,7 +69,7 @@ function installPress(): void {
       const el = e.target.closest(PRESSABLE);
       if (!el || (el as HTMLButtonElement).disabled) return;
       held = el;
-      gsap.to(el, { scale: 0.95, duration: 0.14, ease: 'power2.out', overwrite: 'auto' });
+      gsap.to(el, { scale: el.matches(CARDS) ? 0.98 : 0.94, duration: 0.14, ease: 'power2.out', overwrite: 'auto' });
     },
     { passive: true },
   );
@@ -112,15 +115,23 @@ const markRunning = (root: Element, delta: 1 | -1) => {
   else root.removeAttribute('data-revealing');
 };
 
-/** What happens inside a section as it lands: icons pop, bars fill, lines draw, end dots land. */
+/** What happens inside a section as it lands: list items cascade, icons pop, bars fill, lines draw, end dots land. */
 function playInner(tl: gsap.core.Timeline, items: Element[], at: number, rtl: boolean): void {
   const inside = (sel: string) => items.flatMap((el) => Array.from(el.querySelectorAll<Element>(sel)));
+  // Lists marked data-stagger: their items follow one another instead of arriving as one block.
+  const rows = inside('[data-stagger] > *');
+  if (rows.length)
+    tl.from(
+      rows,
+      { opacity: 0, y: 16, duration: 0.5, stagger: 0.07, ease: 'power3.out', clearProps: 'opacity,transform' },
+      at - 0.1,
+    );
   const pops = inside('[data-pop]');
   if (pops.length)
     tl.from(
       pops,
-      { scale: 0, rotation: -30, duration: 0.7, stagger: 0.06, ease: 'back.out(2.6)', clearProps: 'transform' },
-      at,
+      { scale: 0.5, opacity: 0, duration: 0.5, stagger: 0.05, ease: 'back.out(1.8)', clearProps: 'opacity,transform' },
+      at + 0.1,
     );
   const bars = inside('[data-grow]');
   if (bars.length)
@@ -169,8 +180,8 @@ function playInner(tl: gsap.core.Timeline, items: Element[], at: number, rtl: bo
 
 /**
  * Entrance for the direct children of `scope` (or the elements matching
- * `selector` inside it): each one lifts out of a slight tilt and settles, one
- * after another, then its icons pop (`data-pop`), bars fill (`data-grow`),
+ * `selector` inside it): each one slides up a little and fades in, one after
+ * another (no tilt or scale: straight and clean), then its icons pop (`data-pop`), bars fill (`data-grow`),
  * lines draw (`data-draw`) and end dots land (`data-dot`). Sections below the
  * fold wait until they scroll into view. Plays when new children appear
  * (`key` changes), and again, lighter, each time the tab is opened.
@@ -217,29 +228,20 @@ export function useReveal(scope: RefObject<HTMLElement | null>, key: unknown, se
           tl.from(
             now,
             replay
-              ? { opacity: 0, y: 18, scale: 0.97, duration: 0.55, stagger: 0.05, ease: EASE_OUT }
-              : {
-                  opacity: 0,
-                  y: 36,
-                  scale: 0.94,
-                  rotationX: -14,
-                  transformPerspective: 900,
-                  transformOrigin: '50% 0%',
-                  duration: 1,
-                  stagger: 0.08,
-                  ease: EASE_OUT,
-                },
+              ? { opacity: 0, y: 10, duration: 0.4, stagger: 0.04, ease: 'power3.out' }
+              : { opacity: 0, y: 22, duration: 0.65, stagger: 0.06, ease: 'power3.out' },
           );
-          tl.set(now, { clearProps: 'opacity,transform,transform-origin' });
-          playInner(tl, now, 0.15, rtl);
+          tl.set(now, { clearProps: 'opacity,transform' });
+          // A tab visit replays only the slide; bars and icons are already where they belong.
+          if (!replay) playInner(tl, now, 0.15, rtl);
         }
 
         // Below the fold: hidden only while off screen, they rise in as they scroll into view.
         if (later.length && 'IntersectionObserver' in window && contextSafe) {
-          gsap.set(later, { opacity: 0, y: 48, scale: 0.96 });
+          gsap.set(later, { opacity: 0, y: 28 });
           const land = contextSafe((el: Element) => {
             const t = gsap.timeline();
-            t.to(el, { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: EASE_OUT, clearProps: 'opacity,transform' });
+            t.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', clearProps: 'opacity,transform' });
             playInner(t, [el], 0.1, rtl);
           });
           const io = new IntersectionObserver(

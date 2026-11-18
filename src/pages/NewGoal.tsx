@@ -1,5 +1,5 @@
 import { IonContent, IonPage, useIonRouter } from '@ionic/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { createGoal } from '../api/goals';
@@ -10,6 +10,7 @@ import Icon, { type IconName } from '../components/Icon';
 import Toast from '../components/Toast';
 import { focusSibling, rovingTarget } from '../components/roving';
 import { formatNumber, formatSigned } from '../i18n/format';
+import { useReveal } from '../motion/gsapMotion';
 import { markGoalCreated } from './goals/created';
 import './goals/Goals.scss';
 
@@ -110,6 +111,9 @@ const NewGoal: React.FC = () => {
   const { t } = useTranslation();
   const router = useIonRouter();
   const scans = useApi<AssessmentDto[]>('/me/assessments');
+  // The questions arrive one after another once the scan is known.
+  const stack = useRef<HTMLDivElement>(null);
+  useReveal(stack, scans.status);
 
   const [metric, setMetric] = useState<GoalMetric>('BODY_FAT_KG');
   /** The stepper value per metric, once the member has moved it. */
@@ -192,7 +196,7 @@ const NewGoal: React.FC = () => {
     };
 
     body = (
-      <div className="mx-auto grid w-full max-w-180 gap-3.5">
+      <div className="mx-auto grid w-full max-w-180 gap-3.5" ref={stack}>
         <section className={SECTION} aria-labelledby="new-goal-type">
           <h2 id="new-goal-type" className={QUESTION}>
             {t('newGoal.type')}
@@ -221,7 +225,9 @@ const NewGoal: React.FC = () => {
                     {t('newGoal.now', { value: formatNumber(current(scan, m), 1) })}
                   </span>
                 </span>
-                {on && <Icon className="flex-none text-[1.2rem] text-ink sm:hidden" name="check" />}
+                {on && (
+                  <Icon className="flex-none text-[1.2rem] text-primary sm:hidden dark:text-secondary" name="check" />
+                )}
               </>
             )}
           />
