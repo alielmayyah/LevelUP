@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { bodyFatPctForScore, computeFitScore, fitScoreTier } from './domain';
+import { computeFitScore } from './domain';
 
 // Standards for a 178 cm man: weight 22 × 1.78² = 69.70 kg, of which 15% fat.
 const STD_WEIGHT = 22 * 1.78 * 1.78;
@@ -68,28 +68,4 @@ describe('FitScore (InBody Score method)', () => {
     expect(scores).toEqual([72, 74, 75, 76, 77, 79]);
   });
 
-  it('bodyFatPctForScore inverts the formula (for building mock members)', () => {
-    for (const score of [40, 66, 80, 92]) {
-      const pct = bodyFatPctForScore(score, 80, 176, 'MALE');
-      const bodyFatKg = Math.round(80 * pct * 10) / 1000;
-      expect(
-        Math.abs(computeFitScore({ weightKg: 80, bodyFatKg, heightCm: 176, sex: 'MALE' }) - score),
-      ).toBeLessThanOrEqual(1);
-    }
-  });
-
-  it('tiers follow InBody’s bands', () => {
-    expect([95, 80, 79, 70, 69, 60, 59, 50, 49, 0].map(fitScoreTier)).toEqual([
-      'Elite',
-      'Elite',
-      'Strong',
-      'Strong',
-      'On Track',
-      'On Track',
-      'Building',
-      'Building',
-      'Needs Improvement',
-      'Needs Improvement',
-    ]);
-  });
 });

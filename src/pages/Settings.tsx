@@ -1,16 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
-import { saveSettings } from '../api/settings';
-import type { ProfileDto, SettingsDto } from '../api/types';
-import { useApi, useRefreshOnEnter } from '../api/useApi';
 import { clearToken } from '../auth/token';
 import Icon, { type IconName } from '../components/Icon';
 import { brand } from '../brand.config';
-import { features } from '../features';
 import Dialog from '../components/Dialog';
-import Toast from '../components/Toast';
 import { focusSibling, rovingTarget } from '../components/roving';
 import TabPage from '../components/TabPage';
 import { currentLanguage, setLanguage, type Lang } from '../i18n';
@@ -114,32 +109,14 @@ function Choice<T extends string>({ label, value, options, onChange, testId }: C
   );
 }
 
-/** App preferences and member privacy controls. */
+/** App preferences (all saved on this device) and sign out. */
 const Settings: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
-  const me = useApi<ProfileDto>('/me');
   const sound = useSound();
   const [lang, setLang] = useState<Lang>(currentLanguage());
   const [theme, setThemeState] = useState<ThemeMode>(getThemeMode());
-  const [saveFailed, setSaveFailed] = useState(false);
-  const clearSaveFailed = useCallback(() => setSaveFailed(false), []);
   const [confirmOut, setConfirmOut] = useState(false);
-  useRefreshOnEnter(me.reload);
-  const p = me.status === 'ready' ? me.data : null;
-
-  /** Flips a FitScore setting right away, then saves; on failure flips it back and says so. */
-  const toggle = async (key: keyof SettingsDto) => {
-    if (!p) return;
-    const next = !p[key];
-    me.setData((d) => ({ ...d, [key]: next }));
-    try {
-      await saveSettings({ [key]: next });
-    } catch {
-      me.setData((d) => ({ ...d, [key]: !next }));
-      setSaveFailed(true);
-    }
-  };
 
   const signOut = async () => {
     await clearToken();
@@ -147,12 +124,8 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <TabPage testId="page-settings" title={t('profile.settings')} backTo="/tabs/profile" onRefresh={me.reload} fill>
-      {/*
-       * Language, theme and sound live on this device, so they show at once,
-       * even while /me loads or after it fails. Only the FitScore switches wait for it.
-       * Rows keep their natural height (no stretching to fill the screen); Sign out follows the card.
-       */}
+    <TabPage testId="page-settings" title={t('profile.settings')} backTo="/tabs/profile" fill>
+      {/* Rows keep their natural height (no stretching to fill the screen); Sign out follows the card. */}
       <div className="mx-auto flex w-full max-w-[620px] flex-col gap-3.5">
         <section className="lu-card flex flex-col py-1.5" aria-labelledby="sec-settings">
           <h2 id="sec-settings" className={SECTION}>
@@ -202,51 +175,6 @@ const Settings: React.FC = () => {
               onChange={sound.toggle}
             />
           </div>
-
-          {me.status === 'loading' && (
-            <div className={`${ROW} ${RULED}`} aria-busy="true" data-testid="settings-fitscore-loading">
-              <span className="lu-skeleton-card min-h-10 w-full" />
-            </div>
-          )}
-
-          {me.status === 'error' && (
-            <div className={`${ROW} ${RULED}`} role="alert" data-testid="settings-fitscore-error">
-              <span className="min-w-0 flex-1 text-[0.875rem] font-normal text-muted">{t('profile.error')}</span>
-              <button type="button" className="lu-link-button flex-none" onClick={() => void me.retry()}>
-                {t('common.retry')}
-              </button>
-            </div>
-          )}
-
-          {p && (
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon="eye" hint={{ id: 'hint-show-fitscore', text: t('profile.showFitScoreHint') }}>
-                {t('profile.showFitScore')}
-              </RowLabel>
-              <Switch
-                testId="setting-show-fitscore"
-                hintId="hint-show-fitscore"
-                label={t('profile.showFitScore')}
-                checked={p.showFitScore}
-                onChange={() => void toggle('showFitScore')}
-              />
-            </div>
-          )}
-
-          {p && features.community && (
-            <div className={`${ROW} ${RULED} text-muted`}>
-              <RowLabel icon="podium" hint={{ id: 'hint-leaderboard', text: t('profile.leaderboardHint') }}>
-                {t('profile.leaderboard')}
-              </RowLabel>
-              <Switch
-                testId="setting-leaderboard"
-                hintId="hint-leaderboard"
-                label={t('profile.leaderboard')}
-                checked={p.fitScoreOnLeaderboard}
-                onChange={() => void toggle('fitScoreOnLeaderboard')}
-              />
-            </div>
-          )}
         </section>
 
         {/* Sign out stands on its own, below the settings. */}
@@ -277,7 +205,6 @@ const Settings: React.FC = () => {
           void signOut();
         }}
       />
-      <Toast message={saveFailed ? t('profile.saveFailed') : null} onDone={clearSaveFailed} />
     </TabPage>
   );
 };

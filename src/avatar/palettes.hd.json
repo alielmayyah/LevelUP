@@ -7,7 +7,9 @@
       { "id": "medium", "swatch": "#c98a5e", "hue": 0, "sat": 1, "light": 1 },
       { "id": "tan", "swatch": "#a86c45", "hue": -4, "sat": 1.05, "light": 0.84 },
       { "id": "brown", "swatch": "#7d4c2e", "hue": -6, "sat": 1.1, "light": 0.66 },
-      { "id": "deep", "swatch": "#4f2f1d", "hue": -8, "sat": 1.1, "light": 0.48 }
+      { "id": "deep", "swatch": "#4f2f1d", "hue": -8, "sat": 1.1, "light": 0.48 },
+      { "id": "honey", "swatch": "#bf8051", "hue": 6, "sat": 1.06, "light": 0.94 },
+      { "id": "espresso", "swatch": "#3b261f", "hue": -5, "sat": 0.88, "light": 0.43 }
     ]
   },
   "hair": {
@@ -18,7 +20,9 @@
       { "id": "darkBrown", "swatch": "#4a2c1c", "hue": 0, "sat": 0.85, "light": 0.68 },
       { "id": "auburn", "swatch": "#8c3420", "hue": -14, "sat": 1.45, "light": 1 },
       { "id": "blonde", "swatch": "#c9a066", "hue": 12, "sat": 0.9, "light": 1.7 },
-      { "id": "grey", "swatch": "#9a9590", "hue": 0, "sat": 0, "light": 1.45 }
+      { "id": "grey", "swatch": "#9a9590", "hue": 0, "sat": 0, "light": 1.45 },
+      { "id": "copper", "swatch": "#a85b38", "hue": 1, "sat": 1.55, "light": 1.43 },
+      { "id": "silver", "swatch": "#c7c6c5", "hue": 0, "sat": 0.08, "light": 2.12 }
     ]
   },
   "top": {
@@ -31,9 +35,14 @@
       { "id": "orange", "swatch": "#c4561c", "hue": 35, "sat": 1.1, "light": 1.25 },
       { "id": "teal", "swatch": "#1f7a80", "hue": 195, "sat": 0.9, "light": 1.05 },
       { "id": "charcoal", "swatch": "#3a3740", "hue": 0, "sat": 0, "light": 0.75 },
-      { "id": "heather", "swatch": "#a9a6ae", "hue": 0, "sat": 0, "light": 1.7 }
+      { "id": "heather", "swatch": "#a9a6ae", "hue": 0, "sat": 0, "light": 1.7 },
+      { "id": "navy", "swatch": "#2c4061", "hue": 225, "sat": 0.85, "light": 0.85 },
+      { "id": "ivory", "swatch": "#e7dec9", "hue": 0, "sat": 0.2, "light": 2.1 },
+      { "id": "sand", "swatch": "#b69b78", "hue": 35, "sat": 0.32, "light": 1.7 },
+      { "id": "black", "swatch": "#252731", "hue": 0, "sat": 0, "light": 0.58 }
     ]
   },
+  "eyes": { "brown": "#69452d", "hazel": "#93804c", "green": "#667e58", "blue": "#6586a2", "grey": "#7f8b94" },
   "bottom": {
     "default": "slate",
     "presets": [

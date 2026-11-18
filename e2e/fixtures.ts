@@ -53,11 +53,7 @@ export { expect };
 
 export const LOCALES: Locale[] = ['en', 'ar'];
 
-/** Community (gym room, leaderboards, member cards) is switched off until it launches. Matches the app's VITE_COMMUNITY. */
-export const COMMUNITY = process.env.VITE_COMMUNITY === 'true';
-const ALL_TABS = ['home', 'progress', 'goals', 'community', 'profile'] as const;
-/** The tabs on the bar in this build. */
-export const TABS = ALL_TABS.filter((t) => COMMUNITY || t !== 'community');
+export const TABS = ['home', 'progress', 'goals', 'profile'] as const;
 export const THEMES: Theme[] = ['light', 'dark'];
 
 /** True when the page has no horizontal scroll. */

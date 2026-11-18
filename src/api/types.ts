@@ -1,15 +1,13 @@
 /*
  * API data types. Components and fixtures import DTO types from this file only.
  *
- * Sprint 1: hand-written from the core plan (Tasks 5, 7, 8, 9).
+ * Sprint 1: hand-written from the core plan (Tasks 5, 7, 9).
  * Sprint 2: each type becomes a re-export of the generated OpenAPI schema,
  * e.g. `export type DashboardDto = components['schemas']['DashboardDto']`,
  * so components never change.
  *
  * Dates are ISO 8601 strings in UTC.
  */
-
-import type { MedalCategoryStatus } from '../pages/medals/types';
 
 /* ---------- Auth (core plan Task 5) ---------- */
 
@@ -24,13 +22,8 @@ export interface LoginResponse {
 
 /* ---------- Dashboard (core plan Task 7) ---------- */
 
-export type FitScoreTier = 'Elite' | 'Strong' | 'On Track' | 'Building' | 'Needs Improvement';
-
 export interface FitScoreSummary {
   score: number;
-  tier: FitScoreTier;
-  /** Points since the previous scan; null with fewer than 2 scans. */
-  changeSinceLastScan: number | null;
 }
 
 export interface MissionSummary {
@@ -40,33 +33,33 @@ export interface MissionSummary {
   doneKg: number;
   remainingKg: number;
   estimatedCompletion: string | null;
-  coachNote: string | null;
-  /** Null for goals the member set without a due date. */
-  deadline: string | null;
 }
 
-export interface MonthlyWins {
-  bodyFatChangePct: number | null;
-  muscleGainedKg: number | null;
-  /** BMI change this month; null without a scan this month. */
-  bmiChange: number | null;
-  /** BMI on the latest scan, so the app can tell whether down or up is good news. */
-  bmi: number | null;
-}
+/* "Your plan": what to do next, from the latest scan (rules in src/body/advice.ts). */
 
-export interface LeaderboardStanding {
-  rank: number;
-  totalMembers: number;
-  topPercent: number;
-  membersBehind: number;
-  /** null at rank 1. */
-  pointsToNextRank: number | null;
-}
+/** act: fix this first. watch: keep an eye on it. keep: going well, carry on. */
+export type AdviceLevel = 'act' | 'watch' | 'keep';
 
-export interface LeaderboardSummary {
-  optedIn: boolean;
-  /** null when not opted in or with no scan yet. */
-  standing: LeaderboardStanding | null;
+export type AdviceKey =
+  | 'visceralHigh'
+  | 'fatHigh'
+  | 'muscleLow'
+  | 'fatRising'
+  | 'muscleDropping'
+  | 'fatLow'
+  | 'waterLow'
+  | 'muscleStrong'
+  | 'fatHealthy';
+
+export type AdviceMetric = 'visceral' | 'fat' | 'muscle' | 'water';
+
+/** One plan item. The app writes its copy from `key` (`plan.item.<key>`) and fills in `params`. */
+export interface Advice {
+  key: AdviceKey;
+  level: AdviceLevel;
+  metric: AdviceMetric;
+  /** Numbers for the copy (formatted by the screen): body fat %, kg, limits. */
+  params: Record<string, number>;
 }
 
 export interface DashboardDto {
@@ -75,84 +68,17 @@ export interface DashboardDto {
     memberId: number;
     firstName: string;
     sex?: Sex;
-    showFitScore: boolean;
     /** The member's saved character, so Home shows their picture without a second request. */
     avatar: AvatarConfigDto | null;
   };
   fitScore: FitScoreSummary | null;
-  mission: MissionSummary | null;
-  monthlyWins: MonthlyWins;
-  leaderboard: LeaderboardSummary;
-  unreadNotifications: number;
-}
-
-/* ---------- Leaderboard (core plan Task 8) ---------- */
-
-/**
- * score: highest FitScore. muscle: most skeletal muscle (kg). bodyFat: lowest
- * body fat (%). All three use each member's latest scan.
- */
-export type LeaderboardBoard = 'score' | 'muscle' | 'bodyFat';
-
-export const LEADERBOARD_BOARDS: readonly LeaderboardBoard[] = ['score', 'muscle', 'bodyFat'];
-
-export interface LeaderboardRow {
-  rank: number;
-  memberId: number;
-  /** "FirstName L." */
-  name: string;
-  value: number;
-  isMe: boolean;
   /**
-   * The member's saved character. Sent only on the member's own row until a
-   * separate avatar-sharing setting exists; null otherwise, and the app draws
-   * the starter for `memberId`.
+   * The plan from the latest scan (and the one before it), most important
+   * first, so Home can show the next step without fetching scans. Empty with no scan.
    */
-  avatar: AvatarConfigDto | null;
-}
-
-/** Where a member stands on one board: `rank` of `total` in their division. */
-export interface MemberRanking {
-  board: LeaderboardBoard;
-  /** Null when the member has no value for this board yet. */
-  rank: number | null;
-  total: number;
-}
-
-/**
- * Another member's public card (`GET /members/:id`), opened from the community
- * gym. Only members who share their results on the leaderboard can be opened;
- * others return 404. Medals come worked out by the server, so no scan history,
- * birth date, Fit ID, or membership details leave it.
- */
-export interface MemberProfileDto {
-  memberId: number;
-  /** "FirstName L.", as on the leaderboard. */
-  name: string;
-  sex: Sex;
-  /** Whole years; null when the birth date is unknown. */
-  age: number | null;
-  heightCm: number | null;
-  avatar: AvatarConfigDto | null;
-  rankings: MemberRanking[];
-  medals: MedalCategoryStatus[];
-}
-
-/** Age brackets for the leaderboard filter, by age on the day the board is read. */
-export type AgeGroup = 'all' | 'under25' | '25to34' | '35to44' | '45plus';
-
-export const AGE_GROUPS: readonly AgeGroup[] = ['all', 'under25', '25to34', '35to44', '45plus'];
-
-export interface LeaderboardDto {
-  board: LeaderboardBoard;
-  /** The bracket this board was filtered to (`?age=`); ranks are recomputed inside it. */
-  ageGroup: AgeGroup;
-  /** The member's own bracket, so the app can mark it; null when the birth date is unknown. */
-  myAgeGroup: Exclude<AgeGroup, 'all'> | null;
-  /** Members are ranked within their own division (account sex), since men's and women's body composition differ. */
-  division: Sex;
-  optedIn: boolean;
-  rows: LeaderboardRow[];
+  plan: Advice[];
+  mission: MissionSummary | null;
+  unreadNotifications: number;
 }
 
 /* ---------- Progress, goals, profile, notifications (core plan Task 9) ---------- */
@@ -162,7 +88,6 @@ export interface ProgressPoint {
   weightKg: number;
   skeletalMuscleKg: number;
   bodyFatPct: number;
-  fitScore: number;
 }
 
 /** Assessments in ascending date order. */
@@ -212,9 +137,6 @@ export interface GoalView {
   metric: GoalMetric;
   startValue: number;
   targetValue: number;
-  /** Null for goals the member set without a due date. */
-  deadline: string | null;
-  coachNote: string | null;
   percent: number;
   completedAt: string | null;
 }
@@ -233,7 +155,7 @@ export interface GoalsDto {
 export type Sex = 'MALE' | 'FEMALE';
 
 export interface ProfileDto {
-  /** Opaque member id; seeds the starter character, so it matches the leaderboard. */
+  /** Opaque member id; seeds the starter portrait. */
   memberId: number;
   firstName: string;
   lastName: string;
@@ -241,20 +163,22 @@ export interface ProfileDto {
   sex: Sex;
   birthDate: string;
   heightCm: number;
-  membershipPlan: string;
-  membershipStart: string;
-  membershipEnd: string;
-  coach: { name: string } | null;
-  showFitScore: boolean;
-  fitScoreOnLeaderboard: boolean;
   /** The member's saved character; null until they save one (the app then shows a starter). */
   avatar: AvatarConfigDto | null;
 }
 
 /* ---------- Character ---------- */
 
-/** Parts of the HD figure that take a color preset. */
+/** Persisted color slots, including two legacy slots kept for schema compatibility. */
 export type AvatarPart = 'skin' | 'hair' | 'top' | 'bottom' | 'shoes';
+
+export interface AvatarPortraitDto {
+  look: 'curls' | 'fade' | 'swept' | 'bob' | 'bun' | 'hijab';
+  outfit: 'tee' | 'hoodie' | 'jacket';
+  eyes: 'brown' | 'hazel' | 'green' | 'blue' | 'grey';
+  /** Outfit palette ID remembered independently of hair and clothing colors. */
+  hijabColor?: string;
+}
 
 /**
  * A saved character: catalog preset IDs only, never raw colors or markup.
@@ -265,15 +189,9 @@ export type AvatarPart = 'skin' | 'hair' | 'top' | 'bottom' | 'shoes';
 export interface AvatarConfigDto {
   schemaVersion: 2;
   colors: Record<AvatarPart, string>;
+  /** Omitted by older saves and clients, which use the default front portrait. */
+  portrait?: AvatarPortraitDto;
 }
-
-export interface SettingsDto {
-  showFitScore: boolean;
-  fitScoreOnLeaderboard: boolean;
-}
-
-/** Body of PATCH /me/settings. At least one field is required. */
-export type SettingsPatch = Partial<SettingsDto>;
 
 /** Language-neutral text: an i18n key plus interpolation params. */
 export interface I18nText {
@@ -290,26 +208,4 @@ export interface NotificationDto {
   body: I18nText;
   createdAt: string;
   readAt: string | null;
-}
-
-/* ---------- Lift records (medals) ---------- */
-
-export type LiftExercise = 'PUSH_UP' | 'BENCH_PRESS' | 'SQUAT' | 'DEADLIFT' | 'MILITARY_PRESS' | 'PULL_UP' | 'PLANK';
-
-/**
- * How a lift was recorded. A one-rep max and a working set (several reps at a
- * lighter weight) are different measurements and are never compared directly.
- */
-export type LiftMeasurement = 'ONE_REP_MAX' | 'WORKING_SET' | 'CONSECUTIVE_REPS' | 'DURATION';
-
-export interface LiftRecordDto {
-  id: number;
-  exercise: LiftExercise;
-  measurement: LiftMeasurement;
-  weightKg: number;
-  reps: number;
-  durationSeconds?: number;
-  recordedAt: string;
-  /** True once a coach has confirmed the lift. Only verified lifts count toward medals. */
-  verified: boolean;
 }

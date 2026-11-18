@@ -1,4 +1,3 @@
-import { Preferences } from '@capacitor/preferences';
 import type { TFunction } from 'i18next';
 
 import { formatNumber } from '../i18n/format';
@@ -32,25 +31,4 @@ export function adviceText(t: TFunction, a: Advice): { title: string; why: strin
   if (p.kg !== undefined) values.kg = kg(p.kg);
   const base = `plan.item.${a.key}`;
   return { title: t(`${base}.title`), why: t(`${base}.why`, values), how: t(`${base}.do`) };
-}
-
-/* The latest plan's top item, kept on the device so Home can show it without another request. */
-
-const key = (memberId: number) => `lu.plan.${memberId}`;
-
-export interface PlanSnapshot {
-  scanId: number;
-  top: Advice;
-}
-
-export const savePlan = (memberId: number, snapshot: PlanSnapshot): Promise<void> =>
-  Preferences.set({ key: key(memberId), value: JSON.stringify(snapshot) });
-
-export async function readPlan(memberId: number): Promise<PlanSnapshot | null> {
-  try {
-    const { value } = await Preferences.get({ key: key(memberId) });
-    return value ? (JSON.parse(value) as PlanSnapshot) : null;
-  } catch {
-    return null;
-  }
 }

@@ -20,7 +20,7 @@
     );
   }
 
-  /* Editor: the stage fills the top with no frame; a soft floor shadow grounds the character. */
+  /* A wash behind the framed portrait in the editor. */
   .lu-editor .lu-avatar-stage {
     border: 0;
     background: radial-gradient(
@@ -28,22 +28,6 @@
       color-mix(in srgb, var(--ion-color-primary) 18%, var(--lu-bg)),
       var(--lu-bg) 70%
     );
-  }
-
-  .lu-stage-floor {
-    position: absolute;
-    inset-block-end: 0;
-    inset-inline: 50%;
-    inline-size: 60%;
-    block-size: 4%;
-    translate: -50% 0;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--lu-text) 22%, transparent);
-    filter: blur(6px);
-
-    &:dir(rtl) {
-      translate: 50% 0;
-    }
   }
 
   .lu-save-chip {

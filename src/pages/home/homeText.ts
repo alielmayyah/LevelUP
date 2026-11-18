@@ -1,34 +1,8 @@
-import type { FitScoreTier } from '../../api/types';
 import { numberLocale } from '../../i18n/format';
-
-const TIER_KEYS: Record<FitScoreTier, string> = {
-  Elite: 'elite',
-  Strong: 'strong',
-  'On Track': 'onTrack',
-  Building: 'building',
-  'Needs Improvement': 'gettingStarted',
-};
-
-/** FitScore tiers, lowest to highest. */
-export const TIERS: FitScoreTier[] = ['Needs Improvement', 'Building', 'On Track', 'Strong', 'Elite'];
-
-/** The tier's i18n name, e.g. `home.tier.gettingStarted`. */
-export const tierKey = (tier: FitScoreTier): string => `home.tier.${TIER_KEYS[tier]}`;
-
-/** The tier's score range in words, e.g. `home.fitScoreInfo.range.strong`. */
-export const tierRangeKey = (tier: FitScoreTier): string => `home.fitScoreInfo.range.${TIER_KEYS[tier]}`;
 
 /** "Friday, 13 November" in the app's language. */
 export const formatToday = (date: Date): string =>
   new Intl.DateTimeFormat(numberLocale(), { weekday: 'long', day: 'numeric', month: 'long' }).format(date);
-
-/** "Mar 2026". */
-export const formatMonthYear = (iso: string): string =>
-  new Intl.DateTimeFormat(numberLocale(), { month: 'short', year: 'numeric' }).format(new Date(iso));
-
-/** "November". */
-export const formatMonth = (date: Date): string =>
-  new Intl.DateTimeFormat(numberLocale(), { month: 'long' }).format(date);
 
 const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
   ['year', 365 * 86_400_000],

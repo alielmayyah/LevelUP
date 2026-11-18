@@ -1,5 +1,5 @@
 /*
- * Progress, Goals, Leaderboard, and Profile against the mock API, for the
+ * Progress, Goals, and Profile against the mock API, for the
  * three mock members: 101 Mohamed (full), 102 Lina (new), 103 Omar (one scan,
  * FitScore hidden, membership ending soon).
  */
@@ -10,13 +10,11 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { mockServer, resetMockServer } from '../api/mock/server';
-import type { AssessmentDto, GoalsDto, LeaderboardDto } from '../api/types';
+import type { AssessmentDto, GoalsDto } from '../api/types';
 import { setToken } from '../auth/token';
 import { setLanguage } from '../i18n';
 import { resetSound } from '../sound/useSound';
-import Community from './Community';
 import Goals from './Goals';
-import Leaderboard from './Leaderboard';
 import { markGoalCreated, takeGoalCreated } from './goals/created';
 import NewGoal from './NewGoal';
 import Profile from './Profile';
@@ -154,7 +152,7 @@ describe('Progress', () => {
     expect(screen.getByRole('radio', { name: 'Body fat' }).querySelector('svg.lu-icon')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('radio', { name: 'Body fat' }));
     expect(screen.getByText(/Body fat went from 14\.6% to 8\.0%/)).toBeInTheDocument();
-    expect(screen.getByTestId('trend-score')).toBeInTheDocument();
+    expect(screen.queryByTestId('trend-score')).toBeNull();
   });
 
   it('the chart points work from the keyboard: arrow keys move between scans', async () => {
@@ -250,8 +248,8 @@ describe('Progress', () => {
     expect(within(segs).getByTestId('seg-trunk')).toHaveTextContent('Low');
   });
 
-  it('lists all five body parts for Nour’s scan in both views', async () => {
-    await renderAs('104', Progress);
+  it('lists all five body parts in both views', async () => {
+    await renderAs('101', Progress);
     await userEvent.click(await screen.findByTestId('progress-more'));
     const segs = await screen.findByTestId('segments');
     const parts = () => segs.querySelectorAll('[data-testid^="seg-"][data-status]');
@@ -306,7 +304,7 @@ describe('Progress', () => {
     expect(screen.getByTestId('progress-empty-next')).toHaveTextContent('Book your first scan at the front desk.');
   });
 
-  it('Omar (one scan, FitScore hidden) sees when changes and trends will appear, and no FitScore trend', async () => {
+  it('Omar (one scan) sees when changes and trends will appear, and no FitScore trend', async () => {
     await renderAs('103', Progress);
     await userEvent.click(await screen.findByTestId('progress-more'));
     expect(await screen.findByText('Your trends appear after your second scan.')).toBeInTheDocument();
@@ -442,90 +440,6 @@ describe('New goal', () => {
   });
 });
 
-describe('Leaderboard', () => {
-  it('Top Score shows medals for the top 3 and highlights Mohamed', async () => {
-    await renderAs('101', Leaderboard);
-    const mine = await screen.findByTestId('my-row');
-    expect(mine).toHaveTextContent('Mohamed O.');
-    expect(mine).toHaveTextContent('you');
-    const podium = screen.getByTestId('podium');
-    expect(podium.querySelectorAll('[data-crop="full"]')).toHaveLength(3);
-    expect(podium.querySelector('.lu-medal-1')).not.toBeNull();
-    expect(screen.getByTestId('my-rank')).toHaveTextContent('#1');
-    expect(screen.getByText("Men's rankings")).toBeInTheDocument();
-  });
-
-  it('formats each board and remembers the last one', async () => {
-    await renderAs('101', Leaderboard);
-    await screen.findByTestId('my-row');
-    await userEvent.click(screen.getByTestId('board-bodyFat'));
-    await waitFor(() => expect(screen.getByTestId('my-row')).toHaveTextContent('8.0%'));
-    expect((await Preferences.get({ key: 'lu.board' })).value).toBe('bodyFat');
-    await userEvent.click(screen.getByTestId('board-muscle'));
-    await waitFor(() => expect(screen.getByTestId('my-row')).toHaveTextContent('41.3 kg'));
-  });
-
-  it('Lina sees the Join banner; joining with no scan explains why she is not listed', async () => {
-    await renderAs('102', Leaderboard);
-    const banner = await screen.findByTestId('join-banner');
-    expect(banner).toHaveTextContent('Your FitScore is hidden from the leaderboard.');
-    await userEvent.click(within(banner).getByRole('button', { name: 'Join' }));
-    expect(await screen.findByTestId('no-scan-note')).toHaveTextContent("You'll appear here after your first scan.");
-    expect(screen.queryByTestId('join-banner')).toBeNull();
-    expect(screen.queryByTestId('my-row')).toBeNull();
-  });
-});
-
-describe('Community', () => {
-  it('uses decorative guests to fill a sparse gym and puts only ranked members on the wall board', async () => {
-    const handle = mockServer.handle.bind(mockServer);
-    vi.spyOn(mockServer, 'handle').mockImplementation(async (...args) => {
-      const response = await handle(...args);
-      if (!args[1].startsWith('/leaderboard?')) return response;
-      const board = response.body as LeaderboardDto;
-      return { ...response, body: { ...board, rows: board.rows.slice(0, 2) } };
-    });
-
-    await renderAs('101', Community);
-    const gym = within(screen.getByRole('region', { name: 'Community gym' }));
-    expect(await gym.findAllByTestId('community-member')).toHaveLength(1);
-    expect(gym.getAllByTestId('community-guest')).toHaveLength(22);
-    expect(gym.getByRole('button')).toHaveAccessibleName(
-      gym.getByTestId('community-member').getAttribute('aria-label'),
-    );
-    const board = within(gym.getByTestId('community-wall-board'));
-    expect(board.getByRole('link', { name: 'Leaderboards' })).toBeInTheDocument();
-    expect(board.getAllByTestId('community-board-portrait')).toHaveLength(2);
-    expect(board.getAllByTestId('community-board-portrait')[0]).toHaveAttribute('title', 'Mohamed O.');
-  });
-
-  it('fills the first room before paging to any remaining ranked members', async () => {
-    const handle = mockServer.handle.bind(mockServer);
-    vi.spyOn(mockServer, 'handle').mockImplementation(async (...args) => {
-      const response = await handle(...args);
-      if (!args[1].startsWith('/leaderboard?')) return response;
-      const board = response.body as LeaderboardDto;
-      const extra = board.rows.slice(1, 7).map((row, index) => ({
-        ...row,
-        memberId: 200 + index,
-        rank: board.rows.length + index + 1,
-      }));
-      return { ...response, body: { ...board, rows: [...board.rows, ...extra] } };
-    });
-
-    await renderAs('101', Community);
-    expect(await screen.findAllByTestId('community-member')).toHaveLength(23);
-    expect(screen.queryAllByTestId('community-guest')).toHaveLength(0);
-    const first = screen.getAllByTestId('community-member')[0];
-    await userEvent.click(first);
-    expect(first).toHaveAttribute('aria-pressed', 'true');
-    const pager = within(screen.getByRole('navigation', { name: 'Gym rooms' }));
-    await userEvent.click(pager.getByRole('button', { name: 'Next page' }));
-    expect(screen.getAllByTestId('community-member')).toHaveLength(1);
-    expect(screen.queryByTestId('community-card')).not.toBeInTheDocument();
-  });
-});
-
 describe('Profile', () => {
   it('shows the member identity, avatar, age, height, and earned medals', async () => {
     await renderAs('101', Profile);
@@ -533,10 +447,12 @@ describe('Profile', () => {
     expect(screen.getByText('Fit ID 101')).toBeInTheDocument();
     expect(screen.getByTestId('profile-age')).toHaveTextContent(/\d+ years/);
     expect(screen.getByTestId('profile-height')).toHaveTextContent(/\d+.* cm/);
-    expect(screen.getByTestId('profile-avatar')).toHaveAttribute('data-crop', 'full');
+    expect(screen.getByTestId('profile-avatar')).toHaveAttribute('data-crop', 'portrait');
     const medals = await screen.findByTestId('profile-medal-grid');
-    expect(within(medals).getAllByRole('listitem')).toHaveLength(10);
-    expect(within(medals).getByTestId('profile-medal-plank')).toHaveTextContent('Gold');
+    // Scan medals only: muscle, body fat, and BMI.
+    expect(within(medals).getAllByRole('listitem')).toHaveLength(3);
+    expect(within(medals).getByTestId('profile-medal-bodyFat')).toHaveTextContent('Legendary');
+    expect(within(medals).getByTestId('profile-medal-bmi')).toHaveTextContent('Gold');
     expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/tabs/profile/settings');
     expect(screen.queryByText('Rami Saad')).toBeNull();
     expect(screen.queryByText(/Premium/)).toBeNull();
@@ -545,48 +461,25 @@ describe('Profile', () => {
   it('shows the no-medals state for a new member', async () => {
     await renderAs('102', Profile);
     const medals = await screen.findByTestId('profile-medal-grid');
-    expect(await screen.findByTestId('profile-medal-count')).toHaveTextContent('Medals earned in 0 of 10 categories');
-    expect(within(medals).getAllByRole('button')).toHaveLength(10);
-    expect(within(medals).getByTestId('profile-medal-plank')).toHaveAttribute('data-unlocked', 'false');
+    expect(await screen.findByTestId('profile-medal-count')).toHaveTextContent('Medals earned in 0 of 3 categories');
+    expect(within(medals).getAllByRole('button')).toHaveLength(3);
+    expect(within(medals).getByTestId('profile-medal-muscle')).toHaveAttribute('data-unlocked', 'false');
   });
 });
 
 describe('Settings', () => {
-  it('the two FitScore settings save independently', async () => {
-    await renderAs('101', Settings);
-    const show = await screen.findByTestId('setting-show-fitscore');
-    await userEvent.click(show);
-    await waitFor(async () => {
-      const me = await mockServer.handle('GET', '/me', null, 'mock.101');
-      expect(me.body).toMatchObject({ showFitScore: false, fitScoreOnLeaderboard: true });
-    });
-    expect(show).toHaveAttribute('aria-checked', 'false');
-    expect(screen.getByTestId('setting-leaderboard')).toHaveAttribute('aria-checked', 'true');
-  });
-
-  it('a failed save flips the switch back and says so', async () => {
-    await renderAs('101', Settings);
-    const lb = await screen.findByTestId('setting-leaderboard');
-    vi.spyOn(mockServer, 'handle').mockResolvedValueOnce({ status: 500, body: null });
-    await userEvent.click(lb);
-    await waitFor(() => expect(lb).toHaveAttribute('aria-checked', 'true'));
-  });
-
-  it('language, theme and sound work even when the profile fails to load; only FitScore waits', async () => {
+  it('language, theme and sound work even when the profile fails to load', async () => {
     vi.spyOn(mockServer, 'handle').mockResolvedValue({ status: 500, body: null });
     await renderAs('101', Settings);
     expect(screen.getByTestId('setting-language')).toBeInTheDocument();
     expect(screen.getByTestId('setting-theme')).toBeInTheDocument();
     expect(screen.getByTestId('setting-sound')).toBeInTheDocument();
-    expect(await screen.findByTestId('settings-fitscore-error')).toHaveTextContent("Couldn't load your profile.");
     expect(screen.queryByTestId('setting-show-fitscore')).toBeNull();
     expect(screen.getByTestId('sign-out')).toBeInTheDocument();
   });
 
-  it('explains the FitScore switch and warns about the Fit ID before signing out', async () => {
+  it('warns about the Fit ID before signing out', async () => {
     await renderAs('101', Settings);
-    await screen.findByTestId('setting-show-fitscore');
-    expect(screen.getByText('Turn off to hide your FitScore in the app')).toBeInTheDocument();
     await userEvent.click(screen.getByTestId('sign-out'));
     expect(await screen.findByText(/You'll need your Fit ID to sign back in\./)).toBeInTheDocument();
   });

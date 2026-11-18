@@ -1,7 +1,7 @@
-import type { LiftExercise, LiftRecordDto, ProgressPoint, Sex } from '../../api/types';
+import type { ProgressPoint, Sex } from '../../api/types';
 import { ageOn } from '../../body/age';
 import { SCALES } from '../../body/standards';
-import { categoryDefinitions, MEDAL_CATEGORIES, MEDAL_CONFIG, VALID_RANGE } from './config';
+import { categoryDefinitions, MEDAL_CATEGORIES, VALID_RANGE } from './config';
 import {
   MEDAL_RARITIES,
   type MedalCategory,
@@ -18,8 +18,6 @@ export interface MedalInputs {
   heightCm?: number;
   /** Scans in any order; /me/progress returns them oldest first. */
   scans: ProgressPoint[];
-  /** Null when the gym API doesn't provide workout records. */
-  lifts: LiftRecordDto[] | null;
 }
 
 interface Sample {
@@ -56,36 +54,6 @@ export function muscleGainSamples(scans: ProgressPoint[]): Sample[] {
   if (valid.length < 2) return [];
   const [baseline, ...later] = valid;
   return later.map((s) => ({ value: tidy(s.value - baseline.value), at: s.at }));
-}
-
-/** Verified one-rep maxes for an exercise, oldest first. Working sets and unverified lifts never count. */
-export function oneRepMaxSamples(lifts: LiftRecordDto[], exercise: LiftExercise): Sample[] {
-  return byDate(
-    lifts
-      .filter(
-        (l) =>
-          l.exercise === exercise &&
-          l.verified &&
-          l.measurement === 'ONE_REP_MAX' &&
-          l.reps === 1 &&
-          inRange(l.weightKg, VALID_RANGE.liftKg),
-      )
-      .map((l) => ({ value: l.weightKg, at: l.recordedAt })),
-  );
-}
-
-function workoutSamples(lifts: LiftRecordDto[], exercise: LiftExercise, unit: MedalDefinition['unit']): Sample[] {
-  if (unit === 'kg') return oneRepMaxSamples(lifts, exercise);
-  const measurement = unit === 'reps' ? 'CONSECUTIVE_REPS' : 'DURATION';
-  return byDate(
-    lifts.flatMap((lift) => {
-      const value = unit === 'reps' ? lift.reps : lift.durationSeconds;
-      if (lift.exercise !== exercise || !lift.verified || lift.measurement !== measurement) return [];
-      if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) return [];
-      if (unit === 'reps' && !Number.isInteger(value)) return [];
-      return [{ value, at: lift.recordedAt }];
-    }),
-  );
 }
 
 const BMI_MIN_AGE = 20;
@@ -154,7 +122,7 @@ const lockedAll = (defs: MedalDefinition[]): MedalStatus[] =>
   defs.map((def) => ({ ...def, unlocked: false, unlockedAt: null, current: null, progress: null, remaining: null }));
 
 function evaluateCategory(category: MedalCategory, inputs: MedalInputs): MedalCategoryStatus {
-  const base = { category, bestWorkingSet: null, pendingLifts: 0 };
+  const base = { category };
   // Without a sex there are no body fat thresholds; the medals still show (male set), locked.
   const defs = categoryDefinitions(category, inputs.sex) ?? categoryDefinitions(category, 'MALE')!;
   const unavailable = (reason: MedalUnavailableReason): MedalCategoryStatus => ({
@@ -182,35 +150,19 @@ function evaluateCategory(category: MedalCategory, inputs: MedalInputs): MedalCa
     return { ...base, current, unavailable: null, medals: evaluate(defs, samples, current, 0) };
   }
 
-  if (category === 'bmi') {
-    const birth = new Date(inputs.birthDate ?? '');
-    const height = inputs.heightCm;
-    if (typeof height !== 'number' || !Number.isFinite(height) || height <= 0 || !Number.isFinite(+birth))
-      return unavailable('missingBmiProfile');
-    if (ageOn(birth, new Date()) < BMI_MIN_AGE) return unavailable('adultBmiOnly');
-    const { samples, current, eligibleScans } = bmiStreaks(inputs.scans, height, birth);
-    return {
-      ...base,
-      current,
-      unavailable: !eligibleScans ? 'noScans' : current === null ? 'bmiOutsideRange' : null,
-      medals: evaluate(defs, samples, current, 0),
-    };
-  }
-
-  if (!inputs.lifts) return unavailable('noWorkoutSource');
-  const { exercise, unit } = MEDAL_CONFIG[category];
-  const mine = inputs.lifts.filter((l) => l.exercise === exercise);
-  const bestWorkingSet = mine
-    .filter((l) => l.verified && l.measurement === 'WORKING_SET' && inRange(l.weightKg, VALID_RANGE.liftKg))
-    .reduce<{ weightKg: number; reps: number } | null>(
-      (best, l) => (!best || l.weightKg > best.weightKg ? { weightKg: l.weightKg, reps: l.reps } : best),
-      null,
-    );
-  const lift = { bestWorkingSet, pendingLifts: mine.filter((l) => !l.verified).length };
-  const samples = workoutSamples(mine, exercise!, unit);
-  if (!samples.length) return { ...unavailable(unit === 'kg' ? 'noLifts' : 'noWorkoutRecord'), ...lift };
-  const current = Math.max(...samples.map((s) => s.value));
-  return { ...base, ...lift, current, unavailable: null, medals: evaluate(defs, samples, current, 0) };
+  // BMI: months kept in the healthy range.
+  const birth = new Date(inputs.birthDate ?? '');
+  const height = inputs.heightCm;
+  if (typeof height !== 'number' || !Number.isFinite(height) || height <= 0 || !Number.isFinite(+birth))
+    return unavailable('missingBmiProfile');
+  if (ageOn(birth, new Date()) < BMI_MIN_AGE) return unavailable('adultBmiOnly');
+  const { samples, current, eligibleScans } = bmiStreaks(inputs.scans, height, birth);
+  return {
+    ...base,
+    current,
+    unavailable: !eligibleScans ? 'noScans' : current === null ? 'bmiOutsideRange' : null,
+    medals: evaluate(defs, samples, current, 0),
+  };
 }
 
 export function evaluateMedals(inputs: MedalInputs): MedalCategoryStatus[] {

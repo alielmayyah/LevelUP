@@ -8,7 +8,6 @@ import { useApi, useRefreshOnEnter } from '../api/useApi';
 import Avatar from '../avatar/Avatar';
 import { memberAvatar } from '../avatar/catalog';
 import '../avatar/avatar.scss';
-import { features } from '../features';
 import CtaButton from '../components/CtaButton';
 import { formatNumber } from '../i18n/format';
 import { useReveal } from '../motion/gsapMotion';
@@ -18,9 +17,7 @@ import { formatToday } from './home/homeText';
 import MissionCard from './home/MissionCard';
 import NotificationsSheet from './home/NotificationsSheet';
 import PlanTeaser from './home/PlanTeaser';
-import RankCard from './home/RankCard';
-import StatTiles from './home/StatTiles';
-import { HOME_GRID, HOME_SPAN, TILES } from './home/layout';
+import { HOME_GRID } from './home/layout';
 import './home/Dashboard.scss';
 
 /** Home tab. Everything on it comes from one request: GET /me/dashboard. */
@@ -32,7 +29,7 @@ const Dashboard: React.FC = () => {
   const [today, setToday] = useState(() => new Date());
 
   const { setData, reload } = dashboard;
-  // Back from Profile with Show FitScore turned off: the card hides without a reload.
+  // Back on Home: fresh numbers (a new scan, a goal reached) without pulling to refresh.
   useRefreshOnEnter(reload);
   const syncUnread = useCallback(
     (unread: number) => setData((d) => (d.unreadNotifications === unread ? d : { ...d, unreadNotifications: unread })),
@@ -77,7 +74,7 @@ const Dashboard: React.FC = () => {
                   aria-label={t('home.openProfile')}
                   data-testid="home-avatar"
                 >
-                  <Avatar config={memberAvatar(d.member)} className="block size-full" />
+                  <Avatar config={memberAvatar(d.member)} sex={d.member.sex} className="block size-full" />
                 </Link>
               )}
               <div className="min-w-0 flex-1">
@@ -126,11 +123,6 @@ const Dashboard: React.FC = () => {
               <div className="lu-skeleton-card min-h-[150px]" />
               <div className="lu-skeleton-card" />
               <div className="lu-skeleton-card" />
-              <div className={`${TILES} ${HOME_SPAN}`}>
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="lu-skeleton-card min-h-[84px]" />
-                ))}
-              </div>
             </div>
           )}
 
@@ -143,12 +135,10 @@ const Dashboard: React.FC = () => {
 
           {d && (
             <div className={HOME_GRID} ref={grid}>
-              {d.member.showFitScore && <FitScoreCard fitScore={d.fitScore} />}
-              {/* What to do next: the plan from the last scan (once there is one). */}
-              {d.fitScore && <PlanTeaser memberId={d.member.memberId} />}
-              <StatTiles wins={d.monthlyWins} today={today} />
+              <FitScoreCard fitScore={d.fitScore} />
+              {/* What to do next: the plan from the last scan (empty until there is one). */}
+              {d.plan[0] && <PlanTeaser top={d.plan[0]} />}
               <MissionCard mission={d.mission} />
-              {features.community && <RankCard leaderboard={d.leaderboard} />}
             </div>
           )}
         </div>

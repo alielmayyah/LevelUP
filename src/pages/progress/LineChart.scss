@@ -80,9 +80,6 @@
     --series: var(--lu-fat);
   }
 
-  .lu-series-score {
-    --series: var(--lu-tier-4);
-  }
 
   /* Centered over the point: its inline-start edge is set inline, then pulled back by half its width. */
   .lu-chart-tip {

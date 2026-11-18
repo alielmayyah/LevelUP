@@ -28,8 +28,6 @@ export default defineConfig({
     env: {
       VITE_USE_MOCKS: 'true',
       VITE_MOCK_LATENCY_MS: '0',
-      // Unit tests keep the hidden Community pieces covered, so they work when switched back on.
-      VITE_COMMUNITY: 'true',
     },
   },
 });

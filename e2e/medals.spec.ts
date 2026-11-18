@@ -2,7 +2,7 @@ import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
 import { expect, LOCALES, noHorizontalOverflow, test, THEMES, type Locale } from './fixtures';
 
-/** Mohamed (101): scan-based medals and verified workout milestones. */
+/** Mohamed (101): medals come from scans only (muscle gained, body fat, BMI). */
 const MOHAMED_UNLOCKED = [
   'fatBurner',
   'leanMachine',
@@ -11,19 +11,9 @@ const MOHAMED_UNLOCKED = [
   'legendaryShape',
   'muscleStarter',
   'growingStrong',
-  'firstPress',
-  'ironChest',
-  'heavyHitter',
-  'powerLifter',
-  'firstSquat',
-  'ironLegs',
-  'squatMaster',
-  'titanLegs',
-  ...['pushUps', 'deadlift', 'militaryPress', 'plank', 'bmi'].flatMap((category) =>
-    ['bronze', 'silver', 'gold'].map((rarity) => `${category}-${rarity}`),
-  ),
-  'pullUps-bronze',
-  'pullUps-silver',
+  'bmi-bronze',
+  'bmi-silver',
+  'bmi-gold',
 ];
 
 const copyFor = (lang: Locale) => ({ en, ar })[lang].medals;
@@ -33,7 +23,7 @@ for (const lang of LOCALES) {
     test.describe(`${lang}/${theme}`, () => {
       test.use({ lang, theme, reducedMotion: 'reduce' });
 
-      test('Trophy Room shows medals from scans and verified lifts', async ({ page, loginAs }) => {
+      test('Trophy Room shows the scan medals: muscle, body fat, and BMI', async ({ page, loginAs }) => {
         const copy = copyFor(lang);
         // Celebrations already seen, so this test covers the collection itself.
         await page.addInitScript(
@@ -47,39 +37,40 @@ for (const lang of LOCALES) {
         const panel = page.getByTestId('page-medals');
         await expect(panel.getByRole('heading', { name: copy.title, level: 1 })).toBeVisible();
         await expect(panel.getByTestId('medal-count')).toHaveText(
-          copy.count.replace('{{unlocked}}', '32').replace('{{total}}', '50'),
+          copy.count.replace('{{unlocked}}', '10').replace('{{total}}', '15'),
         );
         // The overview is the count and one bar: no percent line, no stats row.
-        await expect(panel.getByTestId('medal-bar')).toHaveAttribute('aria-valuenow', '64');
+        await expect(panel.getByTestId('medal-bar')).toHaveAttribute('aria-valuenow', '67');
         await expect(panel.getByTestId('medal-overview').locator('dl')).toHaveCount(0);
         await expect(page.getByTestId('medal-celebration')).toHaveCount(0);
 
-        await expect(panel.locator('[data-testid^="medal-"][data-unlocked]')).toHaveCount(50);
+        await expect(panel.locator('[data-testid^="medal-"][data-unlocked]')).toHaveCount(15);
+        // No strength (lift or workout) medals.
+        await expect(panel.locator('[data-testid^="medal-section-"]')).toHaveCount(3);
         // Vector badges: every medal draws its category's line icon.
-        await expect(panel.locator('.lu-medal-card svg.lu-medal-art .lu-medal-glyph')).toHaveCount(50);
+        await expect(panel.locator('.lu-medal-card svg.lu-medal-art .lu-medal-glyph')).toHaveCount(15);
         await expect(panel.locator('.lu-medal-art text')).toHaveCount(0);
         for (const id of MOHAMED_UNLOCKED)
           await expect(panel.getByTestId(`medal-${id}`)).toHaveAttribute('data-unlocked', 'true');
-        await expect(panel.getByTestId('medal-benchLegend')).toHaveAttribute('data-unlocked', 'false');
-        // The unverified 130 kg squat doesn't count.
-        await expect(panel.getByTestId('medal-squatLegend')).toHaveAttribute('data-unlocked', 'false');
+        await expect(panel.getByTestId('medal-muscleBuilder')).toHaveAttribute('data-unlocked', 'false');
 
-        // Filters.
+        // Filters: All plus the three categories.
         const filters = panel.getByRole('radiogroup', { name: copy.filter });
-        await filters.getByRole('radio', { name: copy.category.bench }).click();
+        await expect(filters.getByRole('radio')).toHaveCount(4);
+        await filters.getByRole('radio', { name: copy.category.muscle }).click();
         await expect(panel.getByTestId('medal-section-bodyFat')).toHaveCount(0);
-        await expect(panel.getByTestId('medal-section-bench')).toBeVisible();
-        // With data, the section is just its medals; the lift records wait in the sheet.
-        await expect(panel.getByTestId('medal-status-bench')).toHaveCount(0);
-        await expect(panel.getByTestId('medal-benchLegend').locator('.lu-rarity')).toHaveCount(0);
+        await expect(panel.getByTestId('medal-section-muscle')).toBeVisible();
+        // With data, the section is just its medals; the precise value waits in the sheet.
+        await expect(panel.getByTestId('medal-status-muscle')).toHaveCount(0);
+        await expect(panel.getByTestId('medal-muscleBuilder').locator('.lu-rarity')).toHaveCount(0);
 
-        // Locked medal details: honest progress toward 100 kg, and the records for detail lovers.
-        await panel.getByTestId('medal-benchLegend').click();
+        // Locked medal details: honest progress toward +5 kg, and the gain so far for detail lovers.
+        await panel.getByTestId('medal-muscleBuilder').click();
         const detail = page.getByTestId('medal-detail');
         await expect(detail).toBeVisible();
         await expect(page.getByTestId('medal-detail-status')).toHaveText(copy.locked);
-        await expect(page.getByTestId('medal-detail-progress')).toContainText('83%');
-        await expect(page.getByTestId('medal-detail-records')).toContainText('82.5');
+        await expect(page.getByTestId('medal-detail-progress')).toContainText('98%');
+        await expect(page.getByTestId('medal-detail-records')).toContainText('4.9');
         await page.getByRole('button', { name: copy.detail.close }).click();
         await expect(detail).toHaveCount(0);
 
@@ -101,18 +92,18 @@ for (const lang of LOCALES) {
         await loginAs('101');
         await page.goto('/tabs/profile');
         const grid = page.getByTestId('profile-medal-grid');
-        await expect(grid.getByRole('listitem')).toHaveCount(10);
-        const plank = grid.getByTestId('profile-medal-plank');
-        await expect(plank).toContainText(copy.rarity.gold);
-        await expect(plank).toContainText('120');
-        await expect(plank.locator('svg.lu-medal-art')).toHaveAttribute('data-rarity', 'gold');
-        await expect(plank.getByTestId('profile-medal-progress')).toContainText('180');
-        await expect(plank.getByTestId('profile-medal-progress')).toContainText('67%');
-        await expect(page.getByTestId('profile-medal-count')).toContainText('10');
+        await expect(grid.getByRole('listitem')).toHaveCount(3);
+        // Five months in the healthy BMI range: Gold (3 months) earned, Epic (6 months) next.
+        const bmi = grid.getByTestId('profile-medal-bmi');
+        await expect(bmi).toContainText(copy.rarity.gold);
+        await expect(bmi.locator('svg.lu-medal-art')).toHaveAttribute('data-rarity', 'gold');
+        await expect(bmi.getByTestId('profile-medal-progress')).toContainText('6');
+        await expect(bmi.getByTestId('profile-medal-progress')).toContainText('83%');
+        await expect(page.getByTestId('profile-medal-count')).toContainText('3');
         expect(await noHorizontalOverflow(page)).toBe(true);
-        await plank.click();
+        await bmi.click();
         const details = page.getByTestId('medal-detail');
-        await expect(details.getByRole('heading', { level: 2 })).toContainText(copy.category.plank);
+        await expect(details.getByRole('heading', { level: 2 })).toContainText(copy.category.bmi);
         await expect(page.getByTestId('medal-detail-status')).toHaveText(copy.unlocked);
         await page.getByRole('button', { name: copy.detail.close }).click();
         await expect(details).toHaveCount(0);
@@ -156,13 +147,14 @@ test.describe('no data', () => {
   test('Profile shows one locked milestone per category and no invented progress', async ({ page, loginAs }) => {
     await loginAs('102');
     await page.goto('/tabs/profile');
-    await expect(page.getByTestId('profile-medal-count')).toHaveText('Medals earned in 0 of 10 categories');
+    await expect(page.getByTestId('profile-medal-count')).toHaveText('Medals earned in 0 of 3 categories');
     const grid = page.getByTestId('profile-medal-grid');
-    await expect(grid.locator('[data-unlocked="false"]')).toHaveCount(10);
+    await expect(grid.locator('[data-unlocked="false"]')).toHaveCount(3);
     await expect(grid.getByTestId('profile-medal-progress')).toHaveCount(0);
-    const plank = grid.getByTestId('profile-medal-plank');
-    await expect(plank).toContainText('30 sec');
-    await plank.click();
+    // Lina is a woman, so her first body fat medal is below 38%.
+    const bodyFat = grid.getByTestId('profile-medal-bodyFat');
+    await expect(bodyFat).toContainText('38%');
+    await bodyFat.click();
     await expect(page.getByTestId('medal-detail-status')).toHaveText(en.medals.locked);
   });
 
@@ -172,10 +164,10 @@ test.describe('no data', () => {
     await page.goto('/tabs/profile/medals');
     const panel = page.getByTestId('page-medals');
     await expect(panel.getByTestId('medal-count')).toHaveText(
-      copy.count.replace('{{unlocked}}', '0').replace('{{total}}', '50'),
+      copy.count.replace('{{unlocked}}', '0').replace('{{total}}', '15'),
     );
     await expect(panel.getByTestId('medal-status-bodyFat')).toHaveText(copy.unavailable.noScans);
-    await expect(panel.getByTestId('medal-status-squat')).toHaveText(copy.unavailable.noLifts);
+    await expect(panel.getByTestId('medal-status-muscle')).toHaveText(copy.unavailable.noScans);
     await expect(panel.locator('.lu-medal-card [role="progressbar"]')).toHaveCount(0);
     await expect(page.getByTestId('medal-celebration')).toHaveCount(0);
   });
@@ -184,8 +176,8 @@ test.describe('no data', () => {
 test('locked medals show a lock badge instead of a Locked label', async ({ page, loginAs }) => {
   await loginAs('102');
   await page.goto('/tabs/profile');
-  const pushUps = page.getByTestId('profile-medal-grid').getByTestId('profile-medal-pushUps');
-  await expect(pushUps.getByTestId('medal-lock')).toBeVisible();
+  const muscle = page.getByTestId('profile-medal-grid').getByTestId('profile-medal-muscle');
+  await expect(muscle.getByTestId('medal-lock')).toBeVisible();
   // The word stays for screen readers only.
-  await expect(pushUps.getByText(en.medals.locked)).toHaveClass(/sr-only/);
+  await expect(muscle.getByText(en.medals.locked)).toHaveClass(/sr-only/);
 });

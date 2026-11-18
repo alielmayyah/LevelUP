@@ -2,7 +2,6 @@ import { IonRouterOutlet, IonTabs } from '@ionic/react';
 import { lazy, Suspense, useEffect, type ComponentType, type LazyExoticComponent } from 'react';
 import { Redirect, Route, useLocation } from 'react-router-dom';
 
-import { features } from '../features';
 import TabBar from './TabBar';
 import { tabIndex } from './tabConfig';
 import { useTabBack, useTabSwipe } from './tabGestures';
@@ -23,24 +22,15 @@ const LOADERS = {
   goals: () => import('../pages/Goals'),
   newGoal: () => import('../pages/NewGoal'),
   character: () => import('../pages/Character'),
-  community: () => import('../pages/Community'),
-  leaderboard: () => import('../pages/Leaderboard'),
-  member: () => import('../pages/MemberProfile'),
   profile: () => import('../pages/Profile'),
   settings: () => import('../pages/Settings'),
 };
-
-/** Pages that belong to Community, so they are neither routed nor prefetched while it is off. */
-const COMMUNITY_PAGES = new Set(['community', 'leaderboard', 'member']);
 
 const Home = withSuspense(lazy(LOADERS.home));
 const Progress = withSuspense(lazy(LOADERS.progress));
 const Goals = withSuspense(lazy(LOADERS.goals));
 const NewGoal = withSuspense(lazy(LOADERS.newGoal));
 const Character = withSuspense(lazy(LOADERS.character));
-const Community = withSuspense(lazy(LOADERS.community));
-const Leaderboard = withSuspense(lazy(LOADERS.leaderboard));
-const MemberProfile = withSuspense(lazy(LOADERS.member));
 const Profile = withSuspense(lazy(LOADERS.profile));
 const Settings = withSuspense(lazy(LOADERS.settings));
 const Medals = withSuspense(lazy(() => import('../pages/Medals')));
@@ -53,9 +43,7 @@ const Medals = withSuspense(lazy(() => import('../pages/Medals')));
 function usePrefetchTabs(): void {
   useEffect(() => {
     const prefetch = () =>
-      Object.entries(LOADERS)
-        .filter(([name]) => features.community || !COMMUNITY_PAGES.has(name))
-        .forEach(([, load]) => void load().catch(() => undefined));
+      Object.values(LOADERS).forEach((load) => void load().catch(() => undefined));
     if ('requestIdleCallback' in window) {
       const id = window.requestIdleCallback(prefetch, { timeout: 2000 });
       return () => window.cancelIdleCallback(id);
@@ -81,15 +69,6 @@ const Tabs: React.FC = () => {
         <Route exact path="/tabs/progress" component={Progress} />
         <Route exact path="/tabs/goals" component={Goals} />
         <Route exact path="/tabs/goals/new" component={NewGoal} />
-        {/* An array, never `false`: Ionic's outlet reads every child's props. */}
-        {features.community
-          ? [
-              <Route key="community" exact path="/tabs/community" component={Community} />,
-              <Route key="board" exact path="/tabs/community/leaderboard" component={Leaderboard} />,
-              <Route key="member" exact path="/tabs/community/member/:id" component={MemberProfile} />,
-              <Route key="leaderboard" exact path="/tabs/leaderboard" component={Leaderboard} />,
-            ]
-          : []}
         <Route exact path="/tabs/profile" component={Profile} />
         <Route exact path="/tabs/profile/settings" component={Settings} />
         <Route exact path="/tabs/profile/character" component={Character} />

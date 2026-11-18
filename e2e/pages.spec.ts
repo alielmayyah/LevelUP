@@ -1,7 +1,7 @@
-/* Progress, Goals, Leaderboard, and Profile behavior against the mock API. */
+/* Progress, Goals, and Profile behavior against the mock API. */
 import ar from '../src/i18n/ar.json' with { type: 'json' };
 import en from '../src/i18n/en.json' with { type: 'json' };
-import { COMMUNITY, expect, test } from './fixtures';
+import { expect, test } from './fixtures';
 
 const tab = (name: string) => `[data-testid="page-${name}"]`;
 
@@ -41,7 +41,7 @@ test.describe('Progress', () => {
     // As many scans as fit the screen; the first scan is the last row of the last page.
     await expect(sheet.getByTestId('scan-row').first()).toBeVisible();
     if (await sheet.getByTestId('pager').count()) {
-      await sheet.getByRole('button', { name: en.leaderboard.nextPage }).click();
+      await sheet.getByRole('button', { name: en.pager.nextPage }).click();
       await expect(sheet.getByTestId('pager')).toContainText('2');
     }
     await sheet.getByTestId('scan-row').last().click();
@@ -89,7 +89,7 @@ test.describe('Progress', () => {
         await expect(picker.getByTestId('scan-row').first()).toBeDisabled();
         await expect(picker.getByTestId('scan-row').first()).toBeVisible();
         if (await picker.getByTestId('pager').count())
-          await picker.getByRole('button', { name: s.leaderboard.nextPage }).click();
+          await picker.getByRole('button', { name: s.pager.nextPage }).click();
         await picker.getByTestId('scan-row').last().click();
         await expect(page.getByTestId('change-muscle')).toContainText('4.9');
         await expect(bc.getByTestId('bar-smm-delta')).toContainText('4.9');
@@ -168,154 +168,7 @@ test.describe('Goals', () => {
   });
 });
 
-test.describe('Leaderboard', () => {
-  test.skip(!COMMUNITY, 'Community is switched off (VITE_COMMUNITY)');
-  test('highlights Mohamed and remembers the board across a reload', async ({ page, loginAs }) => {
-    await loginAs();
-    await page.goto('/tabs/leaderboard');
-    const lb = page.locator(tab('leaderboard'));
-    await expect(lb.getByTestId('my-row')).toBeInViewport();
-    await lb.getByTestId('board-muscle').click();
-    await expect(lb.getByTestId('board-muscle')).toHaveAttribute('aria-selected', 'true');
-    await page.reload();
-    await expect(page.locator(tab('leaderboard')).getByTestId('board-muscle')).toHaveAttribute('aria-selected', 'true');
-  });
-
-  test('a docked "you" bar shows the member’s rank while their row is off screen, and jumps to it', async ({
-    page,
-    loginAs,
-  }) => {
-    await loginAs('108');
-    await page.setViewportSize({ width: 390, height: 560 });
-    await page.goto('/tabs/leaderboard');
-    const lb = page.locator(tab('leaderboard'));
-    await expect(lb.getByTestId('my-row')).toBeAttached();
-    await lb
-      .locator('ion-content')
-      .evaluate((c) => (c as HTMLElement & { scrollToTop: (ms: number) => Promise<void> }).scrollToTop(0));
-    const dock = lb.getByTestId('my-rank-dock');
-    await expect(dock).toBeVisible();
-    await expect(dock).toContainText(en.leaderboard.you);
-    await dock.click();
-    await expect(lb.getByTestId('my-row')).toBeInViewport();
-    await expect(dock).toHaveCount(0);
-  });
-
-  test('filters by age group from the funnel menu and remembers it across a reload', async ({ page, loginAs }) => {
-    await loginAs();
-    await page.goto('/tabs/leaderboard');
-    const lb = page.locator(tab('leaderboard'));
-    const funnel = lb.getByTestId('age-filter-button');
-    await expect(funnel).toHaveAttribute('data-active', 'false');
-
-    await funnel.click();
-    const menu = lb.getByRole('radiogroup', { name: en.leaderboard.age.label });
-    await expect(menu.getByRole('radio', { name: en.leaderboard.age.all })).toHaveAttribute('aria-checked', 'true');
-    // Mohamed is 23: his bracket carries the "your age group" mark.
-    await expect(lb.getByTestId('age-under25').getByLabel(en.leaderboard.age.yours)).toBeVisible();
-    await lb.getByTestId('age-under25').click();
-    await expect(menu).toHaveCount(0);
-    await expect(funnel).toHaveAttribute('data-active', 'true');
-    await expect(lb.getByTestId('age-chip')).toContainText(en.leaderboard.age.under25);
-    await expect(lb.getByTestId('my-row')).toBeVisible();
-
-    await funnel.click();
-    await lb.getByTestId('age-45plus').click();
-    await expect(lb.getByTestId('other-age-note')).toHaveText(en.leaderboard.age.otherGroup);
-    await expect(lb.getByTestId('my-row')).toHaveCount(0);
-    await expect(lb.getByTestId('no-scan-note')).toHaveCount(0);
-
-    // Arrow keys move through the brackets; Escape closes and returns focus to the funnel.
-    await funnel.click();
-    await expect(lb.getByTestId('age-45plus')).toBeFocused();
-    await page.keyboard.press('ArrowUp');
-    await expect(lb.getByTestId('age-35to44')).toHaveAttribute('aria-checked', 'true');
-    await page.keyboard.press('Escape');
-    await expect(menu).toHaveCount(0);
-    await expect(funnel).toBeFocused();
-
-    await page.reload();
-    await expect(page.locator(tab('leaderboard')).getByTestId('age-chip')).toContainText(en.leaderboard.age['35to44']);
-    await page.locator(tab('leaderboard')).getByTestId('age-chip').click();
-    await expect(page.locator(tab('leaderboard')).getByTestId('age-chip')).toHaveCount(0);
-  });
-
-  test('the top three stand on the podium, everyone else is listed from 4th with a character', async ({
-    page,
-    loginAs,
-  }) => {
-    await loginAs();
-    await page.goto('/tabs/leaderboard');
-    const lb = page.locator(tab('leaderboard'));
-    const podium = lb.getByRole('region', { name: en.leaderboard.podium });
-    await expect(podium.getByRole('listitem')).toHaveCount(3);
-    await expect(podium.locator('svg[data-crop="full"]')).toHaveCount(3);
-    const list = lb.getByRole('list', { name: en.leaderboard.board.score });
-    await expect(list).toHaveAttribute('start', '4');
-    // Mohamed is #1 among the men, so he stands on the podium, not in the list.
-    await expect(podium.getByTestId('my-row')).toBeVisible();
-    await expect(list.getByTestId('my-row')).toHaveCount(0);
-    await expect(list.getByTestId('row').first().locator('svg').first()).toBeVisible();
-    // 16 men after the podium need two pages: the pager appears and turns the page.
-    const pager = lb.getByTestId('pager');
-    await expect(pager).toContainText('1');
-    // Scrolling past the podium can reveal the pinned rank card. Go to the
-    // end of the content, where the pager clears that card.
-    await pager.scrollIntoViewIfNeeded();
-    await lb
-      .locator('ion-content')
-      .evaluate((content) =>
-        (content as HTMLElement & { scrollToBottom: (ms: number) => Promise<void> }).scrollToBottom(0),
-      );
-    await pager.getByRole('button', { name: en.leaderboard.nextPage }).click();
-    await expect(list).toHaveAttribute('start', '14');
-    await expect(list.getByTestId('my-row')).toHaveCount(0);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  });
-
-  test('Lina joins from the banner', async ({ page, loginAs }) => {
-    await loginAs('102');
-    await page.goto('/tabs/leaderboard');
-    await page.getByTestId('join-banner').getByRole('button', { name: en.leaderboard.join }).click();
-    await expect(page.getByTestId('join-banner')).toHaveCount(0);
-    await expect(page.getByTestId('no-scan-note')).toBeVisible();
-  });
-});
-
 test.describe('Profile', () => {
-  test('turning off Show FitScore hides it on Home and Progress without a reload', async ({ page, loginAs }) => {
-    await loginAs();
-    await page.goto('/tabs/home');
-    await expect(page.getByTestId('fitscore-card')).toBeVisible();
-    const bar = page.getByRole('navigation', { name: en.tabs.navLabel });
-    await bar.getByRole('tab', { name: en.tabs.short.profile, exact: true }).click();
-    await page.getByRole('link', { name: en.profile.settings, exact: true }).click();
-    await page.getByTestId('setting-show-fitscore').click();
-    await expect(page.getByTestId('setting-show-fitscore')).toHaveAttribute('aria-checked', 'false');
-    await bar.getByRole('tab', { name: en.tabs.short.home, exact: true }).click();
-    await expect(page.locator(tab('home')).getByTestId('fitscore-card')).toHaveCount(0);
-    await bar.getByRole('tab', { name: en.tabs.short.progress, exact: true }).click();
-    await page.locator(tab('progress')).getByTestId('progress-more').click();
-    await expect(page.locator(tab('progress')).getByTestId('chart-trend')).toBeVisible();
-    await expect(page.locator(tab('progress')).getByTestId('trend-score')).toHaveCount(0);
-  });
-
-  test('turning off the leaderboard setting removes Mohamed from the boards', async ({ page, loginAs }) => {
-    test.skip(!COMMUNITY, 'Community is switched off (VITE_COMMUNITY)');
-    await loginAs();
-    await page.goto('/tabs/profile');
-    await page.getByRole('link', { name: en.profile.settings, exact: true }).click();
-    await page.getByTestId('setting-leaderboard').click();
-    await expect(page.getByTestId('setting-leaderboard')).toHaveAttribute('aria-checked', 'false');
-    await page
-      .getByRole('navigation', { name: en.tabs.navLabel })
-      .getByRole('tab', { name: en.tabs.short.community, exact: true })
-      .click();
-    await page.getByTestId('community-wall-board').click();
-    await expect(page.getByTestId('join-banner')).toBeVisible();
-    await expect(page.getByTestId('my-row')).toHaveCount(0);
-  });
-
   test('language and theme switch the whole app at once', async ({ page, loginAs }) => {
     await loginAs();
     await page.goto('/tabs/profile/settings');
@@ -345,38 +198,139 @@ test.describe('Character', () => {
       test.describe(`${lang}/${theme}`, () => {
         test.use({ lang, theme });
 
-        test('recolors each part, saves on its own, and keeps it after a reload', async ({ page, loginAs }) => {
+        test('shows the face on Home and Profile, and saves portrait styles and colors', async ({ page, loginAs }) => {
           const copy = lang === 'ar' ? ar : en;
           await loginAs();
-          await page.goto('/tabs/profile/character');
+          await page.addInitScript((key) => {
+            if (!localStorage.getItem(key)) {
+              localStorage.setItem(
+                key,
+                JSON.stringify({
+                  schemaVersion: 2,
+                  colors: { skin: 'medium', hair: 'chestnut', top: 'forest', bottom: 'black', shoes: 'purple' },
+                }),
+              );
+            }
+          }, AVATAR_KEY);
+          await page.goto('/tabs/home');
+          const homeAvatar = page.getByTestId('home-avatar');
+          await expect(homeAvatar.locator('svg')).toHaveAttribute('data-figure', 'hd-portrait');
+          await homeAvatar.click();
+          await expect(page.getByTestId('profile-avatar')).toHaveAttribute('data-crop', 'portrait');
+          await page.getByTestId('customize-character').click();
           const editor = page.locator(tab('character'));
           const preview = editor.getByTestId('character-preview');
-          await expect(preview).toHaveAttribute('data-figure', 'hd-casual');
-          await expect(preview.locator('image')).toHaveCount(9);
+          await expect(preview).toHaveAttribute('data-figure', 'hd-portrait');
+          await expect(preview.locator('image')).toHaveCount(2);
+          await expect(editor.getByRole('tab')).toHaveCount(4);
 
           const pick = async (part: keyof typeof copy.avatar.tab, color: keyof typeof copy.avatar.color) => {
             await editor.getByRole('tab', { name: copy.avatar.tab[part], exact: true }).click();
             await editor
-              .getByRole('radiogroup', { name: copy.avatar.tab[part] })
+              .getByRole('radiogroup', {
+                name: part === 'hair' ? copy.avatar.hairColor : copy.avatar.tab[part],
+                exact: true,
+              })
               .getByRole('radio', { name: copy.avatar.color[color], exact: true })
               .click();
           };
-          await pick('top', 'royal');
+          await pick('skin', 'tan');
           await pick('hair', 'blonde');
-          await pick('shoes', 'blue');
-          await expect(preview.locator('[data-layer="hoodie"]')).toHaveAttribute('data-color', 'royal');
+          await editor
+            .getByRole('radiogroup', { name: copy.avatar.look })
+            .getByRole('radio', { name: copy.avatar.style.fade })
+            .click();
+          await pick('eyes', 'green');
+          await editor.getByRole('tab', { name: copy.avatar.tab.outfit }).click();
+          await editor
+            .getByRole('radiogroup', { name: copy.avatar.outfitStyle })
+            .getByRole('radio', { name: copy.avatar.style.hoodie })
+            .click();
+          await editor
+            .getByRole('radiogroup', { name: copy.avatar.outfitColor })
+            .getByRole('radio', { name: copy.avatar.color.navy })
+            .click();
+          await expect(preview.locator('[data-layer="skin"]')).toHaveAttribute('data-color', 'tan');
           await expect(preview.locator('[data-layer="hair"]')).toHaveAttribute('data-color', 'blonde');
-          await expect(preview.locator('[data-layer="shoe-left"]')).toHaveAttribute('data-color', 'blue');
+          await expect(preview.locator('[data-look]')).toHaveAttribute('data-look', 'fade');
+          await expect(preview.locator('[data-outfit]')).toHaveAttribute('data-outfit', 'hoodie');
+          await expect(preview.locator('[data-layer="eyes"]')).toHaveAttribute('data-color', 'green');
+          const fabricAlpha = await preview.locator('[data-layer="outfit"]').evaluate(async (layer) => {
+            const image = new Image();
+            image.src = layer.getAttribute('href')!;
+            await image.decode();
+            const canvas = document.createElement('canvas');
+            canvas.width = image.naturalWidth;
+            canvas.height = image.naturalHeight;
+            const context = canvas.getContext('2d')!;
+            context.drawImage(image, 0, 0);
+            return context.getImageData(Math.floor(canvas.width / 2), Math.floor(canvas.height * 0.96), 1, 1).data[3];
+          });
+          expect(fabricAlpha).toBeGreaterThan(128);
           await expect(editor.getByTestId('character-status')).toHaveText(copy.avatar.saved);
 
           await page.reload();
-          await expect(
-            page.locator(tab('character')).getByTestId('character-preview').locator('[data-layer="hoodie"]'),
-          ).toHaveAttribute('data-color', 'royal');
+          await expect(preview.locator('[data-layer="hair"]')).toHaveAttribute('data-color', 'blonde');
+          await expect(preview.locator('[data-layer="skin"]')).toHaveAttribute('data-color', 'tan');
+          const saved = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), AVATAR_KEY);
+          expect(saved.colors).toEqual({ skin: 'tan', hair: 'blonde', top: 'navy', bottom: 'black', shoes: 'purple' });
+          expect(saved.portrait).toEqual({ look: 'fade', outfit: 'hoodie', eyes: 'green' });
           expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
         });
       });
     }
+  }
+
+  for (const [lang, theme] of [
+    ['en', 'light'],
+    ['ar', 'dark'],
+  ] as const) {
+    test.describe(`${lang}/${theme}`, () => {
+      test.use({ lang, theme });
+
+      test('a female member can save her hairstyle, hijab color, and outfit across Home and Profile', async ({
+        page,
+        loginAs,
+      }) => {
+        const { avatar: copy } = { en, ar }[lang];
+        await loginAs('102');
+        await page.goto('/tabs/home');
+        const home = page.getByTestId('home-avatar');
+        await expect(home.locator('svg')).toHaveAttribute('data-portrait-sex', 'FEMALE');
+        await home.click();
+        await expect(page.getByTestId('profile-avatar')).toHaveAttribute('data-portrait-sex', 'FEMALE');
+        await page.getByTestId('customize-character').click();
+        const editor = page.locator(tab('character'));
+        const preview = editor.getByTestId('character-preview');
+        await editor.getByRole('tab', { name: copy.tab.hair, exact: true }).click();
+        const looks = editor.getByRole('radiogroup', { name: copy.hairstyle, exact: true });
+        await expect(looks.getByRole('radio')).toHaveCount(4);
+        await looks.getByRole('radio', { name: copy.style.bob }).click();
+        await expect(preview.locator('[data-layer="head"]')).toHaveAttribute('href', /girl-bob-head\.webp$/);
+        const hairColor = await preview.locator('[data-hair]').getAttribute('data-hair');
+        await looks.getByRole('radio', { name: copy.style.hijab }).click();
+        await editor
+          .getByRole('radiogroup', { name: copy.hijabColor, exact: true })
+          .getByRole('radio', { name: copy.color.ivory })
+          .click();
+        await expect(preview.locator('[data-layer="hijab"]')).toHaveAttribute('data-color', 'ivory');
+        await expect(preview.locator('[data-hair]')).toHaveAttribute('data-hair', hairColor!);
+        await editor.getByRole('tab', { name: copy.tab.outfit, exact: true }).click();
+        await editor
+          .getByRole('radiogroup', { name: copy.outfitStyle, exact: true })
+          .getByRole('radio', { name: copy.style.jacket })
+          .click();
+        await expect(preview.locator('[data-layer="outfit"]')).toHaveAttribute('href', /girl-jacket\.webp$/);
+        await expect(editor.getByTestId('character-status')).toHaveText(copy.saved);
+        await page.reload();
+        await expect(preview.locator('[data-look]')).toHaveAttribute('data-look', 'hijab');
+        await expect(preview.locator('[data-layer="hijab"]')).toHaveAttribute('data-color', 'ivory');
+        await expect(preview.locator('[data-outfit]')).toHaveAttribute('data-outfit', 'jacket');
+        await editor.getByTestId('character-back').click();
+        await expect(page.getByTestId('profile-avatar').locator('[data-look]')).toHaveAttribute('data-look', 'hijab');
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      });
+    });
   }
 
   test('arrow keys move through the parts and a color group', async ({ page, loginAs }) => {
@@ -389,7 +343,7 @@ test.describe('Character', () => {
     const hairTab = editor.getByRole('tab', { name: en.avatar.tab.hair, exact: true });
     await expect(hairTab).toBeFocused();
     await expect(hairTab).toHaveAttribute('aria-selected', 'true');
-    const hair = editor.getByRole('radiogroup', { name: en.avatar.tab.hair });
+    const hair = editor.getByRole('radiogroup', { name: en.avatar.hairColor, exact: true });
     const checked = hair.getByRole('radio', { checked: true });
     const before = await checked.getAttribute('aria-label');
     await checked.focus();
@@ -427,27 +381,27 @@ test.describe('Character', () => {
           write.call(this, k, value);
         };
       }, AVATAR_KEY);
-    const top = (color: keyof typeof en.avatar.color) =>
+    const hair = (color: keyof typeof en.avatar.color) =>
       editor
-        .getByRole('radiogroup', { name: en.avatar.tab.top })
+        .getByRole('radiogroup', { name: en.avatar.hairColor, exact: true })
         .getByRole('radio', { name: en.avatar.color[color], exact: true });
-    await editor.getByRole('tab', { name: en.avatar.tab.top, exact: true }).click();
+    await editor.getByRole('tab', { name: en.avatar.tab.hair, exact: true }).click();
     await failNextWrite();
-    await top('forest').click();
+    await hair('grey').click();
     await expect(editor.getByRole('alert')).toHaveText(en.avatar.saveFailed);
-    await expect(preview.locator('[data-layer="hoodie"]')).toHaveAttribute('data-color', 'forest');
+    await expect(preview.locator('[data-layer="hair"]')).toHaveAttribute('data-color', 'grey');
     expect(await page.evaluate((key) => localStorage.getItem(key), AVATAR_KEY)).toBeNull();
     await editor.getByRole('button', { name: en.common.retry, exact: true }).click();
     await expect(editor.getByTestId('character-status')).toHaveText(en.avatar.saved);
     await failNextWrite();
-    await top('teal').click();
+    await hair('blonde').click();
     await expect(editor.getByRole('alert')).toHaveText(en.avatar.saveFailed);
     await editor.getByRole('button', { name: en.avatar.discardUnsaved, exact: true }).click();
-    await expect(preview.locator('[data-layer="hoodie"]')).toHaveAttribute('data-color', 'forest');
+    await expect(preview.locator('[data-layer="hair"]')).toHaveAttribute('data-color', 'grey');
     await editor.getByTestId('character-back').click();
-    await expect(page.getByTestId('profile-avatar').locator('[data-layer="hoodie"]')).toHaveAttribute(
+    await expect(page.getByTestId('profile-avatar').locator('[data-layer="hair"]')).toHaveAttribute(
       'data-color',
-      'forest',
+      'grey',
     );
   });
 });

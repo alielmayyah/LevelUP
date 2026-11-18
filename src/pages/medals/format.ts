@@ -3,7 +3,7 @@ import type { TFunction } from 'i18next';
 import { formatNumber, formatPercent, formatSigned, numberLocale } from '../../i18n/format';
 import type { MedalCategory, MedalDefinition } from './types';
 
-const UNIT_KEY = { kg: 'kg', reps: 'reps', seconds: 'seconds', months: 'months' } as const;
+const UNIT_KEY = { kg: 'kg', months: 'months' } as const;
 
 /** Measurements appear beside the artwork, never on it. */
 export function medalValue(t: TFunction, category: MedalCategory, unit: MedalDefinition['unit'], n: number): string {

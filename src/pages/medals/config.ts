@@ -1,4 +1,4 @@
-import type { LiftExercise, Sex } from '../../api/types';
+import type { Sex } from '../../api/types';
 import {
   MEDAL_RARITIES,
   type MedalCategory,
@@ -17,45 +17,10 @@ interface CategoryConfig {
   ids?: readonly [string, string, string, string, string];
   /** Thresholds per rarity, lowest first. Body fat is set per sex. */
   thresholds: Five | Record<Sex, Five>;
-  exercise?: LiftExercise;
 }
 
-const WORKOUT_MEASUREMENT = { kg: 'ONE_REP_MAX_KG', reps: 'CONSECUTIVE_REPS', seconds: 'DURATION_SECONDS' } as const;
-
-const workout = (
-  exercise: LiftExercise,
-  thresholds: Five,
-  unit: 'kg' | 'reps' | 'seconds' = 'kg',
-  ids?: CategoryConfig['ids'],
-): CategoryConfig => ({
-  exercise,
-  thresholds,
-  unit,
-  ids,
-  comparison: 'atLeast',
-  measurementType: WORKOUT_MEASUREMENT[unit],
-});
-
+/** Medals come from body scans only: muscle gained, body fat, and BMI. */
 export const MEDAL_CONFIG: Record<MedalCategory, CategoryConfig> = {
-  pushUps: workout('PUSH_UP', [10, 20, 30, 50, 100], 'reps'),
-  bench: workout('BENCH_PRESS', [20, 40, 60, 80, 100], 'kg', [
-    'firstPress',
-    'ironChest',
-    'heavyHitter',
-    'powerLifter',
-    'benchLegend',
-  ]),
-  squat: workout('SQUAT', [40, 60, 80, 100, 140], 'kg', [
-    'firstSquat',
-    'ironLegs',
-    'squatMaster',
-    'titanLegs',
-    'squatLegend',
-  ]),
-  deadlift: workout('DEADLIFT', [40, 60, 100, 140, 180]),
-  militaryPress: workout('MILITARY_PRESS', [15, 25, 35, 45, 55]),
-  pullUps: workout('PULL_UP', [1, 5, 10, 15, 20], 'reps'),
-  plank: workout('PLANK', [30, 60, 120, 180, 300], 'seconds'),
   muscle: {
     measurementType: 'MUSCLE_GAIN_KG',
     comparison: 'atLeast',
@@ -84,7 +49,6 @@ export const MEDAL_CATEGORIES = Object.keys(MEDAL_CONFIG) as MedalCategory[];
 export const VALID_RANGE = {
   bodyFatPct: [3, 70],
   skeletalMuscleKg: [10, 90],
-  liftKg: [1, 500],
 } as const;
 
 /** Every medal in a category. Body fat needs the member's sex; without it there are no thresholds. */

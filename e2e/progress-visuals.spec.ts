@@ -27,9 +27,9 @@ for (const lang of ['en', 'ar'] as const)
       expect(await noHorizontalOverflow(page)).toBe(true);
     });
 
-    test('a female member sees all five body parts in both views', async ({ page, loginAs }) => {
+    test('a member sees all five body parts in both views', async ({ page, loginAs }) => {
       const s = { en, ar }[lang];
-      await loginAs('104');
+      await loginAs('101');
       await openDetails(page);
       const segs = page.getByTestId('segments');
       await expect(segs.locator('[data-testid^="seg-"][data-status]')).toHaveCount(5);
@@ -60,7 +60,7 @@ for (const lang of ['en', 'ar'] as const)
       await loginAs();
       await openDetails(page);
       const trend = page.getByTestId('trend');
-      for (const k of ['weight', 'muscle', 'bodyFat', 'score'])
+      for (const k of ['weight', 'muscle', 'bodyFat'])
         await expect(trend.getByTestId(`trend-${k}`).locator('svg.lu-icon')).toBeVisible();
     });
 
@@ -112,12 +112,4 @@ test('trend cards show a sparkline and open their chart', async ({ page, loginAs
   await trend.getByTestId('trend-muscle').click();
   await expect(trend.getByTestId('trend-muscle')).toHaveAttribute('aria-checked', 'true');
   await expect(trend.getByTestId('trend-headline')).toContainText('41.3');
-});
-
-test('how you compare ranks body fat against people the same age', async ({ page, loginAs }) => {
-  await loginAs();
-  await openDetails(page);
-  const card = page.getByTestId('how-you-compare');
-  await expect(card.getByTestId('fat-percentile')).toContainText(/Leaner than .*\d+%.* of men your age/);
-  for (const k of ['muscle', 'bmi', 'belly']) await expect(card.getByTestId(`compare-${k}`)).toBeVisible();
 });

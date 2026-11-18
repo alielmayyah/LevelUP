@@ -114,20 +114,17 @@ export interface GoalRecord {
   startValue: number;
   targetValue: number;
   startDate: Date;
-  /** Null for goals the member set themselves: they have no due date. */
-  deadline: Date | null;
   status: GoalStatus;
-  coachNote: string | null;
   completedAt: Date | null;
   /** Set by the member in the app (POST /me/goals), not seeded; persisted in Preferences. */
   createdByMember?: boolean;
 }
 
-export const scanNotification = (at: Date, score: number, read: boolean): NotificationDto => ({
+export const scanNotification = (at: Date, read: boolean): NotificationDto => ({
   id: nextNotificationId++,
   type: 'SCAN_RESULT',
   title: { key: 'notifications.scanResult.title' },
-  body: { key: 'notifications.scanResult.body', params: { score } },
+  body: { key: 'notifications.scanResult.body' },
   createdAt: at.toISOString(),
   readAt: read ? at.toISOString() : null,
 });

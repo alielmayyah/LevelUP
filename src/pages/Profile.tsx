@@ -64,11 +64,11 @@ const Profile: React.FC = () => {
         <div className="grid gap-4 wide:grid-cols-[1fr_1fr] wide:items-start">
           <section className="lu-card lu-hero grid gap-4 p-5" aria-labelledby="profile-name">
             <div className="flex items-center gap-4">
-              <div className="lu-avatar-frame grid h-36 w-[clamp(5rem,24vw,7rem)] shrink-0 place-items-center overflow-hidden rounded-[22px]">
+              <div className="lu-avatar-frame grid size-[clamp(4.75rem,22vw,6rem)] shrink-0 place-items-center overflow-hidden rounded-[22px]">
                 <Avatar
                   config={memberAvatar(member)}
-                  crop="full"
-                  className="block h-[90%] w-full"
+                  sex={member.sex}
+                  className="block size-full"
                   testId="profile-avatar"
                 />
               </div>
@@ -118,7 +118,7 @@ const Profile: React.FC = () => {
               className="lu-hero-button inline-flex min-h-12 items-center justify-center gap-2 px-5 text-[0.95rem] no-underline transition-transform duration-150 active:scale-[0.97] motion-reduce:transition-none"
               data-testid="customize-character"
             >
-              <Icon name="hanger" />
+              <Icon name="smile" />
               {t('profile.customize')}
             </Link>
           </section>

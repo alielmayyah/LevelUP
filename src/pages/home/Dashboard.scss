@@ -1,6 +1,5 @@
 /*
- * Home's custom pieces: the ink FitScore hero and its tick gauge, its info
- * sheet, the mission bar, the shortcut discs, and the notification rows' tints.
+ * Home's custom pieces: the FitScore card, shortcut discs, and notification tints.
  * Layout and type are Tailwind classes in the components.
  * Shared building blocks (cards, chips, bars, states) live in src/theme/kit.css.
  */
@@ -14,104 +13,6 @@
     .lu-card-title .lu-icon {
       color: var(--lu-brand-lilac);
     }
-  }
-
-  .lu-gauge {
-    svg {
-      display: block;
-      inline-size: 100%;
-      overflow: visible;
-    }
-
-    line {
-      stroke-width: 7;
-      stroke-linecap: round;
-    }
-
-    /* Fills from the reading start: mirrored in Arabic. */
-    &:dir(rtl) svg {
-      transform: scaleX(-1);
-    }
-  }
-
-  .lu-tick {
-    stroke: var(--lu-hero-track);
-  }
-
-  .lu-tick-lit {
-    stroke: var(--lu-hero-text);
-
-    /* The tick at the score stands a little taller, in the logo's lilac, and breathes. */
-    &.is-head {
-      stroke: var(--lu-brand-lilac);
-      filter: drop-shadow(0 0 4px var(--lu-brand-lilac));
-      transform-box: fill-box;
-      transform-origin: 50% 50%;
-
-      @media (prefers-reduced-motion: no-preference) {
-        animation: lu-tick-breathe 1.8s ease-in-out 1.4s infinite;
-      }
-    }
-  }
-
-  /* Tier chip on the hero: a frosted pill with a dot of the tier color. */
-  .lu-chip-hero {
-    background: color-mix(in srgb, var(--lu-hero-text) 14%, transparent);
-    color: var(--lu-hero-text);
-
-    .lu-icon {
-      color: var(--tier);
-    }
-  }
-
-  /* The ⓘ: a quiet icon that lights up on hover and focus. */
-  .lu-fitscore-info {
-    border-radius: 50%;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-
-    &:hover,
-    &:active {
-      color: var(--lu-hero-text);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--lu-hero-text);
-      outline-offset: -4px;
-    }
-  }
-
-  /* ---------- FitScore info sheet (FitScoreInfo.tsx) ---------- */
-
-  .lu-fs-sheet {
-    max-height: none;
-  }
-
-  .lu-fs-panel {
-    border-radius: 28px 28px 0 0;
-    box-shadow:
-      inset 0 4px 0 var(--ion-color-primary),
-      var(--lu-shadow-raised);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .lu-fs-sheet[open] .lu-fs-panel {
-      animation: lu-fs-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    }
-  }
-
-  /* One row per tier; the member's own row gets a light wash of its tier color. */
-  .lu-fs-tier {
-    background: var(--lu-surface-2);
-
-    &.is-current {
-      background: color-mix(in srgb, var(--tier) 16%, var(--lu-surface));
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tier) 55%, var(--lu-border));
-    }
-  }
-
-  .lu-fs-tier-dot {
-    background: var(--tier);
   }
 
   /* ---------- Quick actions ---------- */
@@ -235,18 +136,5 @@
   from {
     opacity: 0;
     transform: scale(0.4);
-  }
-}
-
-@keyframes lu-tick-breathe {
-  50% {
-    opacity: 0.45;
-  }
-}
-
-@keyframes lu-fs-up {
-  from {
-    transform: translateY(32px);
-    opacity: 0;
   }
 }

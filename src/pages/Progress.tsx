@@ -15,7 +15,6 @@ import ScanCalendar from './progress/ScanCalendar';
 import ScanHistory from './progress/ScanHistory';
 import CompositionRing from './progress/CompositionRing';
 import { adviceFor } from '../body/advice';
-import { savePlan } from '../body/planText';
 import ActionPlan from './progress/ActionPlan';
 import { scanInsight } from './progress/insight';
 import Sparkline from './progress/Sparkline';
@@ -25,7 +24,6 @@ import { daysBetween, spanOf } from './progress/scanAge';
 const TrendChart = lazy(() => import('./progress/ProgressCharts'));
 // The InBody-style analysis sits below the fold, so it loads in its own chunk too.
 const BodyComposition = lazy(() => import('./progress/BodyComposition'));
-const HowYouCompare = lazy(() => import('./progress/HowYouCompare'));
 
 /** Whether the full scan is open, remembered per device. */
 const DETAILS_KEY = 'lu.progress.details';
@@ -264,15 +262,6 @@ const Progress: React.FC = () => {
   // The plan for the scan on screen: what to do next, read from it and the scan before it.
   const profile = me.status === 'ready' ? me.data : null;
   const plan = scan && profile ? adviceFor(scan, previous, profile.sex, profile.heightCm) : [];
-  const topAdvice = plan[0] ?? null;
-  // The latest scan's top item is kept on the device, so Home can show it without another request.
-  const latestId = list[0]?.id;
-  const memberId = profile?.memberId;
-  const topJson = topAdvice && index === 0 ? JSON.stringify(topAdvice) : null;
-  useEffect(() => {
-    if (memberId === undefined || topJson === null || latestId === undefined) return;
-    void savePlan(memberId, { scanId: latestId, top: JSON.parse(topJson) });
-  }, [memberId, topJson, latestId]);
 
   /** A length of time as words: "3 days", "يومين". */
   const spanText = (days: number) => {
@@ -731,14 +720,6 @@ const Progress: React.FC = () => {
                 <Suspense fallback={<div className="lu-skeleton-card min-h-96" data-testid="body-comp-loading" />}>
                   <BodyComposition scan={scan} compare={before} heightCm={me.data.heightCm} sex={me.data.sex} />
                 </Suspense>
-                <Suspense fallback={<div className="lu-skeleton-card min-h-60" />}>
-                  <HowYouCompare
-                    scan={scan}
-                    sex={me.data.sex}
-                    birthDate={me.data.birthDate}
-                    heightCm={me.data.heightCm}
-                  />
-                </Suspense>
                 {progress.status === 'loading' ? (
                   <div className="lu-skeleton-card min-h-60" data-testid="charts-loading" />
                 ) : progress.status === 'error' ? null : points.length < 2 ? (
@@ -747,7 +728,7 @@ const Progress: React.FC = () => {
                   </p>
                 ) : (
                   <Suspense fallback={<div className="lu-skeleton-card min-h-60" data-testid="charts-loading" />}>
-                    <TrendChart points={points} showFitScore={me.data.showFitScore} />
+                    <TrendChart points={points} />
                   </Suspense>
                 )}
               </>

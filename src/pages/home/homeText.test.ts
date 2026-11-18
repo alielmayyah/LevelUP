@@ -1,16 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { setLanguage } from '../../i18n';
-import { formatTimeAgo, formatToday, tierKey } from './homeText';
+import { formatTimeAgo, formatToday } from './homeText';
 
 describe('home text helpers', () => {
   afterEach(async () => {
     await setLanguage('en');
-  });
-
-  it('maps tiers to keys', () => {
-    expect(tierKey('On Track')).toBe('home.tier.onTrack');
-    expect(tierKey('Needs Improvement')).toBe('home.tier.gettingStarted');
   });
 
   it("writes today's date in the app language with Latin digits", async () => {

@@ -1,4 +1,4 @@
-import type { AssessmentDto, Sex } from '../api/types';
+import type { Advice, AdviceLevel, AssessmentDto, Sex } from '../api/types';
 import { bodyStandards, SCALES, statusFor } from './standards';
 
 /*
@@ -7,31 +7,12 @@ import { bodyStandards, SCALES, statusFor } from './standards';
  * health: belly fat first, then body fat and muscle against the healthy range
  * for their height and sex, then how things moved since the last scan, then
  * what is already going well.
+ *
+ * The API runs the same rules for the dashboard's `plan` (Home), and Progress
+ * runs them here for whichever scan is on screen, so the two must stay in step.
  */
 
-/** act: fix this first. watch: keep an eye on it. keep: going well, carry on. */
-export type AdviceLevel = 'act' | 'watch' | 'keep';
-
-export type AdviceKey =
-  | 'visceralHigh'
-  | 'fatHigh'
-  | 'muscleLow'
-  | 'fatRising'
-  | 'muscleDropping'
-  | 'fatLow'
-  | 'waterLow'
-  | 'muscleStrong'
-  | 'fatHealthy';
-
-export type AdviceMetric = 'visceral' | 'fat' | 'muscle' | 'water';
-
-export interface Advice {
-  key: AdviceKey;
-  level: AdviceLevel;
-  metric: AdviceMetric;
-  /** Numbers for the copy (formatted by the screen): body fat %, kg, limits. */
-  params: Record<string, number>;
-}
+export type { Advice, AdviceKey, AdviceLevel, AdviceMetric } from '../api/types';
 
 /** Belly fat (visceral level) at or above this needs action. */
 export const VISCERAL_LIMIT = 10;

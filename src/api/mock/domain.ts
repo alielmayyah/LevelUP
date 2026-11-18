@@ -1,9 +1,7 @@
 /*
- * Mock copies of the API's domain rules (core plan Tasks 3, 4, 8), so the mock
- * answers with the same numbers the real API will. Month boundaries use UTC,
- * which is the API's default GYM_TZ.
+ * Mock copies of the API’s FitScore and goal progress rules.
  */
-import type { AssessmentDto, FitScoreTier, GoalMetric, Sex } from '../types';
+import type { AssessmentDto, GoalMetric, Sex } from '../types';
 
 export const round1 = (n: number): number => Math.round(n * 10) / 10;
 
@@ -45,57 +43,6 @@ export function computeFitScore({ weightKg, bodyFatKg, heightCm, sex }: FitScore
   const lean = weightKg - bodyFatKg;
   const score = 80 + (lean - std.lean) - Math.max(0, bodyFatKg - std.fat);
   return Math.min(100, Math.max(0, Math.round(score)));
-}
-
-/** The body-fat % that gives `score` at this weight and height (for building mock members). */
-export function bodyFatPctForScore(score: number, weightKg: number, heightCm: number, sex: Sex): number {
-  const std = standards(heightCm, sex);
-  // Fat above standard: score = 80 + (W − F − stdLean) − (F − stdFat)  →  F = (80 + W − stdLean + stdFat − score) / 2
-  const above = (80 + weightKg - std.lean + std.fat - score) / 2;
-  // Fat at or below standard costs nothing: score = 80 + (W − F − stdLean)  →  F = 80 + W − stdLean − score
-  const fatKg = above >= std.fat ? above : 80 + weightKg - std.lean - score;
-  return round1((Math.max(fatKg, 0) / weightKg) * 100);
-}
-
-/** Tiers follow InBody's score bands: 80+ excellent, 70–79 good, 60–69 average, 50–59 below average, under 50. */
-export function fitScoreTier(score: number): FitScoreTier {
-  if (score >= 80) return 'Elite';
-  if (score >= 70) return 'Strong';
-  if (score >= 60) return 'On Track';
-  if (score >= 50) return 'Building';
-  return 'Needs Improvement';
-}
-
-export interface MonthRange {
-  start: Date;
-  /** Exclusive. */
-  end: Date;
-}
-
-export function monthRange(at: Date): MonthRange {
-  return {
-    start: new Date(Date.UTC(at.getUTCFullYear(), at.getUTCMonth(), 1)),
-    end: new Date(Date.UTC(at.getUTCFullYear(), at.getUTCMonth() + 1, 1)),
-  };
-}
-
-export interface Sample {
-  takenAt: Date;
-  value: number;
-}
-
-/**
- * Latest value inside the month minus a baseline: the latest value before the
- * month, or else the first value inside it. null with no scan in the month or
- * only one scan in total.
- */
-export function monthDelta(samples: Sample[], range: MonthRange): number | null {
-  const sorted = [...samples].sort((a, b) => a.takenAt.getTime() - b.takenAt.getTime());
-  const inside = sorted.filter((s) => s.takenAt >= range.start && s.takenAt < range.end);
-  if (inside.length === 0 || sorted.length < 2) return null;
-  const before = sorted.filter((s) => s.takenAt < range.start);
-  const baseline = before.length ? before[before.length - 1] : inside[0];
-  return inside[inside.length - 1].value - baseline.value;
 }
 
 export interface GoalProgress {

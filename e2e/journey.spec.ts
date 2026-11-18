@@ -54,7 +54,6 @@ test('a brand-new member (102) sees empty states on every tab, never NaN or unde
     home: en.home.fitScore.empty,
     progress: en.progress.empty,
     goals: en.goals.empty,
-    community: en.community.leaderboards,
     profile: en.profile.settings,
   };
   for (const tab of TABS) {

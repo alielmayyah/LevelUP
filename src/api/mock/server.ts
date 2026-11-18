@@ -1,42 +1,30 @@
 /*
  * In-memory mock of the LevelUP API. It serves the member routes from the core
- * plan (Tasks 5, 7, 8, 9) with the same status codes and DTO shapes, so
+ * plan (Tasks 5, 7, 9) with the same status codes and DTO shapes, so
  * switching VITE_USE_MOCKS off needs no component changes.
  *
- * State lives in memory and resets on page reload, except settings, the saved
- * character, and goals the member created, which are also written to Preferences
- * (lu.mock.settings.<fitId>, lu.mock.avatar.<fitId>, lu.mock.goals.<fitId>), so
- * switching Fit IDs never leaks another member's data.
+ * State resets on reload. The saved portrait and member-created goals are
+ * persisted in Preferences under the member’s Fit ID.
  *
  * Only src/api/client.ts and tests may import this module (ESLint enforces it).
  */
 import { Preferences } from '@capacitor/preferences';
 
 import { isValidAvatar } from '../../avatar/catalog';
-import { ageOn } from '../../body/age';
+import { adviceFor } from '../../body/advice';
 import {
-  AGE_GROUPS,
-  LEADERBOARD_BOARDS,
-  type AgeGroup,
   type AvatarConfigDto,
   type CreateGoalRequest,
   type DashboardDto,
   type GoalMetric,
   type GoalView,
   type GoalsDto,
-  type LeaderboardBoard,
-  type LeaderboardDto,
-  type LeaderboardRow,
-  type LeaderboardSummary,
   type LoginResponse,
-  type MemberProfileDto,
   type ProfileDto,
   type ProgressDto,
-  type SettingsDto,
 } from '../types';
-import { fitScoreTier, goalProgress, metricValue, monthDelta, monthRange, round1, type Sample } from './domain';
+import { goalProgress, metricValue, round1 } from './domain';
 import type { GoalRecord } from './fixtures';
-import { evaluateMedals } from '../../pages/medals/rules';
 import { buildMembers, type MockMember } from './members';
 
 export interface MockResponse {
@@ -51,7 +39,6 @@ const FIT_ID = /^\d{3,8}$/;
 let now = new Date();
 let members: MockMember[] = [];
 let loginAttempts: number[] = [];
-const settingsLoaded = new Set<number>();
 /** Members whose created goals were read from Preferences. */
 const goalsLoaded = new Set<number>();
 /** Saved characters by member id. Missing: not read from Preferences yet. */
@@ -62,7 +49,6 @@ export function resetMockServer(at: Date = new Date()): void {
   now = at;
   members = buildMembers(now);
   loginAttempts = [];
-  settingsLoaded.clear();
   goalsLoaded.clear();
   avatars.clear();
 }
@@ -72,23 +58,6 @@ resetMockServer();
 const ok = (body: unknown, status = 200): MockResponse => ({ status, body });
 const fail = (status: number, message: string): MockResponse => ({ status, body: { statusCode: status, message } });
 const noContent: MockResponse = { status: 204, body: null };
-
-const settingsKey = (m: MockMember) => `lu.mock.settings.${m.fitId}`;
-
-async function loadSettings(m: MockMember): Promise<void> {
-  if (settingsLoaded.has(m.id)) return;
-  settingsLoaded.add(m.id);
-  const { value } = await Preferences.get({ key: settingsKey(m) });
-  if (!value) return;
-  try {
-    const saved = JSON.parse(value) as Partial<SettingsDto>;
-    if (typeof saved.showFitScore === 'boolean') m.settings.showFitScore = saved.showFitScore;
-    if (typeof saved.fitScoreOnLeaderboard === 'boolean')
-      m.settings.fitScoreOnLeaderboard = saved.fitScoreOnLeaderboard;
-  } catch {
-    // Ignore a corrupt entry; the fixture defaults stay.
-  }
-}
 
 const avatarKey = (m: MockMember) => `lu.mock.avatar.${m.fitId}`;
 
@@ -109,7 +78,11 @@ async function loadAvatar(m: MockMember): Promise<AvatarConfigDto | null> {
 /** PUT /me/avatar: full replacement with a catalog-valid config; anything else is a 400. */
 async function saveAvatar(m: MockMember, body: unknown): Promise<MockResponse> {
   if (!isValidAvatar(body)) return fail(400, 'Invalid avatar');
-  const config: AvatarConfigDto = { schemaVersion: body.schemaVersion, colors: { ...body.colors } };
+  const config: AvatarConfigDto = {
+    schemaVersion: body.schemaVersion,
+    colors: { ...body.colors },
+    ...(body.portrait && { portrait: { ...body.portrait } }),
+  };
   await Preferences.set({ key: avatarKey(m), value: JSON.stringify(config) });
   avatars.set(m.id, config);
   return ok(config);
@@ -118,9 +91,8 @@ async function saveAvatar(m: MockMember, body: unknown): Promise<MockResponse> {
 const goalsKey = (m: MockMember) => `lu.mock.goals.${m.fitId}`;
 
 /** Stored form of a created goal: dates as ISO strings. */
-type StoredGoal = Omit<GoalRecord, 'startDate' | 'deadline' | 'completedAt'> & {
+type StoredGoal = Omit<GoalRecord, 'startDate' | 'completedAt'> & {
   startDate: string;
-  deadline: string | null;
   completedAt: string | null;
 };
 
@@ -137,7 +109,6 @@ async function loadGoals(m: MockMember): Promise<void> {
       m.goals.push({
         ...g,
         startDate: new Date(g.startDate),
-        deadline: g.deadline ? new Date(g.deadline) : null,
         completedAt: g.completedAt ? new Date(g.completedAt) : null,
         createdByMember: true,
       });
@@ -150,10 +121,7 @@ async function loadGoals(m: MockMember): Promise<void> {
 async function memberForToken(token: string | null): Promise<MockMember | null> {
   const fitId = token?.startsWith('mock.') ? token.slice(5) : null;
   const m = members.find((x) => x.fitId === fitId) ?? null;
-  if (m) {
-    await loadSettings(m);
-    await loadGoals(m);
-  }
+  if (m) await loadGoals(m);
   return m;
 }
 
@@ -172,121 +140,6 @@ function login(body: unknown): MockResponse {
   return ok(res, 201);
 }
 
-/* ---------- Leaderboard ---------- */
-
-const samples = (m: MockMember, pick: (a: MockMember['assessments'][number]) => number): Sample[] =>
-  m.assessments.map((a) => ({ takenAt: new Date(a.takenAt), value: pick(a) }));
-
-/** Each board reads the member's latest scan; members with no scan are left off. */
-function boardValue(m: MockMember, board: LeaderboardBoard): number | null {
-  const scan = m.assessments[m.assessments.length - 1];
-  if (!scan) return null;
-  switch (board) {
-    case 'score':
-      return scan.fitScore;
-    case 'muscle':
-      return round1(scan.skeletalMuscleKg);
-    case 'bodyFat':
-      return round1(scan.bodyFatPct);
-  }
-}
-
-/** Lowest body fat ranks first; the other boards rank the highest value first. */
-const LOWEST_FIRST: readonly LeaderboardBoard[] = ['bodyFat'];
-
-export function ageGroupOf(age: number): Exclude<AgeGroup, 'all'> {
-  if (age < 25) return 'under25';
-  if (age < 35) return '25to34';
-  if (age < 45) return '35to44';
-  return '45plus';
-}
-
-async function boardRows(board: LeaderboardBoard, me: MockMember, age: AgeGroup = 'all'): Promise<LeaderboardRow[]> {
-  const myAvatar = await loadAvatar(me);
-  return (
-    members
-      // Men and women are ranked separately: body composition differs too much to compare fairly.
-      .filter((m) => m.settings.fitScoreOnLeaderboard && m.sex === me.sex)
-      .filter((m) => age === 'all' || ageGroupOf(ageOn(m.birthDate, now)) === age)
-      .map((m) => ({ m, value: boardValue(m, board) }))
-      .filter((x): x is { m: MockMember; value: number } => x.value !== null)
-      .sort((a, b) => (LOWEST_FIRST.includes(board) ? a.value - b.value : b.value - a.value) || a.m.id - b.m.id)
-      .map(({ m, value }, i) => ({
-        rank: i + 1,
-        memberId: m.id,
-        name: `${m.firstName} ${m.lastName.charAt(0)}.`,
-        value,
-        isMe: m.id === me.id,
-        avatar: m.id === me.id ? myAvatar : null,
-      }))
-  );
-}
-
-async function leaderboardSummary(me: MockMember): Promise<LeaderboardSummary> {
-  if (!me.settings.fitScoreOnLeaderboard) return { optedIn: false, standing: null };
-  const rows = await boardRows('score', me);
-  const mine = rows.find((r) => r.isMe);
-  if (!mine) return { optedIn: true, standing: null };
-  const total = rows.length;
-  return {
-    optedIn: true,
-    standing: {
-      rank: mine.rank,
-      totalMembers: total,
-      topPercent: Math.ceil((mine.rank / total) * 100),
-      membersBehind: total - mine.rank,
-      pointsToNextRank: mine.rank === 1 ? null : rows[mine.rank - 2].value - mine.value + 1,
-    },
-  };
-}
-
-async function leaderboard(me: MockMember, query: URLSearchParams): Promise<MockResponse> {
-  const board = (query.get('board') ?? 'score') as LeaderboardBoard;
-  if (!LEADERBOARD_BOARDS.includes(board)) return fail(400, 'Unknown board');
-  const ageGroup = (query.get('age') ?? 'all') as AgeGroup;
-  if (!AGE_GROUPS.includes(ageGroup)) return fail(400, 'Unknown age group');
-  const res: LeaderboardDto = {
-    board,
-    ageGroup,
-    myAgeGroup: ageGroupOf(ageOn(me.birthDate, now)),
-    division: me.sex,
-    optedIn: me.settings.fitScoreOnLeaderboard,
-    rows: await boardRows(board, me, ageGroup),
-  };
-  return ok(res);
-}
-
-/** Another member's public card. Only members who share their results on the board, in the viewer's division. */
-async function memberCard(me: MockMember, id: number): Promise<MockResponse> {
-  const m = members.find((x) => x.id === id);
-  if (!m || !m.settings.fitScoreOnLeaderboard || m.sex !== me.sex) return fail(404, 'Member not found');
-  const rankings = await Promise.all(
-    LEADERBOARD_BOARDS.map(async (board) => {
-      const rows = await boardRows(board, me);
-      return { board, rank: rows.find((r) => r.memberId === m.id)?.rank ?? null, total: rows.length };
-    }),
-  );
-  const res: MemberProfileDto = {
-    memberId: m.id,
-    name: `${m.firstName} ${m.lastName.charAt(0)}.`,
-    sex: m.sex,
-    age: ageOn(m.birthDate, now),
-    heightCm: m.heightCm,
-    avatar: m.id === me.id ? await loadAvatar(m) : null,
-    rankings,
-    medals: evaluateMedals({
-      sex: m.sex,
-      birthDate: m.birthDate.toISOString(),
-      heightCm: m.heightCm,
-      scans: progress(m).assessments,
-      lifts: m.lifts,
-    }),
-  };
-  return ok(res);
-}
-
-/* ---------- Me ---------- */
-
 const latest = (m: MockMember) => m.assessments[m.assessments.length - 1] ?? null;
 
 function progressFor(goal: GoalRecord, m: MockMember) {
@@ -302,8 +155,6 @@ function goalView(goal: GoalRecord, m: MockMember): GoalView {
     metric: goal.metric,
     startValue: goal.startValue,
     targetValue: goal.targetValue,
-    deadline: goal.deadline?.toISOString() ?? null,
-    coachNote: goal.coachNote,
     percent,
     completedAt: goal.completedAt?.toISOString() ?? null,
   };
@@ -313,24 +164,7 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
   const scans = m.assessments;
   const last = latest(m);
   const prev = scans.length > 1 ? scans[scans.length - 2] : null;
-  const month = monthRange(now);
-  const fat = monthDelta(
-    samples(m, (a) => a.bodyFatPct),
-    month,
-  );
-  const muscle = monthDelta(
-    samples(m, (a) => a.skeletalMuscleKg),
-    month,
-  );
-  const bmi = monthDelta(
-    samples(m, (a) => a.bmi),
-    month,
-  );
-
-  const active = m.goals
-    .filter((g) => g.status === 'ACTIVE')
-    // Soonest due first; goals without a due date after them.
-    .sort((a, b) => (a.deadline?.getTime() ?? Infinity) - (b.deadline?.getTime() ?? Infinity))[0];
+  const active = m.goals.find((g) => g.status === 'ACTIVE');
   const p = active ? progressFor(active, m) : null;
 
   return {
@@ -338,16 +172,10 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
       memberId: m.id,
       firstName: m.firstName,
       sex: m.sex,
-      showFitScore: m.settings.showFitScore,
       avatar: await loadAvatar(m),
     },
-    fitScore: last
-      ? {
-          score: last.fitScore,
-          tier: fitScoreTier(last.fitScore),
-          changeSinceLastScan: prev ? last.fitScore - prev.fitScore : null,
-        }
-      : null,
+    fitScore: last ? { score: last.fitScore } : null,
+    plan: last ? adviceFor(last, prev, m.sex, m.heightCm) : [],
     mission:
       active && p
         ? {
@@ -357,17 +185,8 @@ async function dashboard(m: MockMember): Promise<DashboardDto> {
             doneKg: p.doneKg,
             remainingKg: p.remainingKg,
             estimatedCompletion: p.estimatedCompletion?.toISOString() ?? null,
-            coachNote: active.coachNote,
-            deadline: active.deadline?.toISOString() ?? null,
           }
         : null,
-    monthlyWins: {
-      bodyFatChangePct: fat === null ? null : round1(fat),
-      muscleGainedKg: muscle === null ? null : round1(muscle),
-      bmiChange: bmi === null ? null : round1(bmi),
-      bmi: last?.bmi ?? null,
-    },
-    leaderboard: await leaderboardSummary(m),
     unreadNotifications: m.notifications.filter((n) => n.readAt === null).length,
   };
 }
@@ -381,12 +200,6 @@ async function profile(m: MockMember): Promise<ProfileDto> {
     sex: m.sex,
     birthDate: m.birthDate.toISOString(),
     heightCm: m.heightCm,
-    membershipPlan: m.membershipPlan,
-    membershipStart: m.membershipStart.toISOString(),
-    membershipEnd: m.membershipEnd.toISOString(),
-    coach: m.coach ? { name: m.coach } : null,
-    showFitScore: m.settings.showFitScore,
-    fitScoreOnLeaderboard: m.settings.fitScoreOnLeaderboard,
     avatar: await loadAvatar(m),
   };
 }
@@ -439,19 +252,16 @@ async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
     startValue: start,
     targetValue: target,
     startDate: now,
-    deadline: null,
     status: 'ACTIVE',
-    coachNote: null,
     completedAt: null,
     createdByMember: true,
   };
   m.goals.push(goal);
   const stored: StoredGoal[] = m.goals
     .filter((g) => g.createdByMember)
-    .map(({ startDate, deadline: due, completedAt, ...rest }) => ({
+    .map(({ startDate, completedAt, ...rest }) => ({
       ...rest,
       startDate: startDate.toISOString(),
-      deadline: due?.toISOString() ?? null,
       completedAt: completedAt?.toISOString() ?? null,
     }));
   await Preferences.set({ key: goalsKey(m), value: JSON.stringify(stored) });
@@ -460,24 +270,13 @@ async function createGoal(m: MockMember, body: unknown): Promise<MockResponse> {
 
 function progress(m: MockMember): ProgressDto {
   return {
-    assessments: m.assessments.map(({ takenAt, weightKg, skeletalMuscleKg, bodyFatPct, fitScore }) => ({
+    assessments: m.assessments.map(({ takenAt, weightKg, skeletalMuscleKg, bodyFatPct }) => ({
       takenAt,
       weightKg,
       skeletalMuscleKg,
       bodyFatPct,
-      fitScore,
     })),
   };
-}
-
-async function updateSettings(m: MockMember, body: unknown): Promise<MockResponse> {
-  if (!body || typeof body !== 'object') return fail(400, 'Invalid settings');
-  const patch = body as Record<string, unknown>;
-  const fields = (['showFitScore', 'fitScoreOnLeaderboard'] as const).filter((k) => k in patch);
-  if (fields.length === 0 || fields.some((k) => typeof patch[k] !== 'boolean')) return fail(400, 'Invalid settings');
-  for (const k of fields) m.settings[k] = patch[k] as boolean;
-  await Preferences.set({ key: settingsKey(m), value: JSON.stringify(m.settings) });
-  return ok({ ...m.settings });
 }
 
 const newestFirst = (m: MockMember) =>
@@ -499,7 +298,7 @@ function markAllRead(m: MockMember): MockResponse {
 
 export const mockServer = {
   async handle(method: string, url: string, body: unknown, token: string | null): Promise<MockResponse> {
-    const { pathname, searchParams } = new URL(url, 'http://mock');
+    const { pathname } = new URL(url, 'http://mock');
     const verb = method.toUpperCase();
 
     if (verb === 'POST' && pathname === '/auth/login') return login(body);
@@ -508,8 +307,6 @@ export const mockServer = {
     if (!me) return fail(401, 'Unauthorized');
 
     const read = pathname.match(/^\/me\/notifications\/(\d+)\/read$/);
-    const card = verb === 'GET' && pathname.match(/^\/members\/(\d+)$/);
-    if (card) return memberCard(me, Number(card[1]));
     switch (`${verb} ${read ? '/me/notifications/:id/read' : pathname}`) {
       case 'GET /me':
         return ok(await profile(me));
@@ -521,22 +318,16 @@ export const mockServer = {
         return ok(progress(me));
       case 'GET /me/assessments':
         return ok([...me.assessments].reverse());
-      case 'GET /me/lifts':
-        return ok(me.lifts);
       case 'GET /me/goals':
         return ok(goals(me));
       case 'POST /me/goals':
         return createGoal(me, body);
-      case 'PATCH /me/settings':
-        return updateSettings(me, body);
       case 'GET /me/notifications':
         return ok(newestFirst(me));
       case 'PATCH /me/notifications/:id/read':
         return markRead(me, Number(read![1]));
       case 'POST /me/notifications/read-all':
         return markAllRead(me);
-      case 'GET /leaderboard':
-        return leaderboard(me, searchParams);
       default:
         return fail(404, 'Not found');
     }

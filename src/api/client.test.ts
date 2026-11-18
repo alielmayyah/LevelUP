@@ -36,8 +36,8 @@ describe('api client (mock mode)', () => {
 
   it('throws ApiError with the status on a non-2xx response', async () => {
     await setToken('mock.101');
-    await expect(api('/leaderboard?board=xp')).rejects.toMatchObject({ status: 400 });
-    await expect(api('/leaderboard?board=xp')).rejects.toBeInstanceOf(ApiError);
+    await expect(api('/missing-route')).rejects.toMatchObject({ status: 404 });
+    await expect(api('/missing-route')).rejects.toBeInstanceOf(ApiError);
   });
 
   it('a data request without a token is refused and calls the unauthorized handler', async () => {

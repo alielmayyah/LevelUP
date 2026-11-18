@@ -8,7 +8,7 @@ interface Props {
   page: number;
   pages: number;
   onPage: (page: number) => void;
-  /** Names the pager for screen readers; defaults to the leaderboard's. */
+  /** Names the pager for screen readers; defaults to a generic page label. */
   label?: string;
 }
 
@@ -21,7 +21,7 @@ const Pager: React.FC<Props> = ({ page, pages, onPage, label }) => {
   return (
     <nav
       className="mt-3 flex items-center justify-center gap-3"
-      aria-label={label ?? t('leaderboard.pages')}
+      aria-label={label ?? t('pager.pages')}
       data-testid="pager"
     >
       <button
@@ -29,19 +29,19 @@ const Pager: React.FC<Props> = ({ page, pages, onPage, label }) => {
         className={BUTTON}
         onClick={() => onPage(page - 1)}
         disabled={page === 0}
-        aria-label={t('leaderboard.prevPage')}
+        aria-label={t('pager.prevPage')}
       >
         <Icon className="rtl:-scale-x-100" name="chevronBack" />
       </button>
       <span className="min-w-[7ch] text-center text-[0.85rem] font-bold text-muted" aria-live="polite">
-        {t('leaderboard.pageOf', { page: formatNumber(page + 1), pages: formatNumber(pages) })}
+        {t('pager.pageOf', { page: formatNumber(page + 1), pages: formatNumber(pages) })}
       </span>
       <button
         type="button"
         className={BUTTON}
         onClick={() => onPage(page + 1)}
         disabled={page >= pages - 1}
-        aria-label={t('leaderboard.nextPage')}
+        aria-label={t('pager.nextPage')}
       >
         <Icon className="rtl:-scale-x-100" name="chevronForward" />
       </button>

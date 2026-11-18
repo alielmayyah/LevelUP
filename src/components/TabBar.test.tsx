@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { setLanguage } from '../i18n';
 import TabBar from './TabBar';
@@ -22,9 +22,9 @@ describe('TabBar', () => {
   // see, so these query the buttons directly. e2e/tabs.spec.ts checks roles.
   const tabs = () => Array.from(document.querySelectorAll('ion-tab-button'));
 
-  it('tab bar has 5 tabs in order, named by their visible labels', () => {
+  it('tab bar has 4 tabs in order, named by their visible labels', () => {
     renderAt('/tabs/home');
-    expect(tabs().map((t) => t.textContent)).toEqual(['Home', 'Progress', 'Goals', 'Community', 'Profile']);
+    expect(tabs().map((t) => t.textContent)).toEqual(['Home', 'Progress', 'Goals', 'Profile']);
     // No aria-label on the buttons: the visible label is the name (WCAG 2.5.3).
     expect(tabs().some((t) => t.hasAttribute('aria-label'))).toBe(false);
   });
@@ -35,7 +35,7 @@ describe('TabBar', () => {
   });
 
   it('pill sits under the active tab', () => {
-    renderAt('/tabs/leaderboard');
+    renderAt('/tabs/profile');
     expect(screen.getByTestId('tab-pill').style.transform).toBe('translateX(300%)');
   });
 
@@ -55,10 +55,10 @@ describe('TabBar', () => {
 describe('tabIndex / pillTransform', () => {
   it('matches a tab and its sub-pages', () => {
     expect(tabIndex('/tabs/home')).toBe(0);
-    expect(tabIndex('/tabs/profile')).toBe(4);
-    expect(tabIndex('/tabs/profile/settings')).toBe(4);
-    expect(tabIndex('/tabs/community/leaderboard')).toBe(3);
-    expect(tabIndex('/tabs/leaderboard')).toBe(3);
+    expect(tabIndex('/tabs/profile')).toBe(3);
+    expect(tabIndex('/tabs/profile/settings')).toBe(3);
+    expect(tabIndex('/tabs/community/leaderboard')).toBe(-1);
+    expect(tabIndex('/tabs/leaderboard')).toBe(-1);
     expect(tabIndex('/tabs/goals/12')).toBe(2);
     expect(tabIndex('/tabs/goalsx')).toBe(-1);
   });
@@ -67,23 +67,5 @@ describe('tabIndex / pillTransform', () => {
     expect(pillTransform(0, true)).toBe('translateX(0%)');
     expect(pillTransform(1, false)).toBe('translateX(100%)');
     expect(pillTransform(4, true)).toBe('translateX(-400%)');
-  });
-});
-
-describe('community switch', () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
-    vi.resetModules();
-  });
-
-  it('leaves Community off the tab bar while it is switched off', async () => {
-    vi.stubEnv('VITE_COMMUNITY', 'false');
-    vi.resetModules();
-    const { features } = await import('../features');
-    const { TABS, tabIndex: indexOf } = await import('./tabConfig');
-    expect(features.community).toBe(false);
-    expect(TABS.map((t) => t.tab)).toEqual(['home', 'progress', 'goals', 'profile']);
-    expect(indexOf('/tabs/community')).toBe(-1);
-    expect(indexOf('/tabs/leaderboard')).toBe(-1);
   });
 });

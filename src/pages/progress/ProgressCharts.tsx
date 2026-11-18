@@ -36,9 +36,9 @@ const month = (iso: string) => new Intl.DateTimeFormat(numberLocale(), { month: 
 const day = (iso: string) =>
   new Intl.DateTimeFormat(numberLocale(), { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
 
-type TrendKey = 'weight' | 'muscle' | 'bodyFat' | 'score';
+type TrendKey = 'weight' | 'muscle' | 'bodyFat';
 
-/** The same metric icons as the rest of the app: scale, muscle, body fat, and the FitScore trophy. */
+/** The same metric icons as the rest of the app: scale, muscle, and body fat. */
 const ICON: Record<TrendKey, { name: IconName; colors: string }> = {
   weight: { name: 'scale', colors: '[--icon-color:var(--ion-color-primary)]' },
   muscle: { name: 'muscle', colors: '[--icon-color:var(--lu-muscle)]' },
@@ -46,22 +46,19 @@ const ICON: Record<TrendKey, { name: IconName; colors: string }> = {
     name: 'bodyFat',
     colors: '[--icon-color:var(--lu-fat)]',
   },
-  score: { name: 'trophy', colors: '[--icon-color:var(--lu-gold)]' },
 };
 
 /** Which way is good news on each trend. Weight has no right direction. */
-const BETTER: Record<TrendKey, 'up' | 'down' | null> = { weight: null, muscle: 'up', bodyFat: 'down', score: 'up' };
+const BETTER: Record<TrendKey, 'up' | 'down' | null> = { weight: null, muscle: 'up', bodyFat: 'down' };
 
 interface Props {
   points: ProgressPoint[];
-  showFitScore: boolean;
 }
 
 /**
- * One simple line at a time: the member picks Weight, Muscle, Body fat, or
- * FitScore. Loaded in its own chunk after the page.
+ * The member picks one trend at a time: weight, muscle, or body fat.
  */
-const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
+const TrendChart: React.FC<Props> = ({ points }) => {
   const { t, i18n } = useTranslation();
   const rtl = i18n.dir() === 'rtl';
   const [pick, setPick] = useState<TrendKey>('weight');
@@ -70,7 +67,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
   const dates = points.map((p) => day(p.takenAt));
   const kg = t('units.kg');
 
-  const all: Record<TrendKey, Series & { range?: [number, number] }> = {
+  const all: Record<TrendKey, Series> = {
     weight: {
       key: 'weight',
       label: t('progress.metric.weight'),
@@ -98,26 +95,15 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
       unit: '%',
       digits: 1,
     },
-    score: {
-      key: 'score',
-      label: t('home.fitScore.title'),
-      colorClass: 'lu-series-score',
-      values: points.map((p) => p.fitScore),
-      axis: 'start',
-      unit: '',
-      digits: 0,
-      range: [0, 100],
-    },
   };
-  const keys: TrendKey[] = showFitScore ? ['weight', 'muscle', 'bodyFat', 'score'] : ['weight', 'muscle', 'bodyFat'];
-  const current = keys.includes(pick) ? pick : 'weight';
-  const s = all[current];
+  const keys: TrendKey[] = ['weight', 'muscle', 'bodyFat'];
+  const s = all[pick];
 
   const withUnit = (v: number) => `${formatNumber(v, s.digits)}${s.unit === '%' ? '%' : s.unit ? ` ${s.unit}` : ''}`;
   const first = s.values[0];
   const last = s.values[s.values.length - 1];
   const diff = Math.round((last - first) * 10 ** s.digits) / 10 ** s.digits;
-  const better = BETTER[current];
+  const better = BETTER[pick];
   const tone =
     diff === 0 || better === null ? 'text-muted' : (better === 'up') === diff > 0 ? 'text-success' : 'text-danger';
   const since = t(diff > 0 ? 'progress.upSince' : diff < 0 ? 'progress.downSince' : 'progress.sameSince', {
@@ -140,7 +126,7 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
       </h2>
 
       {/* Each metric is a small card with its latest value and a sparkline; picking one opens its full chart below. */}
-      <div role="radiogroup" aria-label={t('progress.trendPick')} className="grid grid-cols-2 gap-2 md:grid-cols-4">
+      <div role="radiogroup" aria-label={t('progress.trendPick')} className="grid grid-cols-2 gap-2 md:grid-cols-3">
         {keys.map((k, i) => {
           const series = all[k];
           const v = series.values;
@@ -152,8 +138,8 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
               key={k}
               type="button"
               role="radio"
-              aria-checked={current === k}
-              tabIndex={current === k ? 0 : -1}
+              aria-checked={pick === k}
+              tabIndex={pick === k ? 0 : -1}
               data-testid={`trend-${k}`}
               aria-labelledby={`${uid}-${k}-name`}
               aria-describedby={`${uid}-${k}-value`}
@@ -195,16 +181,15 @@ const TrendChart: React.FC<Props> = ({ points, showFitScore }) => {
         </span>
       </div>
       <p className="m-0 text-[0.75rem] font-normal text-muted" aria-hidden="true">
-        {s.unit || t('home.fitScore.title')}
+        {s.unit}
       </p>
       <LineChart
-        key={current}
+        key={pick}
         testId="chart-trend"
         label={t('progress.trendOf', { metric: s.label })}
         labels={labels}
         dates={dates}
         series={[s]}
-        startRange={s.range}
         rtl={rtl}
         legend={false}
         summary={[summary]}

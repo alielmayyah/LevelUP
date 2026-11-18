@@ -3,7 +3,7 @@ import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import Icon from '../../components/Icon';
-import { formatNumber, formatPercent } from '../../i18n/format';
+import { formatPercent } from '../../i18n/format';
 import { formatMedalDate, medalTitle, medalValue } from './format';
 import MedalArt from './MedalArt';
 import type { MedalCategoryStatus, MedalStatus } from './types';
@@ -37,14 +37,9 @@ const MedalSheet: React.FC<Props> = ({ medal, status, onClose }) => {
   );
 };
 
-/**
- * The detail lines kept off the Trophy Room page for members who want them:
- * the best verified record in precise terms, the best working set, and lifts
- * still waiting for the coach.
- */
+/** The detail line kept off the Trophy Room page for members who want it: the current value in precise terms. */
 function records(t: TFunction, status: MedalCategoryStatus | undefined, medal: MedalStatus): string[] {
   if (!status) return [];
-  const kg = (n: number) => `${formatNumber(n)} ${t('units.kg')}`;
   const lines: string[] = [];
   if (!status.unavailable && status.current !== null)
     lines.push(
@@ -52,14 +47,6 @@ function records(t: TFunction, status: MedalCategoryStatus | undefined, medal: M
         value: medalValue(t, medal.category, medal.unit, status.current),
       }),
     );
-  if (status.bestWorkingSet)
-    lines.push(
-      t('medals.workingSet', {
-        weight: kg(status.bestWorkingSet.weightKg),
-        reps: formatNumber(status.bestWorkingSet.reps),
-      }),
-    );
-  if (status.pendingLifts) lines.push(t('medals.pending', { count: status.pendingLifts }));
   return lines;
 }
 

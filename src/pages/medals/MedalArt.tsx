@@ -10,15 +10,8 @@ interface Props {
   className?: string;
 }
 
-/** The exercise or body measurement each medal is for, as the app's line icons. */
+/** The body measurement each medal is for, as the app's line icons. */
 const GLYPH: Record<MedalCategory, IconName> = {
-  pushUps: 'pushUp',
-  bench: 'barbell',
-  squat: 'dumbbell',
-  deadlift: 'barbell',
-  militaryPress: 'dumbbell',
-  pullUps: 'pullUp',
-  plank: 'stopwatch',
   muscle: 'muscle',
   bodyFat: 'bodyFat',
   bmi: 'gauge',

@@ -33,13 +33,6 @@ const FILTERS: Filter[] = ['all', ...MEDAL_CATEGORIES];
 const ICONS: Record<MedalCategory, IconName> = {
   bodyFat: 'bodyFat',
   muscle: 'muscle',
-  bench: 'barbell',
-  squat: 'barbell',
-  deadlift: 'barbell',
-  militaryPress: 'barbell',
-  pushUps: 'pushUp',
-  pullUps: 'pullUp',
-  plank: 'stopwatch',
   bmi: 'gauge',
 };
 
@@ -121,7 +114,6 @@ function Section({ status, onOpen }: { status: MedalCategoryStatus; onOpen: (m: 
   const { t } = useTranslation();
   const heading = `medal-section-${status.category}`;
   // Simple by default: the medals. With no data yet, also what the category is and what is missing.
-  // The member's records (best lift, working sets, lifts waiting for the coach) live in each medal's sheet.
   return (
     <section
       className="lu-card lu-medal-section"

@@ -6,13 +6,11 @@ import type {
   DashboardDto,
   GoalsDto,
   GoalView,
-  LeaderboardDto,
   NotificationDto,
   ProfileDto,
   ProgressDto,
 } from '../types';
-import { ageOn } from '../../body/age';
-import { ageGroupOf, mockServer, resetMockServer } from './server';
+import { mockServer, resetMockServer } from './server';
 
 const NOW = new Date('2026-11-13T10:00:00Z');
 
@@ -22,8 +20,6 @@ const get = <T>(path: string, fitId: string) =>
 const patch = <T>(path: string, body: unknown, fitId: string) =>
   mockServer.handle('PATCH', path, body, `mock.${fitId}`) as Promise<{ status: number; body: T }>;
 const post = (path: string, fitId: string) => mockServer.handle('POST', path, null, `mock.${fitId}`);
-
-const BOARDS = ['score', 'muscle', 'bodyFat'] as const;
 
 beforeEach(async () => {
   await Preferences.clear();
@@ -62,7 +58,7 @@ describe('auth', () => {
   });
 
   it('an unknown token → 401 on every data route', async () => {
-    for (const path of ['/me', '/me/dashboard', '/me/progress', '/me/goals', '/me/notifications', '/leaderboard'])
+    for (const path of ['/me', '/me/dashboard', '/me/progress', '/me/goals', '/me/notifications'])
       expect((await mockServer.handle('GET', path, null, 'mock.999')).status).toBe(401);
   });
 
@@ -72,27 +68,19 @@ describe('auth', () => {
 });
 
 describe('dashboard', () => {
-  it('Mohamed (101) is the top member: Elite FitScore, #1 of 19', async () => {
+  it('Mohamed (101) has a FitScore and an active goal', async () => {
     const { status, body: d } = await get<DashboardDto>('/me/dashboard', '101');
     expect(status).toBe(200);
     expect(d.member).toEqual({
       memberId: 1,
       firstName: 'Mohamed',
       sex: 'MALE',
-      showFitScore: true,
       avatar: null,
     });
     // FitScore is computed from the scan with the InBody Score method (domain.ts).
-    expect(d.fitScore).toEqual({ score: 91, tier: 'Elite', changeSinceLastScan: 2 });
+    expect(d.fitScore).toEqual({ score: 91 });
     expect(d.mission).toMatchObject({ title: 'Gain 3 kg of muscle', percent: 67, doneKg: 2, remainingKg: 1 });
     expect(d.mission!.estimatedCompletion).not.toBeNull();
-    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
-    expect(typeof d.monthlyWins.bmiChange).toBe('number');
-    expect(typeof d.monthlyWins.bmi).toBe('number');
-    expect(d.leaderboard).toEqual({
-      optedIn: true,
-      standing: { rank: 1, totalMembers: 19, topPercent: 6, membersBehind: 18, pointsToNextRank: null },
-    });
     expect(d.unreadNotifications).toBe(2);
   });
 
@@ -100,16 +88,12 @@ describe('dashboard', () => {
     const d = (await get<DashboardDto>('/me/dashboard', '102')).body;
     expect(d.fitScore).toBeNull();
     expect(d.mission).toBeNull();
-    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: null, muscleGainedKg: null, bmiChange: null });
-    expect(d.leaderboard).toEqual({ optedIn: false, standing: null });
     expect(JSON.stringify(d)).not.toContain('NaN');
   });
 
-  it('Omar: one scan, FitScore hidden, no change yet', async () => {
+  it('Omar gets a FitScore after one scan', async () => {
     const d = (await get<DashboardDto>('/me/dashboard', '103')).body;
-    expect(d.member.showFitScore).toBe(false);
-    expect(d.fitScore).toMatchObject({ changeSinceLastScan: null });
-    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: null, muscleGainedKg: null, bmiChange: null });
+    expect(d.fitScore?.score).toBeGreaterThan(0);
   });
 
   it('no response for any mock member contains NaN or undefined values', async () => {
@@ -119,41 +103,18 @@ describe('dashboard', () => {
   });
 });
 
-describe('Sara (140): new, no scans, but on the leaderboard', () => {
-  it('signs in, has no scans or goals, and is opted in but not ranked yet', async () => {
-    expect((await login('140')).status).toBe(201);
-    const dash = (await get<DashboardDto>('/me/dashboard', '140')).body;
-    expect(dash.fitScore).toBeNull();
-    expect(dash.mission).toBeNull();
-    expect(dash.leaderboard).toEqual({ optedIn: true, standing: null });
-    expect((await get<AssessmentDto[]>('/me/assessments', '140')).body).toEqual([]);
-    const lb = (await get<LeaderboardDto>('/leaderboard?board=score', '140')).body;
-    expect(lb.optedIn).toBe(true);
-    expect(lb.division).toBe('FEMALE');
-    expect(lb.rows.some((r) => r.isMe)).toBe(false);
-  });
-});
-
 describe('dates are relative to today', () => {
-  it('Mohamed has a scan this month and Omar’s membership ends in 10 days', async () => {
+  it('Mohamed has a scan this month', async () => {
     const progress = (await get<ProgressDto>('/me/progress', '101')).body.assessments;
     const latest = new Date(progress.at(-1)!.takenAt);
     expect(latest.getUTCFullYear()).toBe(NOW.getUTCFullYear());
     expect(latest.getUTCMonth()).toBe(NOW.getUTCMonth());
     expect(latest.getTime()).toBeLessThanOrEqual(NOW.getTime());
-
-    const omar = (await get<ProfileDto>('/me', '103')).body;
-    const days = (new Date(omar.membershipEnd).getTime() - NOW.getTime()) / 86_400_000;
-    expect(Math.round(days)).toBe(10);
   });
 
   it('a different "today" moves the data with it', async () => {
     const later = new Date('2027-03-02T08:00:00Z');
     resetMockServer(later);
-    const d = (await get<DashboardDto>('/me/dashboard', '101')).body;
-    expect(d.monthlyWins).toMatchObject({ bodyFatChangePct: -1.1, muscleGainedKg: 0.9 });
-    expect(typeof d.monthlyWins.bmiChange).toBe('number');
-    expect(typeof d.monthlyWins.bmi).toBe('number');
     const progress = (await get<ProgressDto>('/me/progress', '101')).body.assessments;
     expect(new Date(progress.at(-1)!.takenAt).getUTCMonth()).toBe(later.getUTCMonth());
   });
@@ -201,17 +162,14 @@ describe('progress, assessments, goals, profile', () => {
     expect((await get<GoalsDto>('/me/goals', '102')).body).toEqual({ active: [], completed: [] });
   });
 
-  it('profile reflects settings', async () => {
+  it('profile includes member details', async () => {
     const p = (await get<ProfileDto>('/me', '101')).body;
     expect(p).toMatchObject({
       firstName: 'Mohamed',
       lastName: 'Omran',
       fitId: '101',
       heightCm: 183,
-      fitScoreOnLeaderboard: true,
     });
-    expect(p.coach).not.toBeNull();
-    expect((await get<ProfileDto>('/me', '102')).body.coach).toBeNull();
   });
 });
 
@@ -226,8 +184,6 @@ describe('creating a goal', () => {
     expect(r.body).toMatchObject({
       title: 'Lose 2 kg of body fat',
       startValue: scan.bodyFatKg,
-      coachNote: null,
-      deadline: null,
       percent: 0,
     });
     const goals = (await get<GoalsDto>('/me/goals', '103')).body;
@@ -276,137 +232,6 @@ describe('creating a goal', () => {
     expect((await get<GoalsDto>('/me/goals', '103')).body.active.map((g) => g.id)).toEqual([r.body.id]);
     const sam = (await get<GoalsDto>('/me/goals', '101')).body;
     expect([...sam.active, ...sam.completed].map((g) => g.title)).not.toContain('Reach 70 kg');
-  });
-});
-
-describe('settings', () => {
-  it('hiding FitScore shows on the dashboard and profile', async () => {
-    const r = await patch('/me/settings', { showFitScore: false }, '101');
-    expect(r).toEqual({ status: 200, body: { showFitScore: false, fitScoreOnLeaderboard: true } });
-    expect((await get<DashboardDto>('/me/dashboard', '101')).body.member.showFitScore).toBe(false);
-    expect((await get<ProfileDto>('/me', '101')).body.showFitScore).toBe(false);
-  });
-
-  it('rejects non-boolean and empty bodies with 400', async () => {
-    expect((await patch('/me/settings', { showFitScore: 'nope' }, '101')).status).toBe(400);
-    expect((await patch('/me/settings', {}, '101')).status).toBe(400);
-    expect((await patch('/me/settings', null, '101')).status).toBe(400);
-  });
-
-  it('settings survive a mock server restart (page reload)', async () => {
-    await patch('/me/settings', { showFitScore: false }, '101');
-    resetMockServer(NOW);
-    expect((await get<ProfileDto>('/me', '101')).body.showFitScore).toBe(false);
-  });
-});
-
-describe('leaderboard', () => {
-  it("only opted-in men appear on Mohamed's board; he is #1 of 19 on Top Score", async () => {
-    const r = (await get<LeaderboardDto>('/leaderboard', '101')).body;
-    expect(r.board).toBe('score');
-    expect(r.division).toBe('MALE');
-    expect(r.optedIn).toBe(true);
-    expect(r.rows).toHaveLength(19);
-    expect(r.rows.find((x) => x.isMe)).toMatchObject({ rank: 1, name: 'Mohamed O.', value: 91 });
-    expect(r.rows.map((x) => x.name)).not.toContain('Nour S.');
-    expect(r.rows.map((x) => x.name)).not.toContain('Lina H.');
-    expect(r.rows.map((x) => x.name)).not.toContain('Omar A.');
-  });
-
-  it.each(BOARDS)('board %s ranks best first from 1 (lowest body fat, highest otherwise)', async (board) => {
-    const r = (await get<LeaderboardDto>(`/leaderboard?board=${board}`, '101')).body;
-    expect(r.board).toBe(board);
-    expect(r.rows.length).toBeGreaterThanOrEqual(3);
-    const best = board === 'bodyFat' ? (a: number, b: number) => a - b : (a: number, b: number) => b - a;
-    expect(r.rows.map((x) => x.value)).toEqual([...r.rows.map((x) => x.value)].sort(best));
-    expect(r.rows.map((x) => x.rank)).toEqual(r.rows.map((_, i) => i + 1));
-  });
-
-  it('age filter keeps only that bracket, re-ranks from 1, and reports the member’s own bracket', async () => {
-    const all = (await get<LeaderboardDto>('/leaderboard', '101')).body;
-    expect(all.ageGroup).toBe('all');
-    expect(all.myAgeGroup).toBe('under25');
-    const groups = ['under25', '25to34', '35to44', '45plus'] as const;
-    let total = 0;
-    for (const age of groups) {
-      const r = (await get<LeaderboardDto>(`/leaderboard?board=score&age=${age}`, '101')).body;
-      expect(r.ageGroup).toBe(age);
-      expect(r.rows.map((x) => x.rank)).toEqual(r.rows.map((_, i) => i + 1));
-      expect(r.rows.some((x) => x.isMe)).toBe(age === 'under25');
-      total += r.rows.length;
-    }
-    // Every ranked member lands in exactly one bracket.
-    expect(total).toBe(all.rows.length);
-  });
-
-  it('rejects an unknown age group', async () => {
-    expect((await get('/leaderboard?age=teen', '101')).status).toBe(400);
-  });
-
-  it('counts age in whole years, the day of the birthday included', () => {
-    expect(ageOn(new Date('2000-06-15T00:00:00Z'), new Date('2025-06-14T00:00:00Z'))).toBe(24);
-    expect(ageOn(new Date('2000-06-15T00:00:00Z'), new Date('2025-06-15T00:00:00Z'))).toBe(25);
-    expect([24, 25, 34, 35, 44, 45].map(ageGroupOf)).toEqual([
-      'under25',
-      '25to34',
-      '25to34',
-      '35to44',
-      '35to44',
-      '45plus',
-    ]);
-  });
-
-  it('muscle and body fat boards show the latest scan’s values', async () => {
-    const muscle = (await get<LeaderboardDto>('/leaderboard?board=muscle', '101')).body.rows.find((r) => r.isMe);
-    const fat = (await get<LeaderboardDto>('/leaderboard?board=bodyFat', '101')).body.rows.find((r) => r.isMe);
-    expect(muscle).toMatchObject({ rank: 1, value: 41.3 });
-    expect(fat).toMatchObject({ rank: 1, value: 8 });
-  });
-
-  it('every board has the same members (anyone opted in with a scan)', async () => {
-    const counts = await Promise.all(
-      BOARDS.map(async (b) => (await get<LeaderboardDto>(`/leaderboard?board=${b}`, '101')).body.rows.length),
-    );
-    expect(new Set(counts).size).toBe(1);
-  });
-
-  it("Lina, once joined and scanned, would see the women's board", async () => {
-    const r = (await get<LeaderboardDto>('/leaderboard', '102')).body;
-    expect(r.division).toBe('FEMALE');
-    expect(r.rows.map((x) => x.name)).toContain('Nour S.');
-    expect(r.rows.map((x) => x.name)).not.toContain('Karim M.');
-  });
-
-  it('opt-out removes member from every board immediately', async () => {
-    await patch('/me/settings', { fitScoreOnLeaderboard: false }, '101');
-    for (const b of BOARDS) {
-      const r = (await get<LeaderboardDto>(`/leaderboard?board=${b}`, '101')).body;
-      expect(r.optedIn).toBe(false);
-      expect(r.rows.some((x) => x.isMe)).toBe(false);
-    }
-    expect((await get<DashboardDto>('/me/dashboard', '101')).body.leaderboard).toEqual({
-      optedIn: false,
-      standing: null,
-    });
-  });
-
-  it('opting in with no scans keeps Lina off every board', async () => {
-    await patch('/me/settings', { fitScoreOnLeaderboard: true }, '102');
-    for (const b of BOARDS) {
-      const r = (await get<LeaderboardDto>(`/leaderboard?board=${b}`, '102')).body;
-      expect(r.optedIn).toBe(true);
-      expect(r.rows.some((x) => x.isMe)).toBe(false);
-    }
-  });
-
-  it('unknown board → 400', async () => {
-    expect((await get('/leaderboard?board=xp', '101')).status).toBe(400);
-  });
-
-  it('no row exposes xp or level', async () => {
-    for (const row of (await get<LeaderboardDto>('/leaderboard', '101')).body.rows) {
-      expect(Object.keys(row).sort()).toEqual(['avatar', 'isMe', 'memberId', 'name', 'rank', 'value']);
-    }
   });
 });
 
@@ -483,13 +308,6 @@ describe('avatar', () => {
       expect((await put(bad, '101')).status).toBe(400);
     }
     expect((await get<ProfileDto>('/me', '101')).body.avatar).toBeNull();
-  });
-
-  it('sends the saved look on the member’s own leaderboard row only', async () => {
-    await put(look, '101');
-    const rows = (await get<LeaderboardDto>('/leaderboard?board=score', '101')).body.rows;
-    expect(rows.find((r) => r.isMe)?.avatar).toEqual(look);
-    expect(rows.filter((r) => !r.isMe).every((r) => r.avatar === null)).toBe(true);
   });
 
   it('the dashboard carries the member id and saved look for the Home picture', async () => {

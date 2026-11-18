@@ -1,13 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import type { LiftRecordDto, ProgressPoint } from '../../api/types';
+import type { ProgressPoint } from '../../api/types';
 import { categoryDefinitions, MEDAL_CATEGORIES } from './config';
 import {
   evaluateMedals,
   medalShowcase,
   medalSummary,
   muscleGainSamples,
-  oneRepMaxSamples,
   unseenUnlocks,
   type MedalInputs,
 } from './rules';
@@ -18,27 +17,9 @@ const scan = (takenAt: string, bodyFatPct: number, skeletalMuscleKg: number): Pr
   weightKg: 80,
   bodyFatPct,
   skeletalMuscleKg,
-  fitScore: 70,
 });
 
-let liftId = 0;
-const lift = (
-  exercise: LiftRecordDto['exercise'],
-  weightKg: number,
-  recordedAt: string,
-  extra: Partial<LiftRecordDto> = {},
-): LiftRecordDto => ({
-  id: ++liftId,
-  exercise,
-  measurement: 'ONE_REP_MAX',
-  weightKg,
-  reps: 1,
-  recordedAt,
-  verified: true,
-  ...extra,
-});
-
-const EMPTY: MedalInputs = { sex: 'MALE', scans: [], lifts: [] };
+const EMPTY: MedalInputs = { sex: 'MALE', scans: [] };
 const category = (inputs: MedalInputs, id: MedalCategory) => evaluateMedals(inputs).find((c) => c.category === id)!;
 const unlockedIds = (inputs: MedalInputs, id: MedalCategory) =>
   category(inputs, id)
@@ -46,10 +27,11 @@ const unlockedIds = (inputs: MedalInputs, id: MedalCategory) =>
     .map((m) => m.id);
 
 describe('medal definitions', () => {
-  it('defines 50 medals, five rarities per category, with unique ids', () => {
+  it('defines 15 scan medals (muscle, body fat, BMI), five rarities each, with unique ids', () => {
+    expect(MEDAL_CATEGORIES).toEqual(['muscle', 'bodyFat', 'bmi']);
     const all = MEDAL_CATEGORIES.flatMap((c) => categoryDefinitions(c, 'MALE')!);
-    expect(all).toHaveLength(50);
-    expect(new Set(all.map((m) => m.id)).size).toBe(50);
+    expect(all).toHaveLength(15);
+    expect(new Set(all.map((m) => m.id)).size).toBe(15);
     for (const c of MEDAL_CATEGORIES) {
       const defs = categoryDefinitions(c, 'MALE')!;
       expect(defs.map((d) => d.rarity)).toEqual(['bronze', 'silver', 'gold', 'epic', 'legendary']);
@@ -60,13 +42,6 @@ describe('medal definitions', () => {
     const thresholds = (c: MedalCategory) => categoryDefinitions(c, 'MALE')!.map((d) => d.threshold);
     expect(thresholds('bodyFat')).toEqual([30, 25, 20, 15, 12]);
     expect(thresholds('muscle')).toEqual([1, 3, 5, 10, 15]);
-    expect(thresholds('bench')).toEqual([20, 40, 60, 80, 100]);
-    expect(thresholds('squat')).toEqual([40, 60, 80, 100, 140]);
-    expect(thresholds('pushUps')).toEqual([10, 20, 30, 50, 100]);
-    expect(thresholds('deadlift')).toEqual([40, 60, 100, 140, 180]);
-    expect(thresholds('militaryPress')).toEqual([15, 25, 35, 45, 55]);
-    expect(thresholds('pullUps')).toEqual([1, 5, 10, 15, 20]);
-    expect(thresholds('plank')).toEqual([30, 60, 120, 180, 300]);
     expect(thresholds('bmi')).toEqual([0, 1, 3, 6, 12]);
   });
 
@@ -135,70 +110,6 @@ describe('muscle medals', () => {
   });
 });
 
-describe('lift medals', () => {
-  it('count only verified one-rep maxes', () => {
-    const lifts = [
-      lift('BENCH_PRESS', 60, '2026-01-01'),
-      lift('BENCH_PRESS', 110, '2026-02-01', { verified: false }),
-      lift('BENCH_PRESS', 90, '2026-03-01', { measurement: 'WORKING_SET', reps: 5 }),
-      lift('BENCH_PRESS', 120, '2026-03-02', { reps: 3 }),
-      lift('SQUAT', 200, '2026-03-01'),
-    ];
-    expect(oneRepMaxSamples(lifts, 'BENCH_PRESS').map((s) => s.value)).toEqual([60]);
-    const bench = category({ ...EMPTY, lifts }, 'bench');
-    expect(unlockedIds({ ...EMPTY, lifts }, 'bench')).toEqual(['firstPress', 'ironChest', 'heavyHitter']);
-    expect(bench.bestWorkingSet).toEqual({ weightKg: 90, reps: 5 });
-    expect(bench.pendingLifts).toBe(1);
-  });
-
-  it('reports progress as current over target', () => {
-    const bench = category({ ...EMPTY, lifts: [lift('BENCH_PRESS', 16, '2026-01-01')] }, 'bench');
-    const first = bench.medals[0];
-    expect(first.unlocked).toBe(false);
-    expect(first.current).toBe(16);
-    expect(first.progress).toBe(0.8);
-    expect(first.remaining).toBe(4);
-  });
-
-  it('unlock at exactly the threshold and date each medal by the lift that earned it', () => {
-    const lifts = [lift('SQUAT', 60, '2026-01-01'), lift('SQUAT', 100, '2026-04-01'), lift('SQUAT', 90, '2026-05-01')];
-    const squat = category({ ...EMPTY, lifts }, 'squat');
-    expect(squat.current).toBe(100);
-    expect(squat.medals.map((m) => m.unlockedAt)).toEqual([
-      '2026-01-01',
-      '2026-01-01',
-      '2026-04-01',
-      '2026-04-01',
-      null,
-    ]);
-  });
-
-  it('show no progress without a verified lift', () => {
-    const squat = category({ ...EMPTY, lifts: [lift('SQUAT', 100, '2026-01-01', { verified: false })] }, 'squat');
-    expect(squat.unavailable).toBe('noLifts');
-    expect(squat.pendingLifts).toBe(1);
-    expect(squat.medals.every((m) => m.progress === null && m.current === null)).toBe(true);
-  });
-
-  it('reject impossible weights', () => {
-    expect(oneRepMaxSamples([lift('SQUAT', 0, '2026-01-01'), lift('SQUAT', 900, '2026-01-01')], 'SQUAT')).toEqual([]);
-  });
-
-  it('uses only the correct verified record type for reps and time', () => {
-    const lifts = [
-      lift('PUSH_UP', 0, '2026-01-01', { measurement: 'CONSECUTIVE_REPS', reps: 20 }),
-      lift('PUSH_UP', 0, '2026-01-01', { measurement: 'WORKING_SET', reps: 100 }),
-      lift('PULL_UP', 0, '2026-01-01', { measurement: 'CONSECUTIVE_REPS', reps: 20, verified: false }),
-      lift('PLANK', 0, '2026-01-01', { measurement: 'DURATION', durationSeconds: 120 }),
-      lift('PLANK', 0, '2026-01-01', { measurement: 'DURATION', durationSeconds: 300, verified: false }),
-    ];
-    expect(unlockedIds({ ...EMPTY, lifts }, 'pushUps')).toEqual(['pushUps-bronze', 'pushUps-silver']);
-    expect(unlockedIds({ ...EMPTY, lifts }, 'pullUps')).toEqual([]);
-    expect(unlockedIds({ ...EMPTY, lifts }, 'plank')).toEqual(['plank-bronze', 'plank-silver', 'plank-gold']);
-    expect(category({ ...EMPTY, lifts: null }, 'plank').unavailable).toBe('noWorkoutSource');
-  });
-});
-
 describe('BMI medals', () => {
   const adult = { ...EMPTY, heightCm: 200, birthDate: '1990-01-01' };
   const reading = (at: string, bmi: number) => ({ ...scan(at, 20, 35), weightKg: bmi * 4 });
@@ -229,26 +140,16 @@ describe('summary and celebrations', () => {
   const inputs: MedalInputs = {
     sex: 'MALE',
     scans: [scan('2026-01-01', 22, 35), scan('2026-02-01', 19, 36.5)],
-    lifts: [lift('BENCH_PRESS', 80, '2026-02-01')],
   };
 
   it('totals unlocked and locked medals', () => {
-    expect(medalSummary(evaluateMedals(inputs))).toEqual({ total: 50, unlocked: 8, locked: 42, percent: 16 });
+    expect(medalSummary(evaluateMedals(inputs))).toEqual({ total: 15, unlocked: 4, locked: 11, percent: 27 });
   });
 
   it('celebrates each unlock once, rarest first', () => {
     const categories = evaluateMedals(inputs);
     const first = unseenUnlocks(categories, new Set());
-    expect(first.map((m) => m.id)).toEqual([
-      'powerLifter',
-      'heavyHitter',
-      'shredded',
-      'ironChest',
-      'leanMachine',
-      'firstPress',
-      'muscleStarter',
-      'fatBurner',
-    ]);
+    expect(first.map((m) => m.id)).toEqual(['shredded', 'leanMachine', 'muscleStarter', 'fatBurner']);
     const seen = new Set(first.map((m) => m.id));
     expect(unseenUnlocks(categories, seen)).toEqual([]);
     expect(unseenUnlocks(evaluateMedals(inputs), seen)).toEqual([]);
@@ -256,38 +157,40 @@ describe('summary and celebrations', () => {
 });
 
 describe('Profile medal showcase', () => {
-  it.each([
-    [30, 'bronze', 'silver'],
-    [60, 'silver', 'gold'],
-    [120, 'gold', 'epic'],
-    [180, 'epic', 'legendary'],
-    [300, 'legendary', undefined],
-  ])('shows one medal for a %s-second plank', (durationSeconds, rarity, nextRarity) => {
-    const lifts = [lift('PLANK', 0, '2026-01-01', { measurement: 'DURATION', durationSeconds })];
-    const categories = evaluateMedals({ ...EMPTY, lifts });
-    const summary = medalShowcase(categories);
-    const plank = summary.slots.filter(({ medal }) => medal.category === 'plank');
-    expect(plank).toHaveLength(1);
-    expect(plank[0].medal).toMatchObject({ rarity, threshold: durationSeconds, unlocked: true });
-    expect(plank[0].next?.rarity).toBe(nextRarity);
-    expect(summary.unlocked).toBe(1);
-    expect(summary.slots).toHaveLength(10);
-    expect(categories.find((status) => status.category === 'plank')?.medals).toHaveLength(5);
+  /** Two scans with `gain` kg more muscle on the second, and body fat too high for any medal. */
+  const gained = (gain: number): MedalInputs => ({
+    ...EMPTY,
+    scans: [scan('2026-01-01', 35, 30), scan('2026-02-01', 35, 30 + gain)],
   });
 
-  it('shows one locked starter per category and only progress backed by a record', () => {
+  it.each([
+    [1, 'bronze', 'silver'],
+    [3, 'silver', 'gold'],
+    [5, 'gold', 'epic'],
+    [10, 'epic', 'legendary'],
+    [15, 'legendary', undefined],
+  ])('shows one medal for %s kg of muscle gained', (gain, rarity, nextRarity) => {
+    const categories = evaluateMedals(gained(gain));
+    const summary = medalShowcase(categories);
+    const muscle = summary.slots.filter(({ medal }) => medal.category === 'muscle');
+    expect(muscle).toHaveLength(1);
+    expect(muscle[0].medal).toMatchObject({ rarity, threshold: gain, unlocked: true });
+    expect(muscle[0].next?.rarity).toBe(nextRarity);
+    expect(summary.unlocked).toBe(1);
+    expect(summary.slots).toHaveLength(3);
+    expect(categories.find((status) => status.category === 'muscle')?.medals).toHaveLength(5);
+  });
+
+  it('shows one locked starter per category and only progress backed by a scan', () => {
     const empty = medalShowcase(evaluateMedals(EMPTY));
     expect(empty.unlocked).toBe(0);
-    expect(empty.slots).toHaveLength(10);
+    expect(empty.slots).toHaveLength(3);
     expect(empty.slots.every(({ medal, next }) => medal === next && !medal.unlocked && medal.progress === null)).toBe(
       true,
     );
 
-    const lifts = [lift('PLANK', 0, '2026-01-01', { measurement: 'DURATION', durationSeconds: 15 })];
-    const plank = medalShowcase(evaluateMedals({ ...EMPTY, lifts })).slots.find(
-      ({ medal }) => medal.category === 'plank',
-    );
-    expect(plank?.medal).toMatchObject({ rarity: 'bronze', unlocked: false, threshold: 30 });
-    expect(plank?.next).toMatchObject({ current: 15, progress: 0.5 });
+    const muscle = medalShowcase(evaluateMedals(gained(0.5))).slots.find(({ medal }) => medal.category === 'muscle');
+    expect(muscle?.medal).toMatchObject({ rarity: 'bronze', unlocked: false, threshold: 1 });
+    expect(muscle?.next).toMatchObject({ current: 0.5, progress: 0.5 });
   });
 });
