@@ -593,3 +593,21 @@ dialog::backdrop {
   outline: 2px solid var(--ion-color-primary);
   outline-offset: -4px;
 }
+
+/* Settings rows: the icon in a soft brand-tinted square. */
+.lu-settings-icon {
+  background: color-mix(in srgb, var(--ion-color-primary) 10%, var(--lu-surface-2));
+  color: var(--ion-color-primary);
+  --icon-color: var(--ion-color-primary);
+}
+
+:root.ion-palette-dark .lu-settings-icon {
+  color: var(--ion-color-secondary);
+  --icon-color: var(--ion-color-secondary);
+}
+
+:root .lu-settings-icon-danger {
+  background: color-mix(in srgb, var(--lu-danger) 10%, var(--lu-surface-2));
+  color: var(--lu-danger);
+  --icon-color: var(--lu-danger);
+}

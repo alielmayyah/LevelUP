@@ -18,11 +18,12 @@ import { useSound } from '../sound/useSound';
 import { getThemeMode, setTheme, type ThemeMode } from '../theme/theme';
 
 /** One settings line: label on one side, value or control on the other; wraps on narrow screens. */
-const ROW = 'flex min-h-[52px] flex-wrap items-center justify-between gap-x-3 gap-y-2 py-2 font-semibold';
+const ROW = 'flex min-h-[60px] flex-wrap items-center justify-between gap-x-3 gap-y-2 py-2 font-semibold';
 /** Rows are split by a thin rule, except the last one. */
 const RULED = '[border-block-end:1px_solid_var(--lu-border)] last:[border-block-end:0]';
 const LABEL = 'flex min-w-0 items-center gap-2.5 font-semibold';
-const LABEL_ICON = 'flex-none text-[1.2rem]';
+/** Each row's icon sits in a small tinted badge, like the rest of the app. */
+const LABEL_ICON = 'lu-settings-icon box-content flex-none rounded-[10px] p-1.5 text-[1.1rem]';
 const HINT = 'text-[0.8rem] font-normal text-muted';
 
 /** A label with an icon, and optionally a one-line hint under it. */
@@ -150,10 +151,10 @@ const Settings: React.FC = () => {
       {/*
        * Language, theme and sound live on this device, so they show at once,
        * even while /me loads or after it fails. Only the FitScore switches wait for it.
-       * Fills the screen: the settings card grows, its rows share the height evenly, and Sign out sits at the bottom.
+       * Rows keep their natural height (no stretching to fill the screen); Sign out follows the card.
        */}
-      <div className="mx-auto flex w-full max-w-[620px] flex-1 flex-col gap-3.5">
-        <section className="lu-card flex flex-1 flex-col py-1.5 [&>div]:flex-1" aria-labelledby="sec-settings">
+      <div className="mx-auto flex w-full max-w-[620px] flex-col gap-3.5">
+        <section className="lu-card flex flex-col py-1.5" aria-labelledby="sec-settings">
           <h2 id="sec-settings" className={SECTION}>
             {t('profile.preferences')}
           </h2>
@@ -256,7 +257,7 @@ const Settings: React.FC = () => {
           data-testid="sign-out"
         >
           <span className={`${LABEL} text-danger`}>
-            <Icon className={`${LABEL_ICON} text-danger rtl:-scale-x-100`} name="logout" />
+            <Icon className={`${LABEL_ICON} lu-settings-icon-danger rtl:-scale-x-100`} name="logout" />
             {t('profile.signOut')}
           </span>
           <Icon className="lu-chevron text-danger" name="chevronForward" />
